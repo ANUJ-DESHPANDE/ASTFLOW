@@ -1,0 +1,134 @@
+import logging
+import threading
+from dataclasses import asdict
+from pathlib import PurePosixPath
+
+from fastapi import FastAPI, HTTPException, Query, Request
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
+from starlette.middleware.trustedhost import TrustedHostMiddleware
+
+from backend.app.agent.investigate import investigate
+from backend.app.api.schemas import CompareRequest, IndexRequest, SearchRequest, TraceRequest
+from backend.app.config import ROOT, Settings
+from backend.app.indexing.service import IndexService
+from backend.app.versions.compare import compare_indexes
+
+logger = logging.getLogger(__name__)
+
+
+def create_app(settings: Settings | None = None):
+    app = FastAPI(title="ASTFLOW", version="0.1.0", description="Find the code. Trace the path. See what changed.")
+    service = IndexService(settings)
+    app.state.service = service
+    app.state.index_lock = threading.Lock()
+    app.add_middleware(TrustedHostMiddleware, allowed_hosts=["127.0.0.1", "localhost", "testserver", "[::1]"])
+
+    @app.middleware("http")
+    async def local_origin(request: Request, call_next):
+        # The local file-reading API must not be usable by arbitrary web origins.
+        origin = request.headers.get("origin")
+        allowed = {f"{request.url.scheme}://{request.url.netloc}", "http://127.0.0.1:5173", "http://localhost:5173"}
+        if request.url.path.startswith("/api") and origin and origin not in allowed:
+            return JSONResponse({"detail": "Only local ASTFLOW origins are allowed"}, status_code=403)
+        return await call_next(request)
+
+    @app.exception_handler(ValueError)
+    async def invalid_request(request, exc):
+        return JSONResponse({"detail": str(exc)}, status_code=400)
+
+    @app.exception_handler(FileNotFoundError)
+    async def missing_file(request, exc):
+        return JSONResponse({"detail": "Repository or index file does not exist"}, status_code=404)
+
+    @app.get("/api/health")
+    def health():
+        return {"status": "ok", "service": "ASTFLOW", "version": "0.1.0", "semantic": service.embedder.status}
+
+    @app.get("/api/repository")
+    def repository(version: str | None = None):
+        return service.repository(version)
+
+    @app.post("/api/index")
+    def index_repository(body: IndexRequest):
+        if not app.state.index_lock.acquire(blocking=False):
+            raise HTTPException(409, "An indexing job is already running")
+
+        def build():
+            try:
+                return service.index(body.repo_path, body.version).manifest
+            finally:
+                app.state.index_lock.release()
+
+        if body.background:
+            service.status = {"state": "indexing", "stage": "Starting index", "progress": 0}
+
+            def background_build():
+                try:
+                    build()
+                except Exception:
+                    logger.exception("Indexing failed")
+
+            threading.Thread(target=background_build, daemon=True).start()
+            return JSONResponse({"status": "indexing"}, status_code=202)
+        return {"status": "ready", "manifest": build()}
+
+    @app.get("/api/index/status")
+    def index_status():
+        return service.status
+
+    @app.post("/api/search")
+    def search(body: SearchRequest):
+        if body.runtime_trace_id:
+            raise HTTPException(400, "Runtime tracing is not enabled in this build")
+        return investigate(service.get(body.version), body.query, body.version, body.top_k, body.agentic)
+
+    @app.post("/api/trace")
+    def trace(body: TraceRequest):
+        index = service.get(body.version)
+        return {**index.graph.trace(body.source_symbol_id, body.target_symbol_id, body.max_depth),
+                "version_key": index.manifest["version_key"]}
+
+    @app.get("/api/source")
+    def source(path: str, version: str = "working-tree", start_line: int = Query(1, ge=1), end_line: int | None = Query(None, ge=1)):
+        if "\\" in path or PurePosixPath(path).is_absolute() or ".." in PurePosixPath(path).parts:
+            raise HTTPException(400, "Source paths must be repository-relative POSIX paths")
+        index = service.get(version)
+        if path not in index.files:
+            raise HTTPException(404, "Source file is not in this indexed snapshot")
+        source_text = index.files[path]
+        lines = source_text.splitlines(keepends=True)
+        end = end_line if end_line is not None else len(lines)
+        if start_line > len(lines) or end < start_line or end > len(lines):
+            raise HTTPException(400, "Source line range is outside the file")
+        return {"path": path, "version": version, "version_key": index.manifest["version_key"],
+                "start_line": start_line, "end_line": end, "total_lines": len(lines),
+                "content": "".join(lines[start_line - 1:end]), "full_content": source_text}
+
+    @app.get("/api/versions")
+    def versions():
+        return {"versions": service.versions()}
+
+    @app.post("/api/compare")
+    def compare(body: CompareRequest):
+        return compare_indexes(service.get(body.version_a), service.get(body.version_b), body.query, body.version_a, body.version_b)
+
+    @app.get("/api/symbol/{symbol_id:path}")
+    def symbol(symbol_id: str, version: str = "working-tree"):
+        index = service.get(version)
+        if symbol_id not in index.graph.symbols:
+            raise HTTPException(404, "Unknown symbol")
+        return {**asdict(index.graph.symbols[symbol_id]), "callers": index.graph.callers(symbol_id),
+                "callees": index.graph.callees(symbol_id), "neighbors": index.graph.neighbors(symbol_id)}
+
+    static = ROOT / "frontend" / "dist"
+    if static.exists():
+        app.mount("/assets", StaticFiles(directory=static / "assets"), name="assets")
+
+        @app.get("/")
+        def frontend():
+            return FileResponse(static / "index.html")
+    return app
+
+
+app = create_app()

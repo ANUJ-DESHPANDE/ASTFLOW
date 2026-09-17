@@ -1,0 +1,14 @@
+.venv/
+.astflow/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+node_modules/
+frontend/dist/
+.env
+examples/demo-repo/.git/
+test-results/
+playwright-report/
+frontend/tsconfig.tsbuildinfo
+pytest-cache-files-*/
