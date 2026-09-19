@@ -119,6 +119,9 @@ def create_app(settings: Settings | None = None):
             raise HTTPException(404, "Source file is not in this indexed snapshot")
         source_text = index.files[path]
         lines = source_text.splitlines(keepends=True)
+        if not lines and start_line == 1 and end_line is None:
+            return {"path": path, "version": version, "version_key": index.manifest["version_key"],
+                    "start_line": 1, "end_line": 1, "total_lines": 0, "content": "", "full_content": ""}
         end = end_line if end_line is not None else len(lines)
         if start_line > len(lines) or end < start_line or end > len(lines):
             raise HTTPException(400, "Source line range is outside the file")
@@ -131,8 +134,28 @@ def create_app(settings: Settings | None = None):
         return {"versions": service.versions()}
 
     @app.get("/api/map")
-    def map_repository(version: str = "working-tree", file: str | None = None):
+    def map_repository(version: str = "working-tree", file: str | None = None,
+                       symbol: str | None = None, depth: int = Query(1, ge=1, le=3)):
         index = service.get(version)
+        if symbol:
+            if symbol not in index.graph.graph:
+                raise HTTPException(404, 'Unknown callable symbol')
+            ids, frontier, limited = {symbol}, [symbol], False
+            for _ in range(depth):
+                next_frontier = []
+                for current in frontier:
+                    for neighbor in index.graph.neighbors(current):
+                        if neighbor not in ids:
+                            if len(ids) >= 150:
+                                limited = True
+                                continue
+                            ids.add(neighbor); next_frontier.append(neighbor)
+                frontier = next_frontier
+            return {**index.graph.subgraph(ids), 'version_key': index.manifest['version_key'],
+                    'focus_symbol': symbol, 'status': 'SEARCH_LIMIT_REACHED' if limited else 'OK',
+                    'message': f'{len(ids)} symbols within {depth} call hop(s); arrows show caller to callee'}
+        if file and file not in index.files:
+            raise HTTPException(404, 'Source file is not in this indexed snapshot')
         if not file:
             paths = sorted(index.files)[:150]
             nodes = [{"symbol_id": p, "qualified_name": p.split('/')[-1], "file": p,

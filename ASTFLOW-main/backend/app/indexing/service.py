@@ -58,6 +58,8 @@ class IndexService:
 
     def _construct(self, data):
         manifest, files, symbols, chunks, edges, extra, embeddings = data
+        if embeddings is not None and manifest.get('embedding_model') != self.settings.model:
+            raise ValueError('Indexed embedding model differs from the configured model; reindex this version')
         return Index(manifest, files, symbols, chunks, edges, extra,
                      Retriever(chunks, embeddings, self.embedder, self.settings), ProjectGraph(symbols, edges))
 
@@ -76,8 +78,15 @@ class IndexService:
                 identity = f"{repo}\n{revision}\n{digest}\n{self.settings.fingerprint()}\n{self.embedder.status}"
                 key = hashlib.sha256(identity.encode()).hexdigest()[:24]
                 folder = self.settings.cache / "indexes" / key
+                cached = None
                 if (folder / "manifest.json").exists():
-                    index = self._construct(load_index(folder))
+                    try:
+                        cached = self._construct(load_index(folder))
+                    except ValueError:
+                        # Preserve corrupt evidence for diagnosis; explicit reindex rebuilds it.
+                        folder.rename(folder.with_name(key + '.corrupt.' + uuid.uuid4().hex))
+                if cached is not None:
+                    index = cached
                 else:
                     parsed = []
                     for i, (path, source) in enumerate(files.items()):
@@ -164,6 +173,12 @@ class IndexService:
 
     def versions(self):
         versions = list_versions(Path(self.repo_path)) if self.repo_path else []
+        known = {v['name'] for v in versions}
+        for alias in self.registry:
+            repo, name = alias.rsplit('\n', 1)
+            if repo == self.repo_path and name not in known:
+                versions.append({'name': name, 'commit': None, 'label': name})
+                known.add(name)
         for version in versions:
             key = self.registry.get(self._alias(self.repo_path, version["name"]))
             version.update(indexed=bool(key), version_key=key)
