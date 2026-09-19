@@ -1,0 +1,290 @@
+[
+  {
+    "id": "locate-bluetooth",
+    "query": "Where is Bluetooth settings handled?",
+    "False": {
+      "ndcg@10": 0.9908361951088334,
+      "mrr": 1.0,
+      "recall@10": 1.0,
+      "latency_ms": 8.62,
+      "passes": 1
+    },
+    "True": {
+      "ndcg@10": 0.9908361951088334,
+      "mrr": 1.0,
+      "recall@10": 1.0,
+      "latency_ms": 2.55,
+      "passes": 1
+    }
+  },
+  {
+    "id": "symbol-deeplink",
+    "query": "openBluetoothSettings",
+    "False": {
+      "ndcg@10": 0.9324441894571632,
+      "mrr": 1.0,
+      "recall@10": 1.0,
+      "latency_ms": 2.52,
+      "passes": 1
+    },
+    "True": {
+      "ndcg@10": 0.9324441894571632,
+      "mrr": 1.0,
+      "recall@10": 1.0,
+      "latency_ms": 1.47,
+      "passes": 1
+    }
+  },
+  {
+    "id": "voice-path",
+    "query": "How does VoiceHandler reach BluetoothAgent?",
+    "False": {
+      "ndcg@10": 0.9267582364714126,
+      "mrr": 1.0,
+      "recall@10": 1.0,
+      "latency_ms": 3.92,
+      "passes": 1
+    },
+    "True": {
+      "ndcg@10": 0.9267582364714126,
+      "mrr": 1.0,
+      "recall@10": 1.0,
+      "latency_ms": 3.28,
+      "passes": 2
+    }
+  },
+  {
+    "id": "restore-session",
+    "query": "Where is session restoration handled?",
+    "False": {
+      "ndcg@10": 0.5109559939712154,
+      "mrr": 0.3333333333333333,
+      "recall@10": 1.0,
+      "latency_ms": 4.38,
+      "passes": 1
+    },
+    "True": {
+      "ndcg@10": 0.5109559939712154,
+      "mrr": 0.3333333333333333,
+      "recall@10": 1.0,
+      "latency_ms": 2.24,
+      "passes": 1
+    }
+  },
+  {
+    "id": "auth-sequence",
+    "query": "Where is authentication validated before a session is created?",
+    "False": {
+      "ndcg@10": 0.3096811645763381,
+      "mrr": 0.25,
+      "recall@10": 0.6666666666666666,
+      "latency_ms": 2.53,
+      "passes": 1
+    },
+    "True": {
+      "ndcg@10": 0.3096811645763381,
+      "mrr": 0.25,
+      "recall@10": 0.6666666666666666,
+      "latency_ms": 5.5,
+      "passes": 2
+    }
+  },
+  {
+    "id": "clean-input",
+    "query": "How is input cleaned before handleRequest?",
+    "False": {
+      "ndcg@10": 0.8451593915771352,
+      "mrr": 1.0,
+      "recall@10": 1.0,
+      "latency_ms": 3.62,
+      "passes": 1
+    },
+    "True": {
+      "ndcg@10": 0.8451593915771352,
+      "mrr": 1.0,
+      "recall@10": 1.0,
+      "latency_ms": 3.49,
+      "passes": 2
+    }
+  },
+  {
+    "id": "deeplink-usage",
+    "query": "Where is the settings://bluetooth deeplink used?",
+    "False": {
+      "ndcg@10": 0.7332063582049065,
+      "mrr": 1.0,
+      "recall@10": 1.0,
+      "latency_ms": 1.87,
+      "passes": 1
+    },
+    "True": {
+      "ndcg@10": 0.7332063582049065,
+      "mrr": 1.0,
+      "recall@10": 1.0,
+      "latency_ms": 5.55,
+      "passes": 2
+    }
+  },
+  {
+    "id": "device-permission",
+    "query": "Where is permission checked before settings are opened?",
+    "False": {
+      "ndcg@10": 0.8651946865428847,
+      "mrr": 1.0,
+      "recall@10": 1.0,
+      "latency_ms": 1.84,
+      "passes": 1
+    },
+    "True": {
+      "ndcg@10": 0.8651946865428847,
+      "mrr": 1.0,
+      "recall@10": 1.0,
+      "latency_ms": 2.71,
+      "passes": 2
+    }
+  },
+  {
+    "id": "wireless-network",
+    "query": "Configure the wireless network connection",
+    "False": {
+      "ndcg@10": 0.9828422279067397,
+      "mrr": 1.0,
+      "recall@10": 1.0,
+      "latency_ms": 1.19,
+      "passes": 1
+    },
+    "True": {
+      "ndcg@10": 0.9828422279067397,
+      "mrr": 1.0,
+      "recall@10": 1.0,
+      "latency_ms": 1.3,
+      "passes": 1
+    }
+  },
+  {
+    "id": "spoken-whitespace",
+    "query": "Trim extra whitespace and lowercase spoken commands",
+    "False": {
+      "ndcg@10": 1.0,
+      "mrr": 1.0,
+      "recall@10": 1.0,
+      "latency_ms": 0.91,
+      "passes": 1
+    },
+    "True": {
+      "ndcg@10": 1.0,
+      "mrr": 1.0,
+      "recall@10": 1.0,
+      "latency_ms": 0.79,
+      "passes": 1
+    }
+  },
+  {
+    "id": "expired-session",
+    "query": "Expired sessions require the user to sign in again",
+    "False": {
+      "ndcg@10": 0.8676114819559485,
+      "mrr": 1.0,
+      "recall@10": 1.0,
+      "latency_ms": 1.34,
+      "passes": 1
+    },
+    "True": {
+      "ndcg@10": 0.8676114819559485,
+      "mrr": 1.0,
+      "recall@10": 1.0,
+      "latency_ms": 1.01,
+      "passes": 1
+    }
+  },
+  {
+    "id": "clear-session",
+    "query": "SessionManager.clear",
+    "False": {
+      "ndcg@10": 1.0,
+      "mrr": 1.0,
+      "recall@10": 1.0,
+      "latency_ms": 0.96,
+      "passes": 1
+    },
+    "True": {
+      "ndcg@10": 1.0,
+      "mrr": 1.0,
+      "recall@10": 1.0,
+      "latency_ms": 0.88,
+      "passes": 1
+    }
+  },
+  {
+    "id": "dynamic-plugin",
+    "query": "Dispatch a plugin by a name chosen at runtime",
+    "False": {
+      "ndcg@10": 1.0,
+      "mrr": 1.0,
+      "recall@10": 1.0,
+      "latency_ms": 1.06,
+      "passes": 1
+    },
+    "True": {
+      "ndcg@10": 1.0,
+      "mrr": 1.0,
+      "recall@10": 1.0,
+      "latency_ms": 1.07,
+      "passes": 1
+    }
+  },
+  {
+    "id": "credential-error",
+    "query": "Reject a login missing username or token",
+    "False": {
+      "ndcg@10": 0.8339912323981488,
+      "mrr": 1.0,
+      "recall@10": 1.0,
+      "latency_ms": 0.99,
+      "passes": 1
+    },
+    "True": {
+      "ndcg@10": 0.8339912323981488,
+      "mrr": 1.0,
+      "recall@10": 1.0,
+      "latency_ms": 1.04,
+      "passes": 1
+    }
+  },
+  {
+    "id": "voice-router",
+    "query": "Route a voice request to a device agent",
+    "False": {
+      "ndcg@10": 0.9926195041747018,
+      "mrr": 1.0,
+      "recall@10": 1.0,
+      "latency_ms": 1.74,
+      "passes": 1
+    },
+    "True": {
+      "ndcg@10": 0.9926195041747018,
+      "mrr": 1.0,
+      "recall@10": 1.0,
+      "latency_ms": 1.99,
+      "passes": 1
+    }
+  },
+  {
+    "id": "caller-clean",
+    "query": "Where is normalizeInput called?",
+    "False": {
+      "ndcg@10": 0.8339912323981488,
+      "mrr": 1.0,
+      "recall@10": 1.0,
+      "latency_ms": 0.92,
+      "passes": 1
+    },
+    "True": {
+      "ndcg@10": 0.8339912323981488,
+      "mrr": 1.0,
+      "recall@10": 1.0,
+      "latency_ms": 1.73,
+      "passes": 2
+    }
+  }
+]

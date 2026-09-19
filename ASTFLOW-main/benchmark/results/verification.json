@@ -1,0 +1,1334 @@
+{
+  "checks": {
+    "index_v1": {
+      "version_key": "caa0bf0df6b6d348567f68e8",
+      "repository_path": "C:\\Users\\ranja\\OneDrive\\Documents\\ChatGPT\\New project\\ASTFLOW-main\\examples\\demo-repo",
+      "repository_name": "demo-repo",
+      "version": "v1",
+      "resolved_revision": "7826d38cae72db7ba0e53a0bcc5aa339783e09f0",
+      "source_hash": "3d5a0dcb387a23f4801735ff4a4ab7a5a8f1869f71624670c29fe6abcd34fbbc",
+      "indexed_at": "2026-09-19T08:01:52.904821+00:00",
+      "embedding_model": null,
+      "file_count": 9,
+      "symbol_count": 21,
+      "chunk_count": 17,
+      "edge_count": 11,
+      "configuration_hash": "c7ad5febfb73b783",
+      "semantic": {
+        "available": false,
+        "model": null,
+        "message": "Semantic search disabled by configuration"
+      },
+      "enrichment": {
+        "status": "ready",
+        "edges_added": 0,
+        "edges_confirmed": 11
+      },
+      "warnings": [],
+      "index_latency_ms": 567.89
+    },
+    "index_v2": {
+      "version_key": "521fc31de67f2f1bad777799",
+      "repository_path": "C:\\Users\\ranja\\OneDrive\\Documents\\ChatGPT\\New project\\ASTFLOW-main\\examples\\demo-repo",
+      "repository_name": "demo-repo",
+      "version": "v2",
+      "resolved_revision": "31b94fc77db2be533d72aeaefba3e0360312663c",
+      "source_hash": "dd6b2ebc60992aa886b3badb27d6e82c6131b43e137c801302c5c2ac2d8c41bc",
+      "indexed_at": "2026-09-19T08:01:53.504583+00:00",
+      "embedding_model": null,
+      "file_count": 11,
+      "symbol_count": 26,
+      "chunk_count": 21,
+      "edge_count": 12,
+      "configuration_hash": "c7ad5febfb73b783",
+      "semantic": {
+        "available": false,
+        "model": null,
+        "message": "Semantic search disabled by configuration"
+      },
+      "enrichment": {
+        "status": "ready",
+        "edges_added": 0,
+        "edges_confirmed": 12
+      },
+      "warnings": [],
+      "index_latency_ms": 530.28
+    },
+    "index_working-tree": {
+      "version_key": "1e6bf2797d1c46bfedf21423",
+      "repository_path": "C:\\Users\\ranja\\OneDrive\\Documents\\ChatGPT\\New project\\ASTFLOW-main\\examples\\demo-repo",
+      "repository_name": "demo-repo",
+      "version": "working-tree",
+      "resolved_revision": "working-tree",
+      "source_hash": "dd6b2ebc60992aa886b3badb27d6e82c6131b43e137c801302c5c2ac2d8c41bc",
+      "indexed_at": "2026-09-19T08:01:53.923243+00:00",
+      "embedding_model": null,
+      "file_count": 11,
+      "symbol_count": 26,
+      "chunk_count": 21,
+      "edge_count": 12,
+      "configuration_hash": "c7ad5febfb73b783",
+      "semantic": {
+        "available": false,
+        "model": null,
+        "message": "Semantic search disabled by configuration"
+      },
+      "enrichment": {
+        "status": "ready",
+        "edges_added": 0,
+        "edges_confirmed": 12
+      },
+      "warnings": [],
+      "index_latency_ms": 365.78
+    },
+    "search": {
+      "top": "settings/deeplinks.js::openBluetoothSettings",
+      "result_count": 8,
+      "exact_source": true
+    },
+    "trace": {
+      "paths": [
+        [
+          "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+          "voice/IntentRouter.js::IntentRouter.route",
+          "bluetooth/BluetoothAgent.js::BluetoothAgent.execute"
+        ],
+        [
+          "voice/VoiceHandler.js::VoiceHandler.handle",
+          "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+          "voice/IntentRouter.js::IntentRouter.route",
+          "bluetooth/BluetoothAgent.js::BluetoothAgent.execute"
+        ]
+      ],
+      "every_edge_callsite_verified": true
+    },
+    "agent": [
+      {
+        "step": "PLAN",
+        "details": "Path investigation; at most two retrieval passes",
+        "data": {
+          "intent": "PATH",
+          "symbols": [
+            "VoiceHandler",
+            "BluetoothAgent"
+          ],
+          "max_passes": 2
+        }
+      },
+      {
+        "step": "SEARCH",
+        "details": "Retrieved 10 candidates",
+        "data": {
+          "pass": 1,
+          "lexical_top": [
+            "voice/IntentRouter.js::IntentRouter.constructor",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "settings/deeplinks.js::openBluetoothSettings",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "voice/normalizeInput.js::normalizeInput",
+            "voice/dynamicDispatch.js::dispatchPlugin"
+          ],
+          "semantic_top": [],
+          "semantic_available": false
+        }
+      },
+      {
+        "step": "OBSERVE",
+        "details": "Found 0 exact matches across 7 files; 0 target(s) outside the top ten",
+        "data": {
+          "top_score": 0.01784331797235023,
+          "ranking_agreement": null,
+          "file_diversity": 7,
+          "exact_matches": 0,
+          "missing_targets": [],
+          "path_supported": true,
+          "seed_ids": [
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest"
+          ]
+        }
+      },
+      {
+        "step": "REFINE",
+        "details": "Graph Neighbor Expansion around BluetoothAgent.execute, VoiceHandler.constructor",
+        "data": {
+          "action": "GRAPH_NEIGHBOR_EXPANSION",
+          "query": "How does VoiceHandler reach BluetoothAgent? BluetoothAgent.execute VoiceHandler.constructor",
+          "based_on": [
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest"
+          ]
+        }
+      },
+      {
+        "step": "SEARCH",
+        "details": "Second pass retrieved 12 candidates using observed symbols",
+        "data": {
+          "pass": 2
+        }
+      },
+      {
+        "step": "RERANK",
+        "details": "Ranked 14 candidates using stored evidence",
+        "data": {
+          "candidates": 14
+        }
+      },
+      {
+        "step": "STOP",
+        "details": "Returned 10 source snippets after 2 retrieval pass(es)"
+      }
+    ],
+    "compare": {
+      "query": "Where is session restoration handled?",
+      "version_a": "v1",
+      "version_b": "v2",
+      "version_key_a": "caa0bf0df6b6d348567f68e8",
+      "version_key_b": "521fc31de67f2f1bad777799",
+      "results_a": [
+        {
+          "rank": 1,
+          "chunk_id": "auth/AuthService.js::createSession",
+          "symbol_id": "auth/AuthService.js::createSession",
+          "symbol_name": "createSession",
+          "qualified_name": "createSession",
+          "kind": "function",
+          "file_path": "auth/AuthService.js",
+          "start_line": 4,
+          "end_line": 6,
+          "snippet": "function createSession(identity) {\n  return { username: identity.username, expiresAt: Date.now() + 3600000 };\n}",
+          "score": 0.02412903,
+          "evidence": {
+            "lexical_rank": 2,
+            "semantic_rank": null,
+            "lexical_score": 2.2493665118700163,
+            "semantic_score": null,
+            "exact_symbol_match": false,
+            "structural_distance": 1,
+            "structural_edges": [
+              {
+                "source_symbol_id": "auth/AuthService.js::AuthService.login",
+                "target_symbol_id": "auth/AuthService.js::createSession",
+                "edge_type": "CALLS",
+                "call_file": "auth/AuthService.js",
+                "call_line": 15,
+                "call_end_line": 15,
+                "call_start_byte": 428,
+                "call_end_byte": 451,
+                "source_expression": "createSession(identity)",
+                "resolution_method": "lexical_scope",
+                "evidence_type": "STATIC_VERIFIED",
+                "evidence_sources": [
+                  "TREE_SITTER_STATIC",
+                  "TS_LANGUAGE_SERVICE"
+                ],
+                "supporting_spans": [
+                  {
+                    "file_path": "auth/AuthService.js",
+                    "start_line": 15,
+                    "end_line": 15,
+                    "start_byte": 428,
+                    "end_byte": 451,
+                    "kind": "call_site"
+                  }
+                ],
+                "source": "auth/AuthService.js::AuthService.login",
+                "target": "auth/AuthService.js::createSession"
+              }
+            ],
+            "test_reference": false,
+            "runtime_observed": false,
+            "contributions": {
+              "lexical": 0.016129032258064516,
+              "semantic": 0.0,
+              "exact_symbol": 0.0,
+              "symbol_tokens": 0.002,
+              "structural": 0.006,
+              "test_reference": 0.0
+            },
+            "test_weight": 1.0,
+            "relationship_status": "STATIC_VERIFIED"
+          },
+          "version": "v1"
+        },
+        {
+          "rank": 2,
+          "chunk_id": "auth/AuthService.js::AuthService.login",
+          "symbol_id": "auth/AuthService.js::AuthService.login",
+          "symbol_name": "login",
+          "qualified_name": "AuthService.login",
+          "kind": "method",
+          "file_path": "auth/AuthService.js",
+          "start_line": 13,
+          "end_line": 18,
+          "snippet": "login(credentials) {\n    const identity = validateCredentials(credentials);\n    const session = createSession(identity);\n    this.savedSession = session;\n    return session;\n  }",
+          "score": 0.02239344,
+          "evidence": {
+            "lexical_rank": 1,
+            "semantic_rank": null,
+            "lexical_score": 2.528530555571569,
+            "semantic_score": null,
+            "exact_symbol_match": false,
+            "structural_distance": 1,
+            "structural_edges": [
+              {
+                "source_symbol_id": "auth/AuthService.js::AuthService.login",
+                "target_symbol_id": "auth/AuthService.js::createSession",
+                "edge_type": "CALLS",
+                "call_file": "auth/AuthService.js",
+                "call_line": 15,
+                "call_end_line": 15,
+                "call_start_byte": 428,
+                "call_end_byte": 451,
+                "source_expression": "createSession(identity)",
+                "resolution_method": "lexical_scope",
+                "evidence_type": "STATIC_VERIFIED",
+                "evidence_sources": [
+                  "TREE_SITTER_STATIC",
+                  "TS_LANGUAGE_SERVICE"
+                ],
+                "supporting_spans": [
+                  {
+                    "file_path": "auth/AuthService.js",
+                    "start_line": 15,
+                    "end_line": 15,
+                    "start_byte": 428,
+                    "end_byte": 451,
+                    "kind": "call_site"
+                  }
+                ],
+                "source": "auth/AuthService.js::AuthService.login",
+                "target": "auth/AuthService.js::createSession"
+              }
+            ],
+            "test_reference": false,
+            "runtime_observed": false,
+            "contributions": {
+              "lexical": 0.01639344262295082,
+              "semantic": 0.0,
+              "exact_symbol": 0.0,
+              "symbol_tokens": 0.0,
+              "structural": 0.006,
+              "test_reference": 0.0
+            },
+            "test_weight": 1.0,
+            "relationship_status": "STATIC_VERIFIED"
+          },
+          "version": "v1"
+        },
+        {
+          "rank": 3,
+          "chunk_id": "auth/AuthService.js::AuthService.restore",
+          "symbol_id": "auth/AuthService.js::AuthService.restore",
+          "symbol_name": "restore",
+          "qualified_name": "AuthService.restore",
+          "kind": "method",
+          "file_path": "auth/AuthService.js",
+          "start_line": 21,
+          "end_line": 24,
+          "snippet": "restore() {\n    if (!this.savedSession || this.savedSession.expiresAt <= Date.now()) return null;\n    return this.savedSession;\n  }",
+          "score": 0.01587302,
+          "evidence": {
+            "lexical_rank": 3,
+            "semantic_rank": null,
+            "lexical_score": 2.2271085196105345,
+            "semantic_score": null,
+            "exact_symbol_match": false,
+            "structural_distance": null,
+            "structural_edges": [],
+            "test_reference": false,
+            "runtime_observed": false,
+            "contributions": {
+              "lexical": 0.015873015873015872,
+              "semantic": 0.0,
+              "exact_symbol": 0.0,
+              "symbol_tokens": 0.0,
+              "structural": 0.0,
+              "test_reference": 0.0
+            },
+            "test_weight": 1.0,
+            "relationship_status": "SEARCH_INFERRED"
+          },
+          "version": "v1"
+        },
+        {
+          "rank": 4,
+          "chunk_id": "auth/AuthService.js::AuthService.constructor",
+          "symbol_id": "auth/AuthService.js::AuthService.constructor",
+          "symbol_name": "constructor",
+          "qualified_name": "AuthService.constructor",
+          "kind": "method",
+          "file_path": "auth/AuthService.js",
+          "start_line": 9,
+          "end_line": 11,
+          "snippet": "constructor() {\n    this.savedSession = null;\n  }",
+          "score": 0.015625,
+          "evidence": {
+            "lexical_rank": 4,
+            "semantic_rank": null,
+            "lexical_score": 1.7142349626751334,
+            "semantic_score": null,
+            "exact_symbol_match": false,
+            "structural_distance": null,
+            "structural_edges": [],
+            "test_reference": false,
+            "runtime_observed": false,
+            "contributions": {
+              "lexical": 0.015625,
+              "semantic": 0.0,
+              "exact_symbol": 0.0,
+              "symbol_tokens": 0.0,
+              "structural": 0.0,
+              "test_reference": 0.0
+            },
+            "test_weight": 1.0,
+            "relationship_status": "SEARCH_INFERRED"
+          },
+          "version": "v1"
+        },
+        {
+          "rank": 5,
+          "chunk_id": "auth/credentials.js::validateCredentials",
+          "symbol_id": "auth/credentials.js::validateCredentials",
+          "symbol_name": "validateCredentials",
+          "qualified_name": "validateCredentials",
+          "kind": "function",
+          "file_path": "auth/credentials.js",
+          "start_line": 2,
+          "end_line": 5,
+          "snippet": "function validateCredentials(credentials) {\n  if (!credentials?.username || !credentials?.token) throw new Error('Missing username or token');\n  return { username: credentials.username };\n}",
+          "score": 0.006,
+          "evidence": {
+            "lexical_rank": null,
+            "semantic_rank": null,
+            "lexical_score": 0,
+            "semantic_score": null,
+            "exact_symbol_match": false,
+            "test_reference": false,
+            "runtime_observed": false,
+            "contributions": {
+              "structural": 0.006
+            },
+            "relationship_status": "STATIC_VERIFIED",
+            "structural_distance": 1,
+            "structural_edges": [
+              {
+                "source_symbol_id": "auth/AuthService.js::AuthService.login",
+                "target_symbol_id": "auth/credentials.js::validateCredentials",
+                "edge_type": "CALLS",
+                "call_file": "auth/AuthService.js",
+                "call_line": 14,
+                "call_end_line": 14,
+                "call_start_byte": 374,
+                "call_end_byte": 406,
+                "source_expression": "validateCredentials(credentials)",
+                "resolution_method": "named_or_default_import",
+                "evidence_type": "STATIC_VERIFIED",
+                "evidence_sources": [
+                  "TREE_SITTER_STATIC",
+                  "TS_LANGUAGE_SERVICE"
+                ],
+                "supporting_spans": [
+                  {
+                    "file_path": "auth/AuthService.js",
+                    "start_line": 14,
+                    "end_line": 14,
+                    "start_byte": 374,
+                    "end_byte": 406,
+                    "kind": "call_site"
+                  },
+                  {
+                    "file_path": "auth/AuthService.js",
+                    "start_line": 1,
+                    "end_line": 1,
+                    "start_byte": 0,
+                    "end_byte": 55,
+                    "kind": "import"
+                  }
+                ],
+                "source": "auth/AuthService.js::AuthService.login",
+                "target": "auth/credentials.js::validateCredentials"
+              }
+            ]
+          },
+          "version": "v1"
+        }
+      ],
+      "results_b": [
+        {
+          "rank": 1,
+          "chunk_id": "session/SessionManager.js::SessionManager.clear",
+          "symbol_id": "session/SessionManager.js::SessionManager.clear",
+          "symbol_name": "clear",
+          "qualified_name": "SessionManager.clear",
+          "kind": "method",
+          "file_path": "session/SessionManager.js",
+          "start_line": 13,
+          "end_line": 13,
+          "snippet": "clear() { this.savedSession = null; }",
+          "score": 0.01839344,
+          "evidence": {
+            "lexical_rank": 1,
+            "semantic_rank": null,
+            "lexical_score": 2.4110148680760872,
+            "semantic_score": null,
+            "exact_symbol_match": false,
+            "structural_distance": null,
+            "structural_edges": [],
+            "test_reference": false,
+            "runtime_observed": false,
+            "contributions": {
+              "lexical": 0.01639344262295082,
+              "semantic": 0.0,
+              "exact_symbol": 0.0,
+              "symbol_tokens": 0.002,
+              "structural": 0.0,
+              "test_reference": 0.0
+            },
+            "test_weight": 1.0,
+            "relationship_status": "SEARCH_INFERRED"
+          },
+          "version": "v2"
+        },
+        {
+          "rank": 2,
+          "chunk_id": "session/SessionManager.js::SessionManager.constructor",
+          "symbol_id": "session/SessionManager.js::SessionManager.constructor",
+          "symbol_name": "constructor",
+          "qualified_name": "SessionManager.constructor",
+          "kind": "method",
+          "file_path": "session/SessionManager.js",
+          "start_line": 3,
+          "end_line": 3,
+          "snippet": "constructor() { this.savedSession = null; }",
+          "score": 0.01812903,
+          "evidence": {
+            "lexical_rank": 2,
+            "semantic_rank": null,
+            "lexical_score": 2.4110148680760872,
+            "semantic_score": null,
+            "exact_symbol_match": false,
+            "structural_distance": null,
+            "structural_edges": [],
+            "test_reference": false,
+            "runtime_observed": false,
+            "contributions": {
+              "lexical": 0.016129032258064516,
+              "semantic": 0.0,
+              "exact_symbol": 0.0,
+              "symbol_tokens": 0.002,
+              "structural": 0.0,
+              "test_reference": 0.0
+            },
+            "test_weight": 1.0,
+            "relationship_status": "SEARCH_INFERRED"
+          },
+          "version": "v2"
+        },
+        {
+          "rank": 3,
+          "chunk_id": "session/SessionManager.js::SessionManager.restore",
+          "symbol_id": "session/SessionManager.js::SessionManager.restore",
+          "symbol_name": "restore",
+          "qualified_name": "SessionManager.restore",
+          "kind": "method",
+          "file_path": "session/SessionManager.js",
+          "start_line": 9,
+          "end_line": 12,
+          "snippet": "restore() {\n    if (!this.savedSession || this.savedSession.expiresAt <= Date.now()) return null;\n    return this.savedSession;\n  }",
+          "score": 0.01787302,
+          "evidence": {
+            "lexical_rank": 3,
+            "semantic_rank": null,
+            "lexical_score": 2.3631992569947506,
+            "semantic_score": null,
+            "exact_symbol_match": false,
+            "structural_distance": null,
+            "structural_edges": [],
+            "test_reference": false,
+            "runtime_observed": false,
+            "contributions": {
+              "lexical": 0.015873015873015872,
+              "semantic": 0.0,
+              "exact_symbol": 0.0,
+              "symbol_tokens": 0.002,
+              "structural": 0.0,
+              "test_reference": 0.0
+            },
+            "test_weight": 1.0,
+            "relationship_status": "SEARCH_INFERRED"
+          },
+          "version": "v2"
+        },
+        {
+          "rank": 4,
+          "chunk_id": "session/SessionManager.js::SessionManager.create",
+          "symbol_id": "session/SessionManager.js::SessionManager.create",
+          "symbol_name": "create",
+          "qualified_name": "SessionManager.create",
+          "kind": "method",
+          "file_path": "session/SessionManager.js",
+          "start_line": 4,
+          "end_line": 7,
+          "snippet": "create(identity) {\n    this.savedSession = { username: identity.username, expiresAt: Date.now() + 3600000 };\n    return this.savedSession;\n  }",
+          "score": 0.017625,
+          "evidence": {
+            "lexical_rank": 4,
+            "semantic_rank": null,
+            "lexical_score": 2.2947399358978284,
+            "semantic_score": null,
+            "exact_symbol_match": false,
+            "structural_distance": null,
+            "structural_edges": [],
+            "test_reference": false,
+            "runtime_observed": false,
+            "contributions": {
+              "lexical": 0.015625,
+              "semantic": 0.0,
+              "exact_symbol": 0.0,
+              "symbol_tokens": 0.002,
+              "structural": 0.0,
+              "test_reference": 0.0
+            },
+            "test_weight": 1.0,
+            "relationship_status": "SEARCH_INFERRED"
+          },
+          "version": "v2"
+        },
+        {
+          "rank": 5,
+          "chunk_id": "auth/AuthService.js::AuthService.constructor",
+          "symbol_id": "auth/AuthService.js::AuthService.constructor",
+          "symbol_name": "constructor",
+          "qualified_name": "AuthService.constructor",
+          "kind": "method",
+          "file_path": "auth/AuthService.js",
+          "start_line": 5,
+          "end_line": 5,
+          "snippet": "constructor() { this.sessions = new SessionManager(); }",
+          "score": 0.01515152,
+          "evidence": {
+            "lexical_rank": 6,
+            "semantic_rank": null,
+            "lexical_score": 1.8747135898597491,
+            "semantic_score": null,
+            "exact_symbol_match": false,
+            "structural_distance": null,
+            "structural_edges": [],
+            "test_reference": false,
+            "runtime_observed": false,
+            "contributions": {
+              "lexical": 0.015151515151515152,
+              "semantic": 0.0,
+              "exact_symbol": 0.0,
+              "symbol_tokens": 0.0,
+              "structural": 0.0,
+              "test_reference": 0.0
+            },
+            "test_weight": 1.0,
+            "relationship_status": "SEARCH_INFERRED"
+          },
+          "version": "v2"
+        },
+        {
+          "rank": 6,
+          "chunk_id": "tests/session.test.js::test:expired sessions require the user to sign in again",
+          "symbol_id": "tests/session.test.js::test:expired sessions require the user to sign in again",
+          "symbol_name": "test:expired sessions require the user to sign in again",
+          "qualified_name": "test:expired sessions require the user to sign in again",
+          "kind": "test",
+          "file_path": "tests/session.test.js",
+          "start_line": 5,
+          "end_line": 9,
+          "snippet": "() => {\n  const sessions = new SessionManager();\n  sessions.savedSession = { username: 'demo', expiresAt: 0 };\n  assert.equal(sessions.restore(), null);\n}",
+          "score": 0.01261538,
+          "evidence": {
+            "lexical_rank": 5,
+            "semantic_rank": null,
+            "lexical_score": 2.0053634051089833,
+            "semantic_score": null,
+            "exact_symbol_match": false,
+            "structural_distance": null,
+            "structural_edges": [],
+            "test_reference": true,
+            "runtime_observed": false,
+            "contributions": {
+              "lexical": 0.015384615384615385,
+              "semantic": 0.0,
+              "exact_symbol": 0.0,
+              "symbol_tokens": 0.0,
+              "structural": 0.0,
+              "test_reference": 0.0
+            },
+            "test_weight": 0.82,
+            "relationship_status": "SEARCH_INFERRED"
+          },
+          "version": "v2"
+        },
+        {
+          "rank": 7,
+          "chunk_id": "auth/AuthService.js::AuthService.restore",
+          "symbol_id": "auth/AuthService.js::AuthService.restore",
+          "symbol_name": "restore",
+          "qualified_name": "AuthService.restore",
+          "kind": "method",
+          "file_path": "auth/AuthService.js",
+          "start_line": 12,
+          "end_line": 12,
+          "snippet": "restore() { return this.sessions.restore(); }",
+          "score": 0.006,
+          "evidence": {
+            "lexical_rank": null,
+            "semantic_rank": null,
+            "lexical_score": 0,
+            "semantic_score": null,
+            "exact_symbol_match": false,
+            "test_reference": false,
+            "runtime_observed": false,
+            "contributions": {
+              "structural": 0.006
+            },
+            "relationship_status": "STATIC_VERIFIED",
+            "structural_distance": 1,
+            "structural_edges": [
+              {
+                "source_symbol_id": "auth/AuthService.js::AuthService.restore",
+                "target_symbol_id": "session/SessionManager.js::SessionManager.restore",
+                "edge_type": "CALLS",
+                "call_file": "auth/AuthService.js",
+                "call_line": 12,
+                "call_end_line": 12,
+                "call_start_byte": 494,
+                "call_end_byte": 517,
+                "source_expression": "this.sessions.restore()",
+                "resolution_method": "constructor_instance",
+                "evidence_type": "STATIC_VERIFIED",
+                "evidence_sources": [
+                  "TREE_SITTER_STATIC",
+                  "TS_LANGUAGE_SERVICE"
+                ],
+                "supporting_spans": [
+                  {
+                    "file_path": "auth/AuthService.js",
+                    "start_line": 12,
+                    "end_line": 12,
+                    "start_byte": 494,
+                    "end_byte": 517,
+                    "kind": "call_site"
+                  },
+                  {
+                    "file_path": "auth/AuthService.js",
+                    "start_line": 5,
+                    "end_line": 5,
+                    "start_byte": 165,
+                    "end_byte": 201,
+                    "kind": "constructor_assignment",
+                    "source_symbol_id": "auth/AuthService.js::AuthService.constructor"
+                  },
+                  {
+                    "file_path": "auth/AuthService.js",
+                    "start_line": 2,
+                    "end_line": 2,
+                    "start_byte": 56,
+                    "end_byte": 118,
+                    "kind": "import"
+                  }
+                ],
+                "source": "auth/AuthService.js::AuthService.restore",
+                "target": "session/SessionManager.js::SessionManager.restore"
+              }
+            ]
+          },
+          "version": "v2"
+        }
+      ],
+      "rank_changes": [
+        {
+          "symbol_id": "session/SessionManager.js::SessionManager.clear",
+          "rank_a": null,
+          "rank_b": 1,
+          "delta": null
+        },
+        {
+          "symbol_id": "session/SessionManager.js::SessionManager.constructor",
+          "rank_a": null,
+          "rank_b": 2,
+          "delta": null
+        },
+        {
+          "symbol_id": "session/SessionManager.js::SessionManager.restore",
+          "rank_a": null,
+          "rank_b": 3,
+          "delta": null
+        },
+        {
+          "symbol_id": "session/SessionManager.js::SessionManager.create",
+          "rank_a": null,
+          "rank_b": 4,
+          "delta": null
+        },
+        {
+          "symbol_id": "auth/AuthService.js::AuthService.constructor",
+          "rank_a": 4,
+          "rank_b": 5,
+          "delta": -1
+        },
+        {
+          "symbol_id": "tests/session.test.js::test:expired sessions require the user to sign in again",
+          "rank_a": null,
+          "rank_b": 6,
+          "delta": null
+        },
+        {
+          "symbol_id": "auth/AuthService.js::AuthService.restore",
+          "rank_a": 3,
+          "rank_b": 7,
+          "delta": -4
+        },
+        {
+          "symbol_id": "auth/AuthService.js::AuthService.login",
+          "rank_a": 2,
+          "rank_b": null,
+          "delta": null
+        },
+        {
+          "symbol_id": "auth/AuthService.js::createSession",
+          "rank_a": 1,
+          "rank_b": null,
+          "delta": null
+        },
+        {
+          "symbol_id": "auth/credentials.js::validateCredentials",
+          "rank_a": 5,
+          "rank_b": null,
+          "delta": null
+        }
+      ],
+      "changes": {
+        "added_symbols": [
+          "session/SessionManager.js::SessionManager",
+          "session/SessionManager.js::SessionManager.clear",
+          "session/SessionManager.js::SessionManager.constructor",
+          "session/SessionManager.js::SessionManager.create",
+          "session/SessionManager.js::SessionManager.restore",
+          "tests/session.test.js::test:expired sessions require the user to sign in again"
+        ],
+        "removed_symbols": [
+          "auth/AuthService.js::createSession"
+        ],
+        "modified_symbols": [
+          "auth/AuthService.js::AuthService",
+          "auth/AuthService.js::AuthService.constructor",
+          "auth/AuthService.js::AuthService.login",
+          "auth/AuthService.js::AuthService.restore"
+        ],
+        "moved_symbols": [],
+        "added_edges": [
+          {
+            "source_symbol_id": "auth/AuthService.js::AuthService.login",
+            "target_symbol_id": "session/SessionManager.js::SessionManager.create",
+            "edge_type": "CALLS",
+            "call_file": "auth/AuthService.js",
+            "call_line": 9,
+            "call_end_line": 9,
+            "call_start_byte": 361,
+            "call_end_byte": 391,
+            "source_expression": "this.sessions.create(identity)",
+            "resolution_method": "constructor_instance",
+            "evidence_type": "STATIC_VERIFIED",
+            "evidence_sources": [
+              "TREE_SITTER_STATIC",
+              "TS_LANGUAGE_SERVICE"
+            ],
+            "supporting_spans": [
+              {
+                "file_path": "auth/AuthService.js",
+                "start_line": 9,
+                "end_line": 9,
+                "start_byte": 361,
+                "end_byte": 391,
+                "kind": "call_site"
+              },
+              {
+                "file_path": "auth/AuthService.js",
+                "start_line": 5,
+                "end_line": 5,
+                "start_byte": 165,
+                "end_byte": 201,
+                "kind": "constructor_assignment",
+                "source_symbol_id": "auth/AuthService.js::AuthService.constructor"
+              },
+              {
+                "file_path": "auth/AuthService.js",
+                "start_line": 2,
+                "end_line": 2,
+                "start_byte": 56,
+                "end_byte": 118,
+                "kind": "import"
+              }
+            ],
+            "source": "auth/AuthService.js::AuthService.login",
+            "target": "session/SessionManager.js::SessionManager.create"
+          },
+          {
+            "source_symbol_id": "auth/AuthService.js::AuthService.restore",
+            "target_symbol_id": "session/SessionManager.js::SessionManager.restore",
+            "edge_type": "CALLS",
+            "call_file": "auth/AuthService.js",
+            "call_line": 12,
+            "call_end_line": 12,
+            "call_start_byte": 494,
+            "call_end_byte": 517,
+            "source_expression": "this.sessions.restore()",
+            "resolution_method": "constructor_instance",
+            "evidence_type": "STATIC_VERIFIED",
+            "evidence_sources": [
+              "TREE_SITTER_STATIC",
+              "TS_LANGUAGE_SERVICE"
+            ],
+            "supporting_spans": [
+              {
+                "file_path": "auth/AuthService.js",
+                "start_line": 12,
+                "end_line": 12,
+                "start_byte": 494,
+                "end_byte": 517,
+                "kind": "call_site"
+              },
+              {
+                "file_path": "auth/AuthService.js",
+                "start_line": 5,
+                "end_line": 5,
+                "start_byte": 165,
+                "end_byte": 201,
+                "kind": "constructor_assignment",
+                "source_symbol_id": "auth/AuthService.js::AuthService.constructor"
+              },
+              {
+                "file_path": "auth/AuthService.js",
+                "start_line": 2,
+                "end_line": 2,
+                "start_byte": 56,
+                "end_byte": 118,
+                "kind": "import"
+              }
+            ],
+            "source": "auth/AuthService.js::AuthService.restore",
+            "target": "session/SessionManager.js::SessionManager.restore"
+          }
+        ],
+        "removed_edges": [
+          {
+            "source_symbol_id": "auth/AuthService.js::AuthService.login",
+            "target_symbol_id": "auth/AuthService.js::createSession",
+            "edge_type": "CALLS",
+            "call_file": "auth/AuthService.js",
+            "call_line": 15,
+            "call_end_line": 15,
+            "call_start_byte": 428,
+            "call_end_byte": 451,
+            "source_expression": "createSession(identity)",
+            "resolution_method": "lexical_scope",
+            "evidence_type": "STATIC_VERIFIED",
+            "evidence_sources": [
+              "TREE_SITTER_STATIC",
+              "TS_LANGUAGE_SERVICE"
+            ],
+            "supporting_spans": [
+              {
+                "file_path": "auth/AuthService.js",
+                "start_line": 15,
+                "end_line": 15,
+                "start_byte": 428,
+                "end_byte": 451,
+                "kind": "call_site"
+              }
+            ],
+            "source": "auth/AuthService.js::AuthService.login",
+            "target": "auth/AuthService.js::createSession"
+          }
+        ]
+      },
+      "relevant_changes": {
+        "added_symbols": [
+          "session/SessionManager.js::SessionManager.clear",
+          "session/SessionManager.js::SessionManager.constructor",
+          "session/SessionManager.js::SessionManager.create",
+          "session/SessionManager.js::SessionManager.restore",
+          "tests/session.test.js::test:expired sessions require the user to sign in again"
+        ],
+        "removed_symbols": [
+          "auth/AuthService.js::createSession"
+        ],
+        "modified_symbols": [
+          "auth/AuthService.js::AuthService.constructor",
+          "auth/AuthService.js::AuthService.login",
+          "auth/AuthService.js::AuthService.restore"
+        ],
+        "added_edges": [
+          {
+            "source_symbol_id": "auth/AuthService.js::AuthService.login",
+            "target_symbol_id": "session/SessionManager.js::SessionManager.create",
+            "edge_type": "CALLS",
+            "call_file": "auth/AuthService.js",
+            "call_line": 9,
+            "call_end_line": 9,
+            "call_start_byte": 361,
+            "call_end_byte": 391,
+            "source_expression": "this.sessions.create(identity)",
+            "resolution_method": "constructor_instance",
+            "evidence_type": "STATIC_VERIFIED",
+            "evidence_sources": [
+              "TREE_SITTER_STATIC",
+              "TS_LANGUAGE_SERVICE"
+            ],
+            "supporting_spans": [
+              {
+                "file_path": "auth/AuthService.js",
+                "start_line": 9,
+                "end_line": 9,
+                "start_byte": 361,
+                "end_byte": 391,
+                "kind": "call_site"
+              },
+              {
+                "file_path": "auth/AuthService.js",
+                "start_line": 5,
+                "end_line": 5,
+                "start_byte": 165,
+                "end_byte": 201,
+                "kind": "constructor_assignment",
+                "source_symbol_id": "auth/AuthService.js::AuthService.constructor"
+              },
+              {
+                "file_path": "auth/AuthService.js",
+                "start_line": 2,
+                "end_line": 2,
+                "start_byte": 56,
+                "end_byte": 118,
+                "kind": "import"
+              }
+            ],
+            "source": "auth/AuthService.js::AuthService.login",
+            "target": "session/SessionManager.js::SessionManager.create"
+          },
+          {
+            "source_symbol_id": "auth/AuthService.js::AuthService.restore",
+            "target_symbol_id": "session/SessionManager.js::SessionManager.restore",
+            "edge_type": "CALLS",
+            "call_file": "auth/AuthService.js",
+            "call_line": 12,
+            "call_end_line": 12,
+            "call_start_byte": 494,
+            "call_end_byte": 517,
+            "source_expression": "this.sessions.restore()",
+            "resolution_method": "constructor_instance",
+            "evidence_type": "STATIC_VERIFIED",
+            "evidence_sources": [
+              "TREE_SITTER_STATIC",
+              "TS_LANGUAGE_SERVICE"
+            ],
+            "supporting_spans": [
+              {
+                "file_path": "auth/AuthService.js",
+                "start_line": 12,
+                "end_line": 12,
+                "start_byte": 494,
+                "end_byte": 517,
+                "kind": "call_site"
+              },
+              {
+                "file_path": "auth/AuthService.js",
+                "start_line": 5,
+                "end_line": 5,
+                "start_byte": 165,
+                "end_byte": 201,
+                "kind": "constructor_assignment",
+                "source_symbol_id": "auth/AuthService.js::AuthService.constructor"
+              },
+              {
+                "file_path": "auth/AuthService.js",
+                "start_line": 2,
+                "end_line": 2,
+                "start_byte": 56,
+                "end_byte": 118,
+                "kind": "import"
+              }
+            ],
+            "source": "auth/AuthService.js::AuthService.restore",
+            "target": "session/SessionManager.js::SessionManager.restore"
+          }
+        ],
+        "removed_edges": [
+          {
+            "source_symbol_id": "auth/AuthService.js::AuthService.login",
+            "target_symbol_id": "auth/AuthService.js::createSession",
+            "edge_type": "CALLS",
+            "call_file": "auth/AuthService.js",
+            "call_line": 15,
+            "call_end_line": 15,
+            "call_start_byte": 428,
+            "call_end_byte": 451,
+            "source_expression": "createSession(identity)",
+            "resolution_method": "lexical_scope",
+            "evidence_type": "STATIC_VERIFIED",
+            "evidence_sources": [
+              "TREE_SITTER_STATIC",
+              "TS_LANGUAGE_SERVICE"
+            ],
+            "supporting_spans": [
+              {
+                "file_path": "auth/AuthService.js",
+                "start_line": 15,
+                "end_line": 15,
+                "start_byte": 428,
+                "end_byte": 451,
+                "kind": "call_site"
+              }
+            ],
+            "source": "auth/AuthService.js::AuthService.login",
+            "target": "auth/AuthService.js::createSession"
+          }
+        ]
+      },
+      "graph_a": {
+        "nodes": [
+          {
+            "symbol_id": "auth/AuthService.js::AuthService.constructor",
+            "qualified_name": "AuthService.constructor",
+            "file": "auth/AuthService.js",
+            "start_line": 9,
+            "end_line": 11,
+            "kind": "method"
+          },
+          {
+            "symbol_id": "auth/AuthService.js::AuthService.login",
+            "qualified_name": "AuthService.login",
+            "file": "auth/AuthService.js",
+            "start_line": 13,
+            "end_line": 18,
+            "kind": "method"
+          },
+          {
+            "symbol_id": "auth/AuthService.js::AuthService.restore",
+            "qualified_name": "AuthService.restore",
+            "file": "auth/AuthService.js",
+            "start_line": 21,
+            "end_line": 24,
+            "kind": "method"
+          },
+          {
+            "symbol_id": "auth/AuthService.js::createSession",
+            "qualified_name": "createSession",
+            "file": "auth/AuthService.js",
+            "start_line": 4,
+            "end_line": 6,
+            "kind": "function"
+          },
+          {
+            "symbol_id": "auth/credentials.js::validateCredentials",
+            "qualified_name": "validateCredentials",
+            "file": "auth/credentials.js",
+            "start_line": 2,
+            "end_line": 5,
+            "kind": "function"
+          }
+        ],
+        "edges": [
+          {
+            "source_symbol_id": "auth/AuthService.js::AuthService.login",
+            "target_symbol_id": "auth/credentials.js::validateCredentials",
+            "edge_type": "CALLS",
+            "call_file": "auth/AuthService.js",
+            "call_line": 14,
+            "call_end_line": 14,
+            "call_start_byte": 374,
+            "call_end_byte": 406,
+            "source_expression": "validateCredentials(credentials)",
+            "resolution_method": "named_or_default_import",
+            "evidence_type": "STATIC_VERIFIED",
+            "evidence_sources": [
+              "TREE_SITTER_STATIC",
+              "TS_LANGUAGE_SERVICE"
+            ],
+            "supporting_spans": [
+              {
+                "file_path": "auth/AuthService.js",
+                "start_line": 14,
+                "end_line": 14,
+                "start_byte": 374,
+                "end_byte": 406,
+                "kind": "call_site"
+              },
+              {
+                "file_path": "auth/AuthService.js",
+                "start_line": 1,
+                "end_line": 1,
+                "start_byte": 0,
+                "end_byte": 55,
+                "kind": "import"
+              }
+            ],
+            "source": "auth/AuthService.js::AuthService.login",
+            "target": "auth/credentials.js::validateCredentials"
+          },
+          {
+            "source_symbol_id": "auth/AuthService.js::AuthService.login",
+            "target_symbol_id": "auth/AuthService.js::createSession",
+            "edge_type": "CALLS",
+            "call_file": "auth/AuthService.js",
+            "call_line": 15,
+            "call_end_line": 15,
+            "call_start_byte": 428,
+            "call_end_byte": 451,
+            "source_expression": "createSession(identity)",
+            "resolution_method": "lexical_scope",
+            "evidence_type": "STATIC_VERIFIED",
+            "evidence_sources": [
+              "TREE_SITTER_STATIC",
+              "TS_LANGUAGE_SERVICE"
+            ],
+            "supporting_spans": [
+              {
+                "file_path": "auth/AuthService.js",
+                "start_line": 15,
+                "end_line": 15,
+                "start_byte": 428,
+                "end_byte": 451,
+                "kind": "call_site"
+              }
+            ],
+            "source": "auth/AuthService.js::AuthService.login",
+            "target": "auth/AuthService.js::createSession"
+          }
+        ],
+        "paths": []
+      },
+      "graph_b": {
+        "nodes": [
+          {
+            "symbol_id": "auth/AuthService.js::AuthService.constructor",
+            "qualified_name": "AuthService.constructor",
+            "file": "auth/AuthService.js",
+            "start_line": 5,
+            "end_line": 5,
+            "kind": "method"
+          },
+          {
+            "symbol_id": "auth/AuthService.js::AuthService.restore",
+            "qualified_name": "AuthService.restore",
+            "file": "auth/AuthService.js",
+            "start_line": 12,
+            "end_line": 12,
+            "kind": "method"
+          },
+          {
+            "symbol_id": "session/SessionManager.js::SessionManager.clear",
+            "qualified_name": "SessionManager.clear",
+            "file": "session/SessionManager.js",
+            "start_line": 13,
+            "end_line": 13,
+            "kind": "method"
+          },
+          {
+            "symbol_id": "session/SessionManager.js::SessionManager.constructor",
+            "qualified_name": "SessionManager.constructor",
+            "file": "session/SessionManager.js",
+            "start_line": 3,
+            "end_line": 3,
+            "kind": "method"
+          },
+          {
+            "symbol_id": "session/SessionManager.js::SessionManager.create",
+            "qualified_name": "SessionManager.create",
+            "file": "session/SessionManager.js",
+            "start_line": 4,
+            "end_line": 7,
+            "kind": "method"
+          },
+          {
+            "symbol_id": "session/SessionManager.js::SessionManager.restore",
+            "qualified_name": "SessionManager.restore",
+            "file": "session/SessionManager.js",
+            "start_line": 9,
+            "end_line": 12,
+            "kind": "method"
+          },
+          {
+            "symbol_id": "tests/session.test.js::test:expired sessions require the user to sign in again",
+            "qualified_name": "test:expired sessions require the user to sign in again",
+            "file": "tests/session.test.js",
+            "start_line": 5,
+            "end_line": 9,
+            "kind": "test"
+          }
+        ],
+        "edges": [
+          {
+            "source_symbol_id": "auth/AuthService.js::AuthService.restore",
+            "target_symbol_id": "session/SessionManager.js::SessionManager.restore",
+            "edge_type": "CALLS",
+            "call_file": "auth/AuthService.js",
+            "call_line": 12,
+            "call_end_line": 12,
+            "call_start_byte": 494,
+            "call_end_byte": 517,
+            "source_expression": "this.sessions.restore()",
+            "resolution_method": "constructor_instance",
+            "evidence_type": "STATIC_VERIFIED",
+            "evidence_sources": [
+              "TREE_SITTER_STATIC",
+              "TS_LANGUAGE_SERVICE"
+            ],
+            "supporting_spans": [
+              {
+                "file_path": "auth/AuthService.js",
+                "start_line": 12,
+                "end_line": 12,
+                "start_byte": 494,
+                "end_byte": 517,
+                "kind": "call_site"
+              },
+              {
+                "file_path": "auth/AuthService.js",
+                "start_line": 5,
+                "end_line": 5,
+                "start_byte": 165,
+                "end_byte": 201,
+                "kind": "constructor_assignment",
+                "source_symbol_id": "auth/AuthService.js::AuthService.constructor"
+              },
+              {
+                "file_path": "auth/AuthService.js",
+                "start_line": 2,
+                "end_line": 2,
+                "start_byte": 56,
+                "end_byte": 118,
+                "kind": "import"
+              }
+            ],
+            "source": "auth/AuthService.js::AuthService.restore",
+            "target": "session/SessionManager.js::SessionManager.restore"
+          }
+        ],
+        "paths": []
+      },
+      "latency_ms": 3.04
+    }
+  },
+  "latencies_ms": {
+    "index_v1": 202.69,
+    "index_v2": 195.31,
+    "index_working-tree": 19.25,
+    "source": 3.56,
+    "search": 6.06,
+    "trace": 4.27,
+    "compare": 3.04
+  }
+}
