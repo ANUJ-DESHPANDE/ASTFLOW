@@ -20,7 +20,7 @@ export type SearchResponse = {
   query: string; version: string; version_key: string; results: Result[]; intent: string; latency_ms: number;
   agent_trace: { step: string; details: string; data?: Record<string, unknown> }[];
   graph: GraphData; semantic: { available: boolean; message: string; model: string | null };
-  sequences: { caller: string; before: string; after: string; before_line: number; after_line: number; explanation: string }[];
+  sequences: { caller: string; before: string; after: string; file_path: string; before_line: number; after_line: number; explanation: string }[];
 };
 export type Manifest = {
   version: string; version_key: string; file_count: number; symbol_count: number; chunk_count: number; edge_count: number;

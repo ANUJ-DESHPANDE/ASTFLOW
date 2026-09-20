@@ -23,7 +23,7 @@ test('live question shows real loading, evidence and exact source',async({page})
 });
 test('map file focus and trace evidence navigate to code',async({page})=>{
  await opened(page);await page.getByRole('button',{name:'Map',exact:true}).click();await expect(page.locator('.react-flow__node').first()).toBeVisible();await page.screenshot({path:'.astflow/screenshots/studio-map.png'});
- await page.getByLabel('Map file focus').selectOption('voice/VoiceHandler.js');await page.locator('.react-flow__node').filter({hasText:'VoiceHandler.handleRequest'}).click();await expect(page.locator('.source-status')).toContainText('voice/VoiceHandler.js');
+ await page.getByLabel('Map file focus').selectOption('voice/VoiceHandler.js');await page.locator('.react-flow__node').filter({hasText:'VoiceHandler.handleRequest'}).click();await page.getByRole('button',{name:'Open source',exact:true}).click();await expect(page.locator('.source-status')).toContainText('voice/VoiceHandler.js');
  await page.getByRole('button',{name:'Map',exact:true}).click();await page.getByRole('button',{name:'Trace a path'}).click();await page.getByRole('button',{name:'Trace',exact:true}).click();await expect(page.locator('.canvas-caption')).toContainText('supported path');
  await page.locator('.react-flow__edge').first().click({force:true});await expect(page.locator('.edge-evidence')).toContainText('A supported connection');await expect(page.locator('.source-panel')).toBeVisible();
 });

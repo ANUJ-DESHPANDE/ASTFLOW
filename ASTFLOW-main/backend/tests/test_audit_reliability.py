@@ -47,3 +47,21 @@ def test_indexed_revision_expression_remains_in_version_selector(tmp_path):
     index=service.index(str(ROOT/'examples/demo-repo'),'HEAD~0')
     found=next(v for v in service.versions() if v['name']=='HEAD~0')
     assert found['indexed'] and found['version_key']==index.manifest['version_key']
+
+
+def test_cross_file_neighborhood_depth_and_callsite_evidence(tmp_path):
+    repo=tmp_path/'repo';repo.mkdir()
+    (repo/'a.js').write_text("import {b} from './b.js'; export function a(){b();}")
+    (repo/'b.js').write_text("import {c} from './c.js'; export function b(){c();}")
+    (repo/'c.js').write_text("export function c(){}")
+    client=TestClient(create_app(Settings(cache=tmp_path/'cache',semantic='off',ts_enrich=False)))
+    assert client.post('/api/index',json={'repo_path':str(repo),'background':False}).status_code==200
+    first=client.get('/api/map',params={'symbol':'a.js::a','depth':1}).json()
+    second=client.get('/api/map',params={'symbol':'a.js::a','depth':2}).json()
+    assert {n['symbol_id'] for n in first['nodes']}=={'a.js::a','b.js::b'}
+    assert {n['symbol_id'] for n in second['nodes']}=={'a.js::a','b.js::b','c.js::c'}
+    assert len(first['edges'])==1 and len(second['edges'])==2
+    for edge in second['edges']:
+        source=client.get('/api/source',params={'path':edge['call_file']}).json()['full_content']
+        assert edge['source_expression'] in source
+        assert any(s['kind']=='import' for s in edge['supporting_spans'])
