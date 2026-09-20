@@ -2,6 +2,7 @@ import re
 
 import numpy as np
 from rank_bm25 import BM25Okapi
+from scipy.sparse import csr_matrix
 
 from backend.app.config import Settings
 from backend.app.models.entities import Chunk
@@ -23,10 +24,11 @@ def tokenize(text: str) -> list[str]:
 
 
 class Retriever:
-    def __init__(self, chunks: list[Chunk], embeddings, embedder, settings: Settings):
+    def __init__(self, chunks: list[Chunk], embeddings, embedder, settings: Settings, tokenizer=tokenize):
         self.chunks, self.embeddings, self.embedder, self.settings = chunks, embeddings, embedder, settings
+        self.tokenize = tokenizer
         self.by_id = {c.chunk_id: c for c in chunks}
-        corpus = [tokenize(c.search_text) or ["__empty__"] for c in chunks]
+        corpus = [self.tokenize(c.search_text) or ["__empty__"] for c in chunks]
         self.bm25 = BM25Okapi(corpus) if corpus else None
         # Standard BM25Okapi has non-positive IDF on tiny corpora. A positive BM25
         # IDF variant preserves meaningful lexical matching in single-file repos.
@@ -36,12 +38,27 @@ class Retriever:
                 for token in set(doc):
                     frequencies[token] = frequencies.get(token, 0) + 1
             self.bm25.idf = {t: float(np.log(1 + (len(corpus) - df + .5) / (df + .5))) for t, df in frequencies.items()}
+        # Precompute the same BM25 term contributions once. Query-time work
+        # visits postings rather than scanning every document for every token.
+        self.vocabulary = {term: i for i, term in enumerate(sorted(self.bm25.idf))} if self.bm25 else {}
+        values, term_rows, doc_columns = [], [], []
+        if self.bm25:
+            for doc, frequencies in enumerate(self.bm25.doc_freqs):
+                norm = self.bm25.k1 * (1 - self.bm25.b + self.bm25.b * self.bm25.doc_len[doc] / self.bm25.avgdl)
+                for term, frequency in frequencies.items():
+                    term_rows.append(self.vocabulary[term]); doc_columns.append(doc)
+                    values.append(self.bm25.idf[term] * frequency * (self.bm25.k1 + 1) / (frequency + norm))
+        self.postings = csr_matrix((values, (term_rows, doc_columns)), shape=(len(self.vocabulary), len(chunks)))
+
+    def lexical_scores(self, terms: list[str]):
+        ids = [self.vocabulary[t] for t in terms if t in self.vocabulary]
+        return np.asarray(self.postings[ids].sum(axis=0)).ravel() if ids else np.zeros(len(self.chunks))
 
     def rank(self, query: str, mode: str = "hybrid", boosts: bool = True, limit: int | None = None):
         if not self.chunks:
             return [], {"lexical_top": [], "semantic_top": [], "semantic_available": False}
-        terms = tokenize(query)
-        lexical = np.asarray(self.bm25.get_scores(terms))
+        terms = self.tokenize(query)
+        lexical = self.lexical_scores(terms)
         dense = None
         if mode != "bm25" and self.embeddings is not None:
             query_embedding = self.embedder.encode([query])
@@ -59,8 +76,8 @@ class Retriever:
         for i in candidates:
             chunk = self.chunks[i]
             name = chunk.qualified_name.split(".")[-1]
-            exact = name.lower() in query_identifiers or bool(re.search(r"(?<![\w$])" + re.escape(chunk.qualified_name) + r"(?![\w$])", query, re.I))
-            overlap = len(term_set & set(tokenize(chunk.qualified_name))) / max(1, len(term_set))
+            exact = chunk.kind != 'dataset_document' and (name.lower() in query_identifiers or bool(re.search(r"(?<![\w$])" + re.escape(chunk.qualified_name) + r"(?![\w$])", query, re.I)))
+            overlap = len(term_set & set(self.tokenize(chunk.qualified_name))) / max(1, len(term_set)) if boosts else 0.
             contributions = {
                 "lexical": self.settings.lexical_weight / (self.settings.rrf_k + lr[i]) if i in lr and mode != "dense" else 0.,
                 "semantic": self.settings.semantic_weight / (self.settings.rrf_k + sr[i]) if i in sr and mode != "bm25" else 0.,

@@ -31,7 +31,7 @@ def plan(query: str, graph):
     return {"intent": intent, "symbols": names[:6], "max_passes": 2}
 
 
-def investigate(index, query: str, version: str, top_k: int = 10, agentic: bool = True, mode: str = "full"):
+def investigate(index, query: str, version: str, top_k: int = 10, agentic: bool = True, mode: str = "full", structure: bool = True):
     started = time.perf_counter()
     retriever, graph = index.retriever, index.graph
     settings = retriever.settings
@@ -55,7 +55,7 @@ def investigate(index, query: str, version: str, top_k: int = 10, agentic: bool 
                    "seed_ids": [r["chunk"].symbol_id for r in seeds]}
     trace.append({"step": "OBSERVE", "details": f"Found {observation['exact_matches']} exact matches across {observation['file_diversity']} files; {len(missing)} target(s) outside the top ten", "data": observation})
     structural_intent = query_plan["intent"] in {"PATH", "USAGE", "SEQUENCE"}
-    expand = mode in {"full", "hybrid_structure"} and bool(seeds)
+    expand = structure and mode in {"full", "hybrid_structure"} and bool(seeds)
     second_pass = agentic and mode == "full" and bool(seeds) and (structural_intent or bool(missing) or (agreement is not None and agreement < .2))
     candidates = {row["chunk"].chunk_id: row for row in rows}
     if second_pass:

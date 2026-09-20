@@ -21,6 +21,7 @@ def test_metrics_graded_order_duplicates_and_missing():
 
 
 def test_actual_cpu_semantic_retrieval_and_persisted_vectors(tmp_path):
+    pytest.importorskip("sentence_transformers", reason="Optional semantic dependencies are not installed")
     base = Settings()
     if not (base.cache / "models" / base.model.replace("/", "--") / "modules.json").exists():
         pytest.skip("Install the CPU model with astflow model-download for semantic integration testing")
