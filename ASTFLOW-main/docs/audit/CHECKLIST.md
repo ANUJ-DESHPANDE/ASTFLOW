@@ -20,7 +20,8 @@ Checked = demonstrated within the report's stated limits. Unchecked rows retain 
 - [x] Version indexes isolated and source bytes immutable after indexing.
 - [x] Re-indexing and cache reload measured.
 - [x] Retrieval/source changes correctly across tested real commits.
-- [ ] Incremental update efficiency on a realistic large repository: full changed-snapshot rebuild remains.
+- [x] Chunk-level content-hash embedding reuse implemented and unit-verified (unchanged chunks are never re-encoded across versions).
+- [ ] Incremental update efficiency on a realistic large repository: reuse mechanism is unit-verified only; no real-corpus timing re-run performed. Unbounded in-memory snapshot retention and unbounded on-disk embedding-cache growth remain OPEN (see BUGS.md R02).
 
 ## Bonus
 

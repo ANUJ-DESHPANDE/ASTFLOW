@@ -7,6 +7,7 @@ from fastapi.testclient import TestClient
 from backend.app.config import ROOT,Settings
 from backend.app.main import create_app
 from backend.app.indexing.service import IndexService
+from backend.app.retrieval.embeddings import Embedder
 from backend.app.storage.store import load_index
 
 
@@ -65,3 +66,29 @@ def test_cross_file_neighborhood_depth_and_callsite_evidence(tmp_path):
         source=client.get('/api/source',params={'path':edge['call_file']}).json()['full_content']
         assert edge['source_expression'] in source
         assert any(s['kind']=='import' for s in edge['supporting_spans'])
+
+
+def test_reindex_reuses_cached_embeddings_for_unchanged_chunks(tmp_path):
+    repo=tmp_path/'repo';repo.mkdir()
+    (repo/'a.js').write_text('export function a(){return 1;}')
+    (repo/'b.js').write_text('export function b(){return 2;}')
+    calls=[]
+    def fake_encode(texts):
+        calls.append(list(texts))
+        return np.array([[float(len(t)%7),float(sum(map(ord,t))%11)] for t in texts],dtype=np.float32)
+    service=IndexService(Settings(cache=tmp_path/'cache',ts_enrich=False))
+    service.embedder.model=object();service.embedder.attempted=True;service.embedder.encode=fake_encode
+    first=service.index(str(repo))
+    assert first.manifest['embedding_cache']=={'reused':0,'computed':2}
+    assert sum(len(c) for c in calls)==2
+    names=[c.qualified_name for c in first.chunks]
+    a_vector=first.retriever.embeddings[names.index('a')].copy()
+
+    calls.clear()
+    (repo/'b.js').write_text('export function b(){return 3;}')
+    second=service.index(str(repo))
+    assert second.manifest['embedding_cache']=={'reused':1,'computed':1}
+    assert sum(len(c) for c in calls)==1
+    assert calls==[[next(c.search_text for c in second.chunks if c.qualified_name=='b')]]
+    names=[c.qualified_name for c in second.chunks]
+    assert np.array_equal(second.retriever.embeddings[names.index('a')],a_vector)

@@ -200,6 +200,8 @@ The service binds to loopback and validates Host/Origin headers. Source requests
 
 ## Verification and benchmarks
 
+Requires the demo Git history from Quick start (`scripts/setup_demo.py`) to already exist; on a fresh clone that has not run Quick start, run it first or `test_indexed_revision_expression_remains_in_version_selector` fails because `examples/demo-repo` is not yet its own Git repository.
+
 ```powershell
 .\.venv\Scripts\python.exe -m pytest
 npm run build
