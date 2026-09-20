@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "source_commit": "10151d8",
+  "fresh_venv": true,
+  "npm_ci": true,
+  "build": true,
+  "demo_git_recreated": true,
+  "semantic": "off; not a fresh semantic install test",
+  "files": 11,
+  "top_symbol": "settings/deeplinks.js::openBluetoothSettings",
+  "versions": [
+    "working-tree",
+    "v1",
+    "v2"
+  ],
+  "startup_seconds": 5.5,
+  "checks": [
+    "HTML",
+    "health",
+    "repository",
+    "search",
+    "source exact snippet",
+    "v1/v2 comparison"
+  ]
+}

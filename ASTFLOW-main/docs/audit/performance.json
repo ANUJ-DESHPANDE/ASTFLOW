@@ -1,0 +1,64 @@
+{
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.12.4",
+    "cpu_count": 8
+  },
+  "scope": "Synthetic JS, semantic off, TS corroboration off. Phase probes execute separately; do not sum them into total. RSS is a snapshot, not peak. Timings include current machine contention.",
+  "scales": [
+    {
+      "files": 10,
+      "symbols": 20,
+      "chunks": 20,
+      "source_bytes": 1180,
+      "read_ms": 344.72319999622414,
+      "parse_ms": 6.7339000015635975,
+      "resolve_ms": 0.2699000033317134,
+      "cold_index_ms": 68.71680000040215,
+      "cached_index_ms": 42.504299999563955,
+      "cold_load_ms": 31.22060000168858,
+      "one_file_full_rebuild_ms": 105.3613000040059,
+      "search_median_ms": 0.8,
+      "search_max_ms": 4.14,
+      "rss_bytes": 68861952,
+      "index_bytes": 79220,
+      "snapshot_changed": true
+    },
+    {
+      "files": 100,
+      "symbols": 200,
+      "chunks": 200,
+      "source_bytes": 11800,
+      "read_ms": 3012.003799995,
+      "parse_ms": 29.222900004242547,
+      "resolve_ms": 0.7517000049119815,
+      "cold_index_ms": 167.1381999985897,
+      "cached_index_ms": 129.270199999155,
+      "cold_load_ms": 40.62569999950938,
+      "one_file_full_rebuild_ms": 200.0980000011623,
+      "search_median_ms": 1.59,
+      "search_max_ms": 22.72,
+      "rss_bytes": 72146944,
+      "index_bytes": 416132,
+      "snapshot_changed": true
+    },
+    {
+      "files": 1000,
+      "symbols": 2000,
+      "chunks": 2000,
+      "source_bytes": 118000,
+      "read_ms": 29194.331599996076,
+      "parse_ms": 335.72869999625254,
+      "resolve_ms": 20.8896000040113,
+      "cold_index_ms": 1347.5869000030798,
+      "cached_index_ms": 876.0056999963126,
+      "cold_load_ms": 206.91980000265175,
+      "one_file_full_rebuild_ms": 1381.1577999949805,
+      "search_median_ms": 133.96,
+      "search_max_ms": 157.36,
+      "rss_bytes": 103206912,
+      "index_bytes": 3731952,
+      "snapshot_changed": true
+    }
+  ]
+}

@@ -4,6 +4,8 @@
 
 Updated to the supplied editor-video visual reference. See [changes and limits](docs/CHANGES.md).
 
+**Engineering audit (20 September):** [report](docs/audit/REPORT.md), [official requirements matrix](docs/audit/REQUIREMENTS.md), [defect ledger](docs/audit/BUGS.md), [UI inventory](docs/audit/UI-INVENTORY.md) and [remaining checklist](docs/audit/CHECKLIST.md). Full AppsRetrieval scores are substantially lower than the small demo benchmark; use the official figures for screening claims.
+
 ASTFLOW is a local repository investigation engine for JavaScript. Ask a question, get ranked source snippets, follow supported call relationships, and compare the answer across Git snapshots. The snippet list is the canonical answer; graphs and explanations supplement it.
 
 It runs on a CPU, needs no paid API, and never executes an indexed repository. The included source fixture has voice routing, Bluetooth settings, authentication, test cases, dynamic dispatch, and two real Git commits showing a session-management refactor.
@@ -215,7 +217,26 @@ The local benchmark computes **NDCG@10, MRR, Recall@10**, median and p95 query l
 
 The included 16-query/21-chunk benchmark is a small handcrafted regression fixture. It does **not** establish performance on large repositories or an official PRISM/MTEB evaluation. No benchmark numbers are hardcoded into the application. Index time includes CPU model loading on a cold process; query measurements warm the model first.
 
-### CoIR / AppsRetrieval adapter
+### Official full AppsRetrieval evaluation
+
+Use a separate Python 3.12 environment for MTEB. From the project root:
+
+```powershell
+py -3.12 -m venv .eval-venv
+.\.eval-venv\Scripts\python.exe -m pip install -e '.[dev,semantic]' -r benchmark/requirements-mteb.txt
+.\.eval-venv\Scripts\python.exe benchmark/run_mteb.py --mode bm25 --output benchmark/results/mteb-bm25
+.\.eval-venv\Scripts\python.exe benchmark/run_mteb.py --mode hybrid --download-model --output benchmark/results/mteb-hybrid
+.\.eval-venv\Scripts\python.exe -m pytest benchmark/test_mteb_adapter.py
+.\.eval-venv\Scripts\python.exe -m benchmark.ablate
+```
+
+On Linux use `.eval-venv/bin/python`. Each official run uses MTEB 2.21.0, all 3,765 test queries, all 8,765 documents and pinned dataset revision `f22508f96b7a36c2415181ed8bb76f76e04ae2d5`. `appsretrieval_results.json` is written using the framework serializer. `run_metadata.json` records corpus/model identity and raw timing; `predictions/` retains the ranked document IDs. Upload the generated MTEB JSON as the required release artifact after final review. Large predictions are ignored by Git and excluded from the source ZIP.
+
+Measured full-test NDCG@10: **BM25 .06104; hybrid .08815**. MRR@10: **.052202 / .072400**. These evaluate text retrieval on Python dataset documents; they do not evaluate ASTFLOW's JavaScript graph/agent. Do not substitute the much higher curated demo scores. The full hybrid run contains multi-hour timing outliers and is not a clean throughput benchmark; see the audit report.
+
+Keep the output metadata and evaluation environment's `pip freeze`. Dense/hybrid evaluation fails rather than claiming lexical fallback is semantic retrieval. If a cache was saved by an incompatible sentence-transformers major version, reload the official model with the pinned version.
+
+### Legacy CoIR export/smoke adapter
 
 The optional adapter reads the real `CoIR-Retrieval/apps` dataset used by MTEB's AppsRetrieval task. It uses the patched `datasets` 5.x API, validates current configurations/columns, pins the downloaded dataset revision, and exports ordinary BEIR JSONL/TSV files. It also accepts existing BEIR exports without network access.
 
@@ -253,3 +274,16 @@ npm run demo
 ```
 
 Source search, map, trace and comparison remain available. To enable dense retrieval later, install `.[semantic]`, remove the `ASTFLOW_SEMANTIC=off` setting, run `astflow model-download`, and reindex.
+
+### Graph exploration
+
+Map starts at files; choose a file to inspect its callables. Select a node to highlight callers/callees, use depth/direction controls, then **Explore calls** for a cross-file neighborhood. **Open source** is separate. Fit/reset return to context. Counts disclose the backend 150-node and frontend 60-node/250-edge bounds; node search searches the loaded view. Arrows mean supported static calls, not observed runtime execution.
+
+### Docker files (execution not yet verified)
+
+```sh
+docker build -t astflow .
+docker run --rm -p 127.0.0.1:8000:8000 astflow
+```
+
+The image builds the frontend and runs as a non-root user with the bundled demo, lexical retrieval and TS corroboration disabled. It needs no host repository mount for that demo. Its container process listens internally on all interfaces; publish only to host loopback as shown. The audit machine's Docker daemon was unavailable, so image build/start is **UNVERIFIED**. Do not claim a tested container submission until these commands and the main journeys pass.

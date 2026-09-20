@@ -1,5 +1,7 @@
 # Verification — 19 September 2026
 
+> Historical results below. The current 20 September audit is in [audit/REPORT.md](audit/REPORT.md), with machine-readable `full-audit-*` evidence in `verification/`. Real CPU semantic execution and full official MTEB evaluation have now been performed; earlier “not run” statements do not describe the latest audit.
+
 ## Executed checks
 
 | Check | Result |

@@ -1,4 +1,5 @@
 .venv/
+.eval-venv/
 .astflow/
 __pycache__/
 *.pyc

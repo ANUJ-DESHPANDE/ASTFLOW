@@ -1,6 +1,52 @@
 import {test,expect} from '@playwright/test';
 import {layoutGraph,neighborhood} from '../src/components/graphLayout';
 import type {GraphData} from '../src/types';
+import fs from 'node:fs';
+
+test('positive sequence evidence opens real fixture source',async({page},testInfo)=>{
+ const original=await (await page.request.get('/api/repository')).json();
+ const repo=testInfo.outputPath('sequence-fixture');fs.mkdirSync(repo,{recursive:true});
+ fs.writeFileSync(repo+'/sequence.js','function check(){} function open(){} function run(){check();open();}');
+ try{
+  expect((await page.request.post('/api/index',{data:{repo_path:repo,background:false}})).ok()).toBe(true);
+  await page.goto('/');await expect(page.locator('.monaco-editor')).toBeVisible();
+  await page.getByLabel('Ask about your code').fill('Which functions call check before open?');
+  await page.getByLabel('Send question').click();
+  await expect(page.locator('.sequence-evidence')).toContainText('Lexical order only');
+  await page.locator('.sequence-evidence .source-link').click();
+  await expect(page.locator('.source-status')).toContainText('sequence.js');
+ }finally{
+  for(const version of ['v1','v2','working-tree'])expect((await page.request.post('/api/index',{data:{repo_path:original.path,version,background:false}})).ok()).toBe(true);
+ }
+});
+
+test('history restores comparison snapshots and source shortcuts remain functional',async({page,context})=>{
+ await context.grantPermissions(['clipboard-read','clipboard-write']);
+ await page.goto('/');await expect(page.locator('.monaco-editor')).toBeVisible();
+ await page.locator('.folder-row').filter({hasText:'auth'}).click();
+ await expect(page.getByTitle('auth/AuthService.js',{exact:true})).toHaveCount(0);
+ await page.locator('.folder-row').filter({hasText:'auth'}).click();
+ await page.getByLabel('Focus source context').click();
+ await expect(page.getByLabel('Ask about your code')).toHaveValue('Where is AuthService used?');
+ await page.getByLabel('Ask about your code').fill('');
+ await page.getByLabel('Compare versions',{exact:true}).click();
+ await page.getByLabel('Version A',{exact:true}).selectOption('v1');
+ await page.getByLabel('Version B',{exact:true}).selectOption('v2');
+ await page.getByRole('main').getByRole('button',{name:'Compare',exact:true}).click();
+ await expect(page.locator('.monaco-diff-editor')).toBeVisible();
+ await page.locator('.diff-evidence').getByLabel('Copy code').first().click();
+ expect(await page.evaluate(()=>navigator.clipboard.readText())).toContain('AuthService');
+ await page.getByLabel('Version A',{exact:true}).selectOption('v2');
+ await page.getByLabel('Version B',{exact:true}).selectOption('v1');
+ await page.getByRole('button',{name:'Inspect change',exact:true}).click();
+ await expect(page.getByLabel('Version A',{exact:true})).toHaveValue('v1');
+ await expect(page.getByLabel('Version B',{exact:true})).toHaveValue('v2');
+ await expect(page.locator('.conversation-turn')).toHaveCount(1);
+ await page.getByLabel('System map',{exact:true}).click();
+ await page.getByLabel('Source evidence',{exact:true}).click();
+ await expect(page.getByLabel('Ask about your code')).toBeFocused();
+ await page.keyboard.press('Control+k');await expect(page.getByLabel('Ask about your code')).toBeFocused();
+});
 test('filter, clipboard, fullscreen, refinement setting and sequence evidence',async({page,context})=>{
  await context.grantPermissions(['clipboard-read','clipboard-write']);
  await page.goto('/');await expect(page.locator('.monaco-editor')).toBeVisible();
