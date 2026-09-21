@@ -30,7 +30,7 @@ Implementation abbreviations: **App** = `frontend/src/App.tsx`; **Graph** = `com
 | Graph node search/center | Graph local loaded nodes | Match selected, details asserted | WORKING; outside loaded graph unsearchable |
 | Incoming/outgoing/depth/hide | Graph local neighborhood; Explore calls → map(symbol,depth) | Outgoing/depth2/hide; pure helper verifies both directions | WORKING; API expansion always fetches up to depth3 then UI narrows |
 | Fit/reset/zoom/pan | Graph / React Flow | Fit transform and reset selection asserted | PARTIALLY WORKING coverage: manual pan/individual +/- not separately automated |
-| Node select / Open source / Explore calls | Graph → App/source/map | Select, explicit source, actual cross-file expansion | WORKING; double-click and file-node “Explore file” equivalents not separately clicked |
+| Node select / Open source / Explore calls | Graph → App/source/map | Select, explicit source, actual cross-file expansion | WORKING for single-click select, "Open source", "Explore calls" and the "Explore file" button; double-click file-node drill-in tested and found BROKEN — see BUGS.md B17 (OPEN) |
 | Graph breadcrumb | App mapSymbol reset | Implementation inspected | NOT TESTED click |
 | Call edge / supporting links | Graph/App → source captured snapshot | Real edge opens evidence/source; backend verifies import/call spans | WORKING basic path; each supporting link/race combination not separately tested |
 | Trace fields / Trace action | App → POST trace | VoiceHandler→BluetoothAgent real supported path | WORKING; ambiguity/limit/no-path via backend, not every browser state |

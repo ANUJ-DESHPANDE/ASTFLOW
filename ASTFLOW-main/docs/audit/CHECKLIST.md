@@ -39,6 +39,8 @@ Checked = demonstrated within the report's stated limits. Unchecked rows retain 
 - [x] Agent trace returned and rendered; operational policy, not hidden reasoning.
 - [x] Error, loading and lexical no-result states.
 - [x] Mobile drawers, focus trap, Escape and reduced-motion mode.
+- [x] Desktop Escape no longer hides the companion panel (B16, fixed and verified this session; was previously untested and broken).
+- [ ] Double-click file-node drill-in in the map: tested this session and found BROKEN (B17, OPEN); the single-click + "Explore file" button path works.
 - [ ] Every control's every failure state: see UI-INVENTORY for untested branches.
 - [ ] First-time user comprehension/usability study: NOT RUN.
 

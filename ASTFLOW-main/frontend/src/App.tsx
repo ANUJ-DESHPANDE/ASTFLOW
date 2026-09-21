@@ -95,7 +95,14 @@ function App() {
         else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
       }
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); setAssistantOpen(true); setTimeout(() => { input.current?.focus(); input.current?.select(); }, 0); }
-      if (event.key === 'Escape') { setShowRepo(false); setAssistantOpen(false); setExplorerOpen(false); }
+      if (event.key === 'Escape') {
+        setShowRepo(false);
+        // assistantOpen/explorerOpen are mobile drawer flags below these breakpoints
+        // (see the >850px and >600px media queries); above them the companion panel
+        // has no close affordance, so Escape must not hide it there.
+        if (window.innerWidth <= 850) setAssistantOpen(false);
+        if (window.innerWidth <= 600) setExplorerOpen(false);
+      }
     };
     window.addEventListener('keydown', handler); return () => window.removeEventListener('keydown', handler);
   }, []);
