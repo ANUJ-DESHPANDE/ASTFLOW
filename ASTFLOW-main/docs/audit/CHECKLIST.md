@@ -13,6 +13,8 @@ Checked = demonstrated within the report's stated limits. Unchecked rows retain 
 - [x] Agent refinement observed and benefit measured in controlled local ablations.
 - [ ] Competitive retrieval quality: low absolute official scores; no external threshold/baseline comparison establishes competitiveness.
 - [ ] Agent improvement generalises: local gain only .001691 NDCG, zero MRR; no held-out evidence.
+- [x] Held-out dev/confirmation split methodology and BM25 tuning tooling built and unit-tested (`benchmark/build_dev_split.py`, `benchmark/analyze_corpus.py`, `benchmark/tune_bm25.py`); see `docs/audit/THEME1-LIVE-GAP-MATRIX.md`.
+- [ ] Any of that tooling actually run against the real dataset: BLOCKED this session (huggingface.co unreachable from this sandbox); no BM25 k1/b tuning, stopword ablation, or token-truncation evidence exists yet. Do not treat the tooling's existence as a quality improvement — the retrieval scores above are unchanged.
 
 ## P1
 

@@ -24,12 +24,15 @@ def tokenize(text: str) -> list[str]:
 
 
 class Retriever:
-    def __init__(self, chunks: list[Chunk], embeddings, embedder, settings: Settings, tokenizer=tokenize):
+    def __init__(self, chunks: list[Chunk], embeddings, embedder, settings: Settings, tokenizer=tokenize,
+                 k1: float = 1.5, b: float = 0.75):
         self.chunks, self.embeddings, self.embedder, self.settings = chunks, embeddings, embedder, settings
         self.tokenize = tokenizer
         self.by_id = {c.chunk_id: c for c in chunks}
         corpus = [self.tokenize(c.search_text) or ["__empty__"] for c in chunks]
-        self.bm25 = BM25Okapi(corpus) if corpus else None
+        # k1/b default to rank_bm25's own library defaults, so existing callers are
+        # unaffected; a benchmark script can pass other values for reproducible tuning.
+        self.bm25 = BM25Okapi(corpus, k1=k1, b=b) if corpus else None
         # Standard BM25Okapi has non-positive IDF on tiny corpora. A positive BM25
         # IDF variant preserves meaningful lexical matching in single-file repos.
         if self.bm25:

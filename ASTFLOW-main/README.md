@@ -238,6 +238,31 @@ Measured full-test NDCG@10: **BM25 .06104; hybrid .08815**. MRR@10: **.052202 / 
 
 Keep the output metadata and evaluation environment's `pip freeze`. Dense/hybrid evaluation fails rather than claiming lexical fallback is semantic retrieval. If a cache was saved by an incompatible sentence-transformers major version, reload the official model with the pinned version.
 
+### Development/validation split and BM25 tuning
+
+The AppsRetrieval task only defines a `test` split — there is no official held-out
+development set to tune against. Repeatedly checking a code change's score against the
+full official test set and keeping whichever change scores best is a form of overfitting
+to that test set, even though nothing here ever reads relevance labels into the ranking
+algorithm itself. `benchmark/build_dev_split.py` partitions the test split's *query IDs*
+(never the corpus) into a `dev` half for iterating on changes and a `confirmation` half
+touched at most once, right before deciding whether a change is worth an official run:
+
+```sh
+.eval-venv/bin/python -m benchmark.build_dev_split       # once; writes benchmark/dev_split.json
+.eval-venv/bin/python -m benchmark.analyze_corpus         # token-length + stopword-candidate evidence, no qrels
+.eval-venv/bin/python -m benchmark.tune_bm25               # k1/b grid search on dev queries only
+.eval-venv/bin/python -m benchmark.tune_bm25 --confirm --k1 <best> --b <best>   # once, before adopting a config
+```
+
+`tune_bm25.py` needs no embedding model (BM25 tuning is model-independent) and appends
+every run to `benchmark/results/bm25-tuning-log.json` with the git commit and timestamp.
+See `docs/audit/RETRIEVAL-EXPERIMENTS.md` for the experiment log format and
+`docs/audit/THEME1-LIVE-GAP-MATRIX.md` for what this tooling does and does not establish
+yet — as of this commit, none of these scripts have been run against the real dataset
+(the sandbox that wrote them had huggingface.co blocked at the network policy level), so
+there are no results to cite; run them locally and record what comes back.
+
 ### Legacy CoIR export/smoke adapter
 
 The optional adapter reads the real `CoIR-Retrieval/apps` dataset used by MTEB's AppsRetrieval task. It uses the patched `datasets` 5.x API, validates current configurations/columns, pins the downloaded dataset revision, and exports ordinary BEIR JSONL/TSV files. It also accepts existing BEIR exports without network access.
