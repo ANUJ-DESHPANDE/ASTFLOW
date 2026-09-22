@@ -234,3 +234,43 @@ Everything that requires the real model or the real corpus:
 - Reranker before/after behavior on real candidates (§38-39) — status unchanged from last session: **BYPASSED** by explicit hardcoded `CROSS_ENCODER_AVAILABLE = False` (source-verified again this session, unchanged), not re-tested numerically since nothing about it changed.
 
 No number for any of these is invented, estimated, or backfilled from the synthetic run above.
+
+## 10. Third-session re-verification, 2026-09-22 (continued again)
+
+A third session re-checked everything above from scratch, per the task's own instruction not to trust the prior report blindly:
+
+- `git status` / `git log` / `git branch -a`: repo state matches the prior report exactly — `225530a` (pre-merge) and `ca6e03b` (merge commit, confirmed to exist on `origin/main` after `git fetch origin main`) are both real, verified commits.
+- `benchmark/mteb_appretrieval.py` is **byte-identical** (`diff` against the fix commit's version, exit code 0) to what was verified in session 2 — the fix has not drifted.
+- `CROSS_ENCODER_AVAILABLE = False` is still hardcoded in `backend/app/retrieval/search.py:13` — reranker still BYPASSED, unchanged.
+- `python3 -m pytest backend/tests/ benchmark/ -v` → **60 passed, 2 skipped, 0 failed**, identical to both prior sessions.
+- `curl -sS https://huggingface.co` → `CONNECT tunnel failed, response 403`, identical to both prior sessions. No `HF_TOKEN`/`HF_*` environment variables are set. No `.safetensors` or MiniLM files exist anywhere on this container (filesystem-wide search). This is now confirmed non-transient across three independent sessions.
+
+### Exact manual-asset-supply specification (per the task's request, not previously spelled out this precisely)
+
+If network access to `huggingface.co` cannot be granted to this session, the real benchmark can still run if these exact assets are placed on disk before invoking the existing (unmodified) benchmark scripts:
+
+**1. Model** — `sentence-transformers/all-MiniLM-L6-v2`, expected at:
+```
+/home/user/ASTFLOW/.astflow/models/sentence-transformers--all-MiniLM-L6-v2/
+```
+containing a standard `sentence-transformers` saved-model directory (`config.json`, `modules.json`, `tokenizer.json`/`vocab.txt`, `sentence_bert_config.json`, `1_Pooling/config.json`, and the weight file — `model.safetensors` or `pytorch_model.bin`). `backend/app/retrieval/embeddings.py::Embedder.load()` checks for `modules.json` at exactly this path and loads locally (`local_files_only=True`) without any network call if found — **no code change needed**.
+
+**2. Direct-adapter dataset** (`benchmark/mteb_appretrieval.py`) — `CoIR-Retrieval/apps`, expected at:
+```
+/home/user/ASTFLOW/.astflow/datasets/apps/
+  corpus.jsonl      # one JSON object per line: {"_id": "...", "title": "...", "text": "..."}
+  queries.jsonl      # {"_id": "...", "text": "..."}
+  qrels/test.tsv      # TSV, header "query-id\tcorpus-id\tscore"
+  metadata.json      # optional: {"dataset", "revision", "datasets_version", "split"}
+```
+`load_export()` (`benchmark/mteb_appretrieval.py:33-47`) reads exactly this structure with no network call if present.
+
+**3. Official MTEB path dataset** (`benchmark/run_mteb.py`) — uses the `mteb`/`datasets` library's own cache, **not** the `.astflow` structure above:
+```
+/root/.cache/huggingface/hub/    (HF_HUB_CACHE, confirmed via huggingface_hub.constants)
+```
+populated the way `datasets.load_dataset("CoIR-Retrieval/apps", ...)` would populate it on a successful download. This is a separate mechanism from #2 — supplying #2 does not satisfy #3, and vice versa.
+
+Any of these being supplied requires **no source code changes** — both scripts already prefer a local/cached copy over downloading when one is present in the right place (this was true before this session and is not something introduced by the fix).
+
+**Status: still BLOCKED. No further download retries were made this session** (three consistent 403s across three sessions is not a transient-failure pattern; retrying a fourth time would not be a good-faith use of the "don't hammer a policy denial" rule). Continuing past this point requires one of: (a) network access to `huggingface.co` granted to this session, (b) the assets above supplied by whoever controls this container's filesystem, or (c) running the existing, unmodified benchmark scripts in a different, network-enabled execution environment and bringing the resulting artifacts back.
