@@ -144,3 +144,16 @@ The following required steps from the task **could not be run** because `hugging
 - Candidate-recall union analysis (§42) and short/long-document breakdown (§21), both of which need the real corpus.
 
 No number for any of these is reported anywhere in this document or the final summary. Reproducing the fix's effect at full scale requires either (a) network access to `huggingface.co` for this session, or (b) the already-downloaded model/dataset cache from a prior environment (`~/.astflow/models/…`, `~/.astflow/datasets/apps/…`) supplied into this session's `.astflow` cache directory. Either would let the exact same fixed code run to completion without further changes — the fix does not depend on network access itself, only this session's *verification* of it at full scale does.
+
+## 11. Post-fix verification session (2026-09-22, continued)
+
+A follow-up session re-verified this fix independently — see `docs/audit/POST-FIX-RETRIEVAL-VERIFICATION.md` for the full record. Summary:
+
+- `huggingface.co` was confirmed **still blocked** (same 403, both for the model and the dataset), and a filesystem-wide search confirmed no cached copy of the model or dataset exists locally. The real 3,765-query/8,765-document benchmark remains **BLOCKED BY MISSING ASSETS** — not run, not estimated.
+- The fix's code was re-read from source and confirmed unchanged and present (`benchmark/mteb_appretrieval.py` id-realignment logic, `benchmark/precompute_embeddings.py` metadata writing).
+- The 3 regression tests were re-run and still pass; the full test suite was re-run (`60 passed, 2 skipped, 0 failed`, identical to before).
+- The mechanism was re-verified at a much larger scale than the original 5-document proof: a 500-document synthetic corpus with a genuinely text-dependent (not magic-marker) proxy encoder, run through the real project code. Full-corpus ID-alignment integrity: **500/500 correctly mapped, 0 missing, 0 mismatched**. A direct, controlled before/after comparison on identical data (only the alignment method changed) showed Dense NDCG@10 moving from **0.1639 (positional/broken) to 1.0000 (id-aligned/fixed)** — the same direction and mechanism as the real regression, at a scale and rigor beyond the original proof.
+
+### Status: **FIX CORRECT BUT FULL-SCALE BENCHMARK BLOCKED**
+
+The alignment mechanism is proven correct by source inspection, full-corpus integrity checking, and a controlled before/after comparison. What is *not* yet known — and will not be reported as known — is the real Dense/Hybrid/Reranked NDCG@10 on the actual AppsRetrieval corpus with the real MiniLM model. That requires network access to `huggingface.co` (or a supplied local copy of the model/dataset) that this session does not have.

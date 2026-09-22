@@ -33,6 +33,35 @@ This document contains real, empirical benchmark runs executed against the offic
 
 **EXP-8 through EXP-11 could not be extended to a full-scale post-fix re-run of the real 3,765-query/8,765-document corpus in this session**: this session's network access is policy-blocked for `huggingface.co` (403 at the proxy), so neither the MiniLM weights nor the CoIR-Retrieval/apps corpus could be (re-)downloaded. EXP-10/EXP-11 instead exercise the real project code end-to-end against a small synthetic corpus with a deterministic fake encoder, which proves the fix's correctness mechanism without depending on network access. See `DENSE-REGRESSION-INVESTIGATION.md` §10 for exactly what remains unverified at full scale and what would unblock it.
 
+### Post-fix verification session, 2026-09-22 (continued)
+
+`huggingface.co` re-checked and confirmed still blocked (identical 403); no local model/dataset cache found anywhere on disk. EXP-12/EXP-13 repeat EXP-10/EXP-11's proof at 100x the scale and with a genuinely text-dependent (not magic-marker) encoder — see `docs/audit/POST-FIX-RETRIEVAL-VERIFICATION.md` for full detail, including a full-corpus (not spot-check) id-integrity pass (500/500 correctly mapped) and window→parent aggregation trace.
+
+| ID | Date | Split | Queries / Corpus | Mode / Config | NDCG@10 | MRR | Recall@10 | Decision / Status |
+|---|---|---|---|---|---:|---:|---:|---|
+| EXP-12 | 2026-09-22 | Synthetic (500 docs, 8 topic queries, shuffled corpus.jsonl order, seeded hash-BoW proxy encoder — no network) | 8 / 500 | Dense — windowed, **pre-fix** positional load (reproduced deliberately) | 0.1639 | 0.3199 | 0.0280 | Broken-alignment reproduction on 100x the corpus of EXP-10, same code path |
+| EXP-13 | 2026-09-22 | Synthetic (same 500 docs, same embeddings, same queries) | 8 / 500 | Dense — windowed, **post-fix** id-realigned load | **1.0000** | **1.0000** | **0.1600** | Only variable changed vs. EXP-12 is positional-vs-id alignment; confirms the fix's effect directly, not by inference |
+
+EXP-12/EXP-13 are **not** a substitute for a real full-scale run (E07-E09/E10 below remain `PENDING — BLOCKED BY MISSING ASSETS`); they are the strongest verification achievable without `huggingface.co` access, isolating the exact mechanism the real bug and fix share.
+
+### Required experiment log per the post-fix verification task
+
+| ID | Description | Status |
+|---|---|---|
+| E00 | Historical BM25 (official MTEB, `k1=1.5`) | historical, `NDCG@10=0.061040` — see Ablation Summary below |
+| E01 | Historical Hybrid (official MTEB, RRF k=60) | historical, `NDCG@10=0.088150` |
+| E02 | Broken direct-adapter BM25 (3,765q/8,765d) | `NDCG@10=0.0631` — diagnostic reference, not invalidated (BM25 unaffected by the dense bug) |
+| E03 | Broken direct-adapter Dense (3,765q/8,765d) | `NDCG@10=0.0010` — **INVALID, alignment bug** (root cause: `DENSE-REGRESSION-INVESTIGATION.md`) |
+| E04 | Broken direct-adapter Hybrid (3,765q/8,765d) | `NDCG@10=0.0322` — **INVALID, alignment bug** |
+| E05 | Fixed-cache diagnostic Dense (synthetic, mechanism-only) | see EXP-13 above (`1.0000` on 500-doc synthetic corpus) |
+| E06 | Fixed-cache diagnostic Hybrid (synthetic, mechanism-only) | see §7 of `POST-FIX-RETRIEVAL-VERIFICATION.md` (`1.0000` on 500-doc synthetic corpus) |
+| E07 | Fixed-cache full Dense (3,765q/8,765d, real model+corpus) | **PENDING — BLOCKED BY MISSING ASSETS** (`huggingface.co` 403; no local cache) |
+| E08 | Fixed-cache full Hybrid (3,765q/8,765d, real model+corpus) | **PENDING — BLOCKED BY MISSING ASSETS** |
+| E09 | Fixed-cache full Reranked (3,765q/8,765d, real model+corpus) | **PENDING — BLOCKED BY MISSING ASSETS** (also: reranker is BYPASSED by hardcoded `CROSS_ENCODER_AVAILABLE=False`, independent of asset access) |
+| E10 | MTEB-compatible fixed Hybrid (real model+corpus) | **PENDING — BLOCKED BY MISSING ASSETS** |
+
+No value for E07-E10 is estimated, extrapolated, or backfilled from E05/E06/EXP-12/EXP-13. They remain open until `huggingface.co` access (or a locally supplied model/dataset cache) is available to this session.
+
 ---
 
 ## Ablation Summary
