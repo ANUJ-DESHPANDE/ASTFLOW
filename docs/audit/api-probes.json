@@ -1,0 +1,362 @@
+[
+  {
+    "case": "health",
+    "method": "get",
+    "path": "/api/health",
+    "expected": 200,
+    "status": 200,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "no indexed repository",
+    "method": "post",
+    "path": "/api/search",
+    "expected": 400,
+    "status": 400,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "missing repository",
+    "method": "post",
+    "path": "/api/index",
+    "expected": 404,
+    "status": 404,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "empty repository",
+    "method": "post",
+    "path": "/api/index",
+    "expected": 400,
+    "status": 400,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "Python outside product parser",
+    "method": "post",
+    "path": "/api/index",
+    "expected": 400,
+    "status": 400,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "index demo",
+    "method": "post",
+    "path": "/api/index",
+    "expected": 200,
+    "status": 200,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "/api/repository",
+    "method": "get",
+    "path": "/api/repository",
+    "expected": 200,
+    "status": 200,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "/api/versions",
+    "method": "get",
+    "path": "/api/versions",
+    "expected": 200,
+    "status": 200,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "/api/index/status",
+    "method": "get",
+    "path": "/api/index/status",
+    "expected": 200,
+    "status": 200,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "/api/map",
+    "method": "get",
+    "path": "/api/map",
+    "expected": 200,
+    "status": 200,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "/api/checkpoint",
+    "method": "get",
+    "path": "/api/checkpoint",
+    "expected": 200,
+    "status": 200,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "invalid query",
+    "method": "post",
+    "path": "/api/search",
+    "expected": 422,
+    "status": 422,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "invalid query",
+    "method": "post",
+    "path": "/api/search",
+    "expected": 422,
+    "status": 422,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "invalid query",
+    "method": "post",
+    "path": "/api/search",
+    "expected": 422,
+    "status": 422,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "valid query x",
+    "method": "post",
+    "path": "/api/search",
+    "expected": 200,
+    "status": 200,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "valid query qxzjvnonexistentidentifier",
+    "method": "post",
+    "path": "/api/search",
+    "expected": 200,
+    "status": 200,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "valid query function normalizeInput(raw) {",
+    "method": "post",
+    "path": "/api/search",
+    "expected": 200,
+    "status": 200,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "valid query openBluetoothSettings",
+    "method": "post",
+    "path": "/api/search",
+    "expected": 200,
+    "status": 200,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "invalid top_k",
+    "method": "post",
+    "path": "/api/search",
+    "expected": 422,
+    "status": 422,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "invalid top_k",
+    "method": "post",
+    "path": "/api/search",
+    "expected": 422,
+    "status": 422,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "invalid top_k",
+    "method": "post",
+    "path": "/api/search",
+    "expected": 422,
+    "status": 422,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "valid exact source",
+    "method": "get",
+    "path": "/api/source",
+    "expected": 200,
+    "status": 200,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "source path guard",
+    "method": "get",
+    "path": "/api/source",
+    "expected": 400,
+    "status": 400,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "source path guard",
+    "method": "get",
+    "path": "/api/source",
+    "expected": 404,
+    "status": 404,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "source path guard",
+    "method": "get",
+    "path": "/api/source",
+    "expected": 400,
+    "status": 400,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "unknown symbol",
+    "method": "get",
+    "path": "/api/symbol/unknown",
+    "expected": 404,
+    "status": 404,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "known symbol",
+    "method": "get",
+    "path": "/api/symbol/voice/VoiceHandler.js::VoiceHandler.handle",
+    "expected": 200,
+    "status": 200,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "unknown version",
+    "method": "post",
+    "path": "/api/search",
+    "expected": 400,
+    "status": 400,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "unknown callable map",
+    "method": "get",
+    "path": "/api/map",
+    "expected": 404,
+    "status": 404,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "bounded symbol neighborhood",
+    "method": "get",
+    "path": "/api/map",
+    "expected": 200,
+    "status": 200,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "invalid neighborhood depth",
+    "method": "get",
+    "path": "/api/map",
+    "expected": 422,
+    "status": 422,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "unknown trace symbols neutral result",
+    "method": "post",
+    "path": "/api/trace",
+    "expected": 200,
+    "status": 200,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "invalid trace depth",
+    "method": "post",
+    "path": "/api/trace",
+    "expected": 422,
+    "status": 422,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "compare same immutable source",
+    "method": "post",
+    "path": "/api/compare",
+    "expected": 200,
+    "status": 200,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "duplicate indexing lock",
+    "method": "post",
+    "path": "/api/index",
+    "expected": 409,
+    "status": 409,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "host guard",
+    "method": "get",
+    "path": "/api/health",
+    "expected": 400,
+    "status": 400,
+    "pass": true,
+    "json": false
+  },
+  {
+    "case": "origin guard",
+    "method": "get",
+    "path": "/api/repository",
+    "expected": 403,
+    "status": 403,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "cross-site guard",
+    "method": "get",
+    "path": "/api/repository",
+    "expected": 403,
+    "status": 403,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "oversized JSON body",
+    "method": "post",
+    "path": "/api/search",
+    "expected": 413,
+    "status": 413,
+    "pass": true,
+    "json": true
+  },
+  {
+    "case": "wrong content type",
+    "method": "post",
+    "path": "/api/search",
+    "expected": 415,
+    "status": 415,
+    "pass": true,
+    "json": true
+  }
+]

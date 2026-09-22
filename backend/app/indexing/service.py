@@ -7,9 +7,12 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 
+import numpy as np
+
 from backend.app.config import ROOT, Settings
 from backend.app.indexing.discovery import list_versions, read_snapshot, snapshot_hash
 from backend.app.parsing.javascript import parse_file
+from backend.app.retrieval.embedding_cache import EmbeddingCache
 from backend.app.retrieval.embeddings import Embedder
 from backend.app.retrieval.search import Retriever
 from backend.app.storage.store import load_index, save_index
@@ -33,6 +36,7 @@ class IndexService:
     def __init__(self, settings: Settings | None = None):
         self.settings = settings or Settings()
         self.embedder = Embedder(self.settings)
+        self.embedding_cache = EmbeddingCache(self.settings.cache / "embedding_cache.sqlite")
         self.indexes = {}
         self.registry = {}
         self.repo_path = None
@@ -58,6 +62,8 @@ class IndexService:
 
     def _construct(self, data):
         manifest, files, symbols, chunks, edges, extra, embeddings = data
+        if embeddings is not None and manifest.get('embedding_model') != self.settings.model:
+            raise ValueError('Indexed embedding model differs from the configured model; reindex this version')
         return Index(manifest, files, symbols, chunks, edges, extra,
                      Retriever(chunks, embeddings, self.embedder, self.settings), ProjectGraph(symbols, edges))
 
@@ -76,8 +82,15 @@ class IndexService:
                 identity = f"{repo}\n{revision}\n{digest}\n{self.settings.fingerprint()}\n{self.embedder.status}"
                 key = hashlib.sha256(identity.encode()).hexdigest()[:24]
                 folder = self.settings.cache / "indexes" / key
+                cached = None
                 if (folder / "manifest.json").exists():
-                    index = self._construct(load_index(folder))
+                    try:
+                        cached = self._construct(load_index(folder))
+                    except ValueError:
+                        # Preserve corrupt evidence for diagnosis; explicit reindex rebuilds it.
+                        folder.rename(folder.with_name(key + '.corrupt.' + uuid.uuid4().hex))
+                if cached is not None:
+                    index = cached
                 else:
                     parsed = []
                     for i, (path, source) in enumerate(files.items()):
@@ -96,25 +109,31 @@ class IndexService:
                         self.status.update(stage="Checking language-service evidence", progress=68)
                         edges, enrichment = enrich(files, symbols, edges)
                     self.status.update(stage="Embedding code chunks", progress=78)
-                    embeddings = self.embedder.encode([c.search_text for c in chunks]) if chunks else None
+                    embeddings, embed_stats = self._embed_chunks(chunks)
                     manifest = {"version_key": key, "repository_path": str(repo), "repository_name": repo.name,
                                 "version": version, "resolved_revision": revision, "source_hash": digest,
                                 "indexed_at": datetime.now(timezone.utc).isoformat(), "embedding_model": self.embedder.status["model"],
                                 "file_count": len(files), "symbol_count": len(symbols), "chunk_count": len(chunks),
                                 "edge_count": len(edges), "configuration_hash": self.settings.fingerprint(),
                                 "semantic": self.embedder.status, "enrichment": enrichment, "warnings": warnings,
+                                "embedding_cache": embed_stats,
                                 "index_latency_ms": round((time.perf_counter() - started) * 1000, 2)}
                     extra = {"unresolved": unresolved, "sequences": sequences,
                              "imports": {f.path: f.imports for f in parsed}, "exports": {f.path: f.exports for f in parsed}}
                     staging = self.settings.cache / "indexes" / (key + "." + uuid.uuid4().hex + ".tmp")
                     save_index(staging, manifest, files, symbols, chunks, edges, extra, embeddings)
-                    try:
-                        staging.rename(folder)
-                    except FileExistsError:
-                        # Another process may finish this identical content-addressed
-                        # snapshot first. Its published index is already complete.
-                        if not (folder / "manifest.json").exists():
-                            raise
+                    # Windows sync/antivirus software can briefly lock a newly
+                    # closed SQLite file. Publish atomically, with bounded retry.
+                    for attempt in range(6):
+                        try:
+                            staging.rename(folder)
+                            break
+                        except (FileExistsError, PermissionError):
+                            if (folder / "manifest.json").exists():
+                                break
+                            if attempt == 5:
+                                raise
+                            time.sleep(.1 * (2 ** attempt))
                     index = self._construct((manifest, files, symbols, chunks, edges, extra, embeddings))
                 self.repo_path = str(repo)
                 self.registry[self._alias(str(repo), version)] = key
@@ -128,6 +147,31 @@ class IndexService:
             except Exception as exc:
                 self.status = {"state": "error", "stage": str(exc), "progress": 0}
                 raise
+
+    def _embed_chunks(self, chunks):
+        """Encode only chunks whose exact indexed text has never been embedded by
+        this model before; reuse persisted vectors for the rest. A chunk's
+        search_text is unchanged whenever its file, name, imports, comments and
+        source span are unchanged, which is the common case when only some
+        files change between indexed versions."""
+        stats = {"reused": 0, "computed": 0}
+        if not chunks or self.embedder.load() is None:
+            return None, stats
+        model_name = self.settings.model
+        hashes = [hashlib.sha256(c.search_text.encode()).hexdigest() for c in chunks]
+        cached = self.embedding_cache.get_many(model_name, hashes)
+        missing = [i for i, h in enumerate(hashes) if h not in cached]
+        if missing:
+            vectors = self.embedder.encode([chunks[i].search_text for i in missing])
+            if vectors is None:
+                return None, stats
+            new_items = {hashes[i]: vectors[j] for j, i in enumerate(missing)}
+            self.embedding_cache.put_many(model_name, new_items)
+            cached.update(new_items)
+        stats["reused"] = len(chunks) - len(missing)
+        stats["computed"] = len(missing)
+        embeddings = np.stack([cached[h] for h in hashes]).astype(np.float32)
+        return embeddings, stats
 
     def get(self, version: str = "working-tree") -> Index:
         if not self.repo_path:
@@ -159,6 +203,12 @@ class IndexService:
 
     def versions(self):
         versions = list_versions(Path(self.repo_path)) if self.repo_path else []
+        known = {v['name'] for v in versions}
+        for alias in self.registry:
+            repo, name = alias.rsplit('\n', 1)
+            if repo == self.repo_path and name not in known:
+                versions.append({'name': name, 'commit': None, 'label': name})
+                known.add(name)
         for version in versions:
             key = self.registry.get(self._alias(self.repo_path, version["name"]))
             version.update(indexed=bool(key), version_key=key)

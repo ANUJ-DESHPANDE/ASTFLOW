@@ -1,6 +1,10 @@
 # ASTFLOW
 
-**Find the code. Trace the path. See what changed.**
+**See what changed. Understand what you built.**
+
+Updated to the supplied editor-video visual reference. See [changes and limits](docs/CHANGES.md).
+
+**Engineering audit (20 September):** [report](docs/audit/REPORT.md), [official requirements matrix](docs/audit/REQUIREMENTS.md), [defect ledger](docs/audit/BUGS.md), [UI inventory](docs/audit/UI-INVENTORY.md) and [remaining checklist](docs/audit/CHECKLIST.md). Full AppsRetrieval scores are substantially lower than the small demo benchmark; use the official figures for screening claims.
 
 ASTFLOW is a local repository investigation engine for JavaScript. Ask a question, get ranked source snippets, follow supported call relationships, and compare the answer across Git snapshots. The snippet list is the canonical answer; graphs and explanations supplement it.
 
@@ -24,7 +28,7 @@ On Windows the setup script uses `py -3.12`; on macOS/Linux it uses `python3`. T
 ```powershell
 py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
-npm install
+npm ci
 npm run build
 .\.venv\Scripts\python.exe scripts/setup_demo.py
 .\.venv\Scripts\python.exe -m backend.app.cli model-download
@@ -35,17 +39,18 @@ On macOS/Linux replace `.\.venv\Scripts\python.exe` with `.venv/bin/python`. Act
 
 ## Try the investigation
 
-1. Search **Where is Bluetooth settings handled?** Open `openBluetoothSettings` to inspect the exact indexed lines.
-2. Search **How does VoiceHandler reach BluetoothAgent?** The investigation panel shows the observed candidates, refinement action, second search, and final ranking.
-3. Open **Trace**, enter `VoiceHandler` and `BluetoothAgent`, then choose **Trace path**. Click an edge to open its stored call site.
-4. Search **Where is session restoration handled?** Open **Changes**, select `v1` and `v2`, and compare. `AuthService.restore` delegates to the added `SessionManager.restore` in v2.
-5. Try **Where is authentication validated before a session is created?** Direct lexical ordering is shown separately from call-path evidence.
+1. Start in **Code**. Use the Explorer to open files in closable tabs, adjust zoom, and inspect the indexed source.
+2. Ask **Where is Bluetooth settings handled?** in the companion composer. Select a source match to inspect its exact lines.
+3. Ask **How does VoiceHandler reach BluetoothAgent?** and expand **Investigation** to inspect the retrieval steps.
+4. Open **Map**, choose **Trace a path**, enter `VoiceHandler` and `BluetoothAgent`, and press **Trace**. Click an edge to open its call site and supporting evidence.
+5. Open **Compare**, select `v1` and `v2`, and compare. Inspect the real before/after source and structural counts. `AuthService.restore` delegates to the added `SessionManager.restore` in v2.
+6. Use **Explain** to show or hide the companion and the folder rail button to toggle the explorer. On narrow screens these become drawers.
 
 The demo is source code, not a lookup table. Its query strings are only UI examples and benchmark inputs; the retrieval engine contains no query-specific answers. Demo authentication is deliberately a small fixture, not a production authentication implementation.
 
 ## Use another repository
 
-Click the repository name, enter an absolute local path, and choose `working-tree`, `HEAD`, a tag, or a commit. Index each version you want to investigate. Use the sidebar selector to switch snapshots. Reindex explicitly after working-tree edits.
+Click the repository name, enter an absolute local path, and choose `working-tree`, `HEAD`, a tag, or a commit. Index each version you want to investigate. Use the sidebar selector to switch snapshots. A passive notice detects working-tree edits. Select **Update snapshot** to create a fresh snapshot when ready; the current evidence stays stable while you read.
 
 ```powershell
 .\.venv\Scripts\python.exe -m backend.app.cli index C:\projects\my-app --version HEAD
@@ -127,19 +132,11 @@ Version intent uses the explicitly selected snapshot. **Changes** runs the quest
 
 ## Structural evidence and its limits
 
-The resolver first discovers every symbol, then resolves relationships against the completed table. It supports local calls, named/default/namespace ESM imports, import aliases, same-class calls, and simple instances created in constructors, class fields, or local variables. Cyclic imports do not depend on traversal order. Targets are existing callable symbols; unresolved calls never create phantom nodes.
+The resolver completes discovery before resolving any edge. Verified relationships cover supported local calls, same-class normal methods, and direct unconditional constructor-held instances. Relative ES6 named imports must be unaliased, with direct `.js` paths or a missing-`.js` fallback. Default/namespace imports, aliases, directory indexes, re-exports, packages and CommonJS remain unresolved. Class-field methods, accessors, static methods and nested callbacks do not create verified edges.
 
-Each edge stores its source and target IDs, exact file and call line range, UTF-8 byte span, source expression, resolution method, and evidence sources:
+TypeScript can corroborate an already supported edge, but cannot create an edge the conservative resolver rejected. Parse-error files do not contribute verified relationships. Shadowing, reassignment, duplicate names and unsupported instance assignments cause abstention. Supporting spans preserve the import declaration, constructor assignment and call site where applicable.
 
-- `STATIC_VERIFIED`: supported by the conservative syntax/binding resolver.
-- `LANGUAGE_SERVICE_VERIFIED`: supported by a TypeScript declaration resolution.
-- `SEARCH_INFERRED`: relevance or an unresolved relationship; never drawn as a verified call edge.
-
-The TypeScript layer receives the snapshot through stdin and uses an in-memory compiler host. It does not load a target repository's configuration, plugins, or dependencies. Its timeout/failure is nonfatal. Confirmation from both analyzers is retained on one edge rather than duplicated.
-
-Static evidence describes a supported source relationship, not proof of runtime execution. Reflection, computed/dynamic dispatch, dependency injection, arbitrary monkey-patching, complex alias/reassignment flows, CommonJS export resolution, and many reexport patterns remain outside the baseline. The language service may resolve some additional patterns. Search results stay useful when structure is unavailable.
-
-Sequence evidence is **lexical order only**: calls in separate direct statements in the same function body. Calls in unrelated branches or nested arguments do not establish order. Exceptions, asynchronous completion, and full control-flow guarantees are not analyzed.
+SEQUENCE evidence is lexical order, not runtime completion. It requires an identified ordered pair and excludes control-flow/early-exit cases. Vague questions do not receive guessed ordering evidence.
 
 The graph API supports callers, callees, neighbors, shortest paths, and bounded paths. Trace defaults to five edges, has result/expansion limits, and shows only a relevant subgraph. A class name expands to its methods; an exact `path::qualified_name` identifies one symbol unambiguously.
 
@@ -180,10 +177,12 @@ No cloud LLM, API key, runtime execution, or external explanation service is con
 
 ## API
 
-Interactive OpenAPI documentation: **http://127.0.0.1:8000/docs**.
+OpenAPI JSON contract: **http://127.0.0.1:8000/openapi.json**. The strict content policy intentionally does not load third-party documentation scripts.
 
 | Route | Purpose |
 | --- | --- |
+| `GET /api/map?version=…&file=…` | Bounded file overview or symbols in one file, with unresolved evidence |
+| `GET /api/checkpoint` | Passive working-tree change status against the indexed snapshot |
 | `GET /api/health` | Service/model status |
 | `GET /api/repository?version=…` | Active repository, indexed versions, snapshot files |
 | `POST /api/index` | `{repo_path, version, background: true}`; background jobs return 202 |
@@ -201,6 +200,8 @@ The service binds to loopback and validates Host/Origin headers. Source requests
 
 ## Verification and benchmarks
 
+Requires the demo Git history from Quick start (`scripts/setup_demo.py`) to already exist; on a fresh clone that has not run Quick start, run it first or `test_indexed_revision_expression_remains_in_version_selector` fails because `examples/demo-repo` is not yet its own Git repository.
+
 ```powershell
 .\.venv\Scripts\python.exe -m pytest
 npm run build
@@ -212,15 +213,59 @@ npm run test:ui
 
 Browser tests use installed Microsoft Edge by default. For another platform, set the Playwright `channel` in `playwright.config.ts` or install Chromium with `npx playwright install chromium` and remove the Edge channel. Tests use the **real running backend**; they do not mock search or graph responses. They save screenshots under `.astflow/screenshots/`.
 
-Backend coverage includes parser spans/Unicode, named exports, arrows/JSX, deterministic resolution, aliases and cyclic imports, dynamic and shadowed calls, reassignment and `this` boundaries, conservative sequence ordering, source filters, lexical retrieval, real CPU semantic retrieval, persisted vectors, agent refinement, graph traversal, API/source validation, Git comparison, and real/failing TypeScript enrichment. Semantic integration tests report a skip when the optional model is not installed; language-service tests report a skip when Node dependencies are absent.
+Backend coverage includes parser spans/Unicode, named exports, arrows/JSX, deterministic resolution, unsupported-import abstention and cyclic named imports, dynamic and shadowed calls, reassignment and `this` boundaries, conservative sequence ordering, source filters, lexical retrieval, real CPU semantic retrieval, persisted vectors, agent refinement, graph traversal, API/source validation, Git comparison, and real/failing TypeScript enrichment. Semantic integration tests report a skip when the optional model is not installed; language-service tests report a skip when Node dependencies are absent.
 
 The local benchmark computes **NDCG@10, MRR, Recall@10**, median and p95 query latency for BM25-only, dense-only, hybrid, hybrid plus structure, and the full engine. It validates every relevance label against actual indexed symbols. Full per-query rankings and metrics are saved in [`benchmark/results/local.json`](benchmark/results/local.json), with a readable table in [`benchmark/results/local.md`](benchmark/results/local.md). Live API verification measurements are in [`benchmark/results/verification.json`](benchmark/results/verification.json).
 
-The included 16-query/24-chunk benchmark is a small handcrafted regression fixture. It does **not** establish performance on large repositories or an official PRISM/MTEB evaluation. No benchmark numbers are hardcoded into the application. Index time includes CPU model loading on a cold process; query measurements warm the model first.
+The included 16-query/21-chunk benchmark is a small handcrafted regression fixture. It does **not** establish performance on large repositories or an official PRISM/MTEB evaluation. No benchmark numbers are hardcoded into the application. Index time includes CPU model loading on a cold process; query measurements warm the model first.
 
-### CoIR / AppsRetrieval adapter
+### Official full AppsRetrieval evaluation
 
-The optional adapter reads the real `CoIR-Retrieval/apps` dataset used by MTEB's AppsRetrieval task. It uses the inspected `datasets` 4.x API, validates current configurations/columns, pins the downloaded dataset revision, and exports ordinary BEIR JSONL/TSV files. It also accepts existing BEIR exports without network access.
+Use a separate Python 3.12 environment for MTEB. From the project root:
+
+```powershell
+py -3.12 -m venv .eval-venv
+.\.eval-venv\Scripts\python.exe -m pip install -e '.[dev,semantic]' -r benchmark/requirements-mteb.txt
+.\.eval-venv\Scripts\python.exe benchmark/run_mteb.py --mode bm25 --output benchmark/results/mteb-bm25
+.\.eval-venv\Scripts\python.exe benchmark/run_mteb.py --mode hybrid --download-model --output benchmark/results/mteb-hybrid
+.\.eval-venv\Scripts\python.exe -m pytest benchmark/test_mteb_adapter.py
+.\.eval-venv\Scripts\python.exe -m benchmark.ablate
+```
+
+On Linux use `.eval-venv/bin/python`. Each official run uses MTEB 2.21.0, all 3,765 test queries, all 8,765 documents and pinned dataset revision `f22508f96b7a36c2415181ed8bb76f76e04ae2d5`. `appsretrieval_results.json` is written using the framework serializer. `run_metadata.json` records corpus/model identity and raw timing; `predictions/` retains the ranked document IDs. Upload the generated MTEB JSON as the required release artifact after final review. Large predictions are ignored by Git and excluded from the source ZIP.
+
+Measured full-test NDCG@10: **BM25 .06104; hybrid .08815**. MRR@10: **.052202 / .072400**. These evaluate text retrieval on Python dataset documents; they do not evaluate ASTFLOW's JavaScript graph/agent. Do not substitute the much higher curated demo scores. The full hybrid run contains multi-hour timing outliers and is not a clean throughput benchmark; see the audit report.
+
+Keep the output metadata and evaluation environment's `pip freeze`. Dense/hybrid evaluation fails rather than claiming lexical fallback is semantic retrieval. If a cache was saved by an incompatible sentence-transformers major version, reload the official model with the pinned version.
+
+### Development/validation split and BM25 tuning
+
+The AppsRetrieval task only defines a `test` split — there is no official held-out
+development set to tune against. Repeatedly checking a code change's score against the
+full official test set and keeping whichever change scores best is a form of overfitting
+to that test set, even though nothing here ever reads relevance labels into the ranking
+algorithm itself. `benchmark/build_dev_split.py` partitions the test split's *query IDs*
+(never the corpus) into a `dev` half for iterating on changes and a `confirmation` half
+touched at most once, right before deciding whether a change is worth an official run:
+
+```sh
+.eval-venv/bin/python -m benchmark.build_dev_split       # once; writes benchmark/dev_split.json
+.eval-venv/bin/python -m benchmark.analyze_corpus         # token-length + stopword-candidate evidence, no qrels
+.eval-venv/bin/python -m benchmark.tune_bm25               # k1/b grid search on dev queries only
+.eval-venv/bin/python -m benchmark.tune_bm25 --confirm --k1 <best> --b <best>   # once, before adopting a config
+```
+
+`tune_bm25.py` needs no embedding model (BM25 tuning is model-independent) and appends
+every run to `benchmark/results/bm25-tuning-log.json` with the git commit and timestamp.
+See `docs/audit/RETRIEVAL-EXPERIMENTS.md` for the experiment log format and
+`docs/audit/THEME1-LIVE-GAP-MATRIX.md` for what this tooling does and does not establish
+yet — as of this commit, none of these scripts have been run against the real dataset
+(the sandbox that wrote them had huggingface.co blocked at the network policy level), so
+there are no results to cite; run them locally and record what comes back.
+
+### Legacy CoIR export/smoke adapter
+
+The optional adapter reads the real `CoIR-Retrieval/apps` dataset used by MTEB's AppsRetrieval task. It uses the patched `datasets` 5.x API, validates current configurations/columns, pins the downloaded dataset revision, and exports ordinary BEIR JSONL/TSV files. It also accepts existing BEIR exports without network access.
 
 ```powershell
 .\.venv\Scripts\python.exe -m pip install -e '.[benchmark]'
@@ -239,14 +284,33 @@ Run the backend in one terminal and `npm run dev` in another. Vite proxies `/api
 
 The checked-in npm lock and Python constraints record the verified dependency set. SQLite indexes and embeddings are rebuildable runtime artifacts. The demo setup script is idempotent and refuses to overwrite unrelated existing demo Git history.
 
-## Remaining optional work
+## Validation scope and remaining work
 
-- Runtime execution/coverage, explicit scenarios, and observed runtime evidence.
-- A CPU cross-encoder reranker, retained only after a measured quality/latency improvement.
-- Broader language-service resolution, test framework patterns, and moved-symbol analysis.
-- External LLM planning or evidence-only explanation generation.
-- Large-repository performance profiling, incremental indexing, and an independent relevance dataset.
+See [changes and limits](docs/CHANGES.md) and [verification](docs/VERIFICATION.md). The fixture is reconstructed and its new measured results replace the unavailable original fixture's local report. Semantic execution is skipped when the optional model is absent. A frozen real-repository evaluation with manually judged relevance is still needed for the original track brief; no such results are invented here.
 
-These are not presented as implemented features. The core search, trace, source, and version workflows operate independently of them.
+The current sidekick offers a source-backed map, version comparison and on-demand evidence, not prompt-history capture or automated knowledge of design intent. No additional language or resolver expansion is included.
 
 Implementation references: [Tree-sitter Python bindings](https://github.com/tree-sitter/py-tree-sitter), [Sentence Transformers encoding](https://www.sbert.net/docs/package_reference/sentence_transformer/model.html), and [CoIR Apps dataset](https://huggingface.co/datasets/CoIR-Retrieval/apps).
+
+### Lightweight setup (without downloading the embedding model)
+
+```powershell
+$env:ASTFLOW_SEMANTIC = 'off'
+npm run setup
+npm run demo
+```
+
+Source search, map, trace and comparison remain available. To enable dense retrieval later, install `.[semantic]`, remove the `ASTFLOW_SEMANTIC=off` setting, run `astflow model-download`, and reindex.
+
+### Graph exploration
+
+Map starts at files; choose a file to inspect its callables. Select a node to highlight callers/callees, use depth/direction controls, then **Explore calls** for a cross-file neighborhood. **Open source** is separate. Fit/reset return to context. Counts disclose the backend 150-node and frontend 60-node/250-edge bounds; node search searches the loaded view. Arrows mean supported static calls, not observed runtime execution.
+
+### Docker files (execution not yet verified)
+
+```sh
+docker build -t astflow .
+docker run --rm -p 127.0.0.1:8000:8000 astflow
+```
+
+The image builds the frontend and runs as a non-root user with the bundled demo, lexical retrieval and TS corroboration disabled. It needs no host repository mount for that demo. Its container process listens internally on all interfaces; publish only to host loopback as shown. The audit machine's Docker daemon was unavailable, so image build/start is **UNVERIFIED**. Do not claim a tested container submission until these commands and the main journeys pass.

@@ -31,7 +31,7 @@ def plan(query: str, graph):
     return {"intent": intent, "symbols": names[:6], "max_passes": 2}
 
 
-def investigate(index, query: str, version: str, top_k: int = 10, agentic: bool = True, mode: str = "full"):
+def investigate(index, query: str, version: str, top_k: int = 10, agentic: bool = True, mode: str = "full", structure: bool = True):
     started = time.perf_counter()
     retriever, graph = index.retriever, index.graph
     settings = retriever.settings
@@ -55,7 +55,7 @@ def investigate(index, query: str, version: str, top_k: int = 10, agentic: bool 
                    "seed_ids": [r["chunk"].symbol_id for r in seeds]}
     trace.append({"step": "OBSERVE", "details": f"Found {observation['exact_matches']} exact matches across {observation['file_diversity']} files; {len(missing)} target(s) outside the top ten", "data": observation})
     structural_intent = query_plan["intent"] in {"PATH", "USAGE", "SEQUENCE"}
-    expand = mode in {"full", "hybrid_structure"} and bool(seeds)
+    expand = structure and mode in {"full", "hybrid_structure"} and bool(seeds)
     second_pass = agentic and mode == "full" and bool(seeds) and (structural_intent or bool(missing) or (agreement is not None and agreement < .2))
     candidates = {row["chunk"].chunk_id: row for row in rows}
     if second_pass:
@@ -126,10 +126,21 @@ def investigate(index, query: str, version: str, top_k: int = 10, agentic: bool 
     relevant_ids.update(sid for p in (paths or {}).get("paths", []) for sid in p)
     subgraph = graph.subgraph(relevant_ids, (paths or {}).get("paths", []))
     sequence = [s for s in index.extra.get("sequences", []) if s["caller"] in relevant_ids] if query_plan["intent"] == "SEQUENCE" else []
+    if sequence:
+        pair = query_plan["symbols"]
+        if len(pair) == 2:
+            first, second = pair
+            if re.search(r"\bafter\b", query, re.I):
+                first, second = second, first
+            before_ids, after_ids = set(graph.resolve(first)), set(graph.resolve(second))
+            sequence = [s for s in sequence if s["before"] in before_ids and s["after"] in after_ids]
+        else:
+            sequence = []  # No guessed ordered pair from semantic similarity.
     trace.append({"step": "RERANK", "details": f"Ranked {len(ordered)} candidates using stored evidence", "data": {"candidates": len(ordered)}})
     trace.append({"step": "STOP", "details": f"Returned {len(results)} source snippets after {2 if second_pass else 1} retrieval pass(es)"})
     return {"query": query, "version": version, "version_key": index.manifest["version_key"],
             "results": results, "intent": query_plan["intent"], "agent_trace": trace,
-            "graph": subgraph, "sequences": sequence, "path_status": (paths or {}).get("status"),
+            "graph": {**subgraph, "version_key": index.manifest["version_key"]}, "sequences": sequence, "path_status": (paths or {}).get("status"),
+            "status": "OK" if results else "NO_RESULTS",
             "semantic": {**index.manifest["semantic"], "available": diagnostics["semantic_available"]}, "diagnostics": diagnostics,
             "latency_ms": round((time.perf_counter() - started) * 1000, 2)}

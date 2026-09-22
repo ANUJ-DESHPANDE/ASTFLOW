@@ -1,0 +1,5 @@
+# Isolate the official evaluation environment from the lightweight web app.
+mteb==2.21.0
+sentence-transformers==5.7.0
+rank-bm25==0.2.2
+# Install ASTFLOW itself with: python -m pip install -e .

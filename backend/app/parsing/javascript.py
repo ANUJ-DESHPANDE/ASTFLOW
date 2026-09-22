@@ -37,7 +37,8 @@ def parse_file(path: str, source_text: str) -> ParsedFile:
     parsed = ParsedFile(path, source_text)
     is_test = bool(re.search(r"(?:^|/)__tests__/|\.(?:test|spec)\.[cm]?jsx?$", path))
     if tree.root_node.has_error:
-        parsed.diagnostics.append(f"{path}: parser recovered from syntax errors; invalid spans are not resolved")
+        parsed.has_errors = True
+        parsed.diagnostics.append(f"{path}: syntax errors; structural resolution disabled for this file")
     node_symbols: dict[int, Symbol] = {}
     name_counts: Counter = Counter()
 
@@ -45,7 +46,7 @@ def parse_file(path: str, source_text: str) -> ParsedFile:
         qualified = f"{parent.qualified_name}.{name}" if parent else name
         name_counts[qualified] += 1
         if name_counts[qualified] > 1:
-            qualified += f"@{node.start_point.row + 1}"
+            qualified += f"@{node.start_byte}"
         text = value(node, source)
         symbol = Symbol(f"{path}::{qualified}", qualified, name, kind, path,
                         node.start_point.row + 1, node.end_point.row + 1,
@@ -62,6 +63,7 @@ def parse_file(path: str, source_text: str) -> ParsedFile:
             current = create(node, value(field(node, "name"), source) or "default", "class", parent)
         elif node.type == "method_definition":
             current = create(node, value(field(node, "name"), source), "method", parent, field(node, "parameters"))
+            current.method_kind = next((c.type for c in node.children if c.type in {"static", "get", "set", "*"}), "normal")
         elif node.type in FUNCTIONS:
             name = value(field(node, "name"), source)
             container = node.parent
@@ -88,11 +90,18 @@ def parse_file(path: str, source_text: str) -> ParsedFile:
             if not name:
                 name = f"anonymous@{node.start_point.row + 1}:{node.start_point.column}"
             current = create(span, name, kind, parent, field(node, "parameters") or field(node, "parameter"))
+            if kind == "method":
+                current.method_kind = "field"
             node_symbols[node.id] = current
         for child in node.named_children:
             discover(child, current)
 
     discover(tree.root_node)
+    def span(node, kind):
+        return {"file_path": path, "start_line": node.start_point.row + 1,
+                "end_line": node.end_point.row + 1, "start_byte": node.start_byte,
+                "end_byte": node.end_byte, "kind": kind}
+
     top = {s.name: s for s in parsed.symbols if s.parent_symbol_id is None}
     for node in tree.root_node.named_children:
         if node.type == "import_statement":
@@ -109,7 +118,9 @@ def parse_file(path: str, source_text: str) -> ParsedFile:
                             original = value(field(spec, "name"), source)
                             alias = value(field(spec, "alias"), source) or original
                             if original:
-                                parsed.imports[alias] = {"module": module, "name": original}
+                                parsed.imports[alias] = {"module": module, "name": original,
+                                                         "supported": alias == original and module.startswith("."),
+                                                         "span": span(node, "import")}
         if node.type == "export_statement":
             declaration = field(node, "declaration") or field(node, "value")
             if declaration:
@@ -171,24 +182,38 @@ def parse_file(path: str, source_text: str) -> ParsedFile:
     for node in walk(tree.root_node):
         current = owner(node)
         scope = current.symbol_id if current else "<module>"
+        if node.type in {"catch_clause", "for_in_statement"}:
+            binding_node = field(node, "parameter") if node.type == "catch_clause" else field(node, "left")
+            parsed.shadowed.setdefault(scope, set()).update(identifiers(binding_node, source))
         if node.type == "variable_declarator":
             name_node = field(node, "name")
             for name in identifiers(name_node, source):
                 parsed.shadowed.setdefault(scope, set()).add(name)
             if name_node and name_node.type == "identifier":
                 bind(scope, value(name_node, source), field(node, "value"))
-        if node.type == "assignment_expression":
-            name = value(field(node, "left"), source)
+        if node.type in {"assignment_expression", "augmented_assignment_expression", "update_expression", "unary_expression"}:
+            if node.type == "unary_expression" and not value(node, source).lstrip().startswith("delete "):
+                continue
+            name = value(field(node, "left") or field(node, "argument"), source)
             cls = class_for(current)
+            left = field(node, "left") or field(node, "argument")
+            if cls and left and left.type == "subscript_expression" and value(field(left, "object"), source) == "this":
+                parsed.bindings.setdefault(cls.symbol_id, {})["<computed-write>"] = ""
             parsed.reassigned.setdefault(scope, set()).add(name)
-            # A constructor assignment is a class-wide binding. Reassignments anywhere invalidate it.
-            bind(cls.symbol_id if cls and name.startswith("this.") else scope, name, field(node, "right"))
+            binding_scope = cls.symbol_id if cls and name.startswith("this.") else scope
+            body = body_by_symbol.get(scope)
+            direct_constructor = bool(current and current.name == "constructor" and body
+                                      and node.parent and node.parent.type == "expression_statement"
+                                      and node.parent.parent == body and node.type == "assignment_expression")
+            bind(binding_scope, name, field(node, "right") if direct_constructor else None)
+            if direct_constructor:
+                parsed.binding_spans.setdefault(binding_scope, {})[name] = {**span(node, "constructor_assignment"), "source_symbol_id": scope}
         if node.type in {"field_definition", "public_field_definition"}:
             candidates = [s for s in parsed.symbols if s.kind == "class" and s.start_byte <= node.start_byte < s.end_byte]
             if candidates:
                 cls = min(candidates, key=lambda s: s.end_byte - s.start_byte)
                 name = value(field(node, "property") or field(node, "name"), source)
-                bind(cls.symbol_id, "this." + name, field(node, "value"))
+                bind(cls.symbol_id, "this." + name, None)
         if node.type == "call_expression" and current and not node.has_error:
             callee = field(node, "function")
             expression = value(callee, source)
@@ -201,6 +226,8 @@ def parse_file(path: str, source_text: str) -> ParsedFile:
             block = statement.parent
             body = body_by_symbol.get(current.symbol_id)
             direct = bool(block and body and block.id == body.id and statement.type in {"return_statement", "expression_statement", "lexical_declaration", "variable_declaration"})
+            if body and any(n.type in {"return_statement", "throw_statement", "if_statement", "switch_statement", "try_statement", "for_statement", "for_in_statement", "while_statement", "do_statement", "await_expression", "yield_expression"} for n in walk(body)):
+                direct = False
             parsed.calls.append({"source": current.symbol_id, "callee": expression,
                                  "callee_type": callee.type if callee else "", "class": cls.symbol_id if cls else None,
                                  "file": path, "line": node.start_point.row + 1, "end_line": node.end_point.row + 1,

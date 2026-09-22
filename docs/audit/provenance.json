@@ -1,0 +1,21 @@
+{
+  "audit_date": "2026-09-20",
+  "requirements_sources": [
+    {
+      "name": "theme1_guidelines.pdf",
+      "sha256": "6d35e22ec9ef1bb432afe6ae237d34f7757cdb782ca35998db603c8ce36cd3fc",
+      "origin_archive": "fwdsamsungprismgenaihackathon3_0registrationli.zip"
+    },
+    {
+      "name": "Samsung PRISM_Y2026_GenAI_Hackathon_3rd_Edition.V2(2).pdf",
+      "sha256": "7c8aae454dfc755c2ccd1d9d9c7d21d222437b55aa0339539553800be0a949dd",
+      "origin_archive": "fwdsamsungprismgenaihackathon3_0registrationli.zip"
+    }
+  ],
+  "retrieval_sources_sha256": {
+    "benchmark/run_mteb.py": "83dae17538c5c1accecf5e5b29b8a85d2ab627e0670e7342e4604cd3788223d7",
+    "backend/app/retrieval/search.py": "843850a39a4821c3e7c4deb5e8f4ea61a869b61498010e542d9a8f428037d985",
+    "backend/app/retrieval/embeddings.py": "ee4f83a1cabca8884e934c682a94c6efa3de9bdf73bc04b748f7f09dd857b5f3",
+    "backend/app/config.py": "add7bcad7c8f36ef97bce26f41f8eb1558688545fa15004ff06c212c2adb9544"
+  }
+}

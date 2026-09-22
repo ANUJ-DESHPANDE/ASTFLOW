@@ -1,0 +1,1016 @@
+{
+  "query": "How does VoiceHandler reach BluetoothAgent?",
+  "version": "working-tree",
+  "version_key": "24f6b76d3c6c98b84ea41ed5",
+  "results": [
+    {
+      "rank": 1,
+      "chunk_id": "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+      "symbol_id": "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+      "symbol_name": "handleRequest",
+      "qualified_name": "VoiceHandler.handleRequest",
+      "kind": "method",
+      "file_path": "voice/VoiceHandler.js",
+      "start_line": 11,
+      "end_line": 11,
+      "snippet": "handleRequest(input) { return this.router.route(input); }",
+      "score": 0.02515747,
+      "evidence": {
+        "lexical_rank": 4,
+        "semantic_rank": null,
+        "lexical_score": 7.446436309155052,
+        "semantic_score": null,
+        "exact_symbol_match": false,
+        "structural_distance": 1,
+        "structural_edges": [
+          {
+            "source_symbol_id": "voice/VoiceHandler.js::VoiceHandler.handle",
+            "target_symbol_id": "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "edge_type": "CALLS",
+            "call_file": "voice/VoiceHandler.js",
+            "call_line": 9,
+            "call_end_line": 9,
+            "call_start_byte": 324,
+            "call_end_byte": 349,
+            "source_expression": "this.handleRequest(input)",
+            "resolution_method": "same_class_method",
+            "evidence_type": "STATIC_VERIFIED",
+            "evidence_sources": [
+              "TREE_SITTER_STATIC"
+            ],
+            "supporting_spans": [
+              {
+                "file_path": "voice/VoiceHandler.js",
+                "start_line": 9,
+                "end_line": 9,
+                "start_byte": 324,
+                "end_byte": 349,
+                "kind": "call_site"
+              }
+            ],
+            "source": "voice/VoiceHandler.js::VoiceHandler.handle",
+            "target": "voice/VoiceHandler.js::VoiceHandler.handleRequest"
+          }
+        ],
+        "test_reference": false,
+        "runtime_observed": false,
+        "contributions": {
+          "lexical": 0.015625,
+          "semantic": 0.0,
+          "exact_symbol": 0.0,
+          "symbol_tokens": 0.0017142857142857142,
+          "structural": 0.006,
+          "test_reference": 0.0,
+          "refinement": 0.0018181818181818182
+        },
+        "test_weight": 1.0,
+        "relationship_status": "STATIC_VERIFIED",
+        "refinement_query": "How does VoiceHandler reach BluetoothAgent? BluetoothAgent.execute VoiceHandler.constructor",
+        "refinement_rank": 6
+      },
+      "version": "working-tree"
+    },
+    {
+      "rank": 2,
+      "chunk_id": "voice/VoiceHandler.js::VoiceHandler.handle",
+      "symbol_id": "voice/VoiceHandler.js::VoiceHandler.handle",
+      "symbol_name": "handle",
+      "qualified_name": "VoiceHandler.handle",
+      "kind": "method",
+      "file_path": "voice/VoiceHandler.js",
+      "start_line": 7,
+      "end_line": 10,
+      "snippet": "handle(raw) {\n    const input = normalizeInput(raw);\n    return this.handleRequest(input);\n  }",
+      "score": 0.02488995,
+      "evidence": {
+        "lexical_rank": 5,
+        "semantic_rank": null,
+        "lexical_score": 6.873920593571465,
+        "semantic_score": null,
+        "exact_symbol_match": false,
+        "structural_distance": 1,
+        "structural_edges": [
+          {
+            "source_symbol_id": "voice/VoiceHandler.js::VoiceHandler.handle",
+            "target_symbol_id": "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "edge_type": "CALLS",
+            "call_file": "voice/VoiceHandler.js",
+            "call_line": 9,
+            "call_end_line": 9,
+            "call_start_byte": 324,
+            "call_end_byte": 349,
+            "source_expression": "this.handleRequest(input)",
+            "resolution_method": "same_class_method",
+            "evidence_type": "STATIC_VERIFIED",
+            "evidence_sources": [
+              "TREE_SITTER_STATIC"
+            ],
+            "supporting_spans": [
+              {
+                "file_path": "voice/VoiceHandler.js",
+                "start_line": 9,
+                "end_line": 9,
+                "start_byte": 324,
+                "end_byte": 349,
+                "kind": "call_site"
+              }
+            ],
+            "source": "voice/VoiceHandler.js::VoiceHandler.handle",
+            "target": "voice/VoiceHandler.js::VoiceHandler.handleRequest"
+          }
+        ],
+        "test_reference": false,
+        "runtime_observed": false,
+        "contributions": {
+          "lexical": 0.015384615384615385,
+          "semantic": 0.0,
+          "exact_symbol": 0.0,
+          "symbol_tokens": 0.0017142857142857142,
+          "structural": 0.006,
+          "test_reference": 0.0,
+          "refinement": 0.001791044776119403
+        },
+        "test_weight": 1.0,
+        "relationship_status": "STATIC_VERIFIED",
+        "refinement_query": "How does VoiceHandler reach BluetoothAgent? BluetoothAgent.execute VoiceHandler.constructor",
+        "refinement_rank": 7
+      },
+      "version": "working-tree"
+    },
+    {
+      "rank": 3,
+      "chunk_id": "settings/deeplinks.js::openBluetoothSettings",
+      "symbol_id": "settings/deeplinks.js::openBluetoothSettings",
+      "symbol_name": "openBluetoothSettings",
+      "qualified_name": "openBluetoothSettings",
+      "kind": "function",
+      "file_path": "settings/deeplinks.js",
+      "start_line": 2,
+      "end_line": 2,
+      "snippet": "function openBluetoothSettings() { return openSettingsUri('settings://bluetooth'); }",
+      "score": 0.02348765,
+      "evidence": {
+        "lexical_rank": 6,
+        "semantic_rank": null,
+        "lexical_score": 2.590156272221076,
+        "semantic_score": null,
+        "exact_symbol_match": false,
+        "structural_distance": 1,
+        "structural_edges": [
+          {
+            "source_symbol_id": "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "target_symbol_id": "settings/deeplinks.js::openBluetoothSettings",
+            "edge_type": "CALLS",
+            "call_file": "bluetooth/BluetoothAgent.js",
+            "call_line": 8,
+            "call_end_line": 8,
+            "call_start_byte": 295,
+            "call_end_byte": 318,
+            "source_expression": "openBluetoothSettings()",
+            "resolution_method": "named_or_default_import",
+            "evidence_type": "STATIC_VERIFIED",
+            "evidence_sources": [
+              "TREE_SITTER_STATIC"
+            ],
+            "supporting_spans": [
+              {
+                "file_path": "bluetooth/BluetoothAgent.js",
+                "start_line": 8,
+                "end_line": 8,
+                "start_byte": 295,
+                "end_byte": 318,
+                "kind": "call_site"
+              },
+              {
+                "file_path": "bluetooth/BluetoothAgent.js",
+                "start_line": 2,
+                "end_line": 2,
+                "start_byte": 61,
+                "end_byte": 126,
+                "kind": "import"
+              }
+            ],
+            "source": "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "target": "settings/deeplinks.js::openBluetoothSettings"
+          }
+        ],
+        "test_reference": false,
+        "runtime_observed": false,
+        "contributions": {
+          "lexical": 0.015151515151515152,
+          "semantic": 0.0,
+          "exact_symbol": 0.0,
+          "symbol_tokens": 0.0005714285714285714,
+          "structural": 0.006,
+          "test_reference": 0.0,
+          "refinement": 0.001764705882352941
+        },
+        "test_weight": 1.0,
+        "relationship_status": "STATIC_VERIFIED",
+        "refinement_query": "How does VoiceHandler reach BluetoothAgent? BluetoothAgent.execute VoiceHandler.constructor",
+        "refinement_rank": 8
+      },
+      "version": "working-tree"
+    },
+    {
+      "rank": 4,
+      "chunk_id": "bluetooth/permissions.js::checkBluetoothPermission",
+      "symbol_id": "bluetooth/permissions.js::checkBluetoothPermission",
+      "symbol_name": "checkBluetoothPermission",
+      "qualified_name": "checkBluetoothPermission",
+      "kind": "function",
+      "file_path": "bluetooth/permissions.js",
+      "start_line": 2,
+      "end_line": 2,
+      "snippet": "function checkBluetoothPermission() { return { allowed: true }; }",
+      "score": 0.0229916,
+      "evidence": {
+        "lexical_rank": 8,
+        "semantic_rank": null,
+        "lexical_score": 2.3128750090923527,
+        "semantic_score": null,
+        "exact_symbol_match": false,
+        "structural_distance": 1,
+        "structural_edges": [
+          {
+            "source_symbol_id": "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "target_symbol_id": "bluetooth/permissions.js::checkBluetoothPermission",
+            "edge_type": "CALLS",
+            "call_file": "bluetooth/BluetoothAgent.js",
+            "call_line": 7,
+            "call_end_line": 7,
+            "call_start_byte": 256,
+            "call_end_byte": 282,
+            "source_expression": "checkBluetoothPermission()",
+            "resolution_method": "named_or_default_import",
+            "evidence_type": "STATIC_VERIFIED",
+            "evidence_sources": [
+              "TREE_SITTER_STATIC"
+            ],
+            "supporting_spans": [
+              {
+                "file_path": "bluetooth/BluetoothAgent.js",
+                "start_line": 7,
+                "end_line": 7,
+                "start_byte": 256,
+                "end_byte": 282,
+                "kind": "call_site"
+              },
+              {
+                "file_path": "bluetooth/BluetoothAgent.js",
+                "start_line": 1,
+                "end_line": 1,
+                "start_byte": 0,
+                "end_byte": 60,
+                "kind": "import"
+              }
+            ],
+            "source": "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "target": "bluetooth/permissions.js::checkBluetoothPermission"
+          }
+        ],
+        "test_reference": false,
+        "runtime_observed": false,
+        "contributions": {
+          "lexical": 0.014705882352941176,
+          "semantic": 0.0,
+          "exact_symbol": 0.0,
+          "symbol_tokens": 0.0005714285714285714,
+          "structural": 0.006,
+          "test_reference": 0.0,
+          "refinement": 0.0017142857142857142
+        },
+        "test_weight": 1.0,
+        "relationship_status": "STATIC_VERIFIED",
+        "refinement_query": "How does VoiceHandler reach BluetoothAgent? BluetoothAgent.execute VoiceHandler.constructor",
+        "refinement_rank": 10
+      },
+      "version": "working-tree"
+    },
+    {
+      "rank": 5,
+      "chunk_id": "voice/IntentRouter.js::IntentRouter.route",
+      "symbol_id": "voice/IntentRouter.js::IntentRouter.route",
+      "symbol_name": "route",
+      "qualified_name": "IntentRouter.route",
+      "kind": "method",
+      "file_path": "voice/IntentRouter.js",
+      "start_line": 7,
+      "end_line": 11,
+      "snippet": "route(input) {\n    if (input.includes('bluetooth')) return this.bluetooth.execute();\n    if (input.includes('wifi')) return openWifiSettings();\n    return { status: 'unknown_intent' };\n  }",
+      "score": 0.0226645,
+      "evidence": {
+        "lexical_rank": 7,
+        "semantic_rank": null,
+        "lexical_score": 2.5388068835725326,
+        "semantic_score": null,
+        "exact_symbol_match": false,
+        "structural_distance": 1,
+        "structural_edges": [
+          {
+            "source_symbol_id": "voice/IntentRouter.js::IntentRouter.route",
+            "target_symbol_id": "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "edge_type": "CALLS",
+            "call_file": "voice/IntentRouter.js",
+            "call_line": 8,
+            "call_end_line": 8,
+            "call_start_byte": 354,
+            "call_end_byte": 378,
+            "source_expression": "this.bluetooth.execute()",
+            "resolution_method": "constructor_instance",
+            "evidence_type": "STATIC_VERIFIED",
+            "evidence_sources": [
+              "TREE_SITTER_STATIC"
+            ],
+            "supporting_spans": [
+              {
+                "file_path": "voice/IntentRouter.js",
+                "start_line": 8,
+                "end_line": 8,
+                "start_byte": 354,
+                "end_byte": 378,
+                "kind": "call_site"
+              },
+              {
+                "file_path": "voice/IntentRouter.js",
+                "start_line": 5,
+                "end_line": 5,
+                "start_byte": 173,
+                "end_byte": 210,
+                "kind": "constructor_assignment",
+                "source_symbol_id": "voice/IntentRouter.js::IntentRouter.constructor"
+              },
+              {
+                "file_path": "voice/IntentRouter.js",
+                "start_line": 1,
+                "end_line": 1,
+                "start_byte": 0,
+                "end_byte": 64,
+                "kind": "import"
+              }
+            ],
+            "source": "voice/IntentRouter.js::IntentRouter.route",
+            "target": "bluetooth/BluetoothAgent.js::BluetoothAgent.execute"
+          }
+        ],
+        "test_reference": false,
+        "runtime_observed": false,
+        "contributions": {
+          "lexical": 0.014925373134328358,
+          "semantic": 0.0,
+          "exact_symbol": 0.0,
+          "symbol_tokens": 0.0,
+          "structural": 0.006,
+          "test_reference": 0.0,
+          "refinement": 0.0017391304347826085
+        },
+        "test_weight": 1.0,
+        "relationship_status": "STATIC_VERIFIED",
+        "refinement_query": "How does VoiceHandler reach BluetoothAgent? BluetoothAgent.execute VoiceHandler.constructor",
+        "refinement_rank": 9
+      },
+      "version": "working-tree"
+    },
+    {
+      "rank": 6,
+      "chunk_id": "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+      "symbol_id": "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+      "symbol_name": "execute",
+      "qualified_name": "BluetoothAgent.execute",
+      "kind": "method",
+      "file_path": "bluetooth/BluetoothAgent.js",
+      "start_line": 6,
+      "end_line": 9,
+      "snippet": "execute() {\n    checkBluetoothPermission();\n    return openBluetoothSettings();\n  }",
+      "score": 0.02251053,
+      "evidence": {
+        "lexical_rank": 2,
+        "semantic_rank": null,
+        "lexical_score": 8.684972592558289,
+        "semantic_score": null,
+        "exact_symbol_match": false,
+        "structural_distance": 2,
+        "structural_edges": [
+          {
+            "source_symbol_id": "voice/IntentRouter.js::IntentRouter.route",
+            "target_symbol_id": "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "edge_type": "CALLS",
+            "call_file": "voice/IntentRouter.js",
+            "call_line": 8,
+            "call_end_line": 8,
+            "call_start_byte": 354,
+            "call_end_byte": 378,
+            "source_expression": "this.bluetooth.execute()",
+            "resolution_method": "constructor_instance",
+            "evidence_type": "STATIC_VERIFIED",
+            "evidence_sources": [
+              "TREE_SITTER_STATIC"
+            ],
+            "supporting_spans": [
+              {
+                "file_path": "voice/IntentRouter.js",
+                "start_line": 8,
+                "end_line": 8,
+                "start_byte": 354,
+                "end_byte": 378,
+                "kind": "call_site"
+              },
+              {
+                "file_path": "voice/IntentRouter.js",
+                "start_line": 5,
+                "end_line": 5,
+                "start_byte": 173,
+                "end_byte": 210,
+                "kind": "constructor_assignment",
+                "source_symbol_id": "voice/IntentRouter.js::IntentRouter.constructor"
+              },
+              {
+                "file_path": "voice/IntentRouter.js",
+                "start_line": 1,
+                "end_line": 1,
+                "start_byte": 0,
+                "end_byte": 64,
+                "kind": "import"
+              }
+            ],
+            "source": "voice/IntentRouter.js::IntentRouter.route",
+            "target": "bluetooth/BluetoothAgent.js::BluetoothAgent.execute"
+          }
+        ],
+        "test_reference": false,
+        "runtime_observed": false,
+        "contributions": {
+          "lexical": 0.016129032258064516,
+          "semantic": 0.0,
+          "exact_symbol": 0.0,
+          "symbol_tokens": 0.0017142857142857142,
+          "structural": 0.0027,
+          "test_reference": 0.0,
+          "refinement": 0.0019672131147540984
+        },
+        "test_weight": 1.0,
+        "relationship_status": "STATIC_VERIFIED",
+        "refinement_query": "How does VoiceHandler reach BluetoothAgent? BluetoothAgent.execute VoiceHandler.constructor",
+        "refinement_rank": 1
+      },
+      "version": "working-tree"
+    },
+    {
+      "rank": 7,
+      "chunk_id": "voice/normalizeInput.js::normalizeInput",
+      "symbol_id": "voice/normalizeInput.js::normalizeInput",
+      "symbol_name": "normalizeInput",
+      "qualified_name": "normalizeInput",
+      "kind": "arrow_function",
+      "file_path": "voice/normalizeInput.js",
+      "start_line": 2,
+      "end_line": 2,
+      "snippet": "normalizeInput = (raw) => raw.trim().toLowerCase()",
+      "score": 0.02218289,
+      "evidence": {
+        "lexical_rank": 9,
+        "semantic_rank": null,
+        "lexical_score": 1.2211689867004791,
+        "semantic_score": null,
+        "exact_symbol_match": false,
+        "structural_distance": 1,
+        "structural_edges": [
+          {
+            "source_symbol_id": "voice/VoiceHandler.js::VoiceHandler.handle",
+            "target_symbol_id": "voice/normalizeInput.js::normalizeInput",
+            "edge_type": "CALLS",
+            "call_file": "voice/VoiceHandler.js",
+            "call_line": 8,
+            "call_end_line": 8,
+            "call_start_byte": 292,
+            "call_end_byte": 311,
+            "source_expression": "normalizeInput(raw)",
+            "resolution_method": "named_or_default_import",
+            "evidence_type": "STATIC_VERIFIED",
+            "evidence_sources": [
+              "TREE_SITTER_STATIC"
+            ],
+            "supporting_spans": [
+              {
+                "file_path": "voice/VoiceHandler.js",
+                "start_line": 8,
+                "end_line": 8,
+                "start_byte": 292,
+                "end_byte": 311,
+                "kind": "call_site"
+              },
+              {
+                "file_path": "voice/VoiceHandler.js",
+                "start_line": 1,
+                "end_line": 1,
+                "start_byte": 0,
+                "end_byte": 53,
+                "kind": "import"
+              }
+            ],
+            "source": "voice/VoiceHandler.js::VoiceHandler.handle",
+            "target": "voice/normalizeInput.js::normalizeInput"
+          }
+        ],
+        "test_reference": false,
+        "runtime_observed": false,
+        "contributions": {
+          "lexical": 0.014492753623188406,
+          "semantic": 0.0,
+          "exact_symbol": 0.0,
+          "symbol_tokens": 0.0,
+          "structural": 0.006,
+          "test_reference": 0.0,
+          "refinement": 0.0016901408450704224
+        },
+        "test_weight": 1.0,
+        "relationship_status": "STATIC_VERIFIED",
+        "refinement_query": "How does VoiceHandler reach BluetoothAgent? BluetoothAgent.execute VoiceHandler.constructor",
+        "refinement_rank": 11
+      },
+      "version": "working-tree"
+    },
+    {
+      "rank": 8,
+      "chunk_id": "voice/VoiceHandler.js::VoiceHandler.constructor",
+      "symbol_id": "voice/VoiceHandler.js::VoiceHandler.constructor",
+      "symbol_name": "constructor",
+      "qualified_name": "VoiceHandler.constructor",
+      "kind": "method",
+      "file_path": "voice/VoiceHandler.js",
+      "start_line": 5,
+      "end_line": 5,
+      "snippet": "constructor() { this.router = new IntentRouter(); }",
+      "score": 0.01952279,
+      "evidence": {
+        "lexical_rank": 3,
+        "semantic_rank": null,
+        "lexical_score": 7.551370219617839,
+        "semantic_score": null,
+        "exact_symbol_match": false,
+        "structural_distance": null,
+        "structural_edges": [],
+        "test_reference": false,
+        "runtime_observed": false,
+        "contributions": {
+          "lexical": 0.015873015873015872,
+          "semantic": 0.0,
+          "exact_symbol": 0.0,
+          "symbol_tokens": 0.0017142857142857142,
+          "structural": 0.0,
+          "test_reference": 0.0,
+          "refinement": 0.001935483870967742
+        },
+        "test_weight": 1.0,
+        "relationship_status": "SEARCH_INFERRED",
+        "refinement_query": "How does VoiceHandler reach BluetoothAgent? BluetoothAgent.execute VoiceHandler.constructor",
+        "refinement_rank": 2
+      },
+      "version": "working-tree"
+    },
+    {
+      "rank": 9,
+      "chunk_id": "voice/IntentRouter.js::IntentRouter.constructor",
+      "symbol_id": "voice/IntentRouter.js::IntentRouter.constructor",
+      "symbol_name": "constructor",
+      "qualified_name": "IntentRouter.constructor",
+      "kind": "method",
+      "file_path": "voice/IntentRouter.js",
+      "start_line": 5,
+      "end_line": 5,
+      "snippet": "constructor() { this.bluetooth = new BluetoothAgent(); }",
+      "score": 0.0182982,
+      "evidence": {
+        "lexical_rank": 1,
+        "semantic_rank": null,
+        "lexical_score": 10.3279474898393,
+        "semantic_score": null,
+        "exact_symbol_match": false,
+        "structural_distance": null,
+        "structural_edges": [],
+        "test_reference": false,
+        "runtime_observed": false,
+        "contributions": {
+          "lexical": 0.01639344262295082,
+          "semantic": 0.0,
+          "exact_symbol": 0.0,
+          "symbol_tokens": 0.0,
+          "structural": 0.0,
+          "test_reference": 0.0,
+          "refinement": 0.0019047619047619048
+        },
+        "test_weight": 1.0,
+        "relationship_status": "SEARCH_INFERRED",
+        "refinement_query": "How does VoiceHandler reach BluetoothAgent? BluetoothAgent.execute VoiceHandler.constructor",
+        "refinement_rank": 3
+      },
+      "version": "working-tree"
+    },
+    {
+      "rank": 10,
+      "chunk_id": "voice/dynamicDispatch.js::dispatchPlugin",
+      "symbol_id": "voice/dynamicDispatch.js::dispatchPlugin",
+      "symbol_name": "dispatchPlugin",
+      "qualified_name": "dispatchPlugin",
+      "kind": "function",
+      "file_path": "voice/dynamicDispatch.js",
+      "start_line": 2,
+      "end_line": 2,
+      "snippet": "function dispatchPlugin(plugins, name) { return plugins[name](); }",
+      "score": 0.01595238,
+      "evidence": {
+        "lexical_rank": 10,
+        "semantic_rank": null,
+        "lexical_score": 1.037629472993608,
+        "semantic_score": null,
+        "exact_symbol_match": false,
+        "structural_distance": null,
+        "structural_edges": [],
+        "test_reference": false,
+        "runtime_observed": false,
+        "contributions": {
+          "lexical": 0.014285714285714285,
+          "semantic": 0.0,
+          "exact_symbol": 0.0,
+          "symbol_tokens": 0.0,
+          "structural": 0.0,
+          "test_reference": 0.0,
+          "refinement": 0.0016666666666666666
+        },
+        "test_weight": 1.0,
+        "relationship_status": "SEARCH_INFERRED",
+        "refinement_query": "How does VoiceHandler reach BluetoothAgent? BluetoothAgent.execute VoiceHandler.constructor",
+        "refinement_rank": 12
+      },
+      "version": "working-tree"
+    }
+  ],
+  "intent": "PATH",
+  "agent_trace": [
+    {
+      "step": "PLAN",
+      "details": "Path investigation; at most two retrieval passes",
+      "data": {
+        "intent": "PATH",
+        "symbols": [
+          "VoiceHandler",
+          "BluetoothAgent"
+        ],
+        "max_passes": 2
+      }
+    },
+    {
+      "step": "SEARCH",
+      "details": "Retrieved 10 candidates",
+      "data": {
+        "pass": 1,
+        "lexical_top": [
+          "voice/IntentRouter.js::IntentRouter.constructor",
+          "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+          "voice/VoiceHandler.js::VoiceHandler.constructor",
+          "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+          "voice/VoiceHandler.js::VoiceHandler.handle",
+          "settings/deeplinks.js::openBluetoothSettings",
+          "voice/IntentRouter.js::IntentRouter.route",
+          "bluetooth/permissions.js::checkBluetoothPermission",
+          "voice/normalizeInput.js::normalizeInput",
+          "voice/dynamicDispatch.js::dispatchPlugin"
+        ],
+        "semantic_top": [],
+        "semantic_available": false
+      }
+    },
+    {
+      "step": "OBSERVE",
+      "details": "Found 0 exact matches across 7 files; 0 target(s) outside the top ten",
+      "data": {
+        "top_score": 0.01784331797235023,
+        "ranking_agreement": null,
+        "file_diversity": 7,
+        "exact_matches": 0,
+        "missing_targets": [],
+        "path_supported": true,
+        "seed_ids": [
+          "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+          "voice/VoiceHandler.js::VoiceHandler.constructor",
+          "voice/VoiceHandler.js::VoiceHandler.handleRequest"
+        ]
+      }
+    },
+    {
+      "step": "REFINE",
+      "details": "Graph Neighbor Expansion around BluetoothAgent.execute, VoiceHandler.constructor",
+      "data": {
+        "action": "GRAPH_NEIGHBOR_EXPANSION",
+        "query": "How does VoiceHandler reach BluetoothAgent? BluetoothAgent.execute VoiceHandler.constructor",
+        "based_on": [
+          "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+          "voice/VoiceHandler.js::VoiceHandler.constructor",
+          "voice/VoiceHandler.js::VoiceHandler.handleRequest"
+        ]
+      }
+    },
+    {
+      "step": "SEARCH",
+      "details": "Second pass retrieved 12 candidates using observed symbols",
+      "data": {
+        "pass": 2
+      }
+    },
+    {
+      "step": "RERANK",
+      "details": "Ranked 14 candidates using stored evidence",
+      "data": {
+        "candidates": 14
+      }
+    },
+    {
+      "step": "STOP",
+      "details": "Returned 10 source snippets after 2 retrieval pass(es)"
+    }
+  ],
+  "graph": {
+    "nodes": [
+      {
+        "symbol_id": "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+        "qualified_name": "BluetoothAgent.execute",
+        "file": "bluetooth/BluetoothAgent.js",
+        "start_line": 6,
+        "end_line": 9,
+        "kind": "method"
+      },
+      {
+        "symbol_id": "bluetooth/permissions.js::checkBluetoothPermission",
+        "qualified_name": "checkBluetoothPermission",
+        "file": "bluetooth/permissions.js",
+        "start_line": 2,
+        "end_line": 2,
+        "kind": "function"
+      },
+      {
+        "symbol_id": "settings/deeplinks.js::openBluetoothSettings",
+        "qualified_name": "openBluetoothSettings",
+        "file": "settings/deeplinks.js",
+        "start_line": 2,
+        "end_line": 2,
+        "kind": "function"
+      },
+      {
+        "symbol_id": "voice/IntentRouter.js::IntentRouter.route",
+        "qualified_name": "IntentRouter.route",
+        "file": "voice/IntentRouter.js",
+        "start_line": 7,
+        "end_line": 11,
+        "kind": "method"
+      },
+      {
+        "symbol_id": "voice/VoiceHandler.js::VoiceHandler.handle",
+        "qualified_name": "VoiceHandler.handle",
+        "file": "voice/VoiceHandler.js",
+        "start_line": 7,
+        "end_line": 10,
+        "kind": "method"
+      },
+      {
+        "symbol_id": "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+        "qualified_name": "VoiceHandler.handleRequest",
+        "file": "voice/VoiceHandler.js",
+        "start_line": 11,
+        "end_line": 11,
+        "kind": "method"
+      }
+    ],
+    "edges": [
+      {
+        "source_symbol_id": "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+        "target_symbol_id": "bluetooth/permissions.js::checkBluetoothPermission",
+        "edge_type": "CALLS",
+        "call_file": "bluetooth/BluetoothAgent.js",
+        "call_line": 7,
+        "call_end_line": 7,
+        "call_start_byte": 256,
+        "call_end_byte": 282,
+        "source_expression": "checkBluetoothPermission()",
+        "resolution_method": "named_or_default_import",
+        "evidence_type": "STATIC_VERIFIED",
+        "evidence_sources": [
+          "TREE_SITTER_STATIC"
+        ],
+        "supporting_spans": [
+          {
+            "file_path": "bluetooth/BluetoothAgent.js",
+            "start_line": 7,
+            "end_line": 7,
+            "start_byte": 256,
+            "end_byte": 282,
+            "kind": "call_site"
+          },
+          {
+            "file_path": "bluetooth/BluetoothAgent.js",
+            "start_line": 1,
+            "end_line": 1,
+            "start_byte": 0,
+            "end_byte": 60,
+            "kind": "import"
+          }
+        ],
+        "source": "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+        "target": "bluetooth/permissions.js::checkBluetoothPermission"
+      },
+      {
+        "source_symbol_id": "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+        "target_symbol_id": "settings/deeplinks.js::openBluetoothSettings",
+        "edge_type": "CALLS",
+        "call_file": "bluetooth/BluetoothAgent.js",
+        "call_line": 8,
+        "call_end_line": 8,
+        "call_start_byte": 295,
+        "call_end_byte": 318,
+        "source_expression": "openBluetoothSettings()",
+        "resolution_method": "named_or_default_import",
+        "evidence_type": "STATIC_VERIFIED",
+        "evidence_sources": [
+          "TREE_SITTER_STATIC"
+        ],
+        "supporting_spans": [
+          {
+            "file_path": "bluetooth/BluetoothAgent.js",
+            "start_line": 8,
+            "end_line": 8,
+            "start_byte": 295,
+            "end_byte": 318,
+            "kind": "call_site"
+          },
+          {
+            "file_path": "bluetooth/BluetoothAgent.js",
+            "start_line": 2,
+            "end_line": 2,
+            "start_byte": 61,
+            "end_byte": 126,
+            "kind": "import"
+          }
+        ],
+        "source": "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+        "target": "settings/deeplinks.js::openBluetoothSettings"
+      },
+      {
+        "source_symbol_id": "voice/IntentRouter.js::IntentRouter.route",
+        "target_symbol_id": "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+        "edge_type": "CALLS",
+        "call_file": "voice/IntentRouter.js",
+        "call_line": 8,
+        "call_end_line": 8,
+        "call_start_byte": 354,
+        "call_end_byte": 378,
+        "source_expression": "this.bluetooth.execute()",
+        "resolution_method": "constructor_instance",
+        "evidence_type": "STATIC_VERIFIED",
+        "evidence_sources": [
+          "TREE_SITTER_STATIC"
+        ],
+        "supporting_spans": [
+          {
+            "file_path": "voice/IntentRouter.js",
+            "start_line": 8,
+            "end_line": 8,
+            "start_byte": 354,
+            "end_byte": 378,
+            "kind": "call_site"
+          },
+          {
+            "file_path": "voice/IntentRouter.js",
+            "start_line": 5,
+            "end_line": 5,
+            "start_byte": 173,
+            "end_byte": 210,
+            "kind": "constructor_assignment",
+            "source_symbol_id": "voice/IntentRouter.js::IntentRouter.constructor"
+          },
+          {
+            "file_path": "voice/IntentRouter.js",
+            "start_line": 1,
+            "end_line": 1,
+            "start_byte": 0,
+            "end_byte": 64,
+            "kind": "import"
+          }
+        ],
+        "source": "voice/IntentRouter.js::IntentRouter.route",
+        "target": "bluetooth/BluetoothAgent.js::BluetoothAgent.execute"
+      },
+      {
+        "source_symbol_id": "voice/VoiceHandler.js::VoiceHandler.handle",
+        "target_symbol_id": "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+        "edge_type": "CALLS",
+        "call_file": "voice/VoiceHandler.js",
+        "call_line": 9,
+        "call_end_line": 9,
+        "call_start_byte": 324,
+        "call_end_byte": 349,
+        "source_expression": "this.handleRequest(input)",
+        "resolution_method": "same_class_method",
+        "evidence_type": "STATIC_VERIFIED",
+        "evidence_sources": [
+          "TREE_SITTER_STATIC"
+        ],
+        "supporting_spans": [
+          {
+            "file_path": "voice/VoiceHandler.js",
+            "start_line": 9,
+            "end_line": 9,
+            "start_byte": 324,
+            "end_byte": 349,
+            "kind": "call_site"
+          }
+        ],
+        "source": "voice/VoiceHandler.js::VoiceHandler.handle",
+        "target": "voice/VoiceHandler.js::VoiceHandler.handleRequest"
+      },
+      {
+        "source_symbol_id": "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+        "target_symbol_id": "voice/IntentRouter.js::IntentRouter.route",
+        "edge_type": "CALLS",
+        "call_file": "voice/VoiceHandler.js",
+        "call_line": 11,
+        "call_end_line": 11,
+        "call_start_byte": 387,
+        "call_end_byte": 411,
+        "source_expression": "this.router.route(input)",
+        "resolution_method": "constructor_instance",
+        "evidence_type": "STATIC_VERIFIED",
+        "evidence_sources": [
+          "TREE_SITTER_STATIC"
+        ],
+        "supporting_spans": [
+          {
+            "file_path": "voice/VoiceHandler.js",
+            "start_line": 11,
+            "end_line": 11,
+            "start_byte": 387,
+            "end_byte": 411,
+            "kind": "call_site"
+          },
+          {
+            "file_path": "voice/VoiceHandler.js",
+            "start_line": 5,
+            "end_line": 5,
+            "start_byte": 151,
+            "end_byte": 183,
+            "kind": "constructor_assignment",
+            "source_symbol_id": "voice/VoiceHandler.js::VoiceHandler.constructor"
+          },
+          {
+            "file_path": "voice/VoiceHandler.js",
+            "start_line": 2,
+            "end_line": 2,
+            "start_byte": 54,
+            "end_byte": 103,
+            "kind": "import"
+          }
+        ],
+        "source": "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+        "target": "voice/IntentRouter.js::IntentRouter.route"
+      }
+    ],
+    "paths": [
+      [
+        "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+        "voice/IntentRouter.js::IntentRouter.route",
+        "bluetooth/BluetoothAgent.js::BluetoothAgent.execute"
+      ],
+      [
+        "voice/VoiceHandler.js::VoiceHandler.handle",
+        "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+        "voice/IntentRouter.js::IntentRouter.route",
+        "bluetooth/BluetoothAgent.js::BluetoothAgent.execute"
+      ]
+    ],
+    "version_key": "24f6b76d3c6c98b84ea41ed5"
+  },
+  "sequences": [],
+  "path_status": "SUPPORTED",
+  "status": "OK",
+  "semantic": {
+    "available": false,
+    "model": null,
+    "message": "Semantic search disabled by configuration"
+  },
+  "diagnostics": {
+    "lexical_top": [
+      "voice/IntentRouter.js::IntentRouter.constructor",
+      "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+      "voice/VoiceHandler.js::VoiceHandler.constructor",
+      "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+      "voice/VoiceHandler.js::VoiceHandler.handle",
+      "settings/deeplinks.js::openBluetoothSettings",
+      "voice/IntentRouter.js::IntentRouter.route",
+      "bluetooth/permissions.js::checkBluetoothPermission",
+      "voice/normalizeInput.js::normalizeInput",
+      "voice/dynamicDispatch.js::dispatchPlugin"
+    ],
+    "semantic_top": [],
+    "semantic_available": false,
+    "expanded_candidates": 9
+  },
+  "latency_ms": 4.49
+}

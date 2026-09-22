@@ -1,4 +1,5 @@
 from difflib import SequenceMatcher
+from collections import defaultdict
 
 from backend.app.agent.investigate import investigate
 
@@ -23,12 +24,16 @@ def compare_indexes(a, b, query: str, version_a: str, version_b: str):
     def edge_key(e):
         return (e.source_symbol_id, e.target_symbol_id, e.edge_type, e.source_expression)
 
-    ea, eb = {edge_key(e): e for e in a.edges}, {edge_key(e): e for e in b.edges}
+    ea, eb = defaultdict(list), defaultdict(list)
+    for edge in a.edges:
+        ea[edge_key(edge)].append(edge)
+    for edge in b.edges:
+        eb[edge_key(edge)].append(edge)
     ranks_a = {r["symbol_id"]: r["rank"] for r in result_a["results"]}
     ranks_b = {r["symbol_id"]: r["rank"] for r in result_b["results"]}
     relevant = set(ranks_a) | set(ranks_b)
-    added_edges = [eb[k].to_dict() for k in sorted(set(eb) - set(ea))]
-    removed_edges = [ea[k].to_dict() for k in sorted(set(ea) - set(eb))]
+    added_edges = [edge.to_dict() for k in sorted(eb) for edge in eb[k][len(ea[k]):]]
+    removed_edges = [edge.to_dict() for k in sorted(ea) for edge in ea[k][len(eb[k]):]]
     return {
         "query": query, "version_a": version_a, "version_b": version_b,
         "version_key_a": a.manifest["version_key"], "version_key_b": b.manifest["version_key"],

@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "workspaces": ["frontend"],
+  "overrides": { "dompurify": "3.4.15" },
   "scripts": {
     "build": "npm run build --workspace frontend",
     "dev": "npm run dev --workspace frontend",

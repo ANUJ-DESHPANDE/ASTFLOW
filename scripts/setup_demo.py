@@ -37,6 +37,8 @@ export class AuthService {
 
 
 def setup():
+    if not list(REPO.rglob("*.js")):
+        raise RuntimeError("Demo source files are missing; restore examples/demo-repo before setup")
     def git(*args, input=None, env=None):
         result = subprocess.run(["git", "-C", str(REPO), *args], input=input, capture_output=True,
                                 env=env, check=True)

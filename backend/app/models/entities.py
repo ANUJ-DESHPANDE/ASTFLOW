@@ -18,6 +18,7 @@ class Symbol:
     content_hash: str
     parameters: list[str] = field(default_factory=list)
     is_test: bool = False
+    method_kind: str = "normal"
 
 
 @dataclass
@@ -50,6 +51,7 @@ class Edge:
     resolution_method: str
     evidence_type: str = "STATIC_VERIFIED"
     evidence_sources: list[str] = field(default_factory=lambda: ["TREE_SITTER_STATIC"])
+    supporting_spans: list[dict] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
         return {**asdict(self), "source": self.source_symbol_id, "target": self.target_symbol_id}
@@ -68,3 +70,5 @@ class ParsedFile:
     shadowed: dict[str, set[str]] = field(default_factory=dict)
     reassigned: dict[str, set[str]] = field(default_factory=dict)
     diagnostics: list[str] = field(default_factory=list)
+    binding_spans: dict[str, dict[str, dict]] = field(default_factory=dict)
+    has_errors: bool = False

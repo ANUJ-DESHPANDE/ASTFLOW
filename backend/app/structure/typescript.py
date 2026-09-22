@@ -30,13 +30,8 @@ def enrich(files, symbols, edges):
             if key in existing:
                 existing[key].evidence_sources.append("TS_LANGUAGE_SERVICE")
                 confirmed += 1
-            else:
-                edge = Edge(source.symbol_id, target.symbol_id, "CALLS", row["call_file"], row["call_line"],
-                            row["call_end_line"], row["call_start_byte"], row["call_end_byte"], row["expression"],
-                            "typescript_declaration", "LANGUAGE_SERVICE_VERIFIED", ["TS_LANGUAGE_SERVICE"])
-                edges.append(edge)
-                existing[key] = edge
-                added += 1
+            # Declaration lookup can corroborate a supported edge, never create
+            # one that bypasses shadowing, mutation or unsupported-syntax guards.
         return sorted(edges, key=lambda e: (e.call_file, e.call_start_byte, e.target_symbol_id)), {"status": "ready", "edges_added": added, "edges_confirmed": confirmed}
     except (OSError, ValueError, subprocess.TimeoutExpired) as exc:
         return edges, {"status": "unavailable", "message": str(exc), "edges_added": 0, "edges_confirmed": 0}

@@ -12,13 +12,15 @@ export type GraphNode = { symbol_id: string; qualified_name: string; file: strin
 export type GraphEdge = {
   source: string; target: string; call_file: string; call_line: number; call_end_line: number;
   source_expression: string; resolution_method: string; evidence_type: string; evidence_sources: string[];
+  supporting_spans?: { file_path: string; start_line: number; end_line: number; kind: string }[];
 };
-export type GraphData = { nodes: GraphNode[]; edges: GraphEdge[]; paths: string[][]; status?: string; message?: string; version_key?: string };
+export type GraphData = { nodes: GraphNode[]; edges: GraphEdge[]; paths: string[][]; status?: string; message?: string; version_key?: string;
+  unresolved_count?: number; unresolved?: { file: string; line: number; end_line: number; expression: string; reason: string }[] };
 export type SearchResponse = {
   query: string; version: string; version_key: string; results: Result[]; intent: string; latency_ms: number;
   agent_trace: { step: string; details: string; data?: Record<string, unknown> }[];
   graph: GraphData; semantic: { available: boolean; message: string; model: string | null };
-  sequences: { caller: string; before: string; after: string; before_line: number; after_line: number; explanation: string }[];
+  sequences: { caller: string; before: string; after: string; file_path: string; before_line: number; after_line: number; explanation: string }[];
 };
 export type Manifest = {
   version: string; version_key: string; file_count: number; symbol_count: number; chunk_count: number; edge_count: number;

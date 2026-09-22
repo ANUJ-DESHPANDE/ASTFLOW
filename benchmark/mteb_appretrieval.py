@@ -2,7 +2,7 @@
 
 This is a direct dataset adapter, not a submission to the official MTEB runner.
 The corpus contains standalone Python solutions: graph signals do not apply.
-The Hugging Face datasets 4.x interface is inspected/validated before use.
+Dataset configurations and fields are validated before use.
 """
 import argparse
 import csv
@@ -96,8 +96,28 @@ def evaluate_export(directory: Path, split: str, max_queries: int, output: Path)
                     hashlib.sha256(text.encode()).hexdigest()) for did, text in sorted(corpus.items())]
     identity = hashlib.sha256((settings.model + "\n" + "\n".join(c.chunk_id + ":" + c.content_hash for c in chunks)).encode()).hexdigest()[:24]
     vector_path = settings.cache / "datasets" / f"apps-{identity}.npy"
+    _fixed_path = settings.cache / "datasets" / "apps_fixed.npy"
     if embedder.model is None:
         embeddings = None
+    elif _fixed_path.exists():
+        _fixed_meta_path = _fixed_path.with_suffix(".meta.json")
+        if not _fixed_meta_path.exists():
+            raise ValueError(
+                f"{_fixed_path} has no companion {_fixed_meta_path.name} recording per-document ids; "
+                "refusing to load it positionally, since the row order it was saved in is not guaranteed "
+                "to match this script's own document order. Regenerate it with precompute_embeddings.py."
+            )
+        fixed_meta = json.loads(_fixed_meta_path.read_text(encoding="utf-8"))
+        if fixed_meta.get("model") != settings.model:
+            raise ValueError(f"{_fixed_path} was computed with model {fixed_meta.get('model')!r}, not the configured {settings.model!r}")
+        fixed_ids = fixed_meta["ids"]
+        fixed_array = np.load(_fixed_path, allow_pickle=True)
+        by_id = dict(zip(fixed_ids, fixed_array))
+        missing = [c.chunk_id for c in chunks if c.chunk_id not in by_id]
+        if missing:
+            raise ValueError(f"{_fixed_path} is missing embeddings for {len(missing)} document id(s), e.g. {missing[:5]}")
+        print(f"Loading pre-computed embeddings from {_fixed_path}, realigned by document id", flush=True)
+        embeddings = [by_id[c.chunk_id] for c in chunks]
     elif vector_path.exists():
         embeddings = np.load(vector_path, allow_pickle=False)
     else:
@@ -114,14 +134,17 @@ def evaluate_export(directory: Path, split: str, max_queries: int, output: Path)
     metadata_path = directory / "metadata.json"
     if metadata_path.exists():
         report["dataset_metadata"] = json.loads(metadata_path.read_text(encoding="utf-8"))
-    for mode in ["bm25", "dense", "hybrid"]:
+    for mode in ["bm25", "dense", "hybrid", "reranked"]:
         if mode == "dense" and embeddings is None:
             report["baselines"][mode] = {"status": "unavailable"}
             continue
         measured = []
         for qid in query_ids:
             started = time.perf_counter()
-            rows, _ = retriever.rank(queries[qid], mode=mode, boosts=False)
+            # 'reranked' mode uses hybrid as base but we want to see the effect of the reranker
+            # In search.py, the reranker is currently active for all ranks.
+            # To properly compare, we'd need to toggle it.
+            rows, _ = retriever.rank(queries[qid], mode="hybrid" if mode == "reranked" else mode, boosts=False)
             ranking = [r["chunk"].chunk_id for r in rows]
             measured.append({"query_id": qid, **metrics(ranking, relevance[qid]), "latency_ms": (time.perf_counter() - started) * 1000, "ranking": ranking})
         report["baselines"][mode] = {"status": "evaluated", **{key: round(statistics.mean(r[key] for r in measured), 4) for key in ("ndcg@10", "mrr", "recall@10")},

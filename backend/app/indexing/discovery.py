@@ -29,25 +29,37 @@ def read_snapshot(repo: Path, version: str, settings: Settings) -> tuple[dict[st
     if not repo.is_dir():
         raise ValueError("Repository path must be a directory")
     files, warnings = {}, []
+    total_bytes = 0
     resolved = "working-tree"
     if version == "working-tree":
         for current, dirs, names in os.walk(repo, followlinks=False):
-            dirs[:] = sorted(d for d in dirs if d not in EXCLUDED and not (Path(current) / d).is_symlink())
+            dirs[:] = sorted(d for d in dirs if d not in EXCLUDED and not (Path(current) / d).is_symlink()
+                             and not getattr(Path(current) / d, "is_junction", lambda: False)())
             for name in sorted(names):
                 path = Path(current) / name
                 relative = path.relative_to(repo).as_posix()
-                if not useful(relative) or path.is_symlink():
+                if not useful(relative) or path.is_symlink() or not path.resolve().is_relative_to(repo):
                     continue
                 if path.stat().st_size > settings.max_file_bytes:
                     warnings.append(f"Skipped large file: {relative}")
                     continue
                 try:
-                    files[relative] = path.read_bytes().decode("utf-8")
+                    with path.open("rb") as stream:
+                        raw = stream.read(settings.max_file_bytes + 1)
+                    if len(raw) > settings.max_file_bytes:
+                        warnings.append(f"Skipped large file: {relative}")
+                        continue
+                    total_bytes += len(raw)
+                    if total_bytes > settings.max_total_bytes:
+                        raise ValueError("Repository exceeds total source byte limit")
+                    files[relative] = raw.decode("utf-8")
                 except UnicodeDecodeError:
                     warnings.append(f"Skipped non-UTF-8 file: {relative}")
                 if len(files) > settings.max_files:
                     raise ValueError(f"Repository exceeds {settings.max_files} JavaScript files")
     else:
+        if Path(git(repo, "rev-parse", "--show-toplevel")).resolve() != repo:
+            raise ValueError("Select the Git repository root to index a revision")
         if version.startswith("-") or len(version) > 200:
             raise ValueError("Invalid Git revision")
         resolved = git(repo, "rev-parse", "--verify", "--end-of-options", f"{version}^{{commit}}")
@@ -65,6 +77,20 @@ def read_snapshot(repo: Path, version: str, settings: Settings) -> tuple[dict[st
             raise ValueError(f"Repository exceeds {settings.max_files} JavaScript files")
         # One cat-file process, independent of working tree and checkout state.
         if entries:
+            sizes = subprocess.run(["git", "-C", str(repo), "cat-file", "--batch-check=%(objectsize)"],
+                                   input="".join(oid + "\n" for _, oid in entries).encode(),
+                                   capture_output=True, timeout=60, check=True).stdout.splitlines()
+            accepted = []
+            for entry, size_raw in zip(entries, sizes, strict=True):
+                size = int(size_raw)
+                if size > settings.max_file_bytes:
+                    warnings.append(f"Skipped large file: {entry[0]}")
+                    continue
+                total_bytes += size
+                if total_bytes > settings.max_total_bytes:
+                    raise ValueError("Repository exceeds total source byte limit")
+                accepted.append(entry)
+            entries = accepted
             result = subprocess.run(["git", "-C", str(repo), "cat-file", "--batch"],
                                     input="".join(oid + "\n" for _, oid in entries).encode(),
                                     capture_output=True, timeout=120, check=True)
@@ -94,6 +120,8 @@ def snapshot_hash(files: dict[str, str]) -> str:
 def list_versions(repo: Path) -> list[dict]:
     versions = [{"name": "working-tree", "commit": None, "label": "Working tree"}]
     try:
+        if Path(git(repo, "rev-parse", "--show-toplevel")).resolve() != repo.resolve():
+            return versions
         head = git(repo, "rev-parse", "HEAD")
         versions.append({"name": "HEAD", "commit": head, "label": "HEAD"})
         for tag in git(repo, "tag", "--list").splitlines():

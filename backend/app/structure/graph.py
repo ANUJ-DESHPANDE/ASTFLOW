@@ -26,9 +26,13 @@ class ProjectGraph:
         return sorted(set(self.callers(symbol) + self.callees(symbol)))
 
     def bounded_paths(self, source: str, target: str, max_depth: int = 5, limit: int = 20):
+        return self._bounded_paths(source, target, max_depth, limit)[0]
+
+    def _bounded_paths(self, source: str, target: str, max_depth: int = 5, limit: int = 20):
         if source not in self.graph or target not in self.graph:
-            return []
+            return [], False
         queue, paths, visited = deque([[source]]), [], 0
+        generated, truncated = 1, False
         while queue and len(paths) < limit and visited < 10000:
             path = queue.popleft()
             visited += 1
@@ -37,8 +41,14 @@ class ProjectGraph:
             elif len(path) - 1 < max_depth:
                 for next_id in self.callees(path[-1]):
                     if next_id not in path:
+                        if generated >= 10000:
+                            truncated = True
+                            break
                         queue.append([*path, next_id])
-        return paths
+                        generated += 1
+            elif any(next_id not in path for next_id in self.callees(path[-1])):
+                truncated = True
+        return paths, truncated or bool(queue)
 
     def shortest_paths(self, source: str, target: str, max_depth: int = 5):
         paths = self.bounded_paths(source, target, max_depth)
@@ -68,15 +78,21 @@ class ProjectGraph:
         }
 
     def trace(self, source: str, target: str, max_depth: int = 5):
+        def ambiguous(name):
+            return name not in self.symbols and sum(s.name == name or s.qualified_name == name for s in self.symbols.values()) > 1
+        if ambiguous(source) or ambiguous(target):
+            return {**self.subgraph(set()), "status": "AMBIGUOUS_SYMBOL", "message": "Choose a fully qualified symbol ID to disambiguate this trace.", "max_depth": max_depth}
         sources, targets = self.resolve(source), self.resolve(target)
-        paths = []
+        paths, limited = [], len(sources) > 20 or len(targets) > 20
         for a in sources[:20]:
             for b in targets[:20]:
-                paths.extend(self.bounded_paths(a, b, max_depth))
+                found, truncated = self._bounded_paths(a, b, max_depth)
+                paths.extend(found)
+                limited |= truncated
         paths = sorted(paths, key=lambda p: (len(p), p))[:20]
         ids = {s for p in paths for s in p}
         if not ids:
             ids = set((sources + targets)[:30])
-        return {**self.subgraph(ids, paths), "status": "SUPPORTED" if paths else "NO_SUPPORTED_PATH",
-                "message": f"{len(paths)} supported path(s)" if paths else "No supported call path in this snapshot. Search results may still identify related code.",
+        return {**self.subgraph(ids, paths), "status": "SEARCH_LIMIT_REACHED" if limited else "SUPPORTED" if paths else "NO_STATIC_PATH_FOUND",
+                "message": f"{len(paths)} supported path(s)" + (" · search limit reached" if limited else "") if paths else "Search limit reached; absence of a path is not established." if limited else "No supported call path in this snapshot. Search results may still identify related code.",
                 "max_depth": max_depth}

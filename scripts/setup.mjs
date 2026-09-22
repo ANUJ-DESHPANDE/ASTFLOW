@@ -11,8 +11,9 @@ function run(cmd, args) {
   if (result.status !== 0) process.exit(result.status ?? 1);
 }
 if (!existsSync(python)) run(windows ? 'py' : 'python3', windows ? ['-3.12', '-m', 'venv', '.venv'] : ['-m', 'venv', '.venv']);
-run(python, ['-m', 'pip', 'install', '-c', 'requirements.lock.txt', '-e', '.[dev,semantic]']);
-run(windows ? 'npm.cmd' : 'npm', ['install']);
+run(python, ['-m', 'pip', 'install', '--upgrade', 'pip>=26.2.1']);
+run(python, ['-m', 'pip', 'install', '-c', 'requirements.lock.txt', '-e', process.env.ASTFLOW_SEMANTIC === 'off' ? '.[dev]' : '.[dev,semantic]']);
+run(windows ? 'npm.cmd' : 'npm', ['ci']);
 run(windows ? 'npm.cmd' : 'npm', ['run', 'build']);
 run(python, ['scripts/setup_demo.py']);
 if (process.env.ASTFLOW_SEMANTIC !== 'off') {
