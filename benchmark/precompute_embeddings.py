@@ -37,21 +37,26 @@ def precompute():
 
     print(f"Encoding {len(chunks)} documents (this will take a few minutes)...")
     # Use the same windowing strategy as the frozen config
-    embeddings = embedder.encode([c.text for c in chunks], use_windows=True)
+    window_size, overlap = 256, 64
+    embeddings = embedder.encode([c.text for c in chunks], use_windows=True, window_size=window_size, overlap=overlap)
 
-    # Since use_windows=True returns a list of arrays (one per doc),
-    # and we need a single matrix for the standard BM25/Dense retrieval
-    # (or we need to save the list).
-    # The benchmark script expects a numpy array for the 'dense' mode.
-    # Let's save the max-pooled version for the dense baseline
-    # and the full windowed list for the hybrid.
-
-    # For the 'dense' mode in benchmark:
-    dense_matrix = np.array([np.max(win) if len(win)>0 else 0 for win in embeddings]) # Simplified for now
+    # embeddings[i] corresponds to chunks[i], i.e. to this script's own corpus.jsonl
+    # iteration order. Any consumer (e.g. mteb_appretrieval.py) builds its own chunk
+    # list independently and is not guaranteed to use the same order (in practice it
+    # sorts by document id, which corpus.jsonl is not). Persist chunk_id alongside
+    # each embedding so a consumer can realign by id instead of trusting position.
+    ids = [c.chunk_id for c in chunks]
 
     save_path = settings.cache / "datasets" / "apps_fixed.npy"
+    meta_path = settings.cache / "datasets" / "apps_fixed.meta.json"
     np.save(save_path, np.asarray(embeddings, dtype=object))
-    print(f"Saved embeddings to {save_path}")
+    meta_path.write_text(json.dumps({
+        "ids": ids,
+        "model": settings.model,
+        "window_size": window_size,
+        "overlap": overlap,
+    }), encoding="utf-8")
+    print(f"Saved embeddings to {save_path} ({len(ids)} ids in {meta_path})")
 
 if __name__ == "__main__":
     precompute()

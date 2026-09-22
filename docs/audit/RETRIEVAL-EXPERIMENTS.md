@@ -26,6 +26,12 @@ This document contains real, empirical benchmark runs executed against the offic
 | EXP-5 | 2026-09-21 | Confirmation | 1,906 / 8,765 | BM25 + Stopwords | 1.6 / 0.75 | Yes (8 tokens) | 0.06056 | 0.05734 | 0.08860 | Confirmed Stopword Gain (+0.00060) |
 | **EXP-6** | **2026-09-21** | **Official Test** | **3,765 / 8,765** | **BM25 Tuned** | **1.6 / 0.75** | **Yes** | **0.06312** | **0.05421** | **0.09216** | **Official Tuned BM25 (+0.00208 vs hist. 0.06104)** |
 | **EXP-7** | **2026-09-21** | **Official Test** | **3,765 / 8,765** | **Hybrid Tuned** | **1.6 / 0.75** | **Yes** | **0.08900** | **0.07338** | **0.13971** | **Official Tuned Hybrid (+0.00085 vs hist. 0.08815)** |
+| EXP-8 | 2026-09-22 | Full Test (direct adapter, Path B) | 3,765 / 8,765 | Dense — windowed, **misaligned cache** | n/a | n/a | 0.0010 | 0.0011 | 0.0021 | **Regression.** `apps_fixed.npy` loaded positionally against a differently-ordered chunk list; root-caused and fixed this session (`DENSE-REGRESSION-INVESTIGATION.md`) |
+| EXP-9 | 2026-09-22 | Full Test (direct adapter, Path B) | 3,765 / 8,765 | Hybrid — same misaligned dense | n/a | n/a | 0.0322 | 0.0251 | 0.0696 | **Regression**, worse than BM25 alone (0.0631) — noise dense pollutes RRF candidate pool; same root cause as EXP-8 |
+| EXP-10 | 2026-09-22 | Synthetic (5 docs, shuffled corpus.jsonl order, fake deterministic embedder — no network) | 5 / 5 | Dense — windowed, **pre-fix** positional load | n/a | n/a | *(3 tests fail: no id metadata / silent truncation, not scored)* | | | Reproduces EXP-8's mechanism on demand; see `benchmark/test_precompute_alignment.py` |
+| EXP-11 | 2026-09-22 | Synthetic (same 5 docs) | 5 / 5 | Dense — windowed, **post-fix** id-realigned load | n/a | n/a | **1.0000** | 1.0000 | 1.0000 | Confirms the fix restores correct dense ranking once ids (not array position) determine alignment |
+
+**EXP-8 through EXP-11 could not be extended to a full-scale post-fix re-run of the real 3,765-query/8,765-document corpus in this session**: this session's network access is policy-blocked for `huggingface.co` (403 at the proxy), so neither the MiniLM weights nor the CoIR-Retrieval/apps corpus could be (re-)downloaded. EXP-10/EXP-11 instead exercise the real project code end-to-end against a small synthetic corpus with a deterministic fake encoder, which proves the fix's correctness mechanism without depending on network access. See `DENSE-REGRESSION-INVESTIGATION.md` §10 for exactly what remains unverified at full scale and what would unblock it.
 
 ---
 
