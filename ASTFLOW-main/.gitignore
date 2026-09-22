@@ -14,3 +14,6 @@ playwright-report/
 benchmark/results/*/predictions/
 frontend/tsconfig.tsbuildinfo
 pytest-cache-files-*/
+
+benchmark/results/apps.json
+

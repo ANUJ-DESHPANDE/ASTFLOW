@@ -23,7 +23,7 @@ class Settings:
     graph_decay: float = 0.45
     refinement_weight: float = 0.12
     test_weight: float = 0.82
-    candidates: int = 50
+    candidates: int = 500
     max_depth: int = 5
     max_file_bytes: int = 1_000_000
     max_files: int = 20_000
