@@ -41,3 +41,7 @@ So: BM25 (lexical-only, unaffected by dense at all) tracks closely across both p
 ## Recommendation
 
 Do not present the Path B collapse numbers next to the Path A 0.08900 figure as if they measure the same thing getting worse. Once Path B's fix can be verified at full scale (see §10 of the investigation doc), the right comparison is: Path B BM25/Dense/Hybrid *before* vs. *after* the alignment fix, on the same 3,765 queries, with the same scorer — not Path B vs. Path A.
+
+## Update, 2026-09-22 post-fix verification session
+
+Re-checked in a follow-up session: `huggingface.co` is still blocked (same 403), and no local copy of the model or dataset exists on this container. Neither Path A nor Path B could be re-executed against the real corpus. The classification above stands unchanged: Path A's 0.08900 is **REPRODUCED in the sense of "traceable to an existing, untouched artifact"**, not independently re-run in either session. A mechanism-level before/after proof of the Path B fix (not a re-run of Path A or Path B themselves) is in `docs/audit/POST-FIX-RETRIEVAL-VERIFICATION.md`.
