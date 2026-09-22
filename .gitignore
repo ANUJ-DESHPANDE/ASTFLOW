@@ -1,4 +1,5 @@
 .venv/
+.eval-venv/
 .astflow/
 __pycache__/
 *.pyc
@@ -10,5 +11,9 @@ frontend/dist/
 examples/demo-repo/.git/
 test-results/
 playwright-report/
+benchmark/results/*/predictions/
 frontend/tsconfig.tsbuildinfo
 pytest-cache-files-*/
+
+benchmark/results/apps.json
+

@@ -15,23 +15,31 @@ def resolve_structure(files: list[ParsedFile]) -> tuple[list[Edge], list[dict], 
         if not relative.startswith("."):
             return None
         path = posixpath.normpath(posixpath.join(posixpath.dirname(current), relative))
-        for candidate in [path, *[path + ext for ext in (".js", ".mjs", ".cjs", ".jsx")], path + "/index.js"]:
+        for candidate in ([path] if path.endswith(".js") else [path + ".js"] if not posixpath.splitext(path)[1] else []):
             if candidate in by_file:
                 return candidate
         return None
 
     def imported(file: ParsedFile, name: str, member: str | None = None):
         imp = file.imports.get(name)
-        if not imp:
+        if not imp or not imp.get("supported", False):
             return None
         path = module_path(file.path, imp["module"])
         if not path:
             return None
         target = by_file[path]
+        if target.has_errors:
+            return None
         key = member if imp["name"] == "*" else imp["name"]
+        if sum(s.name == key and s.parent_symbol_id is None for s in target.symbols) != 1:
+            return None
+        if any(key in names for names in target.reassigned.values()):
+            return None
         return symbols.get(target.exports.get(key, ""))
 
     def lookup(file: ParsedFile, name: str, scope: str | None):
+        if any(name in names for names in file.reassigned.values()):
+            return None
         current = symbols.get(scope)
         while current:
             if name in file.reassigned.get(current.symbol_id, set()):
@@ -39,6 +47,8 @@ def resolve_structure(files: list[ParsedFile]) -> tuple[list[Edge], list[dict], 
             matches = [s for s in file.symbols if s.name == name and s.parent_symbol_id == current.symbol_id]
             if len(matches) == 1:
                 return matches[0]
+            if len(matches) > 1:
+                return None
             if name in file.shadowed.get(current.symbol_id, set()):
                 return None
             current = symbols.get(current.parent_symbol_id)
@@ -55,6 +65,8 @@ def resolve_structure(files: list[ParsedFile]) -> tuple[list[Edge], list[dict], 
         if not class_symbol or class_symbol.kind != "class":
             return None
         candidates = [s for s in symbols.values() if s.parent_symbol_id == class_symbol.symbol_id and s.name == name and s.kind in CALLABLE]
+        if any(s.method_kind != "normal" for s in candidates):
+            return None
         return candidates[0] if len(candidates) == 1 else None
 
     def binding(file: ParsedFile, scope: str, receiver: str):
@@ -71,6 +83,14 @@ def resolve_structure(files: list[ParsedFile]) -> tuple[list[Edge], list[dict], 
     for file in sorted(files, key=lambda f: f.path):
         resolved_calls = []
         for call in file.calls:
+            if file.has_errors:
+                unresolved.append({**call, "evidence_type": "UNRESOLVED", "reason": "PARSE_ERROR"})
+                continue
+            caller = symbols.get(call["source"])
+            parent = symbols.get(caller.parent_symbol_id) if caller else None
+            if caller and (caller.method_kind != "normal" or (parent and parent.kind != "class")):
+                unresolved.append({**call, "evidence_type": "UNRESOLVED", "reason": "Unsupported method or nested callback scope"})
+                continue
             callee, target, how = call["callee"], None, ""
             scope = call["source"]
             if call["callee_type"] == "identifier":
@@ -80,24 +100,41 @@ def resolve_structure(files: list[ParsedFile]) -> tuple[list[Edge], list[dict], 
                 receiver, name = callee.rsplit(".", 1)
                 if receiver == "this":
                     target = method(symbols.get(call["class"]), name)
-                    if "this." + name in file.bindings.get(call["class"], {}) and not (target and "=>" in target.source_text):
+                    if "this." + name in file.bindings.get(call["class"], {}) or "<computed-write>" in file.bindings.get(call["class"], {}):
                         target = None
                     how = "same_class_method"
                 elif receiver in file.imports and file.imports[receiver]["name"] == "*" and receiver not in file.shadowed.get(scope, set()):
                     target = imported(file, receiver, name)
                     how = "namespace_import"
-                else:
+                elif receiver.startswith("this."):
+                    if "<computed-write>" in file.bindings.get(call["class"], {}):
+                        unresolved.append({**call, "evidence_type": "UNRESOLVED", "reason": "Computed property mutation in class"})
+                        continue
                     class_name = binding(file, call["class"] if receiver.startswith("this.") and call["class"] else scope, receiver)
-                    cls = lookup(file, class_name, scope) if class_name else None
+                    assignment = file.binding_spans.get(call["class"], {}).get(receiver)
+                    cls = lookup(file, class_name, assignment["source_symbol_id"]) if class_name and assignment else None
                     target = method(cls, name)
                     how = "constructor_instance"
+            if target and by_file[target.file_path].has_errors:
+                target = None
             if target and target.kind in CALLABLE and target.symbol_id in symbols:
                 edge = Edge(scope, target.symbol_id, "CALLS", call["file"], call["line"], call["end_line"],
                             call["start_byte"], call["end_byte"], call["expression"], how)
                 edges.append(edge)
+                edge.supporting_spans.append({"file_path": call["file"], "start_line": call["line"],
+                    "end_line": call["end_line"], "start_byte": call["start_byte"], "end_byte": call["end_byte"], "kind": "call_site"})
+                import_name = callee
+                if how == "constructor_instance":
+                    import_name = class_name
+                    assignment = file.binding_spans.get(call["class"], {}).get(receiver)
+                    if assignment:
+                        edge.supporting_spans.append(assignment)
+                declaration = file.imports.get(import_name, {}).get("span")
+                if declaration:
+                    edge.supporting_spans.append(declaration)
                 resolved_calls.append((call, edge))
             else:
-                unresolved.append({**call, "evidence_type": "SEARCH_INFERRED", "reason": "No unambiguous local definition; dynamic or external call"})
+                unresolved.append({**call, "evidence_type": "UNRESOLVED", "reason": "No unambiguous supported binding; shadowed, reassigned, dynamic or external call"})
         grouped = {}
         for call, edge in resolved_calls:
             if call["sequence_eligible"]:

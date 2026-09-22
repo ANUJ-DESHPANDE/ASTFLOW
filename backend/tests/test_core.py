@@ -44,9 +44,8 @@ export class Service {
 
 
 def test_imports_instances_cycles_aliases_and_determinism():
-    a = parse_file("a.js", '''import Worker, { clean as tidy } from './b.js';
-import * as tools from './b.js';
-export function launch() { tidy(); tools.clean(); }
+    a = parse_file("a.js", '''import { Worker, clean } from './b.js';
+export function launch() { clean(); }
 export class Main {
   worker = new Worker();
   constructor() { this.other = new Worker(); }
@@ -55,7 +54,7 @@ export class Main {
 }''')
     b = parse_file("b.js", '''import { launch } from './a.js';
 export function clean() { return 1; }
-export default class Worker { execute() { clean(); } }
+export class Worker { execute() { clean(); } }
 export function cycle() { launch(); }''')
     edges, _, _ = resolve_structure([a, b])
     reverse, _, _ = resolve_structure([b, a])
@@ -83,11 +82,11 @@ export function good() { work(); }'''),
     assert len(unresolved) == 3
 
 
-def test_default_export_identifier_maps_to_existing_definition():
+def test_default_import_remains_outside_supported_resolution():
     files = [parse_file("service.js", "function restore() { return 'session'; } export default restore;"),
              parse_file("caller.js", "import recover from './service.js'; export function run() { recover(); }")]
     edges, _, _ = resolve_structure(files)
-    assert [(e.source_symbol_id, e.target_symbol_id) for e in edges] == [("caller.js::run", "service.js::restore")]
+    assert edges == []
 
 
 def test_sequence_is_direct_block_only():

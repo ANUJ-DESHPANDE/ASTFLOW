@@ -33,8 +33,11 @@ def save_index(folder: Path, manifest: dict, files: dict[str, str], symbols: lis
     (folder / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
 
 
-def load_index(folder: Path):
-    with closing(sqlite3.connect(folder / "index.sqlite")) as db:
+def _load_index(folder: Path):
+    database = folder / "index.sqlite"
+    if not database.is_file():
+        raise ValueError("Index database is missing; rebuild this snapshot")
+    with closing(sqlite3.connect(database.resolve().as_uri() + '?mode=ro', uri=True)) as db:
         files = dict(db.execute("SELECT path, source FROM files ORDER BY path"))
         symbols = [Symbol(**json.loads(row[0])) for row in db.execute("SELECT data FROM symbols ORDER BY id")]
         # Embedding rows must match insertion order, not symbol sort order.
@@ -43,6 +46,19 @@ def load_index(folder: Path):
         extra = json.loads(db.execute("SELECT data FROM metadata WHERE key='extra'").fetchone()[0])
         manifest = json.loads(db.execute("SELECT data FROM metadata WHERE key='manifest'").fetchone()[0])
     embeddings = np.load(folder / "embeddings.npy", allow_pickle=False) if (folder / "embeddings.npy").exists() else None
-    if embeddings is not None and len(embeddings) != len(chunks):
-        raise ValueError("Embedding row count does not match stored chunks; rebuild index")
+    rows = json.loads((folder / 'embedding_rows.json').read_text(encoding='utf-8'))
+    if rows != [c.chunk_id for c in chunks]:
+        raise ValueError("Embedding row identities do not match stored chunks; rebuild index")
+    if manifest['semantic']['available'] and embeddings is None and chunks:
+        raise ValueError("Semantic index vectors are missing; rebuild index")
+    if embeddings is not None and (embeddings.ndim != 2 or embeddings.shape[0] != len(chunks)
+                                   or not np.isfinite(embeddings).all()):
+        raise ValueError("Invalid embedding shape or values; rebuild index")
     return manifest, files, symbols, chunks, edges, extra, embeddings
+
+
+def load_index(folder: Path):
+    try:
+        return _load_index(folder)
+    except (sqlite3.Error, OSError, KeyError, TypeError, IndexError, json.JSONDecodeError) as exc:
+        raise ValueError("Index is missing or corrupt; reindex the repository to recover") from exc

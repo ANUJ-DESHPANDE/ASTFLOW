@@ -47,6 +47,13 @@ def evaluate(repo: Path, queries_path: Path, output: Path):
                                        "latency_median_ms": round(statistics.median(latencies), 2),
                                        "latency_p95_ms": round(sorted(latencies)[min(len(latencies) - 1, int(len(latencies) * .95))], 2),
                                        "queries": details}
+        report["baselines"][label]["categories"] = {
+            category: {"queries": len(group), **{key: round(statistics.mean(d[key] for d in group), 4)
+                        for key in ("ndcg@10", "mrr", "recall@10")}}
+            for category in sorted({d["category"] for d in details})
+            if (group := [d for d in details if d["category"] == category])}
+        if mode not in {"bm25", "dense"} and not index.manifest["semantic"]["available"]:
+            report["baselines"][label]["effective_mode"] = "lexical fallback; dense contribution unavailable"
     output.mkdir(parents=True, exist_ok=True)
     (output / "local.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
     lines = ["# ASTFLOW local benchmark", "", report["limitations"], "",
@@ -59,6 +66,9 @@ def evaluate(repo: Path, queries_path: Path, output: Path):
         else:
             lines.append(f"| {label} | {result['ndcg@10']:.4f} | {result['mrr']:.4f} | {result['recall@10']:.4f} | {result['latency_median_ms']:.2f} | {result['latency_p95_ms']:.2f} |")
     lines.extend(["", "Generated from an executed evaluation. Full per-query rankings are in `local.json`.", ""])
+    if not index.manifest["semantic"]["available"]:
+        lines.extend(["Semantic model unavailable: hybrid/full rows used lexical fallback, not dense retrieval.", ""])
+    lines.extend(["Category metrics are included in each baseline's `categories` object in `local.json`.", ""])
     (output / "local.md").write_text("\n".join(lines), encoding="utf-8")
     print("\n".join(lines))
     return report

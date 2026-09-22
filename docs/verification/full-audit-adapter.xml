@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="1" time="47.499" timestamp="2026-09-20T13:21:12.059458+05:30" hostname="LAPTOP-6OSFU3BD"><testcase classname="benchmark.test_mteb_adapter" name="test_corpus_ids_top_k_and_official_result_serialization" time="0.026" /></testsuite></testsuites>

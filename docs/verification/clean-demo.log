@@ -1,0 +1,15 @@
+Demo Git history ready: v1 -> v2
+v1: 17 snippets, 11 relationships
+v2: 21 snippets, 12 relationships
+working-tree: 21 snippets, 12 relationships
+INFO:     Started server process [27540]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:58735 (Press CTRL+C to quit)
+INFO:     127.0.0.1:58738 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58741 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58742 - "GET /api/repository HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58743 - "POST /api/search HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58744 - "GET /api/source?path=settings/deeplinks.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58745 - "POST /api/compare HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58746 - "GET /api/versions HTTP/1.1" 200 OK

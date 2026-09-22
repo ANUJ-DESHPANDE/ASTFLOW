@@ -1,7 +1,8 @@
 import logging
 import threading
+import time
 from dataclasses import asdict
-from pathlib import PurePosixPath
+from pathlib import Path, PurePosixPath
 
 from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.responses import FileResponse, JSONResponse
@@ -12,6 +13,7 @@ from backend.app.agent.investigate import investigate
 from backend.app.api.schemas import CompareRequest, IndexRequest, SearchRequest, TraceRequest
 from backend.app.config import ROOT, Settings
 from backend.app.indexing.service import IndexService
+from backend.app.indexing.discovery import read_snapshot, snapshot_hash
 from backend.app.versions.compare import compare_indexes
 
 logger = logging.getLogger(__name__)
@@ -22,6 +24,8 @@ def create_app(settings: Settings | None = None):
     service = IndexService(settings)
     app.state.service = service
     app.state.index_lock = threading.Lock()
+    app.state.change_check = {"at": 0, "key": None, "changed": False}
+    app.state.change_lock = threading.Lock()
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=["127.0.0.1", "localhost", "testserver", "[::1]"])
 
     @app.middleware("http")
@@ -31,7 +35,24 @@ def create_app(settings: Settings | None = None):
         allowed = {f"{request.url.scheme}://{request.url.netloc}", "http://127.0.0.1:5173", "http://localhost:5173"}
         if request.url.path.startswith("/api") and origin and origin not in allowed:
             return JSONResponse({"detail": "Only local ASTFLOW origins are allowed"}, status_code=403)
-        return await call_next(request)
+        if request.url.path.startswith("/api") and request.headers.get("sec-fetch-site") == "cross-site":
+            return JSONResponse({"detail": "Cross-site requests are not allowed"}, status_code=403)
+        if request.method == "POST" and request.url.path.startswith("/api"):
+            if request.headers.get("content-type", "").split(";")[0] != "application/json":
+                return JSONResponse({"detail": "JSON content type required"}, status_code=415)
+            body = bytearray()
+            async for chunk in request.stream():
+                body.extend(chunk)
+                if len(body) > 16384:
+                    return JSONResponse({"detail": "Request body is too large"}, status_code=413)
+            request._body = bytes(body)
+        response = await call_next(request)
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["Referrer-Policy"] = "no-referrer"
+        response.headers["X-Frame-Options"] = "DENY"
+        response.headers["Cache-Control"] = "no-store"
+        response.headers["Content-Security-Policy"] = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; worker-src 'self' blob:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"
+        return response
 
     @app.exception_handler(ValueError)
     async def invalid_request(request, exc):
@@ -98,6 +119,9 @@ def create_app(settings: Settings | None = None):
             raise HTTPException(404, "Source file is not in this indexed snapshot")
         source_text = index.files[path]
         lines = source_text.splitlines(keepends=True)
+        if not lines and start_line == 1 and end_line is None:
+            return {"path": path, "version": version, "version_key": index.manifest["version_key"],
+                    "start_line": 1, "end_line": 1, "total_lines": 0, "content": "", "full_content": ""}
         end = end_line if end_line is not None else len(lines)
         if start_line > len(lines) or end < start_line or end > len(lines):
             raise HTTPException(400, "Source line range is outside the file")
@@ -108,6 +132,63 @@ def create_app(settings: Settings | None = None):
     @app.get("/api/versions")
     def versions():
         return {"versions": service.versions()}
+
+    @app.get("/api/map")
+    def map_repository(version: str = "working-tree", file: str | None = None,
+                       symbol: str | None = None, depth: int = Query(1, ge=1, le=3)):
+        index = service.get(version)
+        if symbol:
+            if symbol not in index.graph.graph:
+                raise HTTPException(404, 'Unknown callable symbol')
+            ids, frontier, limited = {symbol}, [symbol], False
+            for _ in range(depth):
+                next_frontier = []
+                for current in frontier:
+                    for neighbor in index.graph.neighbors(current):
+                        if neighbor not in ids:
+                            if len(ids) >= 150:
+                                limited = True
+                                continue
+                            ids.add(neighbor); next_frontier.append(neighbor)
+                frontier = next_frontier
+            return {**index.graph.subgraph(ids), 'version_key': index.manifest['version_key'],
+                    'focus_symbol': symbol, 'status': 'SEARCH_LIMIT_REACHED' if limited else 'OK',
+                    'message': f'{len(ids)} symbols within {depth} call hop(s); arrows show caller to callee'}
+        if file and file not in index.files:
+            raise HTTPException(404, 'Source file is not in this indexed snapshot')
+        if not file:
+            paths = sorted(index.files)[:150]
+            nodes = [{"symbol_id": p, "qualified_name": p.split('/')[-1], "file": p,
+                      "start_line": 1, "end_line": max(1, len(index.files[p].splitlines())), "kind": "file"} for p in paths]
+            edges, seen = [], set()
+            for edge in index.edges:
+                a = index.graph.symbols[edge.source_symbol_id].file_path
+                b = index.graph.symbols[edge.target_symbol_id].file_path
+                if a != b and a in paths and b in paths and (a, b) not in seen:
+                    edges.append({**edge.to_dict(), "source": a, "target": b})
+                    seen.add((a, b))
+            return {"nodes": nodes, "edges": edges, "paths": [], "version_key": index.manifest["version_key"],
+                    "unresolved": index.extra.get("unresolved", [])[:100],
+                    "unresolved_count": len(index.extra.get("unresolved", [])),
+                    "message": f"{len(paths)} of {len(index.files)} source files · select a file to explore its symbols",
+                    "status": "SEARCH_LIMIT_REACHED" if len(index.files) > 150 else "OK"}
+        symbols = [s for s in index.symbols if s.symbol_id in index.graph.graph and (not file or s.file_path == file)]
+        ids = {s.symbol_id for s in symbols[:150]}
+        return {**index.graph.subgraph(ids), "version_key": index.manifest["version_key"],
+                "message": f"{len(ids)} of {len(symbols)} symbols · select a file to focus" if len(symbols) > 150 else f"{len(ids)} symbols in this snapshot",
+                "status": "SEARCH_LIMIT_REACHED" if len(symbols) > 150 else "OK",
+                "unresolved": index.extra.get("unresolved", [])[:100]}
+
+    @app.get("/api/checkpoint")
+    def checkpoint():
+        index = service.get("working-tree")
+        with app.state.change_lock:
+            cached = app.state.change_check
+            if cached["key"] != index.manifest["version_key"] or time.monotonic() - cached["at"] > 10:
+                files, _, _ = read_snapshot(Path(index.manifest["repository_path"]), "working-tree", service.settings)
+                cached.update(at=time.monotonic(), key=index.manifest["version_key"],
+                              changed=snapshot_hash(files) != index.manifest["source_hash"])
+            return {"changed": cached["changed"], "version_key": cached["key"]}
 
     @app.post("/api/compare")
     def compare(body: CompareRequest):

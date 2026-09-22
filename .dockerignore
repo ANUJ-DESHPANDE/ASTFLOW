@@ -1,0 +1,13 @@
+.git
+.venv
+.eval-venv
+.astflow
+node_modules
+frontend/dist
+test-results
+playwright-report
+**/__pycache__
+**/.git
+benchmark/results
+docs
+.env

@@ -40,12 +40,39 @@ class Embedder:
                 self.reason = f"Lexical fallback: {type(exc).__name__}; run astflow model-download to enable semantic search"
             return self.model
 
-    def encode(self, texts: list[str]):
+    def encode(self, texts: list[str], use_windows: bool = False, window_size: int = 256, overlap: int = 64):
         if not self.load():
             return None
         with self.lock:
-            return np.asarray(self.model.encode(texts, batch_size=32, normalize_embeddings=True,
-                                                convert_to_numpy=True, show_progress_bar=False), dtype=np.float32)
+            if not use_windows:
+                return np.asarray(self.model.encode(texts, batch_size=32, normalize_embeddings=True,
+                                                    convert_to_numpy=True, show_progress_bar=False), dtype=np.float32)
+
+            all_windows = []
+            doc_window_counts = []
+            for text in texts:
+                tokens = self.model.tokenizer.tokenize(text)
+                if len(tokens) <= window_size:
+                    all_windows.append(text)
+                    doc_window_counts.append(1)
+                else:
+                    stride = window_size - overlap
+                    count = 0
+                    for start in range(0, len(tokens), stride):
+                        all_windows.append(self.model.tokenizer.convert_tokens_to_string(tokens[start : start + window_size]))
+                        count += 1
+                    doc_window_counts.append(count)
+
+            embeddings = self.model.encode(all_windows, batch_size=32, normalize_embeddings=True,
+                                           convert_to_numpy=True, show_progress_bar=False)
+
+            grouped = []
+            curr = 0
+            for count in doc_window_counts:
+                grouped.append(embeddings[curr : curr + count])
+                curr += count
+            return grouped
+
 
     @property
     def status(self):
