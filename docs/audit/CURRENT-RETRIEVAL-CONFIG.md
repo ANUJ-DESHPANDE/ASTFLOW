@@ -1,3 +1,5 @@
+> **Historical document. Do not use for current retrieval status. See [/RETRIEVAL-PROGRESS.md](../../RETRIEVAL-PROGRESS.md).** Known inaccuracies below: the reranker is **not** enabled (`CROSS_ENCODER_AVAILABLE = False` is hardcoded), sliding windows are **not** used by the official benchmark path, and the 0.1184 subset score has no result artifact.
+
 # Frozen Retrieval Configuration (Subset NDCG@10 = 0.1184)
 
 This document records the exact configuration used to achieve NDCG@10 = 0.1184 on the 100-query AppsRetrieval subset. This configuration is FROZEN for full-scale verification.

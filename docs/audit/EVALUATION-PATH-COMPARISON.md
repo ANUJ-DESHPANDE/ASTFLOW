@@ -1,3 +1,5 @@
+> **Historical document. Do not use for current retrieval status. See [/RETRIEVAL-PROGRESS.md](../../RETRIEVAL-PROGRESS.md).**
+
 # Direct adapter vs. official MTEB harness
 
 Companion to `DENSE-REGRESSION-INVESTIGATION.md`. These are two genuinely different

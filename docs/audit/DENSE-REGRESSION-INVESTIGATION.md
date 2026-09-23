@@ -1,3 +1,5 @@
+> **Historical document. Do not use for current retrieval status. See [/RETRIEVAL-PROGRESS.md](../../RETRIEVAL-PROGRESS.md).**
+
 # Dense retrieval collapse — root-cause investigation
 
 2026-09-22 · Session continuing the Theme 1 retrieval audit on `codex/theme1-audit`.

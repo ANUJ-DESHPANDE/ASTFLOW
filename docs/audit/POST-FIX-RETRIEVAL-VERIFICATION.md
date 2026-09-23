@@ -1,3 +1,5 @@
+> **Historical document. Do not use for current retrieval status. See [/RETRIEVAL-PROGRESS.md](../../RETRIEVAL-PROGRESS.md).**
+
 # Post-fix dense retrieval verification
 
 2026-09-22 · Continuation of `DENSE-REGRESSION-INVESTIGATION.md`. Scope: verify the

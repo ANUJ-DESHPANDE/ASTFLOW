@@ -1,3 +1,5 @@
+> **Historical document. Do not use for current retrieval status. See [/RETRIEVAL-PROGRESS.md](../../RETRIEVAL-PROGRESS.md).** This file claims 3,765 queries, but its companion `apps.json` holds a different 32-query run; there is no machine-readable record of the numbers below. Dense/Hybrid below were produced with the document/vector alignment bug; "reranked" is Hybrid.
+
 # CoIR AppsRetrieval adapter run
 
 3765 queries / 8765 documents · all split queries against full corpus

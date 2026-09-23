@@ -1,3 +1,5 @@
+> **Historical document. Do not use for current retrieval status. See [/RETRIEVAL-PROGRESS.md](../../RETRIEVAL-PROGRESS.md).** Its scores (0.06104 / 0.08815) are real official-scorer outputs of older code, not of the current commit.
+
 # ASTFLOW engineering, QA and Theme 1 audit
 
 20 September 2026 · Local Windows audit · Branch `codex/theme1-audit`

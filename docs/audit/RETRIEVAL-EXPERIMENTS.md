@@ -1,3 +1,5 @@
+> **Historical document. Do not use for current retrieval status. See [/RETRIEVAL-PROGRESS.md](../../RETRIEVAL-PROGRESS.md).** EXP-6 (tuned BM25 0.06312) has no result artifact; EXP-7 (0.089) was produced by uncommitted code; none of these are reproduced.
+
 # Retrieval experiment log
 
 This document contains real, empirical benchmark runs executed against the official CoIR AppsRetrieval dataset (`f22508f96b7a36c2415181ed8bb76f76e04ae2d5`) using pinned `mteb==2.21.0`.
