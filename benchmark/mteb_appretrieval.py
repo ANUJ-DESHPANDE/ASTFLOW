@@ -21,6 +21,8 @@ from backend.app.retrieval.search import Retriever
 from benchmark.metrics import metrics
 
 DATASET = "CoIR-Retrieval/apps"
+# Revision behind the historical official MTEB runs (benchmark/run_mteb.py pins the same one).
+PINNED_REVISION = "f22508f96b7a36c2415181ed8bb76f76e04ae2d5"
 
 
 def read_jsonl(path: Path):
@@ -47,13 +49,13 @@ def load_export(directory: Path, split: str = "test"):
     return corpus, queries, relevance
 
 
-def download_export(directory: Path, split: str):
+def download_export(directory: Path, split: str, revision: str | None = PINNED_REVISION):
     try:
         import datasets
         from huggingface_hub import HfApi
     except ImportError as exc:
         raise RuntimeError("Install the optional adapter: python -m pip install -e '.[benchmark]'") from exc
-    revision = HfApi().dataset_info(DATASET).sha
+    revision = revision or HfApi().dataset_info(DATASET).sha
     configs = datasets.get_dataset_config_names(DATASET, revision=revision)
     if not {"corpus", "queries", "default"} <= set(configs):
         raise ValueError(f"Dataset configuration changed: found {configs}")
@@ -168,9 +170,13 @@ def main():
     parser.add_argument("--download", action="store_true", help="Explicitly download the public CoIR dataset")
     parser.add_argument("--max-queries", type=int, default=32, help="0 runs all queries; default is an adapter smoke run")
     parser.add_argument("--output", type=Path, default=ROOT / "benchmark/results")
+    parser.add_argument("--revision", default=PINNED_REVISION, help="Dataset revision to download; 'latest' for the current Hub head")
+    parser.add_argument("--download-only", action="store_true", help="Export the dataset and stop (writes no result files)")
     args = parser.parse_args()
     if args.download:
-        download_export(args.data, args.split)
+        download_export(args.data, args.split, None if args.revision == "latest" else args.revision)
+        if args.download_only:
+            return
     evaluate_export(args.data, args.split, args.max_queries, args.output)
 
 

@@ -1,0 +1,7 @@
+  reference    ndcg@10=0.0127807574
+  astflow      ndcg@10=0.0127807574
+  pytrec_eval  ndcg@10=0.0127807574
+  ir_measures  ndcg@10=0.0127807574
+  trec_eval    ndcg@10=0.0127815182
+  trec_eval: /tmp/trec_eval/trec_eval
+  agreement: PASS
