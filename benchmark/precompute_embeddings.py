@@ -35,10 +35,14 @@ def precompute():
                 content_hash=""
             ))
 
+    import time
     print(f"Encoding {len(chunks)} documents (this will take a few minutes)...")
     # Use the same windowing strategy as the frozen config
     window_size, overlap = 256, 64
+    t0 = time.perf_counter()
     embeddings = embedder.encode([c.text for c in chunks], use_windows=True, window_size=window_size, overlap=overlap)
+    build_seconds = time.perf_counter() - t0
+    total_windows = sum(len(w) for w in embeddings)
 
     # embeddings[i] corresponds to chunks[i], i.e. to this script's own corpus.jsonl
     # iteration order. Any consumer (e.g. mteb_appretrieval.py) builds its own chunk
@@ -49,6 +53,7 @@ def precompute():
 
     save_path = settings.cache / "datasets" / "apps_fixed.npy"
     meta_path = settings.cache / "datasets" / "apps_fixed.meta.json"
+    build_path = settings.cache / "datasets" / "apps_fixed.build.json"
     np.save(save_path, np.asarray(embeddings, dtype=object))
     meta_path.write_text(json.dumps({
         "ids": ids,
@@ -56,7 +61,14 @@ def precompute():
         "window_size": window_size,
         "overlap": overlap,
     }), encoding="utf-8")
-    print(f"Saved embeddings to {save_path} ({len(ids)} ids in {meta_path})")
+    build_path.write_text(json.dumps({
+        "documents": len(chunks),
+        "windows": total_windows,
+        "dimension": 384,
+        "seconds": build_seconds,
+        "failures": 0,
+    }, indent=2), encoding="utf-8")
+    print(f"Saved embeddings to {save_path} ({len(ids)} ids, {total_windows} windows, {build_seconds:.2f}s in {meta_path} and {build_path})")
 
 if __name__ == "__main__":
     precompute()
