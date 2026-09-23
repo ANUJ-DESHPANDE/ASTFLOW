@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "last_updated": "2026-09-23",
+  "last_updated": "2026-09-23 (second session)",
   "trust_status": "PARTIALLY_VERIFIED",
   "trust_detail": "Evaluator verified by golden tests and 5-way cross-check. No trusted retrieval score: the current code has not been run on the real dataset under the frozen protocol.",
   "current_branch": "main",
@@ -29,10 +29,12 @@
     "dense": "sentence-transformers/all-MiniLM-L6-v2, 384-d, normalized, dot product, threshold 0.05, max 256 word-pieces",
     "official_representation": "one vector per document (benchmark/run_mteb.py); windows only in the direct adapter via apps_fixed.npy",
     "hybrid": "RRF k=60, lexical_weight=1.0, semantic_weight=1.0, union of both lists",
-    "reranker": "NONE \u2014 CROSS_ENCODER_AVAILABLE hardcoded False; 'reranked' mode aliases hybrid",
+    "reranker": "NONE \u2014 CROSS_ENCODER_AVAILABLE hardcoded False; 'reranked' aliases hybrid; disabled code uses invalid model id 'mxbai-rerank-base-v2' and swallows errors",
     "candidates": 500,
     "benchmark_depth": 1000,
-    "tie_break": "ASTFLOW: doc id ascending; MTEB/trec_eval re-sort ties by doc id descending"
+    "tie_break": "ASTFLOW: doc id ascending; MTEB/trec_eval re-sort ties by doc id descending",
+    "depth_note": "Benchmark ranks with limit=1000 so size=max(500,1000)=1000 per list; the product app uses 500 and enables boosts",
+    "hybrid_offline_reconstructible": true
   },
   "evaluator_results": {
     "astflow": "PASS",
@@ -62,8 +64,38 @@
   "experiments": [],
   "active_experiment": {
     "id": "BASE",
-    "description": "Establish Trusted Baseline V1",
-    "status": "NOT STARTED \u2014 blocked on dataset/model access"
+    "description": "Trusted Baseline V1 (baseline-v1)",
+    "status": "RUNNING on the benchmark machine (reported by the team, not observed); no artifacts committed yet"
   },
-  "next_action": "On a machine that can reach huggingface.co: export the pinned dataset, run `python -m benchmark.verify_retrieval --self-test` then `python -m benchmark.verify_retrieval --split all --tag baseline-v1`, and commit benchmark/verification/."
+  "next_action": "Benchmark machine: after baseline-v1, run `python -m benchmark.analyze_baseline pack --tag baseline-v1` and commit manifest, apps.qrels, per-query TSVs and verification/ranks/. Then any machine: `python -m benchmark.analyze_baseline analyze --tag baseline-v1`.",
+  "machines": {
+    "benchmark": "has Hugging Face; runs verify_retrieval and analyze_baseline pack",
+    "analysis": "no Hugging Face (never contact it); runs analyze_baseline analyze on committed artifacts"
+  },
+  "oracle_identity": "One relevant document per query: Oracle@k NDCG@10 == Hit@k, and NDCG@10 <= Hit@10 (0.20 needs >= 753 of 3,765 queries with the answer in the top 10)",
+  "historical_hint_not_trusted": {
+    "source": "benchmark/results/mteb/appsretrieval_results.json (older, uncommitted code)",
+    "hybrid_hit@10": 0.13971,
+    "oracle@20": 0.17636,
+    "oracle@100": 0.29774,
+    "oracle@1000": 0.64754
+  },
+  "bottleneck_rule": "benchmark/analyze_baseline.py::BOTTLENECK_RULES_V1 (pre-registered before data)",
+  "experiments_preregistered": [
+    {
+      "id": "E001-fusion",
+      "entry": "verdict FUSION",
+      "needs_hugging_face": false
+    },
+    {
+      "id": "E002-reranker",
+      "entry": "verdict RANKING, or Hybrid Oracle@100 >= 0.20 with actual < half of it",
+      "needs_hugging_face": true
+    },
+    {
+      "id": "E003-dense-windows",
+      "entry": "verdict CANDIDATE RETRIEVAL (Hybrid Oracle@100 < 0.20)",
+      "needs_hugging_face": true
+    }
+  ]
 }

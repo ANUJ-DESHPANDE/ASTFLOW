@@ -4,14 +4,15 @@
   "trust_status": "PARTIALLY VERIFIED: evaluator verified; no trusted retrieval score yet",
   "evaluator": {
     "protocol": "trec_eval -c semantics; canonical scores n-rank+1 encode the final ranking; linear-gain NDCG@10; MRR@10 = reciprocal rank within top 10; every judged query in the denominator",
-    "code_sha256": "fab0242c03ce3cd2c00dc46283c257189e702675a638b07f60f4d0761f3d0691",
+    "code_sha256": "29e96fd147936c81545f6f2ad4c7890de9a69cd4e1a8c85390ad76ce316ca658",
     "code_files": [
       "benchmark/trust/__init__.py",
       "benchmark/trust/evaluation.py",
       "benchmark/trust/forensics.py",
       "benchmark/trust/integrity.py",
       "benchmark/verify_retrieval.py",
-      "benchmark/metrics.py"
+      "benchmark/metrics.py",
+      "benchmark/analyze_baseline.py"
     ],
     "implementations": {
       "reference": "benchmark/trust/evaluation.py::reference_metrics",
@@ -24,8 +25,10 @@
       "golden_tests": "benchmark/test_trust_evaluation.py (9 passed)",
       "pipeline_tests": "benchmark/test_verify_retrieval.py (6 passed)",
       "randomized_cross_check": "1,000 queries incl. empty results: 4 full-precision evaluators identical to 1e-10; trec_eval within 4-decimal print precision; 0 per-query disagreements",
-      "self_test_output": "benchmark/verification/self-test.txt"
-    }
+      "self_test_output": "benchmark/verification/self-test.txt",
+      "analyzer_tests": "benchmark/test_analyze_baseline.py (5 passed): packed runs rebuild byte-identical; Hybrid == RRF(BM25, Dense) exactly; tampered run rejected; synthetic data flagged as not the real corpus"
+    },
+    "bottleneck_rule": "benchmark/analyze_baseline.py::BOTTLENECK_RULES_V1, pre-registered 2026-09-23 before any baseline-v1 data"
   },
   "dataset": {
     "name": "CoIR-Retrieval/apps (MTEB AppsRetrieval)",
