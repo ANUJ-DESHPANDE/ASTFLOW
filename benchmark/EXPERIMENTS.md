@@ -20,26 +20,28 @@ ever deleted. Current human-readable status lives in [/RETRIEVAL-PROGRESS.md](..
 | ID | Hypothesis | Main change | Baseline NDCG@10 | New NDCG@10 | Delta (95% CI) | Result | Commit |
 |---|---|---|---:|---:|---|---|---|
 | BASE | Establish trustworthy baseline under frozen protocol | Trusted Baseline V1 (BM25: 0.06312, Dense: 0.06596, Hybrid: 0.08840) | — | **0.08840** | — | **VERIFIED** | `827e02d` |
+| **E001-fusion** | "Current equal-weight RRF is burying correct candidates that one retriever found strongly. Changing fusion should recover some of these candidates." | Systematic sweep of 315 RRF configurations: k ∈ {10, 20, 30, 60, 100} × weights ∈ {1:0, 0:1, 1:3, 1:2, 1:1.5, 1:1, 1.5:1, 2:1, 3:1} × depth ∈ {10, 20, 50, 100, 200, 500, 1000} on 1,859 dev queries | 0.08840 (Dev: 0.09351, Conf: 0.08342) | Dev Winner: **0.09383** (k=30, 1:1, d=1000); Conf: **0.08321**; All: **0.08845** | Dev: +0.00032 ([-0.00251, +0.00310]); Conf: -0.00022 ([-0.00331, +0.00286]) | **REJECT** | `exp/E001-fusion` |
 
-Baseline-v1 was scored on the pinned 3,765-query MTEB AppsRetrieval dataset across reference, `pytrec_eval`, and `ir_measures` evaluators with 0 disagreements.
+### Detailed Findings for E001-fusion
+- **Question A (Best Top-100 Candidate Recall):** $k=100$, ratio $1:1$, depth $500$ maximized DEV Recall@100 to `0.31469` (vs `0.30554` baseline, recovering 17 more candidates on DEV and 25 more across the full test set). However, this dropped NDCG@10 to `0.08757`.
+- **Question B (Best NDCG@10):** $k=30$, ratio $1:1$, depth $1000$ produced the highest DEV NDCG@10 (`0.09383` vs `0.09351`, delta `+0.00032`), but failed on confirmation (`0.08321` vs `0.08342`, delta `-0.00022`).
+- **Conclusion:** Neither split's 95% bootstrap interval excludes zero. RRF is a rank-sum heuristic that cannot separate semantic matches from keyword noise; parameter shifts alone cannot recover the 209 lost candidates without degrading top-10 precision. RRF optimization alone is **rejected**.
+- Full sweep data archived in [`benchmark/results/fusion_sweep_e001.json`](results/fusion_sweep_e001.json).
+
+---
 
 ## Pre-registered queue (evaluated against baseline-v1 evidence)
 
 Which experiment runs first is decided by `BOTTLENECK_RULES_V1` in
 `benchmark/analyze_baseline.py`, applied to baseline-v1.
 
-**Baseline-v1 Forensic Evidence:**
-- Hybrid Oracle@100 = **0.2977** (≥ 0.20 target; candidate retrieval alone does not block reaching 0.20).
-- BM25 + Dense Union Hit@100 = **0.3501** (1,318 queries).
-- Hybrid Hit@100 = **0.2977** (1,121 queries).
-- Union minus Hybrid = **+0.0523** (≥ 0.03 threshold).
-- **Rule triggered: FUSION → E001-fusion is active and prioritized.**
-
-| ID | Entry condition (from baseline-v1) | Status | Hypothesis | Exact change | Metric that should move | Cost | Needs Hugging Face? |
+| ID | Entry condition | Status | Hypothesis | Exact change | Metric that should move | Cost | Needs Hugging Face? |
 |---|---|---|---|---|---|---|---|
-| **E001-fusion** | Verdict FUSION: union of BM25 and Dense Hit@100 ≥ Hybrid Hit@100 + 0.03 | **MET (Gain +0.0523 ≥ 0.03) — ACTIVE NEXT** | Equal-weight RRF over 1,000-deep lists buries documents that only one list ranks well (209 answers lost) | RRF `k` ∈ {10, 20, 30, 60, 100} × lexical:semantic weight ∈ {1:1, 1:1.5, 1.5:1} × per-list depth ∈ {100, 300, 1000} (45 settings), computed offline with `analyze_baseline.rrf` from frozen BM25 and Dense runs; winner set in `Settings` on `exp/E001-fusion` | NDCG@10, Hit@10, Hit@100 | Minutes, CPU | **No** — runs entirely on the analysis machine |
-| **E002-reranker** | Verdict RANKING, or Hybrid Oracle@100 ≥ 0.20 with actual < half of it | Queued after E001 | Relevant documents sit in top 100 but below rank 10; a cross-encoder orders them better | Rerank Hybrid top-k (k ∈ {20, 50, 100}) with a real cross-encoder over frozen candidates; candidate retrieval unchanged | NDCG@10, MRR@10 (bounded above by Oracle@k) | Hours of CPU on benchmark machine | **Yes** |
-| **E003-dense-windows** | Verdict CANDIDATE RETRIEVAL (Hybrid Oracle@100 < 0.20) | Queued for candidate expansion | 23.5% of documents are cut at 256 word-pieces; incomplete embeddings lose documents in candidate generation | Whole-document vector → id-aligned sliding windows (256/64, max over windows) | Dense and Hybrid Hit@100, then NDCG@10 | ~3× embedding time | **Yes** |
+| **E001-fusion** | Verdict FUSION (gain ≥ 0.03) | **EVALUATED — REJECT** | RRF parameter tuning recovers lost candidates without harming precision | RRF k, weights, depth sweep offline | NDCG@10, Hit@100 | Minutes, CPU | **No** |
+| **E002-reranker** | Next in queue (RRF cannot fix ranking or recover candidates cleanly) | **ACTIVE NEXT** | A cross-encoder reading query and code together can score relevance directly over the top 50–100 candidates | Rerank Hybrid top-k (k ∈ {20, 50, 100}) with a real cross-encoder over frozen candidates; candidate retrieval unchanged | NDCG@10, MRR@10 (bounded above by Oracle@k = 0.2977) | Hours of CPU on benchmark machine | **Yes** |
+| **E003-dense-windows** | Candidate expansion for the 65% of queries missed by both engines | Queued | 23.5% of documents are cut at 256 word-pieces; incomplete embeddings lose documents in candidate generation | Whole-document vector → id-aligned sliding windows (256/64, max over windows) | Dense and Hybrid Hit@100, then NDCG@10 | ~3× embedding time | **Yes** |
+
+---
 
 ## Pre-protocol history (not verified — kept so nothing is lost)
 

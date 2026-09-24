@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "last_updated": "2026-09-24 (baseline-v1 completed and verified)",
+  "last_updated": "2026-09-24 (E001-fusion evaluated and rejected)",
   "trust_status": "VERIFIED",
-  "trust_detail": "Baseline-v1 verified with 0 disagreements across reference, pytrec_eval, and ir_measures. Frozen runs archived.",
-  "current_branch": "main",
-  "current_commit": "827e02d (benchmark: track embedding build duration and statistics in precompute_embeddings)",
+  "trust_detail": "Baseline-v1 verified across 5 scoring tools. E001-fusion evaluated on frozen runs with pre-registered dev/conf protocol.",
+  "current_branch": "exp/E001-fusion",
+  "current_commit": "see `git log -1` on exp/E001-fusion",
   "trusted_baseline_tag": "baseline-v1",
   "trusted_ndcg10": 0.08840,
   "target_ndcg10": 0.2,
@@ -35,15 +35,6 @@
     "tie_break": "ASTFLOW: doc id ascending; frozen runs eliminate tie ambiguity",
     "depth_note": "Benchmark ranks with limit=1000 so size=max(500,1000)=1000 per list",
     "hybrid_offline_reconstructible": true
-  },
-  "evaluator_results": {
-    "astflow": "PASS",
-    "reference": "PASS",
-    "pytrec_eval": "PASS",
-    "ir_measures": "PASS",
-    "trec_eval": "PASS (10.0-rc3)",
-    "cross_evaluator_agreement": true,
-    "scope": "Full test split: 3,765 queries × 8,765 documents (baseline-v1)"
   },
   "metrics": {
     "bm25": {
@@ -90,19 +81,8 @@
       "oracle@1000": 0.64754
     }
   },
-  "historical_claims_unverified": {
-    "bm25_ndcg10_mteb_older_code": 0.06104,
-    "hybrid_ndcg10_mteb_older_code": 0.08815,
-    "hybrid_ndcg10_mteb_uncommitted_code": 0.089,
-    "claimed_without_artifact": [
-      0.06312,
-      0.0707,
-      0.0894,
-      0.1184
-    ]
-  },
-  "bottleneck": "FUSION",
-  "bottleneck_detail": "Hybrid Oracle@100 = 0.2977 (>= 0.20), but BM25+Dense Union Hit@100 = 0.3501. Current RRF loses 0.0523 (209 queries) out of the top 100.",
+  "bottleneck": "RANKING",
+  "bottleneck_detail": "E001-fusion proved that RRF parameter shifts cannot recover candidates without diluting top-10 precision. Reranking (E002) is required to reorder top candidates.",
   "bottleneck_rule": "benchmark/analyze_baseline.py::BOTTLENECK_RULES_V1",
   "experiments": [
     {
@@ -112,14 +92,22 @@
       "dense_ndcg10": 0.06596,
       "hybrid_ndcg10": 0.08840,
       "status": "VERIFIED"
+    },
+    {
+      "id": "E001-fusion",
+      "description": "Controlled 315-config RRF sweep on dev queries",
+      "dev_winner_ndcg10": 0.09383,
+      "conf_winner_ndcg10": 0.08321,
+      "full_test_ndcg10": 0.08845,
+      "status": "REJECT",
+      "reason": "Delta on confirmation was negative (-0.00022); 95% bootstrap CI did not exclude zero on either dev or conf."
     }
   ],
   "active_experiment": {
-    "id": "E001-fusion",
-    "description": "Offline RRF parameter optimization (k, weights, depth) over 1,859 dev queries",
+    "id": "E002-reranker",
+    "description": "Cross-encoder reranking over top-k (20, 50, 100) hybrid candidates",
     "status": "QUEUED (active next)",
-    "entry_condition_met": true,
-    "needs_hugging_face": false
+    "needs_hugging_face": true
   },
-  "next_action": "Run E001-fusion offline on dev queries using frozen runs with analyze_baseline.rrf. No Hugging Face or GPU needed."
+  "next_action": "Design and execute E002-reranker over frozen candidate lists."
 }
