@@ -18,6 +18,8 @@ export type GraphData = { nodes: GraphNode[]; edges: GraphEdge[]; paths: string[
   unresolved_count?: number; unresolved?: { file: string; line: number; end_line: number; expression: string; reason: string }[] };
 export type SearchResponse = {
   query: string; version: string; version_key: string; results: Result[]; intent: string; latency_ms: number;
+  /** What the result list rests on; SEMANTIC_ONLY means no result shares a word or symbol with the question. */
+  match_basis?: 'KEYWORD_MATCH' | 'SEMANTIC_ONLY' | 'NONE';
   agent_trace: { step: string; details: string; data?: Record<string, unknown> }[];
   graph: GraphData; semantic: { available: boolean; message: string; model: string | null };
   sequences: { caller: string; before: string; after: string; file_path: string; before_line: number; after_line: number; explanation: string }[];

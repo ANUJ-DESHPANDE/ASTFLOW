@@ -44,7 +44,7 @@ On macOS/Linux replace `.\.venv\Scripts\python.exe` with `.venv/bin/python`. Act
 3. Ask **How does VoiceHandler reach BluetoothAgent?** and expand **Investigation** to inspect the retrieval steps.
 4. Open **Map**, choose **Trace a path**, enter `VoiceHandler` and `BluetoothAgent`, and press **Trace**. Click an edge to open its call site and supporting evidence.
 5. Open **Compare**, select `v1` and `v2`, and compare. Inspect the real before/after source and structural counts. `AuthService.restore` delegates to the added `SessionManager.restore` in v2.
-6. Use **Explain** to show or hide the companion and the folder rail button to toggle the explorer. On narrow screens these become drawers.
+6. Use **Ask** to show or hide the companion and the folder rail button to toggle the explorer. On narrow screens these become drawers; choosing a result or evidence link closes the companion drawer so the opened lines are visible.
 
 The demo is source code, not a lookup table. Its query strings are only UI examples and benchmark inputs; the retrieval engine contains no query-specific answers. Demo authentication is deliberately a small fixture, not a production authentication implementation.
 
