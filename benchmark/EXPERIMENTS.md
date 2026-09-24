@@ -112,6 +112,114 @@ ever deleted. Current human-readable status lives in [/RETRIEVAL-PROGRESS.md](..
   3,765-query set as the official frozen run. If it is not positive, E003 is **REJECT** on `dev` and `confirmation`
   stays untouched (there is no registered sweep to continue).
 
+### Pre-registration for E004-long-query (written 2026-09-25, before any E004 code)
+
+**Question.** Does allowing dense retrieval to represent the complete query, rather than only the first 256
+word-pieces, significantly improve dense retrieval recall, and does that improvement carry through to the production
+hybrid ranking?
+
+**Evidence behind it** (post-E003 read-only audit of committed runs): 3,350 / 3,765 queries (89.0%; dev 1,650 / 1,859,
+confirmation 1,700 / 1,906) exceed 254 content word-pieces (median 467, p90 759, max 2,570). On the 415 queries that
+fit, Dense NDCG@10 is 0.161 vs BM25 0.091; on truncated queries 0.054 vs 0.060 (correlational: short problems may also
+be easier). 65% of answers are in neither retriever's top 100, so first-stage recall is the main limit.
+
+**What the current model and API permit** (measured on this machine, not assumed):
+- `sentence-transformers/all-MiniLM-L6-v2` (BERT, 6 layers, 384-d, absolute position embeddings, 512 positions) runs
+  as Transformer → mean Pooling → Normalize. `max_seq_length` is 256 (tokenizer `model_max_length` 256), i.e. 254
+  content word-pieces plus `[CLS]`/`[SEP]`. Everything after is silently dropped: for a 692-piece query,
+  `encode(full query)` equals the embedding of its first 254 pieces (cosine 1.0000000), while the next 254 pieces embed
+  to cosine 0.66 with it.
+- The only query-encoding call is `Retriever.rank` → `Embedder.encode([query])` (`search.py:105`). Document vectors,
+  BM25, RRF and the reranker flag are separate code paths.
+- Raising `max_seq_length` to 512 is mechanically possible but does not represent the complete query (1,551 / 3,765 =
+  41.2% exceed 510 content pieces) and puts positions 257–512, which this model was never fine-tuned on, into play.
+  It changes two things at once and still truncates, so it is **not** a condition.
+
+**Separation of concerns — what E004 changes and what it holds fixed:**
+
+| Layer | E004 |
+|---|---|
+| Query-side representation | **Changed** (the one variable) |
+| Document-side representation | Fixed: baseline-v1 one vector per document (not E003's windows); vector cache identity `cc3d1f5b729fa376dc5f9aed` |
+| Fusion | Fixed: RRF k=60, weights 1:1, candidates 500, depth 1,000, boosts off; no tuning |
+| Reranking | None (E002 reranker off) |
+| BM25, qrels, evaluator, dense threshold 0.05, model weights (SHA-256 `1377e9af…`), production defaults | Unchanged |
+
+**The one experimental condition — `longquery-mean254`:**
+1. Tokenize the query with the model's own tokenizer, no special tokens, no truncation.
+2. Split the word-piece ids into consecutive **non-overlapping** chunks of 254 (the last chunk may be shorter). Chunks
+   are built from token ids directly (no decode/re-tokenize) and each is wrapped as `[CLS] chunk [SEP]` ≤ 256 — the
+   model's configured limit, so no chunk uses a position the baseline does not use.
+3. Run each chunk through the model's Transformer and mean-Pooling modules (pre-Normalize). Combine chunks by a mean
+   weighted by each chunk's token count (content + 2 specials), then L2-normalize. This equals the model's own
+   mean pooling over every token of the query, each token contextualized within its chunk.
+4. Score documents with that single query vector exactly as today (dot product with the baseline document vectors,
+   threshold 0.05), then RRF as today. One query vector → one dense ranking; no max/sum over chunks.
+
+Queries of ≤ 254 content word-pieces become a single chunk and are, by construction, encoded exactly as in the baseline.
+Only the 3,350 truncated queries can change.
+
+**Why one condition, and why this one.** It changes only how much of the query the dense model sees. It keeps the
+model's pooling rule (mean over tokens), its sequence limit, the single-vector scoring and every other layer. Rejected
+alternatives, each of which would add a second variable: 512 tokens (still truncates, untrained positions); max or sum
+over per-chunk scores (changes the similarity function and the meaning of the 0.05 threshold); overlapping chunks
+(counts some tokens twice in the mean); first+last chunk or summarization (partial or rewritten query).
+
+**Integrity requirements (a run that fails any of these is invalid, not a result):**
+- For every query of ≤ 254 content word-pieces, the E004 query vector equals the baseline `Embedder.encode` vector
+  (cosine ≥ 0.99999), and its per-query Dense and Hybrid metrics equal frozen baseline-v1.
+- For truncated queries, the baseline vector equals the first chunk's normalized embedding (cosine ≥ 0.99999),
+  proving the baseline saw only that chunk.
+- On probe queries, the chunk-weighted vector equals a direct mean over all chunks' token embeddings (cosine ≥ 0.99999).
+- Document vectors are the baseline-v1 cache (same identity, harness alignment probe passes).
+- All evaluators in `evaluation.cross_check` agree; runs are generated from committed code (no tracked-file changes);
+  every frozen rank file rebuilds its manifest SHA-256.
+
+**Baseline.** Frozen baseline-v1 `dense` and `hybrid` rank files. The E003 environment control (same machine and
+package versions: 0 queries changed any metric) applies; the first integrity check above re-verifies it inside E004.
+
+**Metrics** (vs frozen baseline-v1, paired bootstrap 95% CI, `forensics.paired_bootstrap`, 10,000 samples,
+seed 20260923):
+- **Primary (decides):** Hybrid NDCG@10.
+- **Secondary (reported, do not decide):** Hybrid MRR@10, Recall@10, Recall@100 (= Hit@100) with CI on Recall@100.
+- **Diagnostic (answers the question's first half; does not decide):** Dense NDCG@10, MRR@10, Recall@10, Recall@100
+  with CIs on NDCG@10 and Recall@100; the same split into truncated vs fitting queries and by chunk count (2, 3, ≥ 4).
+- The oracle diagnostics are not used to claim anything.
+
+**Decision rule.** KEEP requires, on the primary metric: a positive Hybrid NDCG@10 delta whose 95% CI excludes 0 on
+`dev`, **and** the same on `confirmation`, **and** all integrity requirements met. Anything else is REJECT. Dense-only
+or Recall-only gains are recorded as evidence and do not earn KEEP.
+
+**Procedure.**
+1. Commit the implementation (a benchmark-only query encoder, a `verify_retrieval` flag, a freeze/score script) before
+   any run; production code and defaults are not touched.
+2. `dev` (1,859): generate `dense,hybrid` with the condition. If the dev primary criterion fails → **REJECT**, stop;
+   `confirmation` stays untouched.
+3. If dev passes → `confirmation` (1,906) once → full 3,765-query set once as the official frozen run. Decision from
+   dev + confirmation; the full set is reported.
+4. No retuning between steps (no change to chunk size, pooling, threshold or RRF).
+
+**Computational cost** (measured): document vectors are reused from the baseline-v1 cache (no re-embedding). Queries
+need 9,188 chunk passes instead of 3,765 (mean 2.44 chunks; distribution 1: 415, 2: 1,789, 3: 1,186, 4: 294, ≥5: 81),
+≈ 23 ms per chunk on CPU → ≈ +2 minutes of query encoding over all queries, ≈ +35 ms median per query. Expected wall
+time on this machine: ≈ 12 min for `dev`; ≈ 45 min if confirmation and the full set also run.
+
+**Artifacts.** Runs generated into a scratch `--out` (verify_retrieval rewrites `<out>/apps.qrels`), then frozen:
+`benchmark/verification/manifest-e004-longquery{-dev,-confirmation,}.json`,
+`ranks/e004-longquery{-dev,-confirmation,}-{dense,hybrid}.ranks.tsv.gz`, per-query TSVs, and
+`benchmark/experiments/E004.json` (condition, per-query chunk counts, integrity proofs, metrics and CIs per split and
+subgroup, runtime, environment, code SHA-256, decision). Embeddings on CPU, as in baseline-v1.
+
+**Reproducibility.** Pinned dataset revision `f22508f9…`, qrels SHA-256, model weights SHA-256, package versions,
+bootstrap seed, generator commit and file hashes recorded in the manifests and `E004.json`; rank files rebuild their
+run SHA-256; re-running the scorer on committed artifacts must reproduce `E004.json`.
+
+**Production implications.** Query-side only: no index rebuild, no embedding-cache or `embeddings.npy` change, no
+schema bump. Adoption would add a long-query encoding method to `Embedder` used by `Retriever.rank` (also reached by
+the agent's follow-up queries), behind a `Settings` flag, with latency growing ≈ 23 ms per extra 254-piece chunk on CPU.
+Queries that fit in 254 word-pieces are unaffected by construction; how long real app queries are has not been measured. Production defaults stay unchanged unless
+E004 is KEEP and a separate change is approved.
+
 ---
 
 ## Pre-registered queue (evaluated against baseline-v1 evidence)
@@ -124,6 +232,7 @@ Which experiment runs first is decided by `BOTTLENECK_RULES_V1` in
 | **E001-fusion** | Verdict FUSION (gain ≥ 0.03) | **EVALUATED — REJECT** | RRF parameter tuning recovers lost candidates without harming precision | RRF k, weights, depth sweep offline | NDCG@10, Hit@100 | Minutes, CPU | **No** |
 | **E002-reranker** | Next in queue (RRF cannot fix ranking or recover candidates cleanly) | **EVALUATED — REJECT** | A cross-encoder reading query and code together can score relevance directly over the top 50–100 candidates | Rerank Hybrid top-k (k ∈ {20, 50, 100}) with a real cross-encoder over frozen candidates; candidate retrieval unchanged | NDCG@10, MRR@10 (bounded above by Oracle@k = 0.2977) | Hours of CPU on benchmark machine | **Yes** |
 | **E003-dense-windows** | Candidate expansion for the 65% of queries missed by both engines | **EVALUATED — REJECT** | 23.5% of documents are cut at 256 word-pieces; incomplete embeddings lose documents in candidate generation | Whole-document vector → id-aligned sliding windows (256/64, max over windows) | Dense and Hybrid Hit@100, then NDCG@10 | ~3× embedding time | **Yes** |
+| **E004-long-query** | Post-E003 audit: 89% of queries exceed Dense's 256 word-piece limit | **PRE-REGISTERED — awaiting approval to run** | Dense sees only the first 254 query word-pieces; representing the complete query improves Dense recall and carries into Hybrid | Query vector = token-weighted mean over non-overlapping 254-piece query chunks (one condition, `longquery-mean254`); documents, BM25, RRF unchanged | Hybrid NDCG@10 (decides); Dense Recall@100/NDCG@10 (diagnostic) | ≈ +2 min query encoding; no re-embedding | **Yes** (model already cached) |
 
 ---
 
