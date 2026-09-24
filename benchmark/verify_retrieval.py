@@ -157,6 +157,8 @@ def load_window_vectors(chunks, embedder, settings, model_info, whole, window: i
 
 
 def full_run(args) -> int:
+    # Record the code state the run starts from; a long run can outlive later commits.
+    git_at_start = git_state()
     from backend.app.retrieval.embeddings import Embedder
     from backend.app.retrieval.search import Retriever
     out = Path(args.out)
@@ -236,7 +238,7 @@ def full_run(args) -> int:
 
     manifest = {
         "generated_by": "benchmark/verify_retrieval.py", "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-        "git": git_state(), "environment": integrity.environment(),
+        "git": git_at_start, "environment": integrity.environment(),
         "dataset": {"name": "CoIR-Retrieval/apps (MTEB AppsRetrieval)", "revision": revision, "split": "test",
                     "query_selection": args.split, "evaluated_queries": len(judged), **data_stats,
                     **integrity.fingerprint(corpus, queries, qrels), "qrels_file_sha256": qrels_sha},
