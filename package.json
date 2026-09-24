@@ -2,8 +2,12 @@
   "name": "astflow-workspace",
   "private": true,
   "type": "module",
-  "workspaces": ["frontend"],
-  "overrides": { "dompurify": "3.4.15" },
+  "workspaces": [
+    "frontend"
+  ],
+  "overrides": {
+    "dompurify": "3.4.15"
+  },
   "scripts": {
     "build": "npm run build --workspace frontend",
     "dev": "npm run dev --workspace frontend",
@@ -11,5 +15,9 @@
     "setup": "node scripts/setup.mjs",
     "test:ui": "playwright test"
   },
-  "devDependencies": {"typescript": "~5.9.3", "@playwright/test": "^1.58.0"}
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.58.0",
+    "typescript": "~5.9.3"
+  }
 }
