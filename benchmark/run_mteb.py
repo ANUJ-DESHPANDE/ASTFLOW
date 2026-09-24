@@ -80,7 +80,11 @@ class ASTFLOWSearch:
             text=row['text']
             if row.get('instruction'): text=row['instruction']+'\n'+text
             rows,_=self.retriever.rank(text,mode=self.mode,boosts=False,limit=top_k)
-            results[str(row['id'])]={r['chunk'].chunk_id:float(r['score']) for r in rows[:top_k]}
+            # Emit strictly decreasing scores that encode ASTFLOW's own order. Raw RRF scores contain exact ties
+            # (about 9% of queries tie inside the top 10), and MTEB/pytrec_eval re-sort ties by document id, i.e.
+            # would score an order ASTFLOW never returns. Same convention as benchmark/verify_retrieval.py.
+            ranked=rows[:top_k]
+            results[str(row['id'])]={r['chunk'].chunk_id:float(len(ranked)-j) for j,r in enumerate(ranked)}
             self.measurements['query_latencies_ms'].append((time.perf_counter()-started)*1000)
             if (i+1)%100==0: print(f'Retrieved {i+1} queries',flush=True)
         self.measurements['query_count']=len(results)
