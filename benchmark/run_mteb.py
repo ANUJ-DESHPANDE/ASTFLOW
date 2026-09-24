@@ -4,6 +4,7 @@ Dataset qrels are consumed only by MTEB scoring, never by the search adapter.
 Python corpus documents are retrieved as text; no JS graph or Python AST is claimed.
 """
 import argparse
+import subprocess
 import hashlib
 import importlib.metadata
 import json
@@ -100,6 +101,8 @@ def main():
     if task.metadata.dataset['revision'] != DATASET_REVISION or task.metadata.eval_splits != ['test']:
         raise RuntimeError('Unexpected dataset revision/splits; review before evaluating')
     args.output.mkdir(parents=True,exist_ok=True)
+    git=lambda *a: subprocess.run(['git','-C',str(ROOT),*a],capture_output=True,text=True).stdout.strip()
+    provenance={'git_commit':git('rev-parse','HEAD'),'git_dirty_files':git('status','--porcelain','--untracked-files=no').splitlines()}
     model=ASTFLOWSearch(args.mode,args.download_model)
     started=time.perf_counter()
     result=mteb.evaluate(model,[task],cache=None,overwrite_strategy='always',num_proc=1,
@@ -107,7 +110,7 @@ def main():
     task_result=list(result.task_results)[0]
     task_result.to_disk(args.output/'appsretrieval_results.json')
     model.measurements.update(mteb_version=MTEB_VERSION,dataset_revision=DATASET_REVISION,
-                              total_seconds=time.perf_counter()-started,official_mteb_run=True)
+                              total_seconds=time.perf_counter()-started,official_mteb_run=True,**provenance)
     (args.output/'run_metadata.json').write_text(json.dumps(model.measurements,indent=2),encoding='utf-8')
     print((args.output/'appsretrieval_results.json').read_text(encoding='utf-8'))
 
