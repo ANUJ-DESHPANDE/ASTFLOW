@@ -1,0 +1,83 @@
+# Fast PR validation. The full AppsRetrieval benchmark is separate (benchmark.yml, manual) because it takes
+# minutes of CPU and downloads the dataset.
+name: ci
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  PIP_EXTRA_INDEX_URL: https://download.pytorch.org/whl/cpu   # CPU torch wheels (lock pins torch==2.14.0)
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - name: Install (locked)
+        run: python -m pip install -c requirements.lock.txt -e ".[dev,semantic]" "pytrec-eval-terrier==0.5.10" "ir-measures==0.4.3" "ruff==0.16.8"
+      - name: Lint (errors only)
+        run: ruff check backend benchmark scripts audit/tools --select E9,F63,F7,F82,F811,F841
+      - name: Demo Git history
+        run: python scripts/setup_demo.py
+      - uses: actions/cache@v4
+        with: { path: .astflow/models, key: minilm-l6-v2-1377e9af }
+      - name: Model (MiniLM, ~90 MB)
+        run: python -m backend.app.cli model-download
+      - name: Tests (backend + benchmark harness)
+        run: python -m pytest backend/tests benchmark --ignore=benchmark/test_mteb_adapter.py -o addopts="" -q
+      - name: Evaluator self-test
+        run: python -m benchmark.verify_retrieval --self-test
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "22", cache: npm }
+      - run: npm ci
+      - name: Type-check and build
+        run: npm run build
+
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - name: Python dependencies (known vulnerabilities)
+        run: python -m pip install pip-audit && pip-audit -r requirements.lock.txt --no-deps --disable-pip
+      - name: npm dependencies (known vulnerabilities)
+        run: npm audit --audit-level=high
+
+  e2e:
+    runs-on: ubuntu-latest
+    needs: [python, frontend]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - uses: actions/setup-node@v4
+        with: { node-version: "22", cache: npm }
+      - run: python -m pip install -c requirements.lock.txt -e ".[dev,semantic]"
+      - run: npm ci && npm run build
+      - uses: actions/cache@v4
+        with: { path: .astflow/models, key: minilm-l6-v2-1377e9af }
+      - run: python -m backend.app.cli model-download
+      - run: npx playwright install --with-deps chromium
+      - name: Start the demo (indexes v1, v2, working tree)
+        run: |
+          python -m backend.app.cli demo > demo.log 2>&1 &
+          for i in $(seq 1 90); do curl -sf http://127.0.0.1:8000/api/health && break; sleep 2; done
+      - name: Critical journeys, accessibility gate, audit specs
+        run: npx playwright test
+        env: { PLAYWRIGHT_CHANNEL: chromium }
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with: { name: playwright-results, path: "test-results\ndemo.log" }

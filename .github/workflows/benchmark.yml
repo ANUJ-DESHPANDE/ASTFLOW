@@ -1,0 +1,31 @@
+# Official AppsRetrieval evaluation (MTEB 2.21.0, all 3,765 test queries). Manual: it downloads the dataset and
+# takes several CPU minutes. Results must match the frozen trust harness (benchmark/EXPERIMENTS.md).
+name: benchmark
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: bm25, dense or hybrid
+        default: hybrid
+
+permissions:
+  contents: read
+
+jobs:
+  mteb:
+    runs-on: ubuntu-latest
+    env:
+      PIP_EXTRA_INDEX_URL: https://download.pytorch.org/whl/cpu
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - run: python -m pip install -c requirements.lock.txt -e ".[dev,semantic]" -r benchmark/requirements-mteb.txt
+      - run: python -m backend.app.cli model-download
+      - run: python benchmark/run_mteb.py --mode ${{ inputs.mode }} --output out/mteb-${{ inputs.mode }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mteb-${{ inputs.mode }}
+          path: |
+            out/mteb-${{ inputs.mode }}/appsretrieval_results.json
+            out/mteb-${{ inputs.mode }}/run_metadata.json

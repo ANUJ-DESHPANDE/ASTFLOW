@@ -156,7 +156,6 @@ def run_reranking(model_name: str, depth: int, split_name: str, tag: str, batch_
     base_means, base_per_q = compute_metrics(baseline_run, target_qids)
     rerank_means, rerank_per_q = compute_metrics(reranked_run, target_qids)
     
-    delta_ndcg = rerank_means["ndcg@10"] - base_means["ndcg@10"]
     base_ndcg_per_q = {q: base_per_q[q]["ndcg@10"] for q in target_qids}
     rerank_ndcg_per_q = {q: rerank_per_q[q]["ndcg@10"] for q in target_qids}
     bs = paired_bootstrap(baseline=base_ndcg_per_q, candidate=rerank_ndcg_per_q, samples=10000, seed=20260923)
