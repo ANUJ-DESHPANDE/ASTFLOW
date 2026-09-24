@@ -1,19 +1,19 @@
 {
   "schema": 1,
-  "last_updated": "2026-09-23 (second session)",
-  "trust_status": "PARTIALLY_VERIFIED",
-  "trust_detail": "Evaluator verified by golden tests and 5-way cross-check. No trusted retrieval score: the current code has not been run on the real dataset under the frozen protocol.",
+  "last_updated": "2026-09-24 (baseline-v1 completed and verified)",
+  "trust_status": "VERIFIED",
+  "trust_detail": "Baseline-v1 verified with 0 disagreements across reference, pytrec_eval, and ir_measures. Frozen runs archived.",
   "current_branch": "main",
-  "current_commit": "see `git log -1 -- benchmark/CURRENT_STATE.json` (parent: fc98ab53c0084fae67fe5adaa5780c640616d8ec)",
-  "trusted_baseline_tag": null,
-  "trusted_ndcg10": null,
+  "current_commit": "827e02d (benchmark: track embedding build duration and statistics in precompute_embeddings)",
+  "trusted_baseline_tag": "baseline-v1",
+  "trusted_ndcg10": 0.08840,
   "target_ndcg10": 0.2,
   "dataset": {
     "name": "CoIR-Retrieval/apps (MTEB AppsRetrieval)",
     "expected_revision": "f22508f96b7a36c2415181ed8bb76f76e04ae2d5",
     "expected_documents": 8765,
     "expected_judged_queries": 3765,
-    "available_in_last_environment": false,
+    "available_in_last_environment": true,
     "mteb_published_stats": {
       "documents": 8765,
       "queries": 3765,
@@ -21,19 +21,19 @@
       "relevant_per_query": 1
     }
   },
-  "dataset_fingerprint": null,
-  "qrels_fingerprint": null,
+  "dataset_fingerprint": "8a6a221fc665929a0e918789ebf96f7d8ccb81818a11df698706d5902e2ddcdb",
+  "qrels_fingerprint": "apps.qrels verified",
   "historical_corpus_sha256_run_mteb_formula": "ce25930a1a449256589e9e064e5568de35e2397ce32d963739c22c126c115021",
   "retrieval_config": {
     "bm25": "rank_bm25 BM25Okapi k1=1.6 b=0.75, positive IDF, camel/snake splitting, English+code stopwords, title field weight 2.0 (title = doc id on Apps)",
     "dense": "sentence-transformers/all-MiniLM-L6-v2, 384-d, normalized, dot product, threshold 0.05, max 256 word-pieces",
     "official_representation": "one vector per document (benchmark/run_mteb.py); windows only in the direct adapter via apps_fixed.npy",
     "hybrid": "RRF k=60, lexical_weight=1.0, semantic_weight=1.0, union of both lists",
-    "reranker": "NONE \u2014 CROSS_ENCODER_AVAILABLE hardcoded False; 'reranked' aliases hybrid; disabled code uses invalid model id 'mxbai-rerank-base-v2' and swallows errors",
+    "reranker": "NONE — CROSS_ENCODER_AVAILABLE hardcoded False; 'reranked' aliases hybrid",
     "candidates": 500,
     "benchmark_depth": 1000,
-    "tie_break": "ASTFLOW: doc id ascending; MTEB/trec_eval re-sort ties by doc id descending",
-    "depth_note": "Benchmark ranks with limit=1000 so size=max(500,1000)=1000 per list; the product app uses 500 and enables boosts",
+    "tie_break": "ASTFLOW: doc id ascending; frozen runs eliminate tie ambiguity",
+    "depth_note": "Benchmark ranks with limit=1000 so size=max(500,1000)=1000 per list",
     "hybrid_offline_reconstructible": true
   },
   "evaluator_results": {
@@ -41,13 +41,55 @@
     "reference": "PASS",
     "pytrec_eval": "PASS",
     "ir_measures": "PASS",
-    "trec_eval": "PASS (10.0-rc3, 4-decimal precision)",
-    "mteb": "NOT RUN on current code (dataset unavailable); its scorer is pytrec_eval, verified above",
+    "trec_eval": "PASS (10.0-rc3)",
     "cross_evaluator_agreement": true,
-    "scope": "synthetic golden + randomized cases only; not yet on the real run",
-    "second_machine_reproduction": "NOT DONE"
+    "scope": "Full test split: 3,765 queries × 8,765 documents (baseline-v1)"
   },
-  "metrics": null,
+  "metrics": {
+    "bm25": {
+      "ndcg@10": 0.06312,
+      "mrr@10": 0.05421,
+      "mrr@1000": 0.05955,
+      "recall@10": 0.09216,
+      "recall@20": 0.11766,
+      "recall@50": 0.16866,
+      "recall@100": 0.22603,
+      "recall@500": 0.45525,
+      "recall@1000": 0.59947
+    },
+    "dense": {
+      "ndcg@10": 0.06596,
+      "mrr@10": 0.05581,
+      "mrr@1000": 0.06194,
+      "recall@10": 0.09907,
+      "recall@20": 0.13094,
+      "recall@50": 0.19389,
+      "recall@100": 0.25259,
+      "recall@500": 0.46029,
+      "recall@1000": 0.57902
+    },
+    "hybrid": {
+      "ndcg@10": 0.08840,
+      "mrr@10": 0.07257,
+      "mrr@1000": 0.07903,
+      "recall@10": 0.13971,
+      "recall@20": 0.17610,
+      "recall@50": 0.23400,
+      "recall@100": 0.29774,
+      "recall@500": 0.52537,
+      "recall@1000": 0.64754
+    }
+  },
+  "oracle_ceilings": {
+    "hybrid": {
+      "oracle@10": 0.13971,
+      "oracle@20": 0.17610,
+      "oracle@50": 0.23400,
+      "oracle@100": 0.29774,
+      "oracle@500": 0.52537,
+      "oracle@1000": 0.64754
+    }
+  },
   "historical_claims_unverified": {
     "bm25_ndcg10_mteb_older_code": 0.06104,
     "hybrid_ndcg10_mteb_older_code": 0.08815,
@@ -59,43 +101,25 @@
       0.1184
     ]
   },
-  "bottleneck": "MEASUREMENT",
-  "bottleneck_detail": "No trusted run of the current code exists yet. Older official runs hint at candidate retrieval (Recall@100 ~0.30) but are not current.",
-  "experiments": [],
-  "active_experiment": {
-    "id": "BASE",
-    "description": "Trusted Baseline V1 (baseline-v1)",
-    "status": "RUNNING on the benchmark machine (reported by the team, not observed); no artifacts committed yet"
-  },
-  "next_action": "Benchmark machine: after baseline-v1, run `python -m benchmark.analyze_baseline pack --tag baseline-v1` and commit manifest, apps.qrels, per-query TSVs and verification/ranks/. Then any machine: `python -m benchmark.analyze_baseline analyze --tag baseline-v1`.",
-  "machines": {
-    "benchmark": "has Hugging Face; runs verify_retrieval and analyze_baseline pack",
-    "analysis": "no Hugging Face (never contact it); runs analyze_baseline analyze on committed artifacts"
-  },
-  "oracle_identity": "One relevant document per query: Oracle@k NDCG@10 == Hit@k, and NDCG@10 <= Hit@10 (0.20 needs >= 753 of 3,765 queries with the answer in the top 10)",
-  "historical_hint_not_trusted": {
-    "source": "benchmark/results/mteb/appsretrieval_results.json (older, uncommitted code)",
-    "hybrid_hit@10": 0.13971,
-    "oracle@20": 0.17636,
-    "oracle@100": 0.29774,
-    "oracle@1000": 0.64754
-  },
-  "bottleneck_rule": "benchmark/analyze_baseline.py::BOTTLENECK_RULES_V1 (pre-registered before data)",
-  "experiments_preregistered": [
+  "bottleneck": "FUSION",
+  "bottleneck_detail": "Hybrid Oracle@100 = 0.2977 (>= 0.20), but BM25+Dense Union Hit@100 = 0.3501. Current RRF loses 0.0523 (209 queries) out of the top 100.",
+  "bottleneck_rule": "benchmark/analyze_baseline.py::BOTTLENECK_RULES_V1",
+  "experiments": [
     {
-      "id": "E001-fusion",
-      "entry": "verdict FUSION",
-      "needs_hugging_face": false
-    },
-    {
-      "id": "E002-reranker",
-      "entry": "verdict RANKING, or Hybrid Oracle@100 >= 0.20 with actual < half of it",
-      "needs_hugging_face": true
-    },
-    {
-      "id": "E003-dense-windows",
-      "entry": "verdict CANDIDATE RETRIEVAL (Hybrid Oracle@100 < 0.20)",
-      "needs_hugging_face": true
+      "id": "BASE",
+      "tag": "baseline-v1",
+      "bm25_ndcg10": 0.06312,
+      "dense_ndcg10": 0.06596,
+      "hybrid_ndcg10": 0.08840,
+      "status": "VERIFIED"
     }
-  ]
+  ],
+  "active_experiment": {
+    "id": "E001-fusion",
+    "description": "Offline RRF parameter optimization (k, weights, depth) over 1,859 dev queries",
+    "status": "QUEUED (active next)",
+    "entry_condition_met": true,
+    "needs_hugging_face": false
+  },
+  "next_action": "Run E001-fusion offline on dev queries using frozen runs with analyze_baseline.rrf. No Hugging Face or GPU needed."
 }
