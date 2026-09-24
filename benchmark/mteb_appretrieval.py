@@ -136,14 +136,13 @@ def evaluate_export(directory: Path, split: str, max_queries: int, output: Path)
     metadata_path = directory / "metadata.json"
     if metadata_path.exists():
         report["dataset_metadata"] = json.loads(metadata_path.read_text(encoding="utf-8"))
-    for mode in ["bm25", "dense", "hybrid", "reranked"]:
+    for mode in ["bm25", "dense", "hybrid"]:
         if mode == "dense" and embeddings is None:
             report["baselines"][mode] = {"status": "unavailable"}
             continue
         measured = []
         for qid in query_ids:
             started = time.perf_counter()
-            # 'reranked' mode uses hybrid candidates then applies CrossEncoder reranking
             rows, _ = retriever.rank(queries[qid], mode=mode, boosts=False)
             ranking = [r["chunk"].chunk_id for r in rows]
             measured.append({"query_id": qid, **metrics(ranking, relevance[qid]), "latency_ms": (time.perf_counter() - started) * 1000, "ranking": ranking})

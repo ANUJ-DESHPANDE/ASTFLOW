@@ -53,6 +53,10 @@ ever deleted. Current human-readable status lives in [/RETRIEVAL-PROGRESS.md](..
 - **Artifacts:** [`experiments/E002.json`](experiments/E002.json), `results/reranker_{dev_d20,dev_d50,dev_d100,confirmation_d20,all_d20}.json`,
   `verification/ranks/e002-*.ranks.tsv.gz`. A general-domain cross-encoder is **rejected**; a code-trained
   reranker would be a new, separately pre-registered experiment.
+- **Product follow-up (2026-09-25 audit):** the rejected cross-encoder was still reachable in the product through the
+  undocumented `ASTFLOW_RERANKER_ENABLED` setting (`backend/app/retrieval/reranker.py`). It was removed from the
+  product path; `Retriever.rank` now rejects any mode other than `bm25`/`dense`/`hybrid`. The benchmark runner that
+  produced the E002 results (`benchmark/run_reranker_benchmark.py`) and all E002 artifacts are unchanged.
 
 ### Detailed Findings for E003-dense-windows
 - **Configuration:** the single pre-registered one — windows of 256 word-pieces, overlap 64, max over windows.

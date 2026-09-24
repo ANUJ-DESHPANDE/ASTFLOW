@@ -29,11 +29,6 @@ class Settings:
     max_files: int = 20_000
     max_total_bytes: int = 50_000_000
     schema: int = 8
-    reranker_enabled: bool = os.getenv("ASTFLOW_RERANKER_ENABLED", "false").lower() == "true"
-    reranker_model: str = os.getenv("ASTFLOW_RERANKER_MODEL", "cross-encoder/ms-marco-MiniLM-L-6-v2")
-    reranker_depth: int = int(os.getenv("ASTFLOW_RERANKER_DEPTH", "100"))
-    reranker_batch_size: int = int(os.getenv("ASTFLOW_RERANKER_BATCH_SIZE", "32"))
-    reranker_device: str = os.getenv("ASTFLOW_RERANKER_DEVICE", "cpu")
 
     def fingerprint(self) -> str:
         values = asdict(self)

@@ -6,13 +6,10 @@ from scipy.sparse import csr_matrix
 
 from backend.app.config import Settings
 from backend.app.models.entities import Chunk
-from backend.app.retrieval.reranker import Reranker, get_reranker
 
-try:
-    import sentence_transformers
-    CROSS_ENCODER_AVAILABLE = True
-except ImportError:
-    CROSS_ENCODER_AVAILABLE = False
+# The only ranking modes that exist. A cross-encoder "reranked" mode was evaluated in E002
+# (benchmark/EXPERIMENTS.md) and rejected; unknown modes must fail instead of silently aliasing hybrid.
+MODES = frozenset({"bm25", "dense", "hybrid"})
 
 STOP = set("where is are the a an how does do to of for in on and or can i it this that what which with handled used before after from into was be as by def else if import int list return str".split())
 
@@ -32,17 +29,10 @@ def tokenize(text: str) -> list[str]:
 
 class Retriever:
     def __init__(self, chunks: list[Chunk], embeddings, embedder, settings: Settings, tokenizer=tokenize,
-                 k1: float = 1.6, b: float = 0.75, reranker: Reranker | None = None):
+                 k1: float = 1.6, b: float = 0.75):
         self.chunks, self.embeddings, self.embedder, self.settings = chunks, embeddings, embedder, settings
         self.tokenize = tokenizer
         self.by_id = {c.chunk_id: c for c in chunks}
-        self.reranker = reranker
-        if self.reranker is None and getattr(self.settings, "reranker_enabled", False):
-            self.reranker = get_reranker(
-                model_name=self.settings.reranker_model,
-                device=self.settings.reranker_device,
-                batch_size=self.settings.reranker_batch_size,
-            )
 
         # Field-aware corpus for BM25F simulation
         # For AppsRetrieval: title (qualified_name) and text (search_text)
@@ -96,6 +86,8 @@ class Retriever:
         return (self.w_text * text_scores) + (self.w_title * title_scores)
 
     def rank(self, query: str, mode: str = "hybrid", boosts: bool = True, limit: int | None = None):
+        if mode not in MODES:
+            raise ValueError(f"Unknown ranking mode {mode!r}; expected one of {sorted(MODES)}")
         if not self.chunks:
             return [], {"lexical_top": [], "semantic_top": [], "semantic_available": False}
         terms = self.tokenize(query)
@@ -145,19 +137,6 @@ class Retriever:
                 "relationship_status": "SEARCH_INFERRED",
             }})
         rows.sort(key=lambda r: (-r["score"], r["chunk"].chunk_id))
-
-        # --- CROSS-ENCODER RERANKING ---
-        if mode == "reranked" or (self.reranker is not None and getattr(self.settings, "reranker_enabled", False)):
-            reranker = self.reranker
-            if reranker is None:
-                reranker = get_reranker(
-                    model_name=self.settings.reranker_model,
-                    device=self.settings.reranker_device,
-                    batch_size=self.settings.reranker_batch_size,
-                )
-            depth = getattr(self.settings, "reranker_depth", 100)
-            rows = reranker.rerank(query, rows, depth=depth)
-
         return rows[:size], {"lexical_top": [self.chunks[i].chunk_id for i in lexical_order[:10]],
                              "semantic_top": [self.chunks[i].chunk_id for i in semantic_order[:10]],
                              "semantic_available": dense is not None}

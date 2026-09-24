@@ -13,8 +13,8 @@ Representation matches benchmark/run_mteb.py (the official path): documents sort
 id, text = title + newline + text, one normalized MiniLM vector per document, ranking
 depth 1000, boosts off. `--dense-windows 256:64` (E003) swaps the single vector for id-aligned
 sliding-window vectors, max-pooled per document, and proves their alignment before ranking.
-There is no "reranked" mode: the current code has no
-reranker (search.py hardcodes CROSS_ENCODER_AVAILABLE = False).
+There is no "reranked" mode: the E002 cross-encoder was rejected and is not part of the
+product (Retriever.rank accepts only bm25, dense, hybrid).
 Exits non-zero on any integrity failure or evaluator disagreement.
 """
 import argparse
@@ -158,7 +158,7 @@ def load_window_vectors(chunks, embedder, settings, model_info, whole, window: i
 
 def full_run(args) -> int:
     from backend.app.retrieval.embeddings import Embedder
-    from backend.app.retrieval.search import CROSS_ENCODER_AVAILABLE, Retriever
+    from backend.app.retrieval.search import Retriever
     out = Path(args.out)
     (out / "runs").mkdir(parents=True, exist_ok=True)
     data = Path(args.data)
@@ -245,7 +245,7 @@ def full_run(args) -> int:
                              "candidates": settings.candidates, "rrf_k": settings.rrf_k,
                              "lexical_weight": settings.lexical_weight, "semantic_weight": settings.semantic_weight,
                              "bm25_k1": retriever.bm25.k1, "bm25_b": retriever.bm25.b, "dense_threshold": 0.05,
-                             "boosts": False, "reranker": "none (CROSS_ENCODER_AVAILABLE=%s)" % CROSS_ENCODER_AVAILABLE},
+                             "boosts": False, "reranker": "none"},
         "model": model_info, "vectors": vector_stats, "run_sha256": run_hashes, "latency": latency,
         "evaluation_protocol": "trec_eval -c semantics; canonical scores n-rank+1; linear gain NDCG; MRR@10 = RR within top 10",
         "evaluators": {m: {"aggregates": r["evaluators"], "agree": r["agree"], "disagreements": r["disagreements"][:20],
