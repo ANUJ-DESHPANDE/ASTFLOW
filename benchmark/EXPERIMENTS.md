@@ -53,6 +53,35 @@ ever deleted. Current human-readable status lives in [/RETRIEVAL-PROGRESS.md](..
   `verification/ranks/e002-*.ranks.tsv.gz`. A general-domain cross-encoder is **rejected**; a code-trained
   reranker would be a new, separately pre-registered experiment.
 
+### Pre-registration for E003-dense-windows (written 2026-09-24, before any E003 code)
+- **Hypothesis:** 23.5% of documents (2,061 / 8,765, `docs/audit/corpus-analysis.json`) exceed MiniLM's 256
+  word-piece limit, so their single dense vector ignores the rest of the code. Embedding every part of a document
+  lets Dense find answers it currently never retrieves, and Hybrid inherits those candidates.
+- **The one variable:** dense *document* representation. Whole-document vector → id-aligned sliding windows over the
+  document's word-pieces, window 256, overlap 64 (stride 192), each window embedded by the same model; document
+  score = max cosine over its windows. Documents of ≤ 256 word-pieces keep exactly one vector. Implemented with the
+  existing `Embedder.encode(use_windows=True, window_size=256, overlap=64)` and the Retriever's existing max-pool
+  path, used as-is. (Known property of that code: windows are decoded to text and re-tokenized, and the model's
+  256 limit includes `[CLS]`/`[SEP]`, so a full window loses its last 2 word-pieces — covered by the 64-piece
+  overlap except at a document's very end.)
+- **Unchanged:** BM25; dense model and weights (`all-MiniLM-L6-v2`, safetensors SHA-256 `1377e9af…`); query encoding;
+  dense threshold 0.05; RRF k=60, weights 1:1; candidates 500; depth 1,000; boosts off; qrels; evaluator; tie-break.
+- **Configurations:** exactly one (256/64, max-pool). No sweep over window size, overlap or pooling is registered.
+- **Generation and scoring:** `python -m benchmark.verify_retrieval --dense-windows 256:64 --modes dense,hybrid`
+  (frozen TREC runs, cross-checked by every available evaluator, manifest with checksums). BM25 is not regenerated.
+- **Environment control:** before E003 is compared, the unchanged harness regenerates baseline dense and hybrid on
+  `dev`; its rankings must match the frozen baseline-v1 rank files per query.
+- **Metrics:** Dense and Hybrid Recall@100 (= Hit@100; one relevant document per query) is the mechanism metric;
+  NDCG@10, MRR@10 and Recall@10 are reported for both modes. Paired bootstrap 95% CI
+  (`forensics.paired_bootstrap`, 10,000 samples, seed 20260923) on NDCG@10 and Recall@100, against the frozen
+  baseline-v1 rank files.
+- **Decision rule (rule 5):** the system's output is Hybrid, so **KEEP** requires a positive Hybrid NDCG@10 delta whose
+  CI excludes 0 on `dev`, confirmed by a positive Hybrid NDCG@10 delta whose CI excludes 0 on `confirmation`.
+  Gains in Dense only, or in Recall@100 only, are reported as evidence but do not earn KEEP.
+- **Procedure:** run `dev`. If the Hybrid NDCG@10 dev delta is positive, run `confirmation` once, then the full
+  3,765-query set as the official frozen run. If it is not positive, E003 is **REJECT** on `dev` and `confirmation`
+  stays untouched (there is no registered sweep to continue).
+
 ---
 
 ## Pre-registered queue (evaluated against baseline-v1 evidence)
