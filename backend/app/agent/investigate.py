@@ -30,6 +30,15 @@ def plan(query: str, graph):
     return {"intent": intent, "symbols": names[:6], "max_passes": 2}
 
 
+def match_basis(results: list[dict]) -> str:
+    """KEYWORD_MATCH if any result shares a query term or names a symbol in the query; SEMANTIC_ONLY if every
+    result is only a nearest neighbour by embedding (or reached from one through the graph); NONE if empty."""
+    if not results:
+        return "NONE"
+    keyword = any(r["evidence"].get("lexical_rank") or r["evidence"].get("exact_symbol_match") for r in results)
+    return "KEYWORD_MATCH" if keyword else "SEMANTIC_ONLY"
+
+
 def investigate(index, query: str, version: str, top_k: int = 10, agentic: bool = True, mode: str = "full", structure: bool = True):
     started = time.perf_counter()
     retriever, graph = index.retriever, index.graph
@@ -141,5 +150,8 @@ def investigate(index, query: str, version: str, top_k: int = 10, agentic: bool 
             "results": results, "intent": query_plan["intent"], "agent_trace": trace,
             "graph": {**subgraph, "version_key": index.manifest["version_key"]}, "sequences": sequence, "path_status": (paths or {}).get("status"),
             "status": "OK" if results else "NO_RESULTS",
+            # Dense retrieval always returns its nearest neighbours, even for nonsense input. Say what the
+            # results rest on so a meaning-only list is not presented as "the relevant code".
+            "match_basis": match_basis(results),
             "semantic": {**index.manifest["semantic"], "available": diagnostics["semantic_available"]}, "diagnostics": diagnostics,
             "latency_ms": round((time.perf_counter() - started) * 1000, 2)}

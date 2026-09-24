@@ -29,3 +29,14 @@ def test_title_field_counts_query_terms_that_name_the_symbol():
     # Title tokens are precomputed once per index, aligned with chunks.
     assert retriever.title_tokens[0] >= {"bluetooth", "settings"}
     assert len(retriever.title_tokens) == len(retriever.chunks)
+
+
+def test_match_basis_distinguishes_keyword_evidence_from_nearest_neighbours():
+    from backend.app.agent.investigate import match_basis
+    assert match_basis([]) == "NONE"
+    semantic = {"evidence": {"lexical_rank": None, "semantic_rank": 1, "exact_symbol_match": False, "structural_distance": 1}}
+    keyword = {"evidence": {"lexical_rank": 3, "semantic_rank": None, "exact_symbol_match": False}}
+    exact = {"evidence": {"lexical_rank": None, "semantic_rank": None, "exact_symbol_match": True}}
+    assert match_basis([semantic, semantic]) == "SEMANTIC_ONLY"
+    assert match_basis([semantic, keyword]) == "KEYWORD_MATCH"
+    assert match_basis([exact]) == "KEYWORD_MATCH"
