@@ -21,3 +21,11 @@ def test_unknown_mode_is_rejected_instead_of_aliasing_hybrid(mode):
     with pytest.raises(ValueError, match="Unknown ranking mode"):
         _retriever().rank("bluetooth", mode=mode)
 
+
+def test_title_field_counts_query_terms_that_name_the_symbol():
+    retriever = _retriever()
+    rows, _ = retriever.rank("bluetooth settings", mode="bm25", boosts=False)
+    assert rows[0]["chunk"].qualified_name == "openBluetoothSettings"
+    # Title tokens are precomputed once per index, aligned with chunks.
+    assert retriever.title_tokens[0] >= {"bluetooth", "settings"}
+    assert len(retriever.title_tokens) == len(retriever.chunks)

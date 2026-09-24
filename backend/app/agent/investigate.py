@@ -1,6 +1,5 @@
 import re
 import time
-from copy import deepcopy
 
 from backend.app.retrieval.search import serialize_result
 

@@ -36,8 +36,8 @@ class Retriever:
 
         # Field-aware corpus for BM25F simulation
         # For AppsRetrieval: title (qualified_name) and text (search_text)
-        self.corpus_title = [self.tokenize(c.qualified_name) or ["__empty__"] for c in chunks]
-        self.corpus_text = [self.tokenize(c.search_text) or ["__empty__"] for c in chunks]
+        # Title-field tokens, computed once per index instead of once per chunk per query.
+        self.title_tokens = [set(self.tokenize(c.qualified_name)) for c in chunks]
 
         # Weights for BM25F (higher for title)
         self.w_title = 2.0
@@ -71,16 +71,13 @@ class Retriever:
         ids = [self.vocabulary[t] for t in terms if t in self.vocabulary]
         text_scores = np.asarray(self.postings[ids].sum(axis=0)).ravel() if ids else np.zeros(len(self.chunks))
 
-        # Score for 'title' field (simulated by scanning qualified_name)
-        # For high performance, we could precompute a title-postings matrix,
-        # but with <20k chunks, a direct scan is acceptable for the benchmark.
+        # Score for 'title' field (qualified_name tokens, precomputed in __init__)
         title_scores = np.zeros(len(self.chunks))
         if ids:
-            for i, chunk in enumerate(self.chunks):
-                chunk_title_tokens = set(self.tokenize(chunk.qualified_name))
-                match_count = sum(1 for t in terms if t in chunk_title_tokens)
-                if match_count > 0:
-                    # Simple TF * IDF boost for title
+            term_set = set(terms)
+            for i, chunk_title_tokens in enumerate(self.title_tokens):
+                if not term_set.isdisjoint(chunk_title_tokens):
+                    # Simple TF * IDF boost for title (repeated query terms count repeatedly, as before)
                     title_scores[i] = sum(self.bm25.idf.get(t, 0) for t in terms if t in chunk_title_tokens)
 
         return (self.w_text * text_scores) + (self.w_title * title_scores)
