@@ -5,6 +5,8 @@ import re
 from backend.app.models.entities import Edge, ParsedFile
 from backend.app.parsing.javascript import CALLABLE
 
+NESTED_IDENTIFIER_CALLS = True
+
 
 def resolve_structure(files: list[ParsedFile]) -> tuple[list[Edge], list[dict], list[dict]]:
     by_file = {f.path: f for f in files}
@@ -88,7 +90,11 @@ def resolve_structure(files: list[ParsedFile]) -> tuple[list[Edge], list[dict], 
                 continue
             caller = symbols.get(call["source"])
             parent = symbols.get(caller.parent_symbol_id) if caller else None
-            if caller and (caller.method_kind != "normal" or (parent and parent.kind != "class")):
+            nested = bool(parent and parent.kind != "class")
+            # Calls from nested functions/callbacks resolve only plain identifiers, through the same scope-chain
+            # lookup (parameters, local declarations and reassignments are honoured at every enclosing level).
+            # Member calls from nested scopes stay unresolved: their receiver/`this` is not statically known.
+            if caller and (caller.method_kind != "normal" or (nested and (not NESTED_IDENTIFIER_CALLS or call["callee_type"] != "identifier"))):
                 unresolved.append({**call, "evidence_type": "UNRESOLVED", "reason": "Unsupported method or nested callback scope"})
                 continue
             callee, target, how = call["callee"], None, ""
@@ -96,6 +102,8 @@ def resolve_structure(files: list[ParsedFile]) -> tuple[list[Edge], list[dict], 
             if call["callee_type"] == "identifier":
                 target = lookup(file, callee, scope)
                 how = "named_or_default_import" if callee in file.imports else "lexical_scope"
+                if nested:
+                    how += "_nested"
             elif call["callee_type"] == "member_expression" and re.fullmatch(r"(?:this\.)?[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)*", callee):
                 receiver, name = callee.rsplit(".", 1)
                 if receiver == "this":
