@@ -20,3 +20,4 @@ benchmark/results/apps.json
 
 # Frozen TREC runs are large (~150 MB/mode); manifests record their SHA-256.
 benchmark/verification/runs/
+.coverage

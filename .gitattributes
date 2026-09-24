@@ -1,0 +1,2 @@
+# Demo fixture bytes determine the deterministic v1/v2 commit ids built by scripts/setup_demo.py.
+examples/demo-repo/** text eol=lf
