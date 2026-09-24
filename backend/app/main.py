@@ -20,7 +20,10 @@ logger = logging.getLogger(__name__)
 
 
 def create_app(settings: Settings | None = None):
-    app = FastAPI(title="ASTFLOW", version="0.1.0", description="Find the code. Trace the path. See what changed.")
+    # /docs and /redoc would load Swagger/ReDoc scripts from a CDN that the CSP below blocks; the machine-readable
+    # contract stays at /openapi.json.
+    app = FastAPI(title="ASTFLOW", version="0.1.0", description="Find the code. Trace the path. See what changed.",
+                  docs_url=None, redoc_url=None)
     service = IndexService(settings)
     app.state.service = service
     app.state.index_lock = threading.Lock()

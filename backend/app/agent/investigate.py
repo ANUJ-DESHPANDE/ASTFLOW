@@ -144,7 +144,7 @@ def investigate(index, query: str, version: str, top_k: int = 10, agentic: bool 
             sequence = [s for s in sequence if s["before"] in before_ids and s["after"] in after_ids]
         else:
             sequence = []  # No guessed ordered pair from semantic similarity.
-    trace.append({"step": "RERANK", "details": f"Ranked {len(ordered)} candidates using stored evidence", "data": {"candidates": len(ordered)}})
+    trace.append({"step": "RANK", "details": f"Ranked {len(ordered)} candidates using stored evidence", "data": {"candidates": len(ordered)}})
     trace.append({"step": "STOP", "details": f"Returned {len(results)} source snippets after {2 if second_pass else 1} retrieval pass(es)"})
     return {"query": query, "version": version, "version_key": index.manifest["version_key"],
             "results": results, "intent": query_plan["intent"], "agent_trace": trace,

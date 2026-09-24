@@ -126,7 +126,7 @@ The planner recognizes locate, usage, path, sequence, version, and general inten
 
 For a structural query, missing target, or weak lexical/dense agreement, a second query incorporates symbols actually found or missed in the first pass. Its ranking contributes a bounded reciprocal-rank term. Graph expansion also uses the observed seeds and resolved query targets. It traverses at most two hops with distance decay. The agent stops after at most two retrieval passes.
 
-The API exposes `PLAN → SEARCH → OBSERVE → REFINE → SEARCH → RERANK → STOP` when refinement is warranted; straightforward searches can stop after one pass. This is an operational activity log, with actual queries and counts. Disabling investigation mode disables the second pass while preserving ordinary hybrid/structural retrieval.
+The API exposes `PLAN → SEARCH → OBSERVE → REFINE → SEARCH → RANK → STOP` when refinement is warranted; straightforward searches can stop after one pass. This is an operational activity log, with actual queries and counts. Disabling investigation mode disables the second pass while preserving ordinary hybrid/structural retrieval.
 
 Version intent uses the explicitly selected snapshot. **Changes** runs the question against both selected versions; the engine does not guess an unspecified historical commit.
 
