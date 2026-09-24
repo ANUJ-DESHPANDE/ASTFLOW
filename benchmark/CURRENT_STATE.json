@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "last_updated": "2026-09-24 (E001-fusion evaluated and rejected)",
+  "last_updated": "2026-09-24 (E002-reranker evaluated and rejected)",
   "trust_status": "VERIFIED",
-  "trust_detail": "Baseline-v1 verified across 5 scoring tools. E001-fusion evaluated on frozen runs with pre-registered dev/conf protocol.",
-  "current_branch": "exp/E001-fusion",
-  "current_commit": "see `git log -1` on exp/E001-fusion",
+  "trust_detail": "Baseline-v1 verified across 5 scoring tools. E001-fusion and E002-reranker evaluated on frozen runs with pre-registered dev/conf protocol.",
+  "current_branch": "exp/E002-reranker",
+  "current_commit": "see `git log -1` on exp/E002-reranker",
   "trusted_baseline_tag": "baseline-v1",
   "trusted_ndcg10": 0.08840,
   "target_ndcg10": 0.2,
@@ -29,7 +29,7 @@
     "dense": "sentence-transformers/all-MiniLM-L6-v2, 384-d, normalized, dot product, threshold 0.05, max 256 word-pieces",
     "official_representation": "one vector per document (benchmark/run_mteb.py); windows only in the direct adapter via apps_fixed.npy",
     "hybrid": "RRF k=60, lexical_weight=1.0, semantic_weight=1.0, union of both lists",
-    "reranker": "NONE — CROSS_ENCODER_AVAILABLE hardcoded False; 'reranked' aliases hybrid",
+    "reranker": "OFF by default (ASTFLOW_RERANKER_ENABLED=false). E002 cross-encoder evaluated and rejected; not part of the trusted config",
     "candidates": 500,
     "benchmark_depth": 1000,
     "tie_break": "ASTFLOW: doc id ascending; frozen runs eliminate tie ambiguity",
@@ -82,7 +82,7 @@
     }
   },
   "bottleneck": "RANKING",
-  "bottleneck_detail": "E001-fusion proved that RRF parameter shifts cannot recover candidates without diluting top-10 precision. Reranking (E002) is required to reorder top candidates.",
+  "bottleneck_detail": "E001-fusion proved that RRF parameter shifts cannot recover candidates without diluting top-10 precision. E002 showed a general-domain cross-encoder (ms-marco-MiniLM-L-6-v2) reorders the top-k worse than RRF at every depth (20/50/100). Ranking remains the bottleneck; a code-trained reranker would need its own pre-registered experiment.",
   "bottleneck_rule": "benchmark/analyze_baseline.py::BOTTLENECK_RULES_V1",
   "experiments": [
     {
@@ -101,13 +101,26 @@
       "full_test_ndcg10": 0.08845,
       "status": "REJECT",
       "reason": "Delta on confirmation was negative (-0.00022); 95% bootstrap CI did not exclude zero on either dev or conf."
+    },
+    {
+      "id": "E002-reranker",
+      "description": "Cross-encoder (cross-encoder/ms-marco-MiniLM-L-6-v2 @ 233902d) reranking frozen Hybrid top-k, k in {20, 50, 100}",
+      "dev_sweep_ndcg10": {"d20": 0.07281, "d50": 0.05805, "d100": 0.05146},
+      "dev_winner_ndcg10": 0.07281,
+      "conf_winner_ndcg10": 0.06670,
+      "full_test_ndcg10": 0.06972,
+      "full_test_delta_ci95": [-0.02467, -0.01271],
+      "tag": "e002-reranked-d20",
+      "record": "benchmark/experiments/E002.json",
+      "status": "REJECT",
+      "reason": "Significantly worse than Hybrid at every depth; confirmation delta -0.01672 with 95% CI [-0.02479, -0.00876] entirely below zero."
     }
   ],
   "active_experiment": {
-    "id": "E002-reranker",
-    "description": "Cross-encoder reranking over top-k (20, 50, 100) hybrid candidates",
+    "id": "E003-dense-windows",
+    "description": "Whole-document vector -> id-aligned sliding windows (256/64, max over windows) to recover candidates cut by the 256 word-piece limit",
     "status": "QUEUED (active next)",
     "needs_hugging_face": true
   },
-  "next_action": "Design and execute E002-reranker over frozen candidate lists."
+  "next_action": "Pre-register and execute E003-dense-windows (next in the pre-registered queue)."
 }

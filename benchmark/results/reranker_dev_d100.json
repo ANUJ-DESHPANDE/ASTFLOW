@@ -1,0 +1,46 @@
+{
+  "experiment": "E002",
+  "model": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+  "model_revision": "233902d25c440f23af6f7d6e94d2946bac0bee0a",
+  "depth": 100,
+  "split": "dev",
+  "device": "cuda",
+  "batch_size": 64,
+  "runtime_s": 595.0259395999892,
+  "load_time_s": 0.5765779000066686,
+  "median_latency_ms": 321.7983199999435,
+  "mean_latency_ms": 319.9055289403281,
+  "run_sha256": "ec624b46fc52acc63117dc4cce6132c585e64f9fc66e3506fa4de60bb616ab35",
+  "git_commit": "cab49318753a15276394397b00b1c455c4f5972c",
+  "dataset_revision": "f22508f96b7a36c2415181ed8bb76f76e04ae2d5",
+  "qrels_sha256": "0712fa33e5b39593249ae9b12389207783731e0091ac2409f870aab479bdeae4",
+  "baseline_metrics": {
+    "ndcg@10": 0.0935108195194739,
+    "mrr@10": 0.07761149107302955,
+    "recall@10": 0.1447014523937601,
+    "recall@20": 0.18235610543302852,
+    "recall@50": 0.24045185583647122,
+    "recall@100": 0.3055406132329209
+  },
+  "reranked_metrics": {
+    "ndcg@10": 0.051456681702743146,
+    "mrr@10": 0.03978030516492055,
+    "recall@10": 0.09037116729424421,
+    "recall@20": 0.1296395911780527,
+    "recall@50": 0.228617536309844,
+    "recall@100": 0.3055406132329209
+  },
+  "deltas": {
+    "ndcg@10": -0.04205413781673076,
+    "mrr@10": -0.037831185908108994,
+    "recall@10": -0.054330285099515874,
+    "recall@20": -0.05271651425497581,
+    "recall@50": -0.011834319526627224,
+    "recall@100": 0.0
+  },
+  "bootstrap_ndcg10_ci95": [
+    -0.05291536072948881,
+    -0.031421423078454795
+  ],
+  "excludes_zero": true
+}

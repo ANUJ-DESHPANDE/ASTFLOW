@@ -1,0 +1,272 @@
+{
+  "id": "E002-reranker",
+  "hypothesis": "The Hybrid candidate pool contains relevant documents ranked too low; a cross-encoder that jointly reads query and candidate code can reorder them better than RRF.",
+  "change": "Rerank frozen baseline-v1 Hybrid top-k with a cross-encoder; candidates beyond k keep their order. Tie-break: score descending, doc id ascending.",
+  "model": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+  "model_revision": "233902d25c440f23af6f7d6e94d2946bac0bee0a",
+  "input": "[query_text, document_text] only; qrels read only after rankings are frozen",
+  "dataset_revision": "f22508f96b7a36c2415181ed8bb76f76e04ae2d5",
+  "qrels_sha256": "0712fa33e5b39593249ae9b12389207783731e0091ac2409f870aab479bdeae4",
+  "dev_sweep": {
+    "d20": {
+      "ndcg@10": 0.0728071060269722,
+      "delta": -0.020703713492501705,
+      "ci95": [
+        -0.029751530362214767,
+        -0.01185679924256937
+      ],
+      "device": "cpu",
+      "runtime_s": 5528.327722600021
+    },
+    "d50": {
+      "ndcg@10": 0.058053591976752014,
+      "delta": -0.03545722754272189,
+      "ci95": [
+        -0.0455038645310354,
+        -0.025660203846509917
+      ],
+      "device": "cuda",
+      "runtime_s": 275.02635400000145
+    },
+    "d100": {
+      "ndcg@10": 0.051456681702743146,
+      "delta": -0.04205413781673076,
+      "ci95": [
+        -0.05291536072948881,
+        -0.031421423078454795
+      ],
+      "device": "cuda",
+      "runtime_s": 595.0259395999892
+    }
+  },
+  "selected_depth": 20,
+  "tag": "e002-reranked-d20",
+  "integrity": {
+    "top_k_not_a_permutation": 0,
+    "tail_changed": 0,
+    "dev_run_matches_full_run_on_dev": 1859
+  },
+  "cross_check": {
+    "baseline-v1-hybrid": {
+      "run_sha256": "2452a6a2ed54510c72e5d6e5f911e926b51132112d35d9c389212039e35732e8",
+      "agree": true,
+      "disagreements": 0,
+      "evaluators": {
+        "reference": {
+          "ndcg@10": 0.08840343465090716,
+          "mrr@10": 0.07257330466493812,
+          "recall@10": 0.1397078353253652,
+          "recall@50": 0.23399734395750332,
+          "recall@100": 0.29774236387782205
+        },
+        "astflow": {
+          "ndcg@10": 0.08840343465090716,
+          "mrr@10": 0.07257330466493812,
+          "recall@10": 0.1397078353253652,
+          "recall@50": 0.23399734395750332,
+          "recall@100": 0.29774236387782205
+        },
+        "pytrec_eval": {
+          "ndcg@10": 0.08840343465090716,
+          "mrr@10": 0.07257330466493812,
+          "recall@10": 0.1397078353253652,
+          "recall@50": 0.23399734395750332,
+          "recall@100": 0.29774236387782205
+        },
+        "ir_measures": {
+          "ndcg@10": 0.08840343465090716,
+          "mrr@10": 0.07257330466493812,
+          "recall@10": 0.1397078353253652,
+          "recall@50": 0.23399734395750332,
+          "recall@100": 0.29774236387782205
+        }
+      }
+    },
+    "e002-reranked-d20": {
+      "run_sha256": "d57d37b0106e8d0a9a34c7373bb44ca436530a02b91c21f0f7f0e21036ec1b94",
+      "agree": true,
+      "disagreements": 0,
+      "evaluators": {
+        "reference": {
+          "ndcg@10": 0.06971677640229869,
+          "mrr@10": 0.0527417314867514,
+          "recall@10": 0.1258964143426295,
+          "recall@50": 0.23399734395750332,
+          "recall@100": 0.29774236387782205
+        },
+        "astflow": {
+          "ndcg@10": 0.06971677640229869,
+          "mrr@10": 0.0527417314867514,
+          "recall@10": 0.1258964143426295,
+          "recall@50": 0.23399734395750332,
+          "recall@100": 0.29774236387782205
+        },
+        "pytrec_eval": {
+          "ndcg@10": 0.06971677640229869,
+          "mrr@10": 0.0527417314867514,
+          "recall@10": 0.1258964143426295,
+          "recall@50": 0.23399734395750332,
+          "recall@100": 0.29774236387782205
+        },
+        "ir_measures": {
+          "ndcg@10": 0.06971677640229869,
+          "mrr@10": 0.0527417314867514,
+          "recall@10": 0.1258964143426295,
+          "recall@50": 0.23399734395750332,
+          "recall@100": 0.29774236387782205
+        }
+      }
+    }
+  },
+  "splits": {
+    "dev": {
+      "queries": 1859,
+      "baseline": {
+        "ndcg@10": 0.09351081951947389,
+        "mrr@10": 0.07761149107302953,
+        "recall@10": 0.1447014523937601,
+        "recall@20": 0.18235610543302852,
+        "recall@50": 0.24045185583647122,
+        "recall@100": 0.3055406132329209
+      },
+      "reranked": {
+        "ndcg@10": 0.0728071060269722,
+        "mrr@10": 0.05482572982572982,
+        "recall@10": 0.13232920925228617,
+        "recall@20": 0.18235610543302852,
+        "recall@50": 0.24045185583647122,
+        "recall@100": 0.3055406132329209
+      },
+      "delta": {
+        "ndcg@10": -0.02070371349250169,
+        "mrr@10": -0.02278576124729971,
+        "recall@10": -0.012372243141473921,
+        "recall@20": 0.0,
+        "recall@50": 0.0,
+        "recall@100": 0.0
+      },
+      "bootstrap_ndcg@10": {
+        "mean_delta": -0.020703713492501694,
+        "ci95": [
+          -0.029751530362214767,
+          -0.01185679924256937
+        ],
+        "improved": 109,
+        "worsened": 178,
+        "seed": 20260923,
+        "excludes_zero": true
+      },
+      "bootstrap_mrr@10": {
+        "mean_delta": -0.02278576124729971,
+        "ci95": [
+          -0.03244298436606129,
+          -0.013398140321217245
+        ],
+        "improved": 109,
+        "worsened": 178,
+        "seed": 20260923,
+        "excludes_zero": true
+      }
+    },
+    "confirmation": {
+      "queries": 1906,
+      "baseline": {
+        "ndcg@10": 0.08342199264111413,
+        "mrr@10": 0.06765935475274405,
+        "recall@10": 0.1348373557187828,
+        "recall@20": 0.16998950682056663,
+        "recall@50": 0.22770199370409233,
+        "recall@100": 0.2901364113326338
+      },
+      "reranked": {
+        "ndcg@10": 0.06670265112828605,
+        "mrr@10": 0.05070912240377088,
+        "recall@10": 0.11962224554039874,
+        "recall@20": 0.16998950682056663,
+        "recall@50": 0.22770199370409233,
+        "recall@100": 0.2901364113326338
+      },
+      "delta": {
+        "ndcg@10": -0.016719341512828084,
+        "mrr@10": -0.016950232348973172,
+        "recall@10": -0.015215110178384061,
+        "recall@20": 0.0,
+        "recall@50": 0.0,
+        "recall@100": 0.0
+      },
+      "bootstrap_ndcg@10": {
+        "mean_delta": -0.01671934151282808,
+        "ci95": [
+          -0.02479443246983331,
+          -0.008756637855194769
+        ],
+        "improved": 101,
+        "worsened": 157,
+        "seed": 20260923,
+        "excludes_zero": true
+      },
+      "bootstrap_mrr@10": {
+        "mean_delta": -0.01695023234897317,
+        "ci95": [
+          -0.025246090041473043,
+          -0.008754309698695848
+        ],
+        "improved": 101,
+        "worsened": 157,
+        "seed": 20260923,
+        "excludes_zero": true
+      }
+    },
+    "all": {
+      "queries": 3765,
+      "baseline": {
+        "ndcg@10": 0.08840343465090716,
+        "mrr@10": 0.07257330466493812,
+        "recall@10": 0.1397078353253652,
+        "recall@20": 0.17609561752988048,
+        "recall@50": 0.23399734395750332,
+        "recall@100": 0.29774236387782205
+      },
+      "reranked": {
+        "ndcg@10": 0.06971677640229869,
+        "mrr@10": 0.0527417314867514,
+        "recall@10": 0.1258964143426295,
+        "recall@20": 0.17609561752988048,
+        "recall@50": 0.23399734395750332,
+        "recall@100": 0.29774236387782205
+      },
+      "delta": {
+        "ndcg@10": -0.018686658248608476,
+        "mrr@10": -0.01983157317818672,
+        "recall@10": -0.013811420982735717,
+        "recall@20": 0.0,
+        "recall@50": 0.0,
+        "recall@100": 0.0
+      },
+      "bootstrap_ndcg@10": {
+        "mean_delta": -0.01868665824860849,
+        "ci95": [
+          -0.024671507989931257,
+          -0.012713554386977867
+        ],
+        "improved": 210,
+        "worsened": 335,
+        "seed": 20260923,
+        "excludes_zero": true
+      },
+      "bootstrap_mrr@10": {
+        "mean_delta": -0.019831573178186724,
+        "ci95": [
+          -0.026033221610910852,
+          -0.013543919559855816
+        ],
+        "improved": 210,
+        "worsened": 335,
+        "seed": 20260923,
+        "excludes_zero": true
+      }
+    }
+  },
+  "decision": "REJECT",
+  "decision_rule": "KEEP needs a positive confirmation NDCG@10 delta whose paired-bootstrap 95% CI excludes 0"
+}

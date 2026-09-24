@@ -2,7 +2,7 @@
 
 > **Read this file first.** It is the only document that describes the *current* state of
 > ASTFLOW's search quality. Older files under `docs/audit/` are historical records.
-> Last updated: 2026-09-24 (baseline-v1 completed and E001-fusion evaluated).
+> Last updated: 2026-09-24 (baseline-v1 completed; E001-fusion and E002-reranker evaluated and rejected).
 
 ---
 
@@ -36,7 +36,15 @@ Even if we look through 1,000 returned files, ASTFLOW misses the correct documen
 - A higher $k$ ($k=100$) recovers some lost answers into the top 100 (Recall@100 increased to 31.5%), but hurts top-10 ordering (NDCG@10 dropped to 0.0876).
 - Tweaking $k=30$ gave a microscopic gain on dev (+0.0003), but lost ground on confirmation (-0.0002). Neither change was statistically significant.
 - **Why?** RRF simply adds reciprocal ranks ($1/(k+rank)$); it has no understanding of what the words or code actually mean. Shifting ranks around dilutes precision.
-- **What this implies for the next experiment:** We must move to **E002-reranker** (a true cross-encoder reranker). A cross-encoder reads the query and code snippet together to score relevance directly over the top 50–100 candidates, approaching the **0.298 oracle ceiling** and targeting the **0.20 goal**.
+- **What this implied:** move to **E002-reranker** (a true cross-encoder reranker).
+
+### 6. Did the reranker experiment (E002) help?
+**No — it made results worse (E002: REJECT):**
+- We asked an off-the-shelf "reranker" model (`cross-encoder/ms-marco-MiniLM-L-6-v2`) to re-read the top 20, 50, or 100 candidates together with the question and re-order them.
+- It hurt at every depth, and more so the deeper it read: dev NDCG@10 fell from 0.0935 to **0.0728** (top 20), **0.0581** (top 50), and **0.0515** (top 100).
+- On the untouched confirmation questions (top 20, run once) it fell from 0.0834 to **0.0667**; across all 3,765 questions from 0.0884 to **0.0697**. The right answer now appears in the first 10 results 474 times instead of 526.
+- **Why?** This model learned relevance from web search passages, not from programming problems paired with Python solutions. It rewards code that *looks* on-topic, and that is worse than the current merge.
+- **What this implies:** a general-purpose reranker is not the fix. A reranker trained on code would be a new experiment. Next in the pre-registered queue is **E003-dense-windows** (recovering answers the dense engine never sees because long documents are cut off).
 
 ---
 
@@ -48,7 +56,7 @@ Even if we look through 1,000 returned files, ASTFLOW misses the correct documen
 | **Dense NDCG@10** | **0.06596** (MRR@10 0.05581, R@10 0.09907, R@100 0.25259) | — |
 | **Hybrid NDCG@10** | **0.08840** (MRR@10 0.07257, R@10 0.13971, R@100 0.29774) | **~0.20** |
 | Evaluator Agreement | **PASS** (reference, pytrec_eval, ir_measures, trec_eval agree) | 100% |
-| Current Bottleneck | **RANKING (E002-reranker)** — RRF tuning (E001) proved insufficient | Active |
+| Current Bottleneck | **RANKING** — RRF tuning (E001) and a general-domain cross-encoder (E002) both failed | Active |
 
 ---
 
@@ -84,11 +92,12 @@ The top results are returned (Candidate depth = 1,000 on benchmark)
 |---|---|:---:|:---:|:---:|:---:|---|
 | **BASE** | Verified baseline-v1 | 0.09351 | 0.08342 | **0.08840** | **VERIFIED** | First trusted baseline; established 5-way evaluator consensus. |
 | **E001-fusion** | Controlled RRF sweep (315 configs) | 0.09383 | 0.08321 | **0.08845** | **REJECT** | Parameter tuning cannot resolve merger dilution without harming NDCG; unlocks E002. |
+| **E002-reranker** | MS-MARCO MiniLM cross-encoder over Hybrid top-k (k = 20 / 50 / 100) | 0.07281 (k=20) | 0.06670 | **0.06972** | **REJECT** | Worse than RRF at every depth (CI excludes 0); web-trained reranker does not transfer to code. |
 
 ---
 
 ## 5. Next Steps
 
-- **Active Experiment: E002-reranker**
-  - Implement and evaluate a real cross-encoder reranker over top-$k$ ($k \in \{20, 50, 100\}$) candidates from the frozen runs.
-  - Candidate pool headroom (Oracle@100 = 0.2977) can support achieving the ~0.20 NDCG@10 target.
+- **Active Experiment: E003-dense-windows** (next in the pre-registered queue)
+  - Replace the single whole-document vector with id-aligned sliding windows (256/64, max over windows) so the 23.5% of documents truncated at 256 word-pieces can be found.
+  - Candidate pool headroom (Oracle@100 = 0.2977) still supports the ~0.20 NDCG@10 target; a code-trained reranker remains a possible later experiment.

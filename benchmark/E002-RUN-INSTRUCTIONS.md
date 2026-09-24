@@ -70,18 +70,28 @@ python -m benchmark.run_reranker_benchmark --depth <WINNING_DEPTH> --split all -
 
 ---
 
-## 5. Pack and Commit Artifacts
+## 5. Verify, Score and Commit Artifacts
 
-Pack the resulting frozen run file byte-for-byte:
+`run_reranker_benchmark` already writes the packed rank file (`verification/ranks/<tag>.ranks.tsv.gz`).
+Do **not** run `analyze_baseline pack --tag ...`: it expects a `manifest-<tag>.json` and per-mode
+`runs/<tag>-<mode>.trec` files that this runner does not produce. The raw `runs/*.trec` files are
+gitignored.
+
+Score the frozen full run independently (ledger rule 3) and write `experiments/E002.json`:
 ```bash
-python -m benchmark.analyze_baseline pack --tag e002-reranked-d<WINNING_DEPTH>
+python -m benchmark.score_e002 --tag e002-reranked-d<WINNING_DEPTH> --depth <WINNING_DEPTH>
 ```
 
 Commit the generated artifacts and push:
 ```bash
-git add benchmark/results/reranker_*.json \
-        benchmark/verification/runs/e002-reranked-*.trec \
-        benchmark/verification/ranks/e002-reranked-*.ranks.tsv.gz
+git add benchmark/results/reranker_*.json         benchmark/verification/ranks/e002-reranked-*.ranks.tsv.gz         benchmark/experiments/E002.json
 git commit -m "benchmark(e002): record cross-encoder reranker run artifacts and scores"
 git push origin exp/E002-reranker
 ```
+
+---
+
+## Outcome (2026-09-24)
+
+Completed on a CUDA machine. Dev winner depth 20; confirmation and full runs were significantly worse than
+Hybrid. **E002: REJECT.** See `benchmark/EXPERIMENTS.md` and `benchmark/experiments/E002.json`.

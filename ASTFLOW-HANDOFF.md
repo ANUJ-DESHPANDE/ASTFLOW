@@ -1,6 +1,6 @@
 # ASTFLOW Retrieval — Session Handoff
 
-_Last updated 2026-09-24 (baseline-v1 completed, analyzed, and verified). Contains only verified information._
+_Last updated 2026-09-24 (baseline-v1 verified; E001-fusion and E002-reranker evaluated and rejected). Contains only verified information._
 
 ## TRUST STATUS
 Measurement system: **VERIFIED** (evaluators verified across 5 scoring tools).
@@ -12,14 +12,15 @@ Current trusted baseline: **VERIFIED BASELINE V1 (baseline-v1)**
 
 ## EXACT CODE STATE
 Repository: https://github.com/ANUJ-DESHPANDE/ASTFLOW
-Branch: `main`
-HEAD: commit with baseline-v1 analysis and forensic documentation
-Retrieval code (`backend/app/retrieval/`): Clean and unmodified relative to `fe1de96`.
-Working tree: CLEAN (uncommitted retrieval modifications discarded; only analysis/documentation updated).
+Branch: `exp/E002-reranker` (see `git log -1`)
+Retrieval code (`backend/app/retrieval/`): baseline BM25 / Dense / Hybrid unchanged. `reranker.py` adds an
+opt-in cross-encoder (`ASTFLOW_RERANKER_ENABLED`, default `false`); with it off, Hybrid ranking is bit-for-bit baseline.
+E002 was rejected, so the reranker must stay off.
 
 ## TWO-MACHINE SETUP
 - **Benchmark machine** (has Hugging Face): generated frozen runs (`verify_retrieval`).
 - **Analysis machine** (no Hugging Face — never try to reach it): ran `analyze_baseline analyze --tag baseline-v1`. E001-fusion runs **entirely offline** on this machine!
+- **GPU machine** (Hugging Face + CUDA, RTX 4060): ran E002 dev d50/d100, confirmation d20, and the full d20 run. GPU and CPU rerank scores agree to 1.6e-5; the GPU full run reproduces the CPU dev d20 run on 1,859 / 1,859 queries.
 
 ## VERIFIED RETRIEVAL CONFIG (baseline-v1)
 Dataset: CoIR-Retrieval/apps (MTEB AppsRetrieval), pinned revision `f22508f96b7a36c2415181ed8bb76f76e04ae2d5`
@@ -27,14 +28,13 @@ Documents: 8,765 · Queries: 3,765 · Qrels: 3,765 pairs, exactly 1 relevant doc
 Embedding model: `sentence-transformers/all-MiniLM-L6-v2` (384-d, normalized, threshold 0.05, single vector per doc)
 BM25: BM25Okapi k1 1.6, b 0.75, positive IDF, identifier splitting, English+code stopwords
 Hybrid: RRF k=60, weights 1/1, depth 1,000 — 100% reconstructible offline from BM25 and Dense runs
-Reranker: NONE (disabled / alias)
+Reranker: NONE in the trusted config (E002 cross-encoder rejected; opt-in flag defaults to off)
 
 ## CURRENT BOTTLENECK
-**FUSION** — Triggered by rule 3 of `BOTTLENECK_RULES_V1`:
-- Hybrid Oracle@100 is 0.2977 (≥ 0.20, candidate pool sufficient).
-- Union Recall@100 of BM25 and Dense is 0.3501 vs Hybrid Recall@100 of 0.2977.
-- Union minus Hybrid is **+0.0523** (≥ 0.03 threshold).
-- Current RRF (k=60) pushes **209 valid answers** completely out of the top 100.
+**RANKING** — the answer is in the Hybrid top 100 for 29.8% of queries but in the top 10 for only 14.0%.
+- Baseline rule 3 of `BOTTLENECK_RULES_V1` first flagged FUSION (union − Hybrid Recall@100 = +0.0523, 209 answers lost by RRF k=60).
+- E001-fusion showed RRF parameter changes cannot recover them without hurting top-10 precision.
+- E002-reranker showed a general-domain cross-encoder reorders the top-k *worse* than RRF.
 
 ## RETRIEVAL FORENSICS (baseline-v1)
 - **Top 10 Hits:** BM25 = 347 (9.22%), Dense = 373 (9.91%), Hybrid = 526 (13.97%).
@@ -47,17 +47,18 @@ Reranker: NONE (disabled / alias)
 | ID | Change | Baseline NDCG@10 | New NDCG@10 | Delta (95% CI) | Decision |
 |---|---|:---:|:---:|---|---|
 | BASE | Trusted baseline-v1 | — | **0.08840** | — | **VERIFIED** |
-| E001-fusion | Offline RRF parameter optimization | 0.08840 | pending | — | QUEUED (NEXT) |
+| E001-fusion | Offline RRF parameter optimization (315 configs) | 0.08840 | 0.08845 | Conf: -0.00022 ([-0.00331, +0.00286]) | **REJECT** |
+| E002-reranker | `ms-marco-MiniLM-L-6-v2` cross-encoder over Hybrid top-20 (dev winner of 20/50/100) | 0.08840 | 0.06972 | Conf: -0.01672 ([-0.02479, -0.00876]); All: -0.01869 ([-0.02467, -0.01271]) | **REJECT** |
 
 ## NEXT ACTION
-Execute **E001-fusion**:
-- Tune RRF `k` ∈ {10, 20, 30, 60, 100}, weights, and depth offline with `analyze_baseline.rrf` on the 1,859 `dev` queries.
-- Score winner on the 1,906 `confirmation` queries.
-- Check paired-bootstrap 95% interval on dev and confirmation.
-- Hugging Face required? **NO.** Entirely offline from existing frozen run files.
+Pre-register and execute **E003-dense-windows** (next in `benchmark/EXPERIMENTS.md` queue):
+- Replace the single whole-document vector with id-aligned sliding windows (256/64, max over windows).
+- Target: Dense and Hybrid Hit@100 first, then NDCG@10. Tune on `dev`, confirm once on `confirmation`.
+- Hugging Face required? **YES** (re-embedding the corpus).
 
 ## FILES TO READ
 1. `RETRIEVAL-PROGRESS.md`
 2. `benchmark/results/retrieval_forensics.md`
 3. `benchmark/EXPERIMENTS.md`
 4. `benchmark/CURRENT_STATE.json`
+5. `benchmark/experiments/E002.json`

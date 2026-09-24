@@ -21,13 +21,37 @@ ever deleted. Current human-readable status lives in [/RETRIEVAL-PROGRESS.md](..
 |---|---|---|---:|---:|---|---|---|
 | BASE | Establish trustworthy baseline under frozen protocol | Trusted Baseline V1 (BM25: 0.06312, Dense: 0.06596, Hybrid: 0.08840) | — | **0.08840** | — | **VERIFIED** | `827e02d` |
 | **E001-fusion** | "Current equal-weight RRF is burying correct candidates that one retriever found strongly. Changing fusion should recover some of these candidates." | Systematic sweep of 315 RRF configurations: k ∈ {10, 20, 30, 60, 100} × weights ∈ {1:0, 0:1, 1:3, 1:2, 1:1.5, 1:1, 1.5:1, 2:1, 3:1} × depth ∈ {10, 20, 50, 100, 200, 500, 1000} on 1,859 dev queries | 0.08840 (Dev: 0.09351, Conf: 0.08342) | Dev Winner: **0.09383** (k=30, 1:1, d=1000); Conf: **0.08321**; All: **0.08845** | Dev: +0.00032 ([-0.00251, +0.00310]); Conf: -0.00022 ([-0.00331, +0.00286]) | **REJECT** | `exp/E001-fusion` |
-| **E002-reranker** | "The current Hybrid candidate pool contains relevant documents that are ranked too low. A model that jointly reads the query and candidate code may distinguish relevant candidates better than mechanical RRF." | CrossEncoder (`cross-encoder/ms-marco-MiniLM-L-6-v2`) reranking top candidates (depths 20, 50, 100). Model initialization cached, clean integration in `search.py`, unit tested with mock models. | 0.08840 | Pending benchmark run on HF-enabled machine | — | **IMPLEMENTATION READY — BENCHMARK PENDING** | `exp/E002-reranker` |
+| **E002-reranker** | "The current Hybrid candidate pool contains relevant documents that are ranked too low. A model that jointly reads the query and candidate code may distinguish relevant candidates better than mechanical RRF." | CrossEncoder (`cross-encoder/ms-marco-MiniLM-L-6-v2` @ `233902d`) reranking frozen Hybrid top-k, k ∈ {20, 50, 100} on 1,859 dev queries | 0.08840 (Dev: 0.09351, Conf: 0.08342) | Dev Winner: **0.07281** (k=20); Conf: **0.06670**; All: **0.06972** | Dev: -0.02070 ([-0.02975, -0.01186]); Conf: -0.01672 ([-0.02479, -0.00876]); All: -0.01869 ([-0.02467, -0.01271]) | **REJECT** | `exp/E002-reranker` |
 
 ### Detailed Findings for E001-fusion
 - **Question A (Best Top-100 Candidate Recall):** $k=100$, ratio $1:1$, depth $500$ maximized DEV Recall@100 to `0.31469` (vs `0.30554` baseline, recovering 17 more candidates on DEV and 25 more across the full test set). However, this dropped NDCG@10 to `0.08757`.
 - **Question B (Best NDCG@10):** $k=30$, ratio $1:1$, depth $1000$ produced the highest DEV NDCG@10 (`0.09383` vs `0.09351`, delta `+0.00032`), but failed on confirmation (`0.08321` vs `0.08342`, delta `-0.00022`).
 - **Conclusion:** Neither split's 95% bootstrap interval excludes zero. RRF is a rank-sum heuristic that cannot separate semantic matches from keyword noise; parameter shifts alone cannot recover the 209 lost candidates without degrading top-10 precision. RRF optimization alone is **rejected**.
 - Full sweep data archived in [`benchmark/results/fusion_sweep_e001.json`](results/fusion_sweep_e001.json).
+
+### Detailed Findings for E002-reranker
+- **Dev sweep (1,859 queries, NDCG@10 vs 0.09351 baseline):**
+
+  | Depth | NDCG@10 | Delta (95% CI) | MRR@10 | Recall@10 | Recall@20 |
+  |---:|---:|---|---:|---:|---:|
+  | 20 | **0.07281** | -0.02070 ([-0.02975, -0.01186]) | 0.05483 | 0.13233 | 0.18236 |
+  | 50 | 0.05805 | -0.03546 ([-0.04550, -0.02566]) | 0.04395 | 0.10490 | 0.15923 |
+  | 100 | 0.05146 | -0.04205 ([-0.05292, -0.03142]) | 0.03978 | 0.09037 | 0.12964 |
+
+  Every depth is significantly worse than Hybrid, and the loss grows with depth: the deeper the pool
+  handed to the cross-encoder, the more distractors it promotes into the top 10.
+- **Confirmation (depth 20, run once, 1,906 queries):** 0.08342 → 0.06670 (-0.01672, CI [-0.02479, -0.00876]); MRR@10 0.06766 → 0.05071.
+- **Full set (depth 20, 3,765 queries, tag `e002-reranked-d20`):** 0.08840 → 0.06972 (-0.01869, CI [-0.02467, -0.01271]);
+  MRR@10 0.07257 → 0.05274; Recall@10 0.13971 → 0.12590. NDCG@10 improved on 210 queries and worsened on 335.
+- **Why:** `ms-marco-MiniLM-L-6-v2` is trained on web passages, not on problem-statement → Python-solution
+  pairs. It reorders by surface topicality and does worse than rank fusion on this task.
+- **Verification:** runs scored independently by `python -m benchmark.score_e002` (reference, astflow,
+  pytrec_eval, ir_measures: 0 disagreements); only the top-k is permuted and the tail is untouched on all
+  3,765 queries; every committed `ranks/e002-*.ranks.tsv.gz` rebuilds its recorded run SHA-256. The full run was
+  produced on GPU (CUDA) and matches the CPU-produced dev d20 run on 1,859 / 1,859 dev queries.
+- **Artifacts:** [`experiments/E002.json`](experiments/E002.json), `results/reranker_{dev_d20,dev_d50,dev_d100,confirmation_d20,all_d20}.json`,
+  `verification/ranks/e002-*.ranks.tsv.gz`. A general-domain cross-encoder is **rejected**; a code-trained
+  reranker would be a new, separately pre-registered experiment.
 
 ---
 
@@ -39,8 +63,8 @@ Which experiment runs first is decided by `BOTTLENECK_RULES_V1` in
 | ID | Entry condition | Status | Hypothesis | Exact change | Metric that should move | Cost | Needs Hugging Face? |
 |---|---|---|---|---|---|---|---|
 | **E001-fusion** | Verdict FUSION (gain ≥ 0.03) | **EVALUATED — REJECT** | RRF parameter tuning recovers lost candidates without harming precision | RRF k, weights, depth sweep offline | NDCG@10, Hit@100 | Minutes, CPU | **No** |
-| **E002-reranker** | Next in queue (RRF cannot fix ranking or recover candidates cleanly) | **ACTIVE NEXT** | A cross-encoder reading query and code together can score relevance directly over the top 50–100 candidates | Rerank Hybrid top-k (k ∈ {20, 50, 100}) with a real cross-encoder over frozen candidates; candidate retrieval unchanged | NDCG@10, MRR@10 (bounded above by Oracle@k = 0.2977) | Hours of CPU on benchmark machine | **Yes** |
-| **E003-dense-windows** | Candidate expansion for the 65% of queries missed by both engines | Queued | 23.5% of documents are cut at 256 word-pieces; incomplete embeddings lose documents in candidate generation | Whole-document vector → id-aligned sliding windows (256/64, max over windows) | Dense and Hybrid Hit@100, then NDCG@10 | ~3× embedding time | **Yes** |
+| **E002-reranker** | Next in queue (RRF cannot fix ranking or recover candidates cleanly) | **EVALUATED — REJECT** | A cross-encoder reading query and code together can score relevance directly over the top 50–100 candidates | Rerank Hybrid top-k (k ∈ {20, 50, 100}) with a real cross-encoder over frozen candidates; candidate retrieval unchanged | NDCG@10, MRR@10 (bounded above by Oracle@k = 0.2977) | Hours of CPU on benchmark machine | **Yes** |
+| **E003-dense-windows** | Candidate expansion for the 65% of queries missed by both engines | **ACTIVE NEXT** | 23.5% of documents are cut at 256 word-pieces; incomplete embeddings lose documents in candidate generation | Whole-document vector → id-aligned sliding windows (256/64, max over windows) | Dense and Hybrid Hit@100, then NDCG@10 | ~3× embedding time | **Yes** |
 
 ---
 
