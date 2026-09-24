@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "last_updated": "2026-09-24 (E002-reranker evaluated and rejected)",
+  "last_updated": "2026-09-24 (E003-dense-windows evaluated and rejected)",
   "trust_status": "VERIFIED",
-  "trust_detail": "Baseline-v1 verified across 5 scoring tools. E001-fusion and E002-reranker evaluated on frozen runs with pre-registered dev/conf protocol.",
-  "current_branch": "exp/E002-reranker",
-  "current_commit": "see `git log -1` on exp/E002-reranker",
+  "trust_detail": "Baseline-v1 verified across 5 scoring tools. E001-fusion, E002-reranker and E003-dense-windows evaluated on frozen runs with pre-registered dev/conf protocol.",
+  "current_branch": "exp/E003-dense-windows",
+  "current_commit": "see `git log -1` on exp/E003-dense-windows",
   "trusted_baseline_tag": "baseline-v1",
   "trusted_ndcg10": 0.08840,
   "target_ndcg10": 0.2,
@@ -82,7 +82,7 @@
     }
   },
   "bottleneck": "RANKING",
-  "bottleneck_detail": "E001-fusion proved that RRF parameter shifts cannot recover candidates without diluting top-10 precision. E002 showed a general-domain cross-encoder (ms-marco-MiniLM-L-6-v2) reorders the top-k worse than RRF at every depth (20/50/100). Ranking remains the bottleneck; a code-trained reranker would need its own pre-registered experiment.",
+  "bottleneck_detail": "E001-fusion proved that RRF parameter shifts cannot recover candidates without diluting top-10 precision. E002 showed a general-domain cross-encoder (ms-marco-MiniLM-L-6-v2) reorders the top-k worse than RRF at every depth (20/50/100). E003 showed sliding-window dense vectors make Dense significantly better (all: +0.00469 NDCG@10, CI excludes 0) but RRF absorbs the gain (Hybrid +0.00092, CI includes 0). Ranking/fusion remains the bottleneck.",
   "bottleneck_rule": "benchmark/analyze_baseline.py::BOTTLENECK_RULES_V1",
   "experiments": [
     {
@@ -114,13 +114,27 @@
       "record": "benchmark/experiments/E002.json",
       "status": "REJECT",
       "reason": "Significantly worse than Hybrid at every depth; confirmation delta -0.01672 with 95% CI [-0.02479, -0.00876] entirely below zero."
+    },
+    {
+      "id": "E003-dense-windows",
+      "description": "Dense document vector -> id-aligned sliding windows (256/64, max over windows); one pre-registered configuration",
+      "dev_hybrid_ndcg10": 0.09444,
+      "conf_hybrid_ndcg10": 0.08433,
+      "full_test_hybrid_ndcg10": 0.08932,
+      "full_test_hybrid_delta_ci95": [-0.00145, 0.00333],
+      "full_test_dense_ndcg10": 0.07065,
+      "full_test_dense_delta_ci95": [0.00202, 0.00744],
+      "tag": "e003-windows",
+      "record": "benchmark/experiments/E003.json",
+      "status": "REJECT",
+      "reason": "Hybrid NDCG@10 delta positive but its 95% CI includes 0 on dev (+0.00093 [-0.00232, +0.00426]) and confirmation (+0.00091 [-0.00231, +0.00441]). Dense alone improves significantly."
     }
   ],
   "active_experiment": {
-    "id": "E003-dense-windows",
-    "description": "Whole-document vector -> id-aligned sliding windows (256/64, max over windows) to recover candidates cut by the 256 word-piece limit",
-    "status": "QUEUED (active next)",
-    "needs_hugging_face": true
+    "id": null,
+    "description": "Pre-registered queue (E001-E003) is exhausted; E004 must be pre-registered in benchmark/EXPERIMENTS.md before any code",
+    "status": "NOT YET REGISTERED",
+    "needs_hugging_face": null
   },
-  "next_action": "Pre-register and execute E003-dense-windows (next in the pre-registered queue)."
+  "next_action": "Pre-register E004 from the E001-E003 evidence (see RETRIEVAL-PROGRESS.md section 5), then execute it."
 }

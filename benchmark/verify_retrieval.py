@@ -11,7 +11,9 @@
 
 Representation matches benchmark/run_mteb.py (the official path): documents sorted by
 id, text = title + newline + text, one normalized MiniLM vector per document, ranking
-depth 1000, boosts off. There is no "reranked" mode: the current code has no
+depth 1000, boosts off. `--dense-windows 256:64` (E003) swaps the single vector for id-aligned
+sliding-window vectors, max-pooled per document, and proves their alignment before ranking.
+There is no "reranked" mode: the current code has no
 reranker (search.py hardcodes CROSS_ENCODER_AVAILABLE = False).
 Exits non-zero on any integrity failure or evaluator disagreement.
 """
@@ -113,6 +115,47 @@ def load_vectors(chunks, embedder, settings, model_info) -> tuple[np.ndarray, di
     return vectors, stats
 
 
+def load_window_vectors(chunks, embedder, settings, model_info, whole, window: int, overlap: int) -> tuple[list, dict]:
+    """E003: id-aligned sliding-window vectors, one (windows x dim) array per document, in chunk order."""
+    identity = hashlib.sha256(json.dumps([model_info["name"], model_info["weights_sha256"], window, overlap,
+                                          [c.chunk_id + ":" + c.content_hash for c in chunks]]).encode()).hexdigest()[:24]
+    path = settings.cache / "datasets" / f"trust-apps-windows-{identity}.npz"
+    ids = [c.chunk_id for c in chunks]
+    started, status = time.perf_counter(), "computed"
+    if path.exists() and [str(i) for i in np.load(path, allow_pickle=False)["ids"]] == ids:
+        stored = np.load(path, allow_pickle=False)
+        flat, counts, status = stored["vectors"], stored["counts"], "reused (ids verified identical)"
+    else:
+        grouped = embedder.encode([c.text for c in chunks], use_windows=True, window_size=window, overlap=overlap)
+        flat, counts = np.concatenate(grouped).astype(np.float32), np.array([len(g) for g in grouped])
+        path.parent.mkdir(parents=True, exist_ok=True)
+        np.savez(path, vectors=flat, counts=counts, ids=np.array(ids))
+    integrity._check(len(counts) == len(chunks) and counts.min() >= 1, "Every document needs at least one window")
+    integrity._check(int(counts.sum()) == len(flat), "Window count does not match stored vectors")
+    grouped = np.split(flat, np.cumsum(counts)[:-1])
+    # Expected windows per document straight from the tokenizer, independent of the cached arrays.
+    stride = window - overlap
+    lengths = [len(embedder.model.tokenizer.tokenize(c.text)) for c in chunks]
+    expected = [1 if n <= window else len(range(0, n, stride)) for n in lengths]
+    integrity._check(expected == counts.tolist(), "Window counts differ from tokenizer-derived counts")
+    stats = integrity.check_vectors(flat, int(counts.sum()))
+    # Alignment proof 1: a single-window document is embedded from its full text, so it must equal its whole-doc vector.
+    single = [i for i, n in enumerate(counts) if n == 1]
+    single_cos = np.einsum("ij,ij->i", np.stack([grouped[i][0] for i in single]), whole[single])
+    integrity._check(float(single_cos.min()) > 0.999, f"Single-window vectors misaligned: min cosine {single_cos.min()}")
+    # Alignment proof 2: re-embed probe documents one at a time; every window must match its stored row.
+    probe = sorted({int(i) for i in np.linspace(0, len(chunks) - 1, 20)} | set([i for i, n in enumerate(counts) if n > 1][::400]))
+    fresh = embedder.encode([chunks[i].text for i in probe], use_windows=True, window_size=window, overlap=overlap)
+    cosines = [float(np.min(np.einsum("ij,ij->i", grouped[i], f))) for i, f in zip(probe, fresh)]
+    integrity._check(min(cosines) > 0.999, f"Window vectors misaligned with documents: min cosine {min(cosines)}")
+    stats.update(documents=len(chunks), windows=int(counts.sum()), multi_window_documents=int((counts > 1).sum()),
+                 max_windows=int(counts.max()), window=window, overlap=overlap, cache_file=str(path), cache_status=status,
+                 seconds=round(time.perf_counter() - started, 2),
+                 alignment_single_window={"documents": len(single), "min_cosine_vs_whole_doc": float(single_cos.min())},
+                 alignment_probe={"documents": len(probe), "ids": [chunks[i].chunk_id for i in probe], "min_cosine": min(cosines)})
+    return list(grouped), stats
+
+
 def full_run(args) -> int:
     from backend.app.retrieval.embeddings import Embedder
     from backend.app.retrieval.search import CROSS_ENCODER_AVAILABLE, Retriever
@@ -153,6 +196,10 @@ def full_run(args) -> int:
     integrity._check([c.chunk_id for c in chunks] == sorted(corpus), "Chunk order is not the sorted document id order")
     if embedder:
         vectors, vector_stats = load_vectors(chunks, embedder, settings, model_info)
+        if args.dense_windows:
+            window, overlap = (int(x) for x in args.dense_windows.split(":"))
+            vectors, window_stats = load_window_vectors(chunks, embedder, settings, model_info, vectors, window, overlap)
+            vector_stats = {"whole_document": vector_stats, "windows": window_stats}
     retriever = Retriever(chunks, vectors, embedder, settings)
     corpus_ids = set(corpus)
 
@@ -192,7 +239,8 @@ def full_run(args) -> int:
         "dataset": {"name": "CoIR-Retrieval/apps (MTEB AppsRetrieval)", "revision": revision, "split": "test",
                     "query_selection": args.split, "evaluated_queries": len(judged), **data_stats,
                     **integrity.fingerprint(corpus, queries, qrels), "qrels_file_sha256": qrels_sha},
-        "retrieval_config": {"representation": "one vector per document (no windows), title\\ntext", "depth": DEPTH,
+        "retrieval_config": {"representation": (f"id-aligned sliding windows {args.dense_windows} (window:overlap word-pieces), max over windows, title\\ntext"
+                                                if args.dense_windows else "one vector per document (no windows), title\\ntext"), "depth": DEPTH,
                              "candidates": settings.candidates, "rrf_k": settings.rrf_k,
                              "lexical_weight": settings.lexical_weight, "semantic_weight": settings.semantic_weight,
                              "bm25_k1": retriever.bm25.k1, "bm25_b": retriever.bm25.b, "dense_threshold": 0.05,
@@ -221,6 +269,8 @@ def main():
     parser.add_argument("--tag", default="baseline")
     parser.add_argument("--trec-eval", default=None, help="Path to a NIST trec_eval binary")
     parser.add_argument("--allow-unknown-revision", action="store_true")
+    parser.add_argument("--dense-windows", default=None, metavar="WINDOW:OVERLAP",
+                        help="E003: embed documents as id-aligned sliding windows (e.g. 256:64) and max-pool; default one vector")
     args = parser.parse_args()
     if args.self_test:
         sys.exit(0 if self_test(args.trec_eval) else 1)

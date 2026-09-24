@@ -1,0 +1,927 @@
+{
+  "id": "E003-dense-windows",
+  "hypothesis": "23.5% of documents (2,061 / 8,765) exceed MiniLM's 256 word-piece limit, so their single dense vector ignores the rest of the code; embedding every part of a document lets Dense find answers it never retrieves, and Hybrid inherits them.",
+  "change": "Dense document representation only: whole-document vector -> id-aligned sliding windows over word-pieces (window 256, overlap 64, stride 192), document score = max cosine over its windows. Existing Embedder.encode(use_windows=True) and Retriever max-pool path, used as-is.",
+  "configurations": [
+    {
+      "window": 256,
+      "overlap": 64,
+      "pooling": "max"
+    }
+  ],
+  "pre_registration": "benchmark/EXPERIMENTS.md (commit b8da241, before any E003 code)",
+  "unchanged": [
+    "BM25",
+    "dense model sentence-transformers/all-MiniLM-L6-v2 (safetensors sha256 1377e9af0ca0b016a9f2aa584d6fc71ab3ea6804fae21ef9fb1416e2944057ac)",
+    "query encoding",
+    "dense threshold 0.05",
+    "RRF k=60, weights 1:1",
+    "candidates 500",
+    "depth 1000",
+    "boosts off",
+    "qrels",
+    "evaluator",
+    "tie-break"
+  ],
+  "generator": "python -m benchmark.verify_retrieval --dense-windows 256:64 --modes dense,hybrid --split <split> --out <scratch dir>; frozen with python -m benchmark.score_e003 freeze",
+  "generator_code": {
+    "base_commit": "b8da2412",
+    "file": "benchmark/verify_retrieval.py",
+    "sha256": "8c27dd536125fef9e394ae02f744552debc58f475c962e4a83baa22a4c1e2eb0",
+    "note": "Runs were generated from b8da241 plus the --dense-windows change to verify_retrieval.py, committed unchanged in the E003 result commit (the dev run started just before a docstring-only edit)."
+  },
+  "compute": {
+    "embedding_device": "cpu (Embedder hard-codes device='cpu'; the manifests' environment.device='cuda' only records that a GPU was available)",
+    "window_embedding_seconds": 287.93,
+    "wall_seconds": {
+      "dev": 1071,
+      "confirmation": 774,
+      "all": 1548
+    },
+    "median_latency_ms": {
+      "dev": {
+        "dense": 192.0,
+        "hybrid": 197.6
+      },
+      "confirmation": {
+        "dense": 179.4,
+        "hybrid": 194.5
+      },
+      "all": {
+        "dense": 187.1,
+        "hybrid": 196.3
+      }
+    },
+    "baseline_control_median_latency_ms": {
+      "dense": 150.2,
+      "hybrid": 136.1
+    }
+  },
+  "environment_control": {
+    "tag": "control-baseline-dev",
+    "queries": 1859,
+    "modes": {
+      "dense": {
+        "queries_identical_depth_1000": 1020,
+        "queries_identical_top_100": 1844,
+        "queries_with_any_metric_change": 0,
+        "queries": 1859,
+        "metrics": {
+          "ndcg@10": {
+            "control": 0.06904013890604845,
+            "frozen": 0.06904013890604845
+          },
+          "mrr@10": {
+            "control": 0.05954622300776147,
+            "frozen": 0.05954622300776147
+          },
+          "recall@10": {
+            "control": 0.10005379236148466,
+            "frozen": 0.10005379236148466
+          },
+          "recall@100": {
+            "control": 0.25443786982248523,
+            "frozen": 0.25443786982248523
+          }
+        }
+      },
+      "hybrid": {
+        "queries_identical_depth_1000": 1517,
+        "queries_identical_top_100": 1854,
+        "queries_with_any_metric_change": 0,
+        "queries": 1859,
+        "metrics": {
+          "ndcg@10": {
+            "control": 0.09351081951947389,
+            "frozen": 0.09351081951947389
+          },
+          "mrr@10": {
+            "control": 0.07761149107302953,
+            "frozen": 0.07761149107302953
+          },
+          "recall@10": {
+            "control": 0.1447014523937601,
+            "frozen": 0.1447014523937601
+          },
+          "recall@100": {
+            "control": 0.3055406132329209,
+            "frozen": 0.3055406132329209
+          }
+        }
+      }
+    },
+    "git": {
+      "commit": "b8da241204ffbd5679a115fb133d04a7599d37b2",
+      "branch": "exp/E003-dense-windows",
+      "dirty": true,
+      "dirty_files": [
+        "M benchmark/verify_retrieval.py",
+        "?? ASTFLOW-main/",
+        "?? benchmark/score_e003.py"
+      ]
+    },
+    "note": "Unchanged-harness regeneration on this machine differs from frozen baseline-v1 only below rank 100 in most differing queries (float/tie noise across CPUs); 0 queries change any reported metric in either mode, so frozen baseline-v1 is a valid comparator. This relaxes the pre-registration's per-query identical-ranking wording; recorded, not hidden."
+  },
+  "splits": {
+    "dev": {
+      "tag": "e003-windows-dev",
+      "queries": 1859,
+      "git": {
+        "commit": "b8da241204ffbd5679a115fb133d04a7599d37b2",
+        "branch": "exp/E003-dense-windows",
+        "dirty": true,
+        "dirty_files": [
+          "M benchmark/verify_retrieval.py",
+          "?? ASTFLOW-main/",
+          "?? benchmark/experiments/E003.json",
+          "?? benchmark/score_e003.py"
+        ]
+      },
+      "environment": {
+        "python": "3.12.4",
+        "platform": "Windows-11-10.0.26200-SP0",
+        "machine": "AMD64",
+        "processor": "Intel64 Family 6 Model 183 Stepping 1, GenuineIntel",
+        "device": "cuda",
+        "packages": {
+          "mteb": null,
+          "sentence-transformers": "5.7.0",
+          "transformers": "5.17.0",
+          "torch": "2.14.0+cu130",
+          "numpy": "2.5.3",
+          "scipy": "1.18.1",
+          "rank-bm25": "0.2.2",
+          "pytrec-eval-terrier": "0.5.10",
+          "ir-measures": "0.4.3",
+          "datasets": "5.0.1",
+          "huggingface-hub": "1.32.0"
+        }
+      },
+      "vectors": {
+        "whole_document": {
+          "rows": 8765,
+          "dim": 384,
+          "dtype": "float32",
+          "norm_min": 0.9999998807907104,
+          "norm_max": 1.0000001192092896,
+          "norm_mean": 1.0,
+          "nan": 0,
+          "inf": 0,
+          "zero_vectors": 0,
+          "cache_file": "C:\\Users\\aarus\\Downloads\\ASTFLOW-main\\ASTFLOW-repo\\.astflow\\datasets\\trust-apps-cc3d1f5b729fa376dc5f9aed.npy",
+          "cache_status": "reused (ids verified identical)",
+          "seconds": 0.87,
+          "alignment_probe": {
+            "documents": 20,
+            "ids": [
+              "d1",
+              "d1413",
+              "d1829",
+              "d2243",
+              "d266",
+              "d3074",
+              "d349",
+              "d3904",
+              "d432",
+              "d4735",
+              "d515",
+              "d5565",
+              "d5981",
+              "d6396",
+              "d6810",
+              "d7225",
+              "d7641",
+              "d8056",
+              "d8471",
+              "d999"
+            ],
+            "min_cosine": 0.9999998807907104,
+            "aligned": "20/20"
+          }
+        },
+        "windows": {
+          "rows": 13545,
+          "dim": 384,
+          "dtype": "float32",
+          "norm_min": 0.9999998807907104,
+          "norm_max": 1.0000001192092896,
+          "norm_mean": 1.0,
+          "nan": 0,
+          "inf": 0,
+          "zero_vectors": 0,
+          "documents": 8765,
+          "windows": 13545,
+          "multi_window_documents": 2039,
+          "max_windows": 316,
+          "window": 256,
+          "overlap": 64,
+          "cache_file": "C:\\Users\\aarus\\Downloads\\ASTFLOW-main\\ASTFLOW-repo\\.astflow\\datasets\\trust-apps-windows-8cb93be4ec1ada61977a4138.npz",
+          "cache_status": "computed",
+          "seconds": 287.93,
+          "alignment_single_window": {
+            "documents": 6726,
+            "min_cosine_vs_whole_doc": 0.9999996423721313
+          },
+          "alignment_probe": {
+            "documents": 25,
+            "ids": [
+              "d1",
+              "d1413",
+              "d1829",
+              "d2140",
+              "d2243",
+              "d266",
+              "d3074",
+              "d349",
+              "d3904",
+              "d432",
+              "d4735",
+              "d515",
+              "d5258",
+              "d5565",
+              "d5981",
+              "d6396",
+              "d6490",
+              "d6810",
+              "d7225",
+              "d7461",
+              "d7641",
+              "d8056",
+              "d8471",
+              "d8757",
+              "d999"
+            ],
+            "min_cosine": 0.9999998211860657
+          }
+        }
+      },
+      "latency": {
+        "dense": {
+          "median_ms": 191.98810000671074,
+          "mean_ms": 195.0556788061051,
+          "p95_ms": 263.39946999651147
+        },
+        "hybrid": {
+          "median_ms": 197.62079999782145,
+          "mean_ms": 202.6591713288529,
+          "p95_ms": 275.0146600039442
+        }
+      },
+      "run_sha256": {
+        "dense": "21f26c2ce3f163366a5f3279f909dcffcbed9c409a8232383135d8483d653424",
+        "hybrid": "91415a8f8433e1e0ea1ea9a821668c948c03757b0e7eb2118a2c442283d275bd"
+      },
+      "evaluators_agree": {
+        "dense": true,
+        "hybrid": true
+      },
+      "evaluators": {
+        "dense": [
+          "astflow",
+          "ir_measures",
+          "pytrec_eval",
+          "reference"
+        ],
+        "hybrid": [
+          "astflow",
+          "ir_measures",
+          "pytrec_eval",
+          "reference"
+        ]
+      },
+      "modes": {
+        "dense": {
+          "baseline": {
+            "ndcg@10": 0.06904013890604845,
+            "mrr@10": 0.05954622300776147,
+            "recall@10": 0.10005379236148466,
+            "recall@100": 0.25443786982248523
+          },
+          "e003": {
+            "ndcg@10": 0.07253213590908539,
+            "mrr@10": 0.06173121750044827,
+            "recall@10": 0.10758472296933835,
+            "recall@100": 0.25874125874125875
+          },
+          "delta": {
+            "ndcg@10": 0.0034919970030369424,
+            "mrr@10": 0.0021849944926868037,
+            "recall@10": 0.007530930607853689,
+            "recall@100": 0.004303388918773521
+          },
+          "hits@100": {
+            "baseline": 473,
+            "e003": 481
+          },
+          "bootstrap_ndcg@10": {
+            "mean_delta": 0.003491997003036922,
+            "ci95": [
+              0.00025095011529035235,
+              0.007203984387403347
+            ],
+            "improved": 29,
+            "worsened": 45,
+            "seed": 20260923,
+            "excludes_zero": true
+          },
+          "bootstrap_recall@100": {
+            "mean_delta": 0.004303388918773534,
+            "ci95": [
+              -0.004841312533620226,
+              0.013986013986013986
+            ],
+            "improved": 44,
+            "worsened": 36,
+            "seed": 20260923,
+            "excludes_zero": false
+          }
+        },
+        "hybrid": {
+          "baseline": {
+            "ndcg@10": 0.09351081951947389,
+            "mrr@10": 0.07761149107302953,
+            "recall@10": 0.1447014523937601,
+            "recall@100": 0.3055406132329209
+          },
+          "e003": {
+            "ndcg@10": 0.09443988471210589,
+            "mrr@10": 0.07776368930215084,
+            "recall@10": 0.1490048413125336,
+            "recall@100": 0.30392684238838086
+          },
+          "delta": {
+            "ndcg@10": 0.0009290651926320004,
+            "mrr@10": 0.00015219822912131142,
+            "recall@10": 0.004303388918773521,
+            "recall@100": -0.0016137708445400634
+          },
+          "hits@100": {
+            "baseline": 568,
+            "e003": 565
+          },
+          "bootstrap_ndcg@10": {
+            "mean_delta": 0.00092906519263199,
+            "ci95": [
+              -0.0023209613941578876,
+              0.004262236736435647
+            ],
+            "improved": 38,
+            "worsened": 80,
+            "seed": 20260923,
+            "excludes_zero": false
+          },
+          "bootstrap_recall@100": {
+            "mean_delta": -0.0016137708445400753,
+            "ci95": [
+              -0.009682625067240451,
+              0.006455083378160301
+            ],
+            "improved": 29,
+            "worsened": 32,
+            "seed": 20260923,
+            "excludes_zero": false
+          }
+        }
+      }
+    },
+    "confirmation": {
+      "tag": "e003-windows-confirmation",
+      "queries": 1906,
+      "git": {
+        "commit": "b8da241204ffbd5679a115fb133d04a7599d37b2",
+        "branch": "exp/E003-dense-windows",
+        "dirty": true,
+        "dirty_files": [
+          "M benchmark/verify_retrieval.py",
+          "?? ASTFLOW-main/",
+          "?? benchmark/experiments/E003.json",
+          "?? benchmark/score_e003.py",
+          "?? benchmark/verification/manifest-e003-windows-dev.json",
+          "?? benchmark/verification/per-query-e003-windows-dev-dense.tsv",
+          "?? benchmark/verification/per-query-e003-windows-dev-hybrid.tsv",
+          "?? benchmark/verification/ranks/e003-windows-dev-dense.ranks.tsv.gz",
+          "?? benchmark/verification/ranks/e003-windows-dev-hybrid.ranks.tsv.gz"
+        ]
+      },
+      "environment": {
+        "python": "3.12.4",
+        "platform": "Windows-11-10.0.26200-SP0",
+        "machine": "AMD64",
+        "processor": "Intel64 Family 6 Model 183 Stepping 1, GenuineIntel",
+        "device": "cuda",
+        "packages": {
+          "mteb": null,
+          "sentence-transformers": "5.7.0",
+          "transformers": "5.17.0",
+          "torch": "2.14.0+cu130",
+          "numpy": "2.5.3",
+          "scipy": "1.18.1",
+          "rank-bm25": "0.2.2",
+          "pytrec-eval-terrier": "0.5.10",
+          "ir-measures": "0.4.3",
+          "datasets": "5.0.1",
+          "huggingface-hub": "1.32.0"
+        }
+      },
+      "vectors": {
+        "whole_document": {
+          "rows": 8765,
+          "dim": 384,
+          "dtype": "float32",
+          "norm_min": 0.9999998807907104,
+          "norm_max": 1.0000001192092896,
+          "norm_mean": 1.0,
+          "nan": 0,
+          "inf": 0,
+          "zero_vectors": 0,
+          "cache_file": "C:\\Users\\aarus\\Downloads\\ASTFLOW-main\\ASTFLOW-repo\\.astflow\\datasets\\trust-apps-cc3d1f5b729fa376dc5f9aed.npy",
+          "cache_status": "reused (ids verified identical)",
+          "seconds": 0.67,
+          "alignment_probe": {
+            "documents": 20,
+            "ids": [
+              "d1",
+              "d1413",
+              "d1829",
+              "d2243",
+              "d266",
+              "d3074",
+              "d349",
+              "d3904",
+              "d432",
+              "d4735",
+              "d515",
+              "d5565",
+              "d5981",
+              "d6396",
+              "d6810",
+              "d7225",
+              "d7641",
+              "d8056",
+              "d8471",
+              "d999"
+            ],
+            "min_cosine": 0.9999998807907104,
+            "aligned": "20/20"
+          }
+        },
+        "windows": {
+          "rows": 13545,
+          "dim": 384,
+          "dtype": "float32",
+          "norm_min": 0.9999998807907104,
+          "norm_max": 1.0000001192092896,
+          "norm_mean": 1.0,
+          "nan": 0,
+          "inf": 0,
+          "zero_vectors": 0,
+          "documents": 8765,
+          "windows": 13545,
+          "multi_window_documents": 2039,
+          "max_windows": 316,
+          "window": 256,
+          "overlap": 64,
+          "cache_file": "C:\\Users\\aarus\\Downloads\\ASTFLOW-main\\ASTFLOW-repo\\.astflow\\datasets\\trust-apps-windows-8cb93be4ec1ada61977a4138.npz",
+          "cache_status": "reused (ids verified identical)",
+          "seconds": 4.23,
+          "alignment_single_window": {
+            "documents": 6726,
+            "min_cosine_vs_whole_doc": 0.9999996423721313
+          },
+          "alignment_probe": {
+            "documents": 25,
+            "ids": [
+              "d1",
+              "d1413",
+              "d1829",
+              "d2140",
+              "d2243",
+              "d266",
+              "d3074",
+              "d349",
+              "d3904",
+              "d432",
+              "d4735",
+              "d515",
+              "d5258",
+              "d5565",
+              "d5981",
+              "d6396",
+              "d6490",
+              "d6810",
+              "d7225",
+              "d7461",
+              "d7641",
+              "d8056",
+              "d8471",
+              "d8757",
+              "d999"
+            ],
+            "min_cosine": 0.9999998211860657
+          }
+        }
+      },
+      "latency": {
+        "dense": {
+          "median_ms": 179.38934999983758,
+          "mean_ms": 184.6738226650076,
+          "p95_ms": 254.66654999763705
+        },
+        "hybrid": {
+          "median_ms": 194.46959999913815,
+          "mean_ms": 198.331969517652,
+          "p95_ms": 272.84519999375334
+        }
+      },
+      "run_sha256": {
+        "dense": "4856bf68b26641f038d6aefb11f7d31a3afc4b29897b976f5e8284c0375e9e08",
+        "hybrid": "b0bbe9df7e5cd04db84b2ae514cd5a0432798719ff3b17fd471460b357d24817"
+      },
+      "evaluators_agree": {
+        "dense": true,
+        "hybrid": true
+      },
+      "evaluators": {
+        "dense": [
+          "astflow",
+          "ir_measures",
+          "pytrec_eval",
+          "reference"
+        ],
+        "hybrid": [
+          "astflow",
+          "ir_measures",
+          "pytrec_eval",
+          "reference"
+        ]
+      },
+      "modes": {
+        "dense": {
+          "baseline": {
+            "ndcg@10": 0.06294962859843282,
+            "mrr@10": 0.05216671663418778,
+            "recall@10": 0.09811122770199371,
+            "recall@100": 0.25078698845750264
+          },
+          "e003": {
+            "ndcg@10": 0.06881497565671503,
+            "mrr@10": 0.058073918619563944,
+            "recall@10": 0.10388247639034627,
+            "recall@100": 0.2586568730325289
+          },
+          "delta": {
+            "ndcg@10": 0.005865347058282205,
+            "mrr@10": 0.005907201985376163,
+            "recall@10": 0.005771248688352562,
+            "recall@100": 0.007869884575026243
+          },
+          "hits@100": {
+            "baseline": 478,
+            "e003": 493
+          },
+          "bootstrap_ndcg@10": {
+            "mean_delta": 0.005865347058282211,
+            "ci95": [
+              0.0019781627390666754,
+              0.010246202906732898
+            ],
+            "improved": 36,
+            "worsened": 49,
+            "seed": 20260923,
+            "excludes_zero": true
+          },
+          "bootstrap_recall@100": {
+            "mean_delta": 0.007869884575026232,
+            "ci95": [
+              -0.0015739769150052466,
+              0.017313746065057714
+            ],
+            "improved": 47,
+            "worsened": 32,
+            "seed": 20260923,
+            "excludes_zero": false
+          }
+        },
+        "hybrid": {
+          "baseline": {
+            "ndcg@10": 0.08342199264111413,
+            "mrr@10": 0.06765935475274405,
+            "recall@10": 0.1348373557187828,
+            "recall@100": 0.2901364113326338
+          },
+          "e003": {
+            "ndcg@10": 0.08432868191847029,
+            "mrr@10": 0.06910404070687387,
+            "recall@10": 0.13378803777544596,
+            "recall@100": 0.2938090241343127
+          },
+          "delta": {
+            "ndcg@10": 0.0009066892773561541,
+            "mrr@10": 0.001444685954129818,
+            "recall@10": -0.0010493179433368471,
+            "recall@100": 0.0036726128016789095
+          },
+          "hits@100": {
+            "baseline": 553,
+            "e003": 560
+          },
+          "bootstrap_ndcg@10": {
+            "mean_delta": 0.0009066892773561521,
+            "ci95": [
+              -0.0023136690806743513,
+              0.004411577105869852
+            ],
+            "improved": 40,
+            "worsened": 83,
+            "seed": 20260923,
+            "excludes_zero": false
+          },
+          "bootstrap_recall@100": {
+            "mean_delta": 0.0036726128016789086,
+            "ci95": [
+              -0.004197271773347324,
+              0.011542497376705142
+            ],
+            "improved": 34,
+            "worsened": 27,
+            "seed": 20260923,
+            "excludes_zero": false
+          }
+        }
+      }
+    },
+    "all": {
+      "tag": "e003-windows",
+      "queries": 3765,
+      "git": {
+        "commit": "b8da241204ffbd5679a115fb133d04a7599d37b2",
+        "branch": "exp/E003-dense-windows",
+        "dirty": true,
+        "dirty_files": [
+          "M benchmark/verify_retrieval.py",
+          "?? ASTFLOW-main/",
+          "?? benchmark/experiments/E003.json",
+          "?? benchmark/score_e003.py",
+          "?? benchmark/verification/manifest-e003-windows-confirmation.json",
+          "?? benchmark/verification/manifest-e003-windows-dev.json",
+          "?? benchmark/verification/per-query-e003-windows-confirmation-dense.tsv",
+          "?? benchmark/verification/per-query-e003-windows-confirmation-hybrid.tsv",
+          "?? benchmark/verification/per-query-e003-windows-dev-dense.tsv",
+          "?? benchmark/verification/per-query-e003-windows-dev-hybrid.tsv",
+          "?? benchmark/verification/ranks/e003-windows-confirmation-dense.ranks.tsv.gz",
+          "?? benchmark/verification/ranks/e003-windows-confirmation-hybrid.ranks.tsv.gz",
+          "?? benchmark/verification/ranks/e003-windows-dev-dense.ranks.tsv.gz",
+          "?? benchmark/verification/ranks/e003-windows-dev-hybrid.ranks.tsv.gz"
+        ]
+      },
+      "environment": {
+        "python": "3.12.4",
+        "platform": "Windows-11-10.0.26200-SP0",
+        "machine": "AMD64",
+        "processor": "Intel64 Family 6 Model 183 Stepping 1, GenuineIntel",
+        "device": "cuda",
+        "packages": {
+          "mteb": null,
+          "sentence-transformers": "5.7.0",
+          "transformers": "5.17.0",
+          "torch": "2.14.0+cu130",
+          "numpy": "2.5.3",
+          "scipy": "1.18.1",
+          "rank-bm25": "0.2.2",
+          "pytrec-eval-terrier": "0.5.10",
+          "ir-measures": "0.4.3",
+          "datasets": "5.0.1",
+          "huggingface-hub": "1.32.0"
+        }
+      },
+      "vectors": {
+        "whole_document": {
+          "rows": 8765,
+          "dim": 384,
+          "dtype": "float32",
+          "norm_min": 0.9999998807907104,
+          "norm_max": 1.0000001192092896,
+          "norm_mean": 1.0,
+          "nan": 0,
+          "inf": 0,
+          "zero_vectors": 0,
+          "cache_file": "C:\\Users\\aarus\\Downloads\\ASTFLOW-main\\ASTFLOW-repo\\.astflow\\datasets\\trust-apps-cc3d1f5b729fa376dc5f9aed.npy",
+          "cache_status": "reused (ids verified identical)",
+          "seconds": 0.69,
+          "alignment_probe": {
+            "documents": 20,
+            "ids": [
+              "d1",
+              "d1413",
+              "d1829",
+              "d2243",
+              "d266",
+              "d3074",
+              "d349",
+              "d3904",
+              "d432",
+              "d4735",
+              "d515",
+              "d5565",
+              "d5981",
+              "d6396",
+              "d6810",
+              "d7225",
+              "d7641",
+              "d8056",
+              "d8471",
+              "d999"
+            ],
+            "min_cosine": 0.9999998807907104,
+            "aligned": "20/20"
+          }
+        },
+        "windows": {
+          "rows": 13545,
+          "dim": 384,
+          "dtype": "float32",
+          "norm_min": 0.9999998807907104,
+          "norm_max": 1.0000001192092896,
+          "norm_mean": 1.0,
+          "nan": 0,
+          "inf": 0,
+          "zero_vectors": 0,
+          "documents": 8765,
+          "windows": 13545,
+          "multi_window_documents": 2039,
+          "max_windows": 316,
+          "window": 256,
+          "overlap": 64,
+          "cache_file": "C:\\Users\\aarus\\Downloads\\ASTFLOW-main\\ASTFLOW-repo\\.astflow\\datasets\\trust-apps-windows-8cb93be4ec1ada61977a4138.npz",
+          "cache_status": "reused (ids verified identical)",
+          "seconds": 4.58,
+          "alignment_single_window": {
+            "documents": 6726,
+            "min_cosine_vs_whole_doc": 0.9999996423721313
+          },
+          "alignment_probe": {
+            "documents": 25,
+            "ids": [
+              "d1",
+              "d1413",
+              "d1829",
+              "d2140",
+              "d2243",
+              "d266",
+              "d3074",
+              "d349",
+              "d3904",
+              "d432",
+              "d4735",
+              "d515",
+              "d5258",
+              "d5565",
+              "d5981",
+              "d6396",
+              "d6490",
+              "d6810",
+              "d7225",
+              "d7461",
+              "d7641",
+              "d8056",
+              "d8471",
+              "d8757",
+              "d999"
+            ],
+            "min_cosine": 0.9999998211860657
+          }
+        }
+      },
+      "latency": {
+        "dense": {
+          "median_ms": 187.11810000240803,
+          "mean_ms": 191.21614563060325,
+          "p95_ms": 257.8225400007795
+        },
+        "hybrid": {
+          "median_ms": 196.27509999554604,
+          "mean_ms": 200.49572188569437,
+          "p95_ms": 267.73665999644436
+        }
+      },
+      "run_sha256": {
+        "dense": "3d247c26161f9c907a5efa6c0c1ee470f57d92073cd59811d1233a692d91286a",
+        "hybrid": "40cc0ca01af73fe0624a5f35f878ecd7c349bab47bebdac84c68175d0661681b"
+      },
+      "evaluators_agree": {
+        "dense": true,
+        "hybrid": true
+      },
+      "evaluators": {
+        "dense": [
+          "astflow",
+          "ir_measures",
+          "pytrec_eval",
+          "reference"
+        ],
+        "hybrid": [
+          "astflow",
+          "ir_measures",
+          "pytrec_eval",
+          "reference"
+        ]
+      },
+      "modes": {
+        "dense": {
+          "baseline": {
+            "ndcg@10": 0.06595686861486243,
+            "mrr@10": 0.055810409157022706,
+            "recall@10": 0.09907038512616202,
+            "recall@100": 0.25258964143426293
+          },
+          "e003": {
+            "ndcg@10": 0.07065035438424663,
+            "mrr@10": 0.05987974029806699,
+            "recall@10": 0.10571049136786188,
+            "recall@100": 0.25869853917662683
+          },
+          "delta": {
+            "ndcg@10": 0.004693485769384206,
+            "mrr@10": 0.004069331141044283,
+            "recall@10": 0.006640106241699861,
+            "recall@100": 0.006108897742363895
+          },
+          "hits@100": {
+            "baseline": 951,
+            "e003": 974
+          },
+          "bootstrap_ndcg@10": {
+            "mean_delta": 0.004693485769384205,
+            "ci95": [
+              0.002015771347731565,
+              0.007441340847723448
+            ],
+            "improved": 65,
+            "worsened": 94,
+            "seed": 20260923,
+            "excludes_zero": true
+          },
+          "bootstrap_recall@100": {
+            "mean_delta": 0.006108897742363878,
+            "ci95": [
+              -0.0005312084993359894,
+              0.012749003984063745
+            ],
+            "improved": 91,
+            "worsened": 68,
+            "seed": 20260923,
+            "excludes_zero": false
+          }
+        },
+        "hybrid": {
+          "baseline": {
+            "ndcg@10": 0.08840343465090716,
+            "mrr@10": 0.07257330466493812,
+            "recall@10": 0.1397078353253652,
+            "recall@100": 0.29774236387782205
+          },
+          "e003": {
+            "ndcg@10": 0.08932117222215384,
+            "mrr@10": 0.07337981407702522,
+            "recall@10": 0.14130146082337317,
+            "recall@100": 0.29880478087649404
+          },
+          "delta": {
+            "ndcg@10": 0.0009177375712466768,
+            "mrr@10": 0.0008065094120870975,
+            "recall@10": 0.0015936254980079556,
+            "recall@100": 0.001062416998671989
+          },
+          "hits@100": {
+            "baseline": 1121,
+            "e003": 1125
+          },
+          "bootstrap_ndcg@10": {
+            "mean_delta": 0.0009177375712466654,
+            "ci95": [
+              -0.0014542618395455087,
+              0.003330999979259547
+            ],
+            "improved": 78,
+            "worsened": 163,
+            "seed": 20260923,
+            "excludes_zero": false
+          },
+          "bootstrap_recall@100": {
+            "mean_delta": 0.0010624169986719787,
+            "ci95": [
+              -0.0045152722443559095,
+              0.006640106241699867
+            ],
+            "improved": 63,
+            "worsened": 59,
+            "seed": 20260923,
+            "excludes_zero": false
+          }
+        }
+      }
+    }
+  },
+  "decision": "REJECT",
+  "decision_rule": "KEEP needs a positive Hybrid NDCG@10 delta whose paired-bootstrap 95% CI excludes 0 on dev, confirmed the same way on confirmation (pre-registered in benchmark/EXPERIMENTS.md)"
+}

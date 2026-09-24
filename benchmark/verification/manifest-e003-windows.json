@@ -1,0 +1,341 @@
+{
+  "generated_by": "benchmark/verify_retrieval.py",
+  "timestamp": "2026-09-24T16:55:45Z",
+  "git": {
+    "commit": "b8da241204ffbd5679a115fb133d04a7599d37b2",
+    "branch": "exp/E003-dense-windows",
+    "dirty": true,
+    "dirty_files": [
+      "M benchmark/verify_retrieval.py",
+      "?? ASTFLOW-main/",
+      "?? benchmark/experiments/E003.json",
+      "?? benchmark/score_e003.py",
+      "?? benchmark/verification/manifest-e003-windows-confirmation.json",
+      "?? benchmark/verification/manifest-e003-windows-dev.json",
+      "?? benchmark/verification/per-query-e003-windows-confirmation-dense.tsv",
+      "?? benchmark/verification/per-query-e003-windows-confirmation-hybrid.tsv",
+      "?? benchmark/verification/per-query-e003-windows-dev-dense.tsv",
+      "?? benchmark/verification/per-query-e003-windows-dev-hybrid.tsv",
+      "?? benchmark/verification/ranks/e003-windows-confirmation-dense.ranks.tsv.gz",
+      "?? benchmark/verification/ranks/e003-windows-confirmation-hybrid.ranks.tsv.gz",
+      "?? benchmark/verification/ranks/e003-windows-dev-dense.ranks.tsv.gz",
+      "?? benchmark/verification/ranks/e003-windows-dev-hybrid.ranks.tsv.gz"
+    ]
+  },
+  "environment": {
+    "python": "3.12.4",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "Intel64 Family 6 Model 183 Stepping 1, GenuineIntel",
+    "device": "cuda",
+    "packages": {
+      "mteb": null,
+      "sentence-transformers": "5.7.0",
+      "transformers": "5.17.0",
+      "torch": "2.14.0+cu130",
+      "numpy": "2.5.3",
+      "scipy": "1.18.1",
+      "rank-bm25": "0.2.2",
+      "pytrec-eval-terrier": "0.5.10",
+      "ir-measures": "0.4.3",
+      "datasets": "5.0.1",
+      "huggingface-hub": "1.32.0"
+    }
+  },
+  "dataset": {
+    "name": "CoIR-Retrieval/apps (MTEB AppsRetrieval)",
+    "revision": "f22508f96b7a36c2415181ed8bb76f76e04ae2d5",
+    "split": "test",
+    "query_selection": "all",
+    "evaluated_queries": 3765,
+    "documents": 8765,
+    "queries_in_file": 8765,
+    "judged_queries": 3765,
+    "qrel_rows": 3765,
+    "positive_pairs": 3765,
+    "relevance_grades": {
+      "1": 3765
+    },
+    "binary_relevance": true,
+    "corpus_sha256": "8a6a221fc665929a0e918789ebf96f7d8ccb81818a11df698706d5902e2ddcdb",
+    "corpus_sha256_run_mteb_formula": "ce25930a1a449256589e9e064e5568de35e2397ce32d963739c22c126c115021",
+    "queries_sha256": "923182359797ed4b2f9e96c1fafd9cfa82256b9ac0fe5af900098d2be7d5e57e",
+    "qrels_sha256": "742c8c8dbf4b95ad08d2eb3c0e0ca76f516bbff870e3aed9fd6a5f740d34a2ac",
+    "qrels_file_sha256": "0712fa33e5b39593249ae9b12389207783731e0091ac2409f870aab479bdeae4"
+  },
+  "retrieval_config": {
+    "representation": "id-aligned sliding windows 256:64 (window:overlap word-pieces), max over windows, title\\ntext",
+    "depth": 1000,
+    "candidates": 500,
+    "rrf_k": 60,
+    "lexical_weight": 1.0,
+    "semantic_weight": 1.0,
+    "bm25_k1": 1.6,
+    "bm25_b": 0.75,
+    "dense_threshold": 0.05,
+    "boosts": false,
+    "reranker": "none (CROSS_ENCODER_AVAILABLE=True)"
+  },
+  "model": {
+    "name": "sentence-transformers/all-MiniLM-L6-v2",
+    "commit_hash": null,
+    "weights_sha256": "1377e9af0ca0b016a9f2aa584d6fc71ab3ea6804fae21ef9fb1416e2944057ac",
+    "max_seq_length": 256
+  },
+  "vectors": {
+    "whole_document": {
+      "rows": 8765,
+      "dim": 384,
+      "dtype": "float32",
+      "norm_min": 0.9999998807907104,
+      "norm_max": 1.0000001192092896,
+      "norm_mean": 1.0,
+      "nan": 0,
+      "inf": 0,
+      "zero_vectors": 0,
+      "cache_file": "C:\\Users\\aarus\\Downloads\\ASTFLOW-main\\ASTFLOW-repo\\.astflow\\datasets\\trust-apps-cc3d1f5b729fa376dc5f9aed.npy",
+      "cache_status": "reused (ids verified identical)",
+      "seconds": 0.69,
+      "alignment_probe": {
+        "documents": 20,
+        "ids": [
+          "d1",
+          "d1413",
+          "d1829",
+          "d2243",
+          "d266",
+          "d3074",
+          "d349",
+          "d3904",
+          "d432",
+          "d4735",
+          "d515",
+          "d5565",
+          "d5981",
+          "d6396",
+          "d6810",
+          "d7225",
+          "d7641",
+          "d8056",
+          "d8471",
+          "d999"
+        ],
+        "min_cosine": 0.9999998807907104,
+        "aligned": "20/20"
+      }
+    },
+    "windows": {
+      "rows": 13545,
+      "dim": 384,
+      "dtype": "float32",
+      "norm_min": 0.9999998807907104,
+      "norm_max": 1.0000001192092896,
+      "norm_mean": 1.0,
+      "nan": 0,
+      "inf": 0,
+      "zero_vectors": 0,
+      "documents": 8765,
+      "windows": 13545,
+      "multi_window_documents": 2039,
+      "max_windows": 316,
+      "window": 256,
+      "overlap": 64,
+      "cache_file": "C:\\Users\\aarus\\Downloads\\ASTFLOW-main\\ASTFLOW-repo\\.astflow\\datasets\\trust-apps-windows-8cb93be4ec1ada61977a4138.npz",
+      "cache_status": "reused (ids verified identical)",
+      "seconds": 4.58,
+      "alignment_single_window": {
+        "documents": 6726,
+        "min_cosine_vs_whole_doc": 0.9999996423721313
+      },
+      "alignment_probe": {
+        "documents": 25,
+        "ids": [
+          "d1",
+          "d1413",
+          "d1829",
+          "d2140",
+          "d2243",
+          "d266",
+          "d3074",
+          "d349",
+          "d3904",
+          "d432",
+          "d4735",
+          "d515",
+          "d5258",
+          "d5565",
+          "d5981",
+          "d6396",
+          "d6490",
+          "d6810",
+          "d7225",
+          "d7461",
+          "d7641",
+          "d8056",
+          "d8471",
+          "d8757",
+          "d999"
+        ],
+        "min_cosine": 0.9999998211860657
+      }
+    }
+  },
+  "run_sha256": {
+    "dense": "3d247c26161f9c907a5efa6c0c1ee470f57d92073cd59811d1233a692d91286a",
+    "hybrid": "40cc0ca01af73fe0624a5f35f878ecd7c349bab47bebdac84c68175d0661681b"
+  },
+  "latency": {
+    "dense": {
+      "median_ms": 187.11810000240803,
+      "mean_ms": 191.21614563060325,
+      "p95_ms": 257.8225400007795
+    },
+    "hybrid": {
+      "median_ms": 196.27509999554604,
+      "mean_ms": 200.49572188569437,
+      "p95_ms": 267.73665999644436
+    }
+  },
+  "evaluation_protocol": "trec_eval -c semantics; canonical scores n-rank+1; linear gain NDCG; MRR@10 = RR within top 10",
+  "evaluators": {
+    "dense": {
+      "aggregates": {
+        "reference": {
+          "ndcg@10": 0.07065035438424663,
+          "mrr@10": 0.05987974029806699,
+          "recall@10": 0.10571049136786188,
+          "recall@50": 0.19760956175298805,
+          "recall@100": 0.25869853917662683
+        },
+        "astflow": {
+          "ndcg@10": 0.07065035438424663,
+          "mrr@10": 0.05987974029806699,
+          "recall@10": 0.10571049136786188,
+          "recall@50": 0.19760956175298805,
+          "recall@100": 0.25869853917662683
+        },
+        "pytrec_eval": {
+          "ndcg@10": 0.07065035438424663,
+          "mrr@10": 0.05987974029806699,
+          "recall@10": 0.10571049136786188,
+          "recall@50": 0.19760956175298805,
+          "recall@100": 0.25869853917662683
+        },
+        "ir_measures": {
+          "ndcg@10": 0.07065035438424663,
+          "mrr@10": 0.05987974029806699,
+          "recall@10": 0.10571049136786188,
+          "recall@50": 0.19760956175298805,
+          "recall@100": 0.25869853917662683
+        }
+      },
+      "agree": true,
+      "disagreements": [],
+      "trec_eval_binary": null
+    },
+    "hybrid": {
+      "aggregates": {
+        "reference": {
+          "ndcg@10": 0.08932117222215384,
+          "mrr@10": 0.07337981407702522,
+          "recall@10": 0.14130146082337317,
+          "recall@50": 0.23691899070385125,
+          "recall@100": 0.29880478087649404
+        },
+        "astflow": {
+          "ndcg@10": 0.08932117222215384,
+          "mrr@10": 0.07337981407702522,
+          "recall@10": 0.14130146082337317,
+          "recall@50": 0.23691899070385125,
+          "recall@100": 0.29880478087649404
+        },
+        "pytrec_eval": {
+          "ndcg@10": 0.08932117222215384,
+          "mrr@10": 0.07337981407702522,
+          "recall@10": 0.14130146082337317,
+          "recall@50": 0.23691899070385125,
+          "recall@100": 0.29880478087649404
+        },
+        "ir_measures": {
+          "ndcg@10": 0.08932117222215384,
+          "mrr@10": 0.07337981407702522,
+          "recall@10": 0.14130146082337317,
+          "recall@50": 0.23691899070385125,
+          "recall@100": 0.29880478087649404
+        }
+      },
+      "agree": true,
+      "disagreements": [],
+      "trec_eval_binary": null
+    }
+  },
+  "forensics": {
+    "buckets": {
+      "dense": {
+        "counts": {
+          "rank 1": 161,
+          "ranks 2-10": 237,
+          "ranks 11-50": 346,
+          "ranks 51-100": 230,
+          "ranks 101-500": 785,
+          "ranks 501-1000": 470,
+          "not retrieved (beyond depth)": 1536
+        },
+        "fractions": {
+          "rank 1": 0.042762284196547144,
+          "ranks 2-10": 0.06294820717131475,
+          "ranks 11-50": 0.09189907038512617,
+          "ranks 51-100": 0.06108897742363878,
+          "ranks 101-500": 0.20849933598937584,
+          "ranks 501-1000": 0.1248339973439575,
+          "not retrieved (beyond depth)": 0.40796812749003986
+        },
+        "cumulative": {
+          "relevant in top 10": 0.10571049136786188,
+          "relevant in top 20": 0.13439575033200532,
+          "relevant in top 50": 0.19760956175298805,
+          "relevant in top 100": 0.25869853917662683,
+          "relevant in top 500": 0.46719787516600264,
+          "relevant in top 1000": 0.5920318725099601
+        }
+      },
+      "hybrid": {
+        "counts": {
+          "rank 1": 182,
+          "ranks 2-10": 350,
+          "ranks 11-50": 360,
+          "ranks 51-100": 233,
+          "ranks 101-500": 857,
+          "ranks 501-1000": 487,
+          "not retrieved (beyond depth)": 1296
+        },
+        "fractions": {
+          "rank 1": 0.04833997343957503,
+          "ranks 2-10": 0.09296148738379814,
+          "ranks 11-50": 0.09561752988047809,
+          "ranks 51-100": 0.061885790172642764,
+          "ranks 101-500": 0.22762284196547145,
+          "ranks 501-1000": 0.12934926958831341,
+          "not retrieved (beyond depth)": 0.34422310756972113
+        },
+        "cumulative": {
+          "relevant in top 10": 0.14130146082337317,
+          "relevant in top 20": 0.17822045152722443,
+          "relevant in top 50": 0.23691899070385125,
+          "relevant in top 100": 0.29880478087649404,
+          "relevant in top 500": 0.5264276228419654,
+          "relevant in top 1000": 0.6557768924302789
+        }
+      }
+    },
+    "mode_comparison": {},
+    "oracle_ceiling_hybrid": {
+      "top10": 0.14130146082337317,
+      "top20": 0.17822045152722443,
+      "top50": 0.23691899070385125,
+      "top100": 0.29880478087649404,
+      "top500": 0.5264276228419654,
+      "top1000": 0.6557768924302789
+    }
+  }
+}

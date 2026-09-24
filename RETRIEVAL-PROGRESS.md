@@ -2,7 +2,7 @@
 
 > **Read this file first.** It is the only document that describes the *current* state of
 > ASTFLOW's search quality. Older files under `docs/audit/` are historical records.
-> Last updated: 2026-09-24 (baseline-v1 completed; E001-fusion and E002-reranker evaluated and rejected).
+> Last updated: 2026-09-24 (baseline-v1 completed; E001-fusion, E002-reranker and E003-dense-windows evaluated and rejected).
 
 ---
 
@@ -44,7 +44,14 @@ Even if we look through 1,000 returned files, ASTFLOW misses the correct documen
 - It hurt at every depth, and more so the deeper it read: dev NDCG@10 fell from 0.0935 to **0.0728** (top 20), **0.0581** (top 50), and **0.0515** (top 100).
 - On the untouched confirmation questions (top 20, run once) it fell from 0.0834 to **0.0667**; across all 3,765 questions from 0.0884 to **0.0697**. The right answer now appears in the first 10 results 474 times instead of 526.
 - **Why?** This model learned relevance from web search passages, not from programming problems paired with Python solutions. It rewards code that *looks* on-topic, and that is worse than the current merge.
-- **What this implies:** a general-purpose reranker is not the fix. A reranker trained on code would be a new experiment. Next in the pre-registered queue is **E003-dense-windows** (recovering answers the dense engine never sees because long documents are cut off).
+- **What this implies:** a general-purpose reranker is not the fix. A reranker trained on code would be a new experiment. Next in the pre-registered queue was **E003-dense-windows**.
+
+### 7. Did reading whole documents (E003) help?
+**It helped the meaning-based engine, but not the combined result (E003: REJECT):**
+- 2,039 of 8,765 code documents are longer than the 256 word-pieces the Dense model reads, so it only ever saw their beginning. E003 split each long document into overlapping 256-piece windows and scored a document by its best window.
+- **Dense alone got significantly better:** across all 3,765 questions NDCG@10 rose from 0.0660 to **0.0707** (+0.0047, 95% CI [+0.0020, +0.0074]), and 23 more answers reached its top 100.
+- **Hybrid barely moved:** 0.0884 → **0.0893** (+0.0009, CI [-0.0015, +0.0033]) and only 4 more answers in its top 100. The same pattern held on dev and on the untouched confirmation questions, so this does not meet the KEEP rule.
+- **What this implies:** the truncation problem is real, but the RRF merge swallows the Dense improvement. The pre-registered queue (E001–E003) is now exhausted; the next experiment has to be pre-registered from this evidence.
 
 ---
 
@@ -56,7 +63,7 @@ Even if we look through 1,000 returned files, ASTFLOW misses the correct documen
 | **Dense NDCG@10** | **0.06596** (MRR@10 0.05581, R@10 0.09907, R@100 0.25259) | — |
 | **Hybrid NDCG@10** | **0.08840** (MRR@10 0.07257, R@10 0.13971, R@100 0.29774) | **~0.20** |
 | Evaluator Agreement | **PASS** (reference, pytrec_eval, ir_measures, trec_eval agree) | 100% |
-| Current Bottleneck | **RANKING** — RRF tuning (E001) and a general-domain cross-encoder (E002) both failed | Active |
+| Current Bottleneck | **RANKING / FUSION** — RRF tuning (E001), a general-domain cross-encoder (E002) and windowed Dense (E003) all failed to move Hybrid | Active |
 
 ---
 
@@ -93,11 +100,13 @@ The top results are returned (Candidate depth = 1,000 on benchmark)
 | **BASE** | Verified baseline-v1 | 0.09351 | 0.08342 | **0.08840** | **VERIFIED** | First trusted baseline; established 5-way evaluator consensus. |
 | **E001-fusion** | Controlled RRF sweep (315 configs) | 0.09383 | 0.08321 | **0.08845** | **REJECT** | Parameter tuning cannot resolve merger dilution without harming NDCG; unlocks E002. |
 | **E002-reranker** | MS-MARCO MiniLM cross-encoder over Hybrid top-k (k = 20 / 50 / 100) | 0.07281 (k=20) | 0.06670 | **0.06972** | **REJECT** | Worse than RRF at every depth (CI excludes 0); web-trained reranker does not transfer to code. |
+| **E003-dense-windows** | Sliding-window Dense vectors (256/64, max over windows) | 0.09444 | 0.08433 | **0.08932** | **REJECT** | Dense alone +0.0047 (CI excludes 0), but Hybrid +0.0009 (CI includes 0): RRF absorbs the gain. |
 
 ---
 
 ## 5. Next Steps
 
-- **Active Experiment: E003-dense-windows** (next in the pre-registered queue)
-  - Replace the single whole-document vector with id-aligned sliding windows (256/64, max over windows) so the 23.5% of documents truncated at 256 word-pieces can be found.
-  - Candidate pool headroom (Oracle@100 = 0.2977) still supports the ~0.20 NDCG@10 target; a code-trained reranker remains a possible later experiment.
+- **No experiment is active.** The pre-registered queue (E001–E003) is exhausted; E004 must be written into
+  `benchmark/EXPERIMENTS.md` (hypothesis, one variable, decision rule) before any code.
+- Evidence to choose from: Dense improves when it sees whole documents (E003), but Hybrid's RRF merge absorbs it (E001, E003),
+  and a web-trained cross-encoder hurts (E002). Candidate pool headroom (Oracle@100 = 0.2977) still supports the ~0.20 target.

@@ -1,0 +1,331 @@
+{
+  "generated_by": "benchmark/verify_retrieval.py",
+  "timestamp": "2026-09-24T16:15:50Z",
+  "git": {
+    "commit": "b8da241204ffbd5679a115fb133d04a7599d37b2",
+    "branch": "exp/E003-dense-windows",
+    "dirty": true,
+    "dirty_files": [
+      "M benchmark/verify_retrieval.py",
+      "?? ASTFLOW-main/",
+      "?? benchmark/experiments/E003.json",
+      "?? benchmark/score_e003.py"
+    ]
+  },
+  "environment": {
+    "python": "3.12.4",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "Intel64 Family 6 Model 183 Stepping 1, GenuineIntel",
+    "device": "cuda",
+    "packages": {
+      "mteb": null,
+      "sentence-transformers": "5.7.0",
+      "transformers": "5.17.0",
+      "torch": "2.14.0+cu130",
+      "numpy": "2.5.3",
+      "scipy": "1.18.1",
+      "rank-bm25": "0.2.2",
+      "pytrec-eval-terrier": "0.5.10",
+      "ir-measures": "0.4.3",
+      "datasets": "5.0.1",
+      "huggingface-hub": "1.32.0"
+    }
+  },
+  "dataset": {
+    "name": "CoIR-Retrieval/apps (MTEB AppsRetrieval)",
+    "revision": "f22508f96b7a36c2415181ed8bb76f76e04ae2d5",
+    "split": "test",
+    "query_selection": "dev",
+    "evaluated_queries": 1859,
+    "documents": 8765,
+    "queries_in_file": 8765,
+    "judged_queries": 3765,
+    "qrel_rows": 3765,
+    "positive_pairs": 3765,
+    "relevance_grades": {
+      "1": 3765
+    },
+    "binary_relevance": true,
+    "corpus_sha256": "8a6a221fc665929a0e918789ebf96f7d8ccb81818a11df698706d5902e2ddcdb",
+    "corpus_sha256_run_mteb_formula": "ce25930a1a449256589e9e064e5568de35e2397ce32d963739c22c126c115021",
+    "queries_sha256": "923182359797ed4b2f9e96c1fafd9cfa82256b9ac0fe5af900098d2be7d5e57e",
+    "qrels_sha256": "742c8c8dbf4b95ad08d2eb3c0e0ca76f516bbff870e3aed9fd6a5f740d34a2ac",
+    "qrels_file_sha256": "eee1d73c1c313663840b1f029214b5e112ae85d33af530a8f897b45ff5f3aeea"
+  },
+  "retrieval_config": {
+    "representation": "id-aligned sliding windows 256:64 (window:overlap word-pieces), max over windows, title\\ntext",
+    "depth": 1000,
+    "candidates": 500,
+    "rrf_k": 60,
+    "lexical_weight": 1.0,
+    "semantic_weight": 1.0,
+    "bm25_k1": 1.6,
+    "bm25_b": 0.75,
+    "dense_threshold": 0.05,
+    "boosts": false,
+    "reranker": "none (CROSS_ENCODER_AVAILABLE=True)"
+  },
+  "model": {
+    "name": "sentence-transformers/all-MiniLM-L6-v2",
+    "commit_hash": null,
+    "weights_sha256": "1377e9af0ca0b016a9f2aa584d6fc71ab3ea6804fae21ef9fb1416e2944057ac",
+    "max_seq_length": 256
+  },
+  "vectors": {
+    "whole_document": {
+      "rows": 8765,
+      "dim": 384,
+      "dtype": "float32",
+      "norm_min": 0.9999998807907104,
+      "norm_max": 1.0000001192092896,
+      "norm_mean": 1.0,
+      "nan": 0,
+      "inf": 0,
+      "zero_vectors": 0,
+      "cache_file": "C:\\Users\\aarus\\Downloads\\ASTFLOW-main\\ASTFLOW-repo\\.astflow\\datasets\\trust-apps-cc3d1f5b729fa376dc5f9aed.npy",
+      "cache_status": "reused (ids verified identical)",
+      "seconds": 0.87,
+      "alignment_probe": {
+        "documents": 20,
+        "ids": [
+          "d1",
+          "d1413",
+          "d1829",
+          "d2243",
+          "d266",
+          "d3074",
+          "d349",
+          "d3904",
+          "d432",
+          "d4735",
+          "d515",
+          "d5565",
+          "d5981",
+          "d6396",
+          "d6810",
+          "d7225",
+          "d7641",
+          "d8056",
+          "d8471",
+          "d999"
+        ],
+        "min_cosine": 0.9999998807907104,
+        "aligned": "20/20"
+      }
+    },
+    "windows": {
+      "rows": 13545,
+      "dim": 384,
+      "dtype": "float32",
+      "norm_min": 0.9999998807907104,
+      "norm_max": 1.0000001192092896,
+      "norm_mean": 1.0,
+      "nan": 0,
+      "inf": 0,
+      "zero_vectors": 0,
+      "documents": 8765,
+      "windows": 13545,
+      "multi_window_documents": 2039,
+      "max_windows": 316,
+      "window": 256,
+      "overlap": 64,
+      "cache_file": "C:\\Users\\aarus\\Downloads\\ASTFLOW-main\\ASTFLOW-repo\\.astflow\\datasets\\trust-apps-windows-8cb93be4ec1ada61977a4138.npz",
+      "cache_status": "computed",
+      "seconds": 287.93,
+      "alignment_single_window": {
+        "documents": 6726,
+        "min_cosine_vs_whole_doc": 0.9999996423721313
+      },
+      "alignment_probe": {
+        "documents": 25,
+        "ids": [
+          "d1",
+          "d1413",
+          "d1829",
+          "d2140",
+          "d2243",
+          "d266",
+          "d3074",
+          "d349",
+          "d3904",
+          "d432",
+          "d4735",
+          "d515",
+          "d5258",
+          "d5565",
+          "d5981",
+          "d6396",
+          "d6490",
+          "d6810",
+          "d7225",
+          "d7461",
+          "d7641",
+          "d8056",
+          "d8471",
+          "d8757",
+          "d999"
+        ],
+        "min_cosine": 0.9999998211860657
+      }
+    }
+  },
+  "run_sha256": {
+    "dense": "21f26c2ce3f163366a5f3279f909dcffcbed9c409a8232383135d8483d653424",
+    "hybrid": "91415a8f8433e1e0ea1ea9a821668c948c03757b0e7eb2118a2c442283d275bd"
+  },
+  "latency": {
+    "dense": {
+      "median_ms": 191.98810000671074,
+      "mean_ms": 195.0556788061051,
+      "p95_ms": 263.39946999651147
+    },
+    "hybrid": {
+      "median_ms": 197.62079999782145,
+      "mean_ms": 202.6591713288529,
+      "p95_ms": 275.0146600039442
+    }
+  },
+  "evaluation_protocol": "trec_eval -c semantics; canonical scores n-rank+1; linear gain NDCG; MRR@10 = RR within top 10",
+  "evaluators": {
+    "dense": {
+      "aggregates": {
+        "reference": {
+          "ndcg@10": 0.07253213590908539,
+          "mrr@10": 0.06173121750044827,
+          "recall@10": 0.10758472296933835,
+          "recall@50": 0.1947283485745024,
+          "recall@100": 0.25874125874125875
+        },
+        "astflow": {
+          "ndcg@10": 0.07253213590908539,
+          "mrr@10": 0.06173121750044827,
+          "recall@10": 0.10758472296933835,
+          "recall@50": 0.1947283485745024,
+          "recall@100": 0.25874125874125875
+        },
+        "pytrec_eval": {
+          "ndcg@10": 0.07253213590908539,
+          "mrr@10": 0.06173121750044827,
+          "recall@10": 0.10758472296933835,
+          "recall@50": 0.1947283485745024,
+          "recall@100": 0.25874125874125875
+        },
+        "ir_measures": {
+          "ndcg@10": 0.07253213590908539,
+          "mrr@10": 0.06173121750044827,
+          "recall@10": 0.10758472296933835,
+          "recall@50": 0.1947283485745024,
+          "recall@100": 0.25874125874125875
+        }
+      },
+      "agree": true,
+      "disagreements": [],
+      "trec_eval_binary": null
+    },
+    "hybrid": {
+      "aggregates": {
+        "reference": {
+          "ndcg@10": 0.09443988471210589,
+          "mrr@10": 0.07776368930215084,
+          "recall@10": 0.1490048413125336,
+          "recall@50": 0.24045185583647122,
+          "recall@100": 0.30392684238838086
+        },
+        "astflow": {
+          "ndcg@10": 0.09443988471210589,
+          "mrr@10": 0.07776368930215084,
+          "recall@10": 0.1490048413125336,
+          "recall@50": 0.24045185583647122,
+          "recall@100": 0.30392684238838086
+        },
+        "pytrec_eval": {
+          "ndcg@10": 0.09443988471210589,
+          "mrr@10": 0.07776368930215084,
+          "recall@10": 0.1490048413125336,
+          "recall@50": 0.24045185583647122,
+          "recall@100": 0.30392684238838086
+        },
+        "ir_measures": {
+          "ndcg@10": 0.09443988471210589,
+          "mrr@10": 0.07776368930215084,
+          "recall@10": 0.1490048413125336,
+          "recall@50": 0.24045185583647122,
+          "recall@100": 0.30392684238838086
+        }
+      },
+      "agree": true,
+      "disagreements": [],
+      "trec_eval_binary": null
+    }
+  },
+  "forensics": {
+    "buckets": {
+      "dense": {
+        "counts": {
+          "rank 1": 82,
+          "ranks 2-10": 118,
+          "ranks 11-50": 162,
+          "ranks 51-100": 119,
+          "ranks 101-500": 399,
+          "ranks 501-1000": 219,
+          "not retrieved (beyond depth)": 760
+        },
+        "fractions": {
+          "rank 1": 0.04410973641742873,
+          "ranks 2-10": 0.06347498655190963,
+          "ranks 11-50": 0.08714362560516406,
+          "ranks 51-100": 0.06401291016675632,
+          "ranks 101-500": 0.21463152232383,
+          "ranks 501-1000": 0.1178052716514255,
+          "not retrieved (beyond depth)": 0.40882194728348575
+        },
+        "cumulative": {
+          "relevant in top 10": 0.10758472296933835,
+          "relevant in top 20": 0.13609467455621302,
+          "relevant in top 50": 0.1947283485745024,
+          "relevant in top 100": 0.25874125874125875,
+          "relevant in top 500": 0.47337278106508873,
+          "relevant in top 1000": 0.5911780527165142
+        }
+      },
+      "hybrid": {
+        "counts": {
+          "rank 1": 97,
+          "ranks 2-10": 180,
+          "ranks 11-50": 170,
+          "ranks 51-100": 118,
+          "ranks 101-500": 442,
+          "ranks 501-1000": 245,
+          "not retrieved (beyond depth)": 607
+        },
+        "fractions": {
+          "rank 1": 0.0521785906401291,
+          "ranks 2-10": 0.09682625067240452,
+          "ranks 11-50": 0.0914470145239376,
+          "ranks 51-100": 0.06347498655190963,
+          "ranks 101-500": 0.23776223776223776,
+          "ranks 501-1000": 0.13179128563743947,
+          "not retrieved (beyond depth)": 0.3265196342119419
+        },
+        "cumulative": {
+          "relevant in top 10": 0.1490048413125336,
+          "relevant in top 20": 0.1828940290478752,
+          "relevant in top 50": 0.24045185583647122,
+          "relevant in top 100": 0.30392684238838086,
+          "relevant in top 500": 0.5416890801506186,
+          "relevant in top 1000": 0.6734803657880581
+        }
+      }
+    },
+    "mode_comparison": {},
+    "oracle_ceiling_hybrid": {
+      "top10": 0.1490048413125336,
+      "top20": 0.1828940290478752,
+      "top50": 0.24045185583647122,
+      "top100": 0.30392684238838086,
+      "top500": 0.5416890801506186,
+      "top1000": 0.6734803657880581
+    }
+  }
+}
