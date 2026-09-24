@@ -6,11 +6,11 @@ from scipy.sparse import csr_matrix
 
 from backend.app.config import Settings
 from backend.app.models.entities import Chunk
+from backend.app.retrieval.reranker import Reranker, get_reranker
 
-# Try to import CrossEncoder for reranking
 try:
-    from sentence_transformers import CrossEncoder
-    CROSS_ENCODER_AVAILABLE = False # DISABLED for stability and speed
+    import sentence_transformers
+    CROSS_ENCODER_AVAILABLE = True
 except ImportError:
     CROSS_ENCODER_AVAILABLE = False
 
@@ -32,10 +32,17 @@ def tokenize(text: str) -> list[str]:
 
 class Retriever:
     def __init__(self, chunks: list[Chunk], embeddings, embedder, settings: Settings, tokenizer=tokenize,
-                 k1: float = 1.6, b: float = 0.75):
+                 k1: float = 1.6, b: float = 0.75, reranker: Reranker | None = None):
         self.chunks, self.embeddings, self.embedder, self.settings = chunks, embeddings, embedder, settings
         self.tokenize = tokenizer
         self.by_id = {c.chunk_id: c for c in chunks}
+        self.reranker = reranker
+        if self.reranker is None and getattr(self.settings, "reranker_enabled", False):
+            self.reranker = get_reranker(
+                model_name=self.settings.reranker_model,
+                device=self.settings.reranker_device,
+                batch_size=self.settings.reranker_batch_size,
+            )
 
         # Field-aware corpus for BM25F simulation
         # For AppsRetrieval: title (qualified_name) and text (search_text)
@@ -140,29 +147,17 @@ class Retriever:
         rows.sort(key=lambda r: (-r["score"], r["chunk"].chunk_id))
 
         # --- CROSS-ENCODER RERANKING ---
-        if CROSS_ENCODER_AVAILABLE and len(rows) > 0:
-            try:
-                # Lazy load CrossEncoder only when ranking to save memory
-                from sentence_transformers import CrossEncoder
-                reranker = CrossEncoder('mxbai-rerank-base-v2', device='cpu')
+        if mode == "reranked" or (self.reranker is not None and getattr(self.settings, "reranker_enabled", False)):
+            reranker = self.reranker
+            if reranker is None:
+                reranker = get_reranker(
+                    model_name=self.settings.reranker_model,
+                    device=self.settings.reranker_device,
+                    batch_size=self.settings.reranker_batch_size,
+                )
+            depth = getattr(self.settings, "reranker_depth", 100)
+            rows = reranker.rerank(query, rows, depth=depth)
 
-                # Re-rank only the top candidates (e.g., top 100) to manage CPU cost
-                top_n = min(100, len(rows))
-                candidates_to_rerank = rows[:top_n]
-
-                # Create pairs of (query, document_text) for the model
-                pairs = [[query, r["chunk"].search_text] for r in candidates_to_rerank]
-                rerank_scores = reranker.predict(pairs)
-
-                # Replace the hybrid score with the high-precision reranker score
-                for idx, score in enumerate(rerank_scores):
-                    candidates_to_rerank[idx]["score"] = float(score)
-
-                # Re-sort the candidate list based on the new reranker scores
-                rows.sort(key=lambda r: (-r["score"], r["chunk"].chunk_id))
-            except Exception as e:
-                # If the reranker fails, we gracefully fallback to the original Hybrid order
-                pass
         return rows[:size], {"lexical_top": [self.chunks[i].chunk_id for i in lexical_order[:10]],
                              "semantic_top": [self.chunks[i].chunk_id for i in semantic_order[:10]],
                              "semantic_available": dense is not None}

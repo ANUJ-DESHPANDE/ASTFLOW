@@ -143,10 +143,8 @@ def evaluate_export(directory: Path, split: str, max_queries: int, output: Path)
         measured = []
         for qid in query_ids:
             started = time.perf_counter()
-            # 'reranked' mode uses hybrid as base but we want to see the effect of the reranker
-            # In search.py, the reranker is currently active for all ranks.
-            # To properly compare, we'd need to toggle it.
-            rows, _ = retriever.rank(queries[qid], mode="hybrid" if mode == "reranked" else mode, boosts=False)
+            # 'reranked' mode uses hybrid candidates then applies CrossEncoder reranking
+            rows, _ = retriever.rank(queries[qid], mode=mode, boosts=False)
             ranking = [r["chunk"].chunk_id for r in rows]
             measured.append({"query_id": qid, **metrics(ranking, relevance[qid]), "latency_ms": (time.perf_counter() - started) * 1000, "ranking": ranking})
         report["baselines"][mode] = {"status": "evaluated", **{key: round(statistics.mean(r[key] for r in measured), 4) for key in ("ndcg@10", "mrr", "recall@10")},
