@@ -20,8 +20,12 @@ def plan(query: str, graph):
         intent = "GENERAL"
     matched = []
     for name in {s.name for s in graph.symbols.values()} | {s.qualified_name for s in graph.symbols.values()}:
+        # Substring pre-filter: only names that occur in the query can match, and compiling one regex per symbol
+        # per query dominated search time on real repositories (~300-500 ms for 3-4k symbols).
+        if len(name) <= 2 or name.startswith(("<", "test:", "callback@")) or name not in query:
+            continue
         match = re.search(r"(?<![\w$])" + re.escape(name) + r"(?![\w$])", query)
-        if match and len(name) > 2 and not name.startswith(("<", "test:", "callback@")):
+        if match:
             matched.append((match.start(), -len(name), name))
     names = []
     for _, _, name in sorted(matched):
