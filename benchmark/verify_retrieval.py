@@ -194,10 +194,11 @@ def full_run(args) -> int:
     chunks = sorted((Chunk(d, d, "", d, "dataset_document", 1, max(1, len(t.splitlines())), t, t,
                            hashlib.sha256(t.encode()).hexdigest()) for d, t in corpus.items()), key=lambda c: c.chunk_id)
     integrity._check([c.chunk_id for c in chunks] == sorted(corpus), "Chunk order is not the sorted document id order")
+    dense_windows = getattr(args, "dense_windows", None)  # callers that build their own Namespace predate E003
     if embedder:
         vectors, vector_stats = load_vectors(chunks, embedder, settings, model_info)
-        if args.dense_windows:
-            window, overlap = (int(x) for x in args.dense_windows.split(":"))
+        if dense_windows:
+            window, overlap = (int(x) for x in dense_windows.split(":"))
             vectors, window_stats = load_window_vectors(chunks, embedder, settings, model_info, vectors, window, overlap)
             vector_stats = {"whole_document": vector_stats, "windows": window_stats}
     retriever = Retriever(chunks, vectors, embedder, settings)
@@ -239,8 +240,8 @@ def full_run(args) -> int:
         "dataset": {"name": "CoIR-Retrieval/apps (MTEB AppsRetrieval)", "revision": revision, "split": "test",
                     "query_selection": args.split, "evaluated_queries": len(judged), **data_stats,
                     **integrity.fingerprint(corpus, queries, qrels), "qrels_file_sha256": qrels_sha},
-        "retrieval_config": {"representation": (f"id-aligned sliding windows {args.dense_windows} (window:overlap word-pieces), max over windows, title\\ntext"
-                                                if args.dense_windows else "one vector per document (no windows), title\\ntext"), "depth": DEPTH,
+        "retrieval_config": {"representation": (f"id-aligned sliding windows {dense_windows} (window:overlap word-pieces), max over windows, title\\ntext"
+                                                if dense_windows else "one vector per document (no windows), title\\ntext"), "depth": DEPTH,
                              "candidates": settings.candidates, "rrf_k": settings.rrf_k,
                              "lexical_weight": settings.lexical_weight, "semantic_weight": settings.semantic_weight,
                              "bm25_k1": retriever.bm25.k1, "bm25_b": retriever.bm25.b, "dense_threshold": 0.05,
