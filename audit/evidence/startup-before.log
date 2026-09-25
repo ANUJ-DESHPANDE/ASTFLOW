@@ -1,0 +1,34 @@
+
+> demo
+> node scripts/start.mjs
+
+
+Preparing ASTFLOW at http://127.0.0.1:8000
+
++--------------------- Traceback (most recent call last) ---------------------+
+| C:\Users\aarus\Downloads\ASTFLOW-main\ASTFLOW-repo\backend\app\cli.py:65 in |
+| demo                                                                        |
+|                                                                             |
+|   62     from scripts.setup_demo import setup                               |
+|   63     from backend.app.config import ROOT                                |
+|   64     from backend.app.main import create_app                            |
+| > 65     setup()                                                            |
+|   66     app = create_app()                                                 |
+|   67     service = app.state.service                                        |
+|   68     for version in ["v1", "v2", "working-tree"]:                       |
+|                                                                             |
+| C:\Users\aarus\Downloads\ASTFLOW-main\ASTFLOW-repo\scripts\setup_demo.py:41 |
+| in setup                                                                    |
+|                                                                             |
+|   38                                                                        |
+|   39 def setup():                                                           |
+|   40     if not list(REPO.rglob("*.js")):                                   |
+| > 41         raise RuntimeError("Demo source files are missing; restore     |
+|      examples/demo-repo before setup")                                      |
+|   42     def git(*args, input=None, env=None):                              |
+|   43         result = subprocess.run(["git", "-C", str(REPO), *args],       |
+|      input=input, capture_output=True,                                      |
+|   44                                 env=env, check=True)                   |
++-----------------------------------------------------------------------------+
+RuntimeError: Demo source files are missing; restore examples/demo-repo before 
+setup

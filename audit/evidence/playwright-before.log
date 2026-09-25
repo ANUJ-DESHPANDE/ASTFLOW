@@ -1,0 +1,333 @@
+
+Running 26 tests using 1 worker
+
+  ok  1 frontend\e2e\audit.spec.ts:6:1 › positive sequence evidence opens real fixture source (2.5s)
+  x   2 frontend\e2e\audit.spec.ts:23:1 › history restores comparison snapshots and source shortcuts remain functional (2.8s)
+  ok  3 frontend\e2e\audit.spec.ts:50:1 › filter, clipboard, fullscreen, refinement setting and sequence evidence (1.7s)
+  ok  4 frontend\e2e\audit.spec.ts:73:1 › startup selects the indexed commit when working tree is not indexed (1.2s)
+  ok  5 frontend\e2e\audit.spec.ts:85:2 › layout small: stable under reversed traversal, no node overlap (15ms)
+  ok  6 frontend\e2e\audit.spec.ts:85:2 › layout medium: stable under reversed traversal, no node overlap (60ms)
+  ok  7 frontend\e2e\audit.spec.ts:85:2 › layout large: stable under reversed traversal, no node overlap (402ms)
+  ok  8 frontend\e2e\audit.spec.ts:85:2 › layout dense: stable under reversed traversal, no node overlap (7ms)
+  ok  9 frontend\e2e\audit.spec.ts:85:2 › layout disconnected: stable under reversed traversal, no node overlap (15ms)
+  ok 10 frontend\e2e\audit.spec.ts:86:1 › neighborhood respects incoming/outgoing/depth (1ms)
+  ok 11 frontend\e2e\audit.spec.ts:87:1 › real graph node search, neighborhood selection and source navigation (2.1s)
+  x  12 frontend\e2e\audit.spec.ts:88:1 › API network failure, malformed reply, empty search and recovery (6.7s)
+  x  13 frontend\e2e\investigation.spec.ts:4:1 › live search opens exact source in a local Monaco editor (5.6s)
+  x  14 frontend\e2e\investigation.spec.ts:23:1 › trace graph edge opens its actual call site (5.6s)
+  x  15 frontend\e2e\investigation.spec.ts:37:1 › version comparison renders real session refactor and source (5.6s)
+  x  16 frontend\e2e\investigation.spec.ts:52:1 › structural question performs observable second retrieval pass (5.5s)
+  x  17 frontend\e2e\investigation.spec.ts:62:1 › reindexing from the UI reports progress and returns live results (5.5s)
+  x  18 frontend\e2e\investigation.spec.ts:72:1 › mobile layout can navigate search and trace without horizontal overflow (5.5s)
+  ok 19 frontend\e2e\studio.spec.ts:5:1 › reference shell, real file tabs, zoom and closing tabs (1.7s)
+  ok 20 frontend\e2e\studio.spec.ts:15:1 › live question shows real loading, evidence and exact source (1.8s)
+  ok 21 frontend\e2e\studio.spec.ts:24:1 › map file focus and trace evidence navigate to code (2.1s)
+  ok 22 frontend\e2e\studio.spec.ts:30:1 › comparison displays actual before and after source (2.4s)
+  ok 23 frontend\e2e\studio.spec.ts:34:1 › late search cannot overwrite a newly selected snapshot (1.5s)
+  ok 24 frontend\e2e\studio.spec.ts:39:1 › mobile drawers, escape, reduced motion and no overflow (1.3s)
+  ok 25 frontend\e2e\studio.spec.ts:42:1 › repository dialog traps focus and closes without losing source (1.4s)
+  ok 26 frontend\e2e\studio.spec.ts:45:1 › reindex completes with a live source editor (3.1s)
+
+
+  1) frontend\e2e\audit.spec.ts:23:1 › history restores comparison snapshots and source shortcuts remain functional 
+
+    Error: expect(received).toContain(expected) // indexOf
+
+    Expected substring: "AuthService"
+    Received string:    "restore() {·
+        if (!this.savedSession || this.savedSession.expiresAt <= Date.now()) return null;·
+        return this.savedSession;·
+      }"
+
+      36 |  await expect(page.locator('.monaco-diff-editor')).toBeVisible();
+      37 |  await page.locator('.diff-evidence').getByLabel('Copy code').first().click();
+    > 38 |  expect(await page.evaluate(()=>navigator.clipboard.readText())).toContain('AuthService');
+         |                                                                  ^
+      39 |  await page.getByLabel('Version A',{exact:true}).selectOption('v2');
+      40 |  await page.getByLabel('Version B',{exact:true}).selectOption('v1');
+      41 |  await page.getByRole('button',{name:'Inspect change',exact:true}).click();
+        at C:\Users\aarus\Downloads\ASTFLOW-main\ASTFLOW-repo\frontend\e2e\audit.spec.ts:38:66
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\audit-history-restores-com-c60e8-shortcuts-remain-functional\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\audit-history-restores-com-c60e8-shortcuts-remain-functional\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\audit-history-restores-com-c60e8-shortcuts-remain-functional\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\audit-history-restores-com-c60e8-shortcuts-remain-functional\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) frontend\e2e\audit.spec.ts:88:1 › API network failure, malformed reply, empty search and recovery 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('.conversation-turn').last()
+    Expected substring: "No matching source"
+    Received string:    "qxzjvnonexistentidentifierHere’s the relevant code10 source matches in this snapshot. Select a result to inspect the exact lines.Investigation plan · General investigation; at most two retrieval passessearch · Retrieved 17 candidatesobserve · Found 0 exact matches across 7 files; 0 target(s) outside the top tenrerank · Ranked 17 candidates using stored evidencestop · Returned 10 source snippets after 1 retrieval pass(es)JS1. openWifiSettingssettings/deeplinks.js:4–4Semantic #1 · JS2. dispatchPluginvoice/dynamicDispatch.js:2–2Semantic #2 · JS3. IntentRouter.routevoice/IntentRouter.js:7–11Semantic #3 · JS4. openBluetoothSettingssettings/deeplinks.js:2–2Semantic #4 · JS5. BluetoothAgent.executebluetooth/BluetoothAgent.js:6–9Semantic #5 · JS6. VoiceHandler.handlevoice/VoiceHandler.js:7–10Semantic #6 · JS7. openSettingsUrisettings/deeplinks.js:6–6Semantic #7 · JS8. AuthService.loginauth/AuthService.js:7–10Semantic #8 · JS9. SessionManager.restoresession/SessionManager.js:9–12Semantic #9 · JS10. IntentRouter.constructorvoice/IntentRouter.js:5–5Semantic #10 · "
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" locator('.conversation-turn').last() with timeout 5000ms
+      - waiting for locator('.conversation-turn').last()
+        13 × locator resolved to <div class="conversation-turn">…</div>
+           - unexpected value "qxzjvnonexistentidentifierHere’s the relevant code10 source matches in this snapshot. Select a result to inspect the exact lines.Investigation plan · General investigation; at most two retrieval passessearch · Retrieved 17 candidatesobserve · Found 0 exact matches across 7 files; 0 target(s) outside the top tenrerank · Ranked 17 candidates using stored evidencestop · Returned 10 source snippets after 1 retrieval pass(es)JS1. openWifiSettingssettings/deeplinks.js:4–4Semantic #1 · JS2. dispatchPluginvoice/dynamicDispatch.js:2–2Semantic #2 · JS3. IntentRouter.routevoice/IntentRouter.js:7–11Semantic #3 · JS4. openBluetoothSettingssettings/deeplinks.js:2–2Semantic #4 · JS5. BluetoothAgent.executebluetooth/BluetoothAgent.js:6–9Semantic #5 · JS6. VoiceHandler.handlevoice/VoiceHandler.js:7–10Semantic #6 · JS7. openSettingsUrisettings/deeplinks.js:6–6Semantic #7 · JS8. AuthService.loginauth/AuthService.js:7–10Semantic #8 · JS9. SessionManager.restoresession/SessionManager.js:9–12Semantic #9 · JS10. IntentRouter.constructorvoice/IntentRouter.js:5–5Semantic #10 · "
+
+
+      86 | test('neighborhood respects incoming/outgoing/depth',()=>{const g=graph(5,[[0,1],[1,2],[2,3]]);expect([...neighborhood(g,'0001',1,'incoming')].sort()).toEqual(['0000','0001']);expect([...neighborhood(g,'0001',2,'outgoing')].sort()).toEqual(['0001','0002','0003']);});
+      87 | test('real graph node search, neighborhood selection and source navigation',async({page})=>{await page.goto('/');await expect(page.locator('.monaco-editor')).toBeVisible();await page.getByRole('button',{name:'Map',exact:true}).click();await page.getByLabel('Map file focus').selectOption('voice/VoiceHandler.js');await page.getByLabel('Search graph nodes').fill('handleRequest');await page.locator('.graph-matches button').first().click();await expect(page.locator('.graph-selection')).toContainText('VoiceHandler.handleRequest');await page.getByRole('button',{name:'Hide unrelated'}).click();await page.getByLabel('Neighborhood depth').selectOption('2');await page.getByLabel('Call direction').selectOption('outgoing');await page.getByLabel('Fit graph').click();await page.getByRole('button',{name:'Explore calls',exact:true}).click();await expect(page.locator('.canvas-caption')).toContainText('call hop');await page.getByLabel('Fit graph').click();await expect.poll(async()=>page.locator('.react-flow__viewport').evaluate(e=>Number(getComputedStyle(e).transform.split(',')[0].replace('matrix(','')))).toBeLessThan(1);await page.screenshot({path:'.astflow/screenshots/audit-graph.png'});await page.getByLabel('Reset graph').click();await expect(page.locator('.graph-selection')).toHaveCount(0);});
+    > 88 | test('API network failure, malformed reply, empty search and recovery',async({page})=>{await page.goto('/');await expect(page.locator('.monaco-editor')).toBeVisible();await page.route('**/api/search',route=>route.abort('failed'));await page.getByLabel('Ask about your code').fill('Bluetooth');await page.getByLabel('Send question').click();await expect(page.locator('.error-notice[role=alert]')).toContainText('Cannot reach ASTFLOW');await page.unroute('**/api/search');await page.getByLabel('Dismiss error').click();await page.route('**/api/search',route=>route.fulfill({status:502,contentType:'text/html',body:'<h1>Bad Gateway</h1>'}));await page.getByLabel('Ask about your code').fill('Bluetooth');await page.getByLabel('Send question').click();await expect(page.locator('.error-notice[role=alert]')).toContainText('invalid response');await page.unroute('**/api/search');await page.getByLabel('Ask about your code').fill('qxzjvnonexistentidentifier');await page.getByLabel('Send question').click();await expect(page.locator('.conversation-turn').last()).toContainText('No matching source');});
+         |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ^
+      89 |
+        at C:\Users\aarus\Downloads\ASTFLOW-main\ASTFLOW-repo\frontend\e2e\audit.spec.ts:88:1058
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\audit-API-network-failure--d43ed-y-empty-search-and-recovery\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\audit-API-network-failure--d43ed-y-empty-search-and-recovery\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\audit-API-network-failure--d43ed-y-empty-search-and-recovery\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\audit-API-network-failure--d43ed-y-empty-search-and-recovery\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) frontend\e2e\investigation.spec.ts:4:1 › live search opens exact source in a local Monaco editor 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('.result-card').first()
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" locator('.result-card').first() with timeout 5000ms
+      - waiting for locator('.result-card').first()
+
+
+       6 |   page.on('pageerror', error => errors.push(error.message));
+       7 |   await page.goto('/');
+    >  8 |   await expect(page.locator('.result-card').first()).toBeVisible();
+         |                                                      ^
+       9 |   await expect(page.locator('.result-card').first()).toContainText('Bluetooth');
+      10 |   fs.mkdirSync('.astflow/screenshots', { recursive: true });
+      11 |   await page.screenshot({ path: '.astflow/screenshots/search.png', fullPage: true });
+        at C:\Users\aarus\Downloads\ASTFLOW-main\ASTFLOW-repo\frontend\e2e\investigation.spec.ts:8:54
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\investigation-live-search--29a5f-ce-in-a-local-Monaco-editor\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\investigation-live-search--29a5f-ce-in-a-local-Monaco-editor\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\investigation-live-search--29a5f-ce-in-a-local-Monaco-editor\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\investigation-live-search--29a5f-ce-in-a-local-Monaco-editor\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) frontend\e2e\investigation.spec.ts:23:1 › trace graph edge opens its actual call site ─────────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('.result-card').first()
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" locator('.result-card').first() with timeout 5000ms
+      - waiting for locator('.result-card').first()
+
+
+      23 | test('trace graph edge opens its actual call site', async ({ page }) => {
+      24 |   await page.goto('/');
+    > 25 |   await expect(page.locator('.result-card').first()).toBeVisible();
+         |                                                      ^
+      26 |   await page.getByRole('navigation').getByRole('button', { name: 'Trace', exact: true }).click();
+      27 |   await page.getByRole('button', { name: 'Trace path', exact: true }).click();
+      28 |   await expect(page.locator('.graph-message')).toContainText('supported path');
+        at C:\Users\aarus\Downloads\ASTFLOW-main\ASTFLOW-repo\frontend\e2e\investigation.spec.ts:25:54
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\investigation-trace-graph-edge-opens-its-actual-call-site\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\investigation-trace-graph-edge-opens-its-actual-call-site\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\investigation-trace-graph-edge-opens-its-actual-call-site\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\investigation-trace-graph-edge-opens-its-actual-call-site\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5) frontend\e2e\investigation.spec.ts:37:1 › version comparison renders real session refactor and source 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('.result-card').first()
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" locator('.result-card').first() with timeout 5000ms
+      - waiting for locator('.result-card').first()
+
+
+      37 | test('version comparison renders real session refactor and source', async ({ page }) => {
+      38 |   await page.goto('/');
+    > 39 |   await expect(page.locator('.result-card').first()).toBeVisible();
+         |                                                      ^
+      40 |   await page.getByLabel('Search repository').fill('Where is session restoration handled?');
+      41 |   await page.getByRole('navigation').getByRole('button', { name: 'Changes' }).click();
+      42 |   await page.getByLabel('Version A').selectOption('v1');
+        at C:\Users\aarus\Downloads\ASTFLOW-main\ASTFLOW-repo\frontend\e2e\investigation.spec.ts:39:54
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\investigation-version-comp-dc520-session-refactor-and-source\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\investigation-version-comp-dc520-session-refactor-and-source\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\investigation-version-comp-dc520-session-refactor-and-source\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\investigation-version-comp-dc520-session-refactor-and-source\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  6) frontend\e2e\investigation.spec.ts:52:1 › structural question performs observable second retrieval pass 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('.result-card').first()
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" locator('.result-card').first() with timeout 5000ms
+      - waiting for locator('.result-card').first()
+
+
+      52 | test('structural question performs observable second retrieval pass', async ({ page }) => {
+      53 |   await page.goto('/');
+    > 54 |   await expect(page.locator('.result-card').first()).toBeVisible();
+         |                                                      ^
+      55 |   await page.getByLabel('Search repository').fill('How does VoiceHandler reach BluetoothAgent?');
+      56 |   await page.getByRole('button', { name: 'Search', exact: true }).last().click();
+      57 |   await expect(page.locator('.panel-heading')).toContainText('2 passes');
+        at C:\Users\aarus\Downloads\ASTFLOW-main\ASTFLOW-repo\frontend\e2e\investigation.spec.ts:54:54
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\investigation-structural-q-88580-vable-second-retrieval-pass\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\investigation-structural-q-88580-vable-second-retrieval-pass\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\investigation-structural-q-88580-vable-second-retrieval-pass\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\investigation-structural-q-88580-vable-second-retrieval-pass\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  7) frontend\e2e\investigation.spec.ts:62:1 › reindexing from the UI reports progress and returns live results 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('.result-card').first()
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" locator('.result-card').first() with timeout 5000ms
+      - waiting for locator('.result-card').first()
+
+
+      62 | test('reindexing from the UI reports progress and returns live results', async ({ page }) => {
+      63 |   await page.goto('/');
+    > 64 |   await expect(page.locator('.result-card').first()).toBeVisible();
+         |                                                      ^
+      65 |   await page.getByRole('button', { name: 'Reindex repository' }).click();
+      66 |   await expect(page.locator('.index-progress')).toBeVisible();
+      67 |   await expect(page.locator('.index-progress')).not.toBeVisible();
+        at C:\Users\aarus\Downloads\ASTFLOW-main\ASTFLOW-repo\frontend\e2e\investigation.spec.ts:64:54
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\investigation-reindexing-f-cd14f-ss-and-returns-live-results\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\investigation-reindexing-f-cd14f-ss-and-returns-live-results\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\investigation-reindexing-f-cd14f-ss-and-returns-live-results\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\investigation-reindexing-f-cd14f-ss-and-returns-live-results\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  8) frontend\e2e\investigation.spec.ts:72:1 › mobile layout can navigate search and trace without horizontal overflow 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('.result-card').first()
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" locator('.result-card').first() with timeout 5000ms
+      - waiting for locator('.result-card').first()
+
+
+      73 |   await page.setViewportSize({ width: 390, height: 844 });
+      74 |   await page.goto('/');
+    > 75 |   await expect(page.locator('.result-card').first()).toBeVisible();
+         |                                                      ^
+      76 |   const nav = page.getByRole('navigation', { name: 'Mobile investigation views' });
+      77 |   await expect(nav).toBeVisible();
+      78 |   await nav.getByRole('button', { name: 'trace', exact: true }).click();
+        at C:\Users\aarus\Downloads\ASTFLOW-main\ASTFLOW-repo\frontend\e2e\investigation.spec.ts:75:54
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\investigation-mobile-layou-a28f0-without-horizontal-overflow\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\investigation-mobile-layou-a28f0-without-horizontal-overflow\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\investigation-mobile-layou-a28f0-without-horizontal-overflow\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\investigation-mobile-layou-a28f0-without-horizontal-overflow\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  8 failed
+    frontend\e2e\audit.spec.ts:23:1 › history restores comparison snapshots and source shortcuts remain functional 
+    frontend\e2e\audit.spec.ts:88:1 › API network failure, malformed reply, empty search and recovery 
+    frontend\e2e\investigation.spec.ts:4:1 › live search opens exact source in a local Monaco editor 
+    frontend\e2e\investigation.spec.ts:23:1 › trace graph edge opens its actual call site ──────────
+    frontend\e2e\investigation.spec.ts:37:1 › version comparison renders real session refactor and source 
+    frontend\e2e\investigation.spec.ts:52:1 › structural question performs observable second retrieval pass 
+    frontend\e2e\investigation.spec.ts:62:1 › reindexing from the UI reports progress and returns live results 
+    frontend\e2e\investigation.spec.ts:72:1 › mobile layout can navigate search and trace without horizontal overflow 
+  18 passed (1.3m)

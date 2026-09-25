@@ -1,0 +1,56 @@
+{
+ "frontend/src\\App.tsx": [
+  "ASTFLOW home",
+  "Workspace views",
+  "Workspace tools",
+  "Explorer",
+  "System map",
+  "Compare versions",
+  "Repository settings",
+  "Filter files",
+  "Filter repository files",
+  "Repository version",
+  "Reindex repository",
+  "Open source files",
+  "Close ${tab.path}",
+  "Find another file",
+  "Editor zoom",
+  "Copy selected source",
+  "Expand workspace",
+  "Dismiss error",
+  "Version A",
+  "Version B",
+  "Changed symbol",
+  "Map file focus",
+  "Trace source symbol",
+  "Trace target symbol",
+  "Code companion",
+  "Close companion",
+  "Ask about your code",
+  "Open repository",
+  "Focus source context",
+  "Send question",
+  "Open repository",
+  "Close dialog"
+ ],
+ "frontend/src\\main.tsx": [],
+ "frontend/src\\components\\FileTree.tsx": [
+  "Repository files"
+ ],
+ "frontend/src\\components\\SequenceEvidence.tsx": [],
+ "frontend/src\\components\\SourceViewer.tsx": [
+  "Source viewer",
+  "Source comparison"
+ ],
+ "frontend/src\\components\\StudioParts.tsx": [
+  "Copy code"
+ ],
+ "frontend/src\\components\\TraceGraph.tsx": [
+  "Source-backed call graph",
+  "Search graph nodes",
+  "Fit graph",
+  "Reset graph",
+  "Neighborhood depth",
+  "Call direction"
+ ]
+}

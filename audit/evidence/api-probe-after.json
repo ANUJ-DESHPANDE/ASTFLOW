@@ -1,0 +1,685 @@
+[
+ {
+  "case": "health",
+  "method": "GET",
+  "path": "/api/health",
+  "expected": 200,
+  "status": 200,
+  "pass": true,
+  "latency_ms": 14.6,
+  "body": "{\"status\":\"ok\",\"service\":\"ASTFLOW\",\"version\":\"0.1.0\",\"semantic\":{\"available\":true,\"model\":\"sentence-transformers/all-MiniLM-L6-v2\",\"message\":\"CPU semantic model ready\"}}"
+ },
+ {
+  "case": "repository",
+  "method": "GET",
+  "path": "/api/repository",
+  "expected": 200,
+  "status": 200,
+  "pass": true,
+  "latency_ms": 16.4,
+  "body": "{\"path\":\"C:\\\\Users\\\\aarus\\\\Downloads\\\\ASTFLOW-main\\\\ASTFLOW-repo\\\\examples\\\\demo-repo\",\"name\":\"demo-repo\",\"files\":[\"auth/AuthService.js\",\"auth/credentials.js\",\"bluetooth/BluetoothAgent.js\",\"bluetooth/permissions.js\",\"session/SessionManager.js\",\"settings/deeplinks.js\",\"tests/session.test.js\",\"voice/I"
+ },
+ {
+  "case": "repository unknown version",
+  "method": "GET",
+  "path": "/api/repository?version=nope",
+  "expected": 200,
+  "status": 200,
+  "pass": true,
+  "latency_ms": 15.7,
+  "body": "{\"path\":\"C:\\\\Users\\\\aarus\\\\Downloads\\\\ASTFLOW-main\\\\ASTFLOW-repo\\\\examples\\\\demo-repo\",\"name\":\"demo-repo\",\"files\":[],\"indexes\":[{\"version_key\":\"5d129997b9ce476b07ea9ba5\",\"repository_path\":\"C:\\\\Users\\\\aarus\\\\Downloads\\\\ASTFLOW-main\\\\ASTFLOW-repo\\\\examples\\\\demo-repo\",\"repository_name\":\"demo-repo\",\"ve"
+ },
+ {
+  "case": "versions",
+  "method": "GET",
+  "path": "/api/versions",
+  "expected": 200,
+  "status": 200,
+  "pass": true,
+  "latency_ms": 376.3,
+  "body": "{\"versions\":[{\"name\":\"working-tree\",\"commit\":null,\"label\":\"Working tree\",\"indexed\":true,\"version_key\":\"64d9450a1a3108bc9b1af783\"},{\"name\":\"HEAD\",\"commit\":\"31b94fc77db2be533d72aeaefba3e0360312663c\",\"label\":\"HEAD\",\"indexed\":true,\"version_key\":\"8521a64bbaf84e5ae66668f5\"},{\"name\":\"v1\",\"commit\":\"7826d38c"
+ },
+ {
+  "case": "index status",
+  "method": "GET",
+  "path": "/api/index/status",
+  "expected": 200,
+  "status": 200,
+  "pass": true,
+  "latency_ms": 14.8,
+  "body": "{\"state\":\"ready\",\"stage\":\"Index ready\",\"progress\":100,\"version\":\"working-tree\",\"manifest\":{\"version_key\":\"64d9450a1a3108bc9b1af783\",\"repository_path\":\"C:\\\\Users\\\\aarus\\\\Downloads\\\\ASTFLOW-main\\\\ASTFLOW-repo\\\\examples\\\\demo-repo\",\"repository_name\":\"demo-repo\",\"version\":\"working-tree\",\"resolved_revisi"
+ },
+ {
+  "case": "checkpoint",
+  "method": "GET",
+  "path": "/api/checkpoint",
+  "expected": 200,
+  "status": 200,
+  "pass": true,
+  "latency_ms": 25.2,
+  "body": "{\"changed\":false,\"version_key\":\"64d9450a1a3108bc9b1af783\"}"
+ },
+ {
+  "case": "openapi",
+  "method": "GET",
+  "path": "/openapi.json",
+  "expected": 200,
+  "status": 200,
+  "pass": true,
+  "latency_ms": 20.9,
+  "body": "{\"openapi\":\"3.1.0\",\"info\":{\"title\":\"ASTFLOW\",\"description\":\"Find the code. Trace the path. See what changed.\",\"version\":\"0.1.0\"},\"paths\":{\"/api/health\":{\"get\":{\"summary\":\"Health\",\"operationId\":\"health_api_health_get\",\"responses\":{\"200\":{\"description\":\"Successful Response\",\"content\":{\"application/jso"
+ },
+ {
+  "case": "docs page (disabled)",
+  "method": "GET",
+  "path": "/docs",
+  "expected": 404,
+  "status": 404,
+  "pass": true,
+  "latency_ms": 15.5,
+  "body": "{\"detail\":\"Not Found\"}"
+ },
+ {
+  "case": "frontend root",
+  "method": "GET",
+  "path": "/",
+  "expected": 200,
+  "status": 200,
+  "pass": true,
+  "latency_ms": 18.3,
+  "body": "<!doctype html>\r\n<html lang=\"en\"><head><meta charset=\"UTF-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>\r\n<meta name=\"theme-color\" content=\"#0b0e14\"/><meta name=\"description\" content=\"Find the code. Trace the path. See what changed. ASTFLOW is a source-backed repository "
+ },
+ {
+  "case": "unknown route",
+  "method": "GET",
+  "path": "/api/nope",
+  "expected": 404,
+  "status": 404,
+  "pass": true,
+  "latency_ms": 13.9,
+  "body": "{\"detail\":\"Not Found\"}"
+ },
+ {
+  "case": "search valid",
+  "method": "POST",
+  "path": "/api/search",
+  "expected": 200,
+  "status": 200,
+  "pass": true,
+  "latency_ms": 33.3,
+  "body": "{\"query\":\"Where is Bluetooth settings handled?\",\"version\":\"working-tree\",\"version_key\":\"64d9450a1a3108bc9b1af783\",\"results\":[{\"rank\":1,\"chunk_id\":\"settings/deeplinks.js::openBluetoothSettings\",\"symbol_id\":\"settings/deeplinks.js::openBluetoothSettings\",\"symbol_name\":\"openBluetoothSettings\",\"qualified",
+  "top3": [
+   "openBluetoothSettings",
+   "BluetoothAgent.execute",
+   "checkBluetoothPermission"
+  ],
+  "security_headers": {
+   "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; worker-src 'self' blob:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'",
+   "x-frame-options": "DENY",
+   "x-content-type-options": "nosniff",
+   "referrer-policy": "no-referrer",
+   "cache-control": "no-store"
+  }
+ },
+ {
+  "case": "search nonsense",
+  "method": "POST",
+  "path": "/api/search",
+  "expected": 200,
+  "status": 200,
+  "pass": true,
+  "latency_ms": 37.0,
+  "body": "{\"query\":\"qxzjvnonexistentidentifier\",\"version\":\"working-tree\",\"version_key\":\"64d9450a1a3108bc9b1af783\",\"results\":[{\"rank\":1,\"chunk_id\":\"settings/deeplinks.js::openWifiSettings\",\"symbol_id\":\"settings/deeplinks.js::openWifiSettings\",\"symbol_name\":\"openWifiSettings\",\"qualified_name\":\"openWifiSettings\"",
+  "result_count": 10,
+  "evidence_kinds": [
+   "sem"
+  ],
+  "top_semantic_scores": [
+   0.147,
+   0.146,
+   0.114,
+   0.112,
+   0.109
+  ]
+ },
+ {
+  "case": "search blank",
+  "method": "POST",
+  "path": "/api/search",
+  "expected": 422,
+  "status": 422,
+  "pass": true,
+  "latency_ms": 21.9,
+  "body": "{\"detail\":[{\"type\":\"string_too_short\",\"loc\":[\"body\",\"query\"],\"msg\":\"String should have at least 1 character\",\"input\":\"   \",\"ctx\":{\"min_length\":1}}]}"
+ },
+ {
+  "case": "search missing query",
+  "method": "POST",
+  "path": "/api/search",
+  "expected": 422,
+  "status": 422,
+  "pass": true,
+  "latency_ms": 14.6,
+  "body": "{\"detail\":[{\"type\":\"missing\",\"loc\":[\"body\",\"query\"],\"msg\":\"Field required\",\"input\":{}}]}"
+ },
+ {
+  "case": "search wrong type",
+  "method": "POST",
+  "path": "/api/search",
+  "expected": 422,
+  "status": 422,
+  "pass": true,
+  "latency_ms": 15.9,
+  "body": "{\"detail\":[{\"type\":\"string_type\",\"loc\":[\"body\",\"query\"],\"msg\":\"Input should be a valid string\",\"input\":5}]}"
+ },
+ {
+  "case": "search top_k 0",
+  "method": "POST",
+  "path": "/api/search",
+  "expected": 422,
+  "status": 422,
+  "pass": true,
+  "latency_ms": 2.3,
+  "body": "{\"detail\":[{\"type\":\"greater_than_equal\",\"loc\":[\"body\",\"top_k\"],\"msg\":\"Input should be greater than or equal to 1\",\"input\":0,\"ctx\":{\"ge\":1}}]}"
+ },
+ {
+  "case": "search top_k 51",
+  "method": "POST",
+  "path": "/api/search",
+  "expected": 422,
+  "status": 422,
+  "pass": true,
+  "latency_ms": 13.6,
+  "body": "{\"detail\":[{\"type\":\"less_than_equal\",\"loc\":[\"body\",\"top_k\"],\"msg\":\"Input should be less than or equal to 50\",\"input\":51,\"ctx\":{\"le\":50}}]}"
+ },
+ {
+  "case": "search top_k 50",
+  "method": "POST",
+  "path": "/api/search",
+  "expected": 200,
+  "status": 200,
+  "pass": true,
+  "latency_ms": 23.4,
+  "body": "{\"query\":\"auth\",\"version\":\"working-tree\",\"version_key\":\"64d9450a1a3108bc9b1af783\",\"results\":[{\"rank\":1,\"chunk_id\":\"auth/credentials.js::validateCredentials\",\"symbol_id\":\"auth/credentials.js::validateCredentials\",\"symbol_name\":\"validateCredentials\",\"qualified_name\":\"validateCredentials\",\"kind\":\"funct"
+ },
+ {
+  "case": "search extra field",
+  "method": "POST",
+  "path": "/api/search",
+  "expected": 422,
+  "status": 422,
+  "pass": true,
+  "latency_ms": 1.8,
+  "body": "{\"detail\":[{\"type\":\"extra_forbidden\",\"loc\":[\"body\",\"mode\"],\"msg\":\"Extra inputs are not permitted\",\"input\":\"reranked\"}]}"
+ },
+ {
+  "case": "search 2000 chars",
+  "method": "POST",
+  "path": "/api/search",
+  "expected": 200,
+  "status": 200,
+  "pass": true,
+  "latency_ms": 11.2,
+  "body": "{\"query\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+ },
+ {
+  "case": "search 2001 chars",
+  "method": "POST",
+  "path": "/api/search",
+  "expected": 422,
+  "status": 422,
+  "pass": true,
+  "latency_ms": 2.1,
+  "body": "{\"detail\":[{\"type\":\"string_too_long\",\"loc\":[\"body\",\"query\"],\"msg\":\"String should have at most 2000 characters\",\"input\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+ },
+ {
+  "case": "search long real query",
+  "method": "POST",
+  "path": "/api/search",
+  "expected": 200,
+  "status": 200,
+  "pass": true,
+  "latency_ms": 33.8,
+  "body": "{\"query\":\"bluetooth bluetooth bluetooth bluetooth bluetooth bluetooth bluetooth bluetooth bluetooth bluetooth bluetooth bluetooth bluetooth bluetooth bluetooth bluetooth bluetooth bluetooth bluetooth bluetooth bluetooth bluetooth bluetooth bluetooth bluetooth bluetooth bluetooth bluetooth bluetooth "
+ },
+ {
+  "case": "search unicode",
+  "method": "POST",
+  "path": "/api/search",
+  "expected": 200,
+  "status": 200,
+  "pass": true,
+  "latency_ms": 29.9,
+  "body": "{\"query\":\"\u0413\u0434\u0435 bluetooth \u8bbe\u7f6e \ud83d\udd35 <script>alert(1)</script>\",\"version\":\"working-tree\",\"version_key\":\"64d9450a1a3108bc9b1af783\",\"results\":[{\"rank\":1,\"chunk_id\":\"bluetooth/BluetoothAgent.js::BluetoothAgent.execute\",\"symbol_id\":\"bluetooth/BluetoothAgent.js::BluetoothAgent.execute\",\"symbol_name\":\"execute\",\"q"
+ },
+ {
+  "case": "search unindexed version",
+  "method": "POST",
+  "path": "/api/search",
+  "expected": 400,
+  "status": 400,
+  "pass": true,
+  "latency_ms": 21.8,
+  "body": "{\"detail\":\"Version '7826d38cae72db7ba0e53a0bcc5aa339783e09f0' is not indexed; select it and index it first\"}"
+ },
+ {
+  "case": "search unknown version",
+  "method": "POST",
+  "path": "/api/search",
+  "expected": 400,
+  "status": 400,
+  "pass": true,
+  "latency_ms": 15.0,
+  "body": "{\"detail\":\"Version 'does-not-exist' is not indexed; select it and index it first\"}"
+ },
+ {
+  "case": "search runtime trace",
+  "method": "POST",
+  "path": "/api/search",
+  "expected": 400,
+  "status": 400,
+  "pass": true,
+  "latency_ms": 14.8,
+  "body": "{\"detail\":\"Runtime tracing is not enabled in this build\"}"
+ },
+ {
+  "case": "search malformed json",
+  "method": "POST",
+  "path": "/api/search",
+  "expected": 422,
+  "status": 422,
+  "pass": true,
+  "latency_ms": 15.6,
+  "body": "{\"detail\":[{\"type\":\"json_invalid\",\"loc\":[\"body\",1],\"msg\":\"JSON decode error\",\"input\":{},\"ctx\":{\"error\":\"Expecting property name enclosed in double quotes\"}}]}"
+ },
+ {
+  "case": "search wrong content type",
+  "method": "POST",
+  "path": "/api/search",
+  "expected": 415,
+  "status": 415,
+  "pass": true,
+  "latency_ms": 14.8,
+  "body": "{\"detail\":\"JSON content type required\"}"
+ },
+ {
+  "case": "search body > 16KB",
+  "method": "POST",
+  "path": "/api/search",
+  "expected": 413,
+  "status": 413,
+  "pass": true,
+  "latency_ms": 16.6,
+  "body": "{\"detail\":\"Request body is too large\"}"
+ },
+ {
+  "case": "search cross origin",
+  "method": "POST",
+  "path": "/api/search",
+  "expected": 403,
+  "status": 403,
+  "pass": true,
+  "latency_ms": 1.5,
+  "body": "{\"detail\":\"Only local ASTFLOW origins are allowed\"}"
+ },
+ {
+  "case": "search cross-site fetch",
+  "method": "POST",
+  "path": "/api/search",
+  "expected": 403,
+  "status": 403,
+  "pass": true,
+  "latency_ms": 1.3,
+  "body": "{\"detail\":\"Cross-site requests are not allowed\"}"
+ },
+ {
+  "case": "search allowed dev origin",
+  "method": "POST",
+  "path": "/api/search",
+  "expected": 200,
+  "status": 200,
+  "pass": true,
+  "latency_ms": 20.8,
+  "body": "{\"query\":\"auth\",\"version\":\"working-tree\",\"version_key\":\"64d9450a1a3108bc9b1af783\",\"results\":[{\"rank\":1,\"chunk_id\":\"auth/credentials.js::validateCredentials\",\"symbol_id\":\"auth/credentials.js::validateCredentials\",\"symbol_name\":\"validateCredentials\",\"qualified_name\":\"validateCredentials\",\"kind\":\"funct"
+ },
+ {
+  "case": "bad host header",
+  "method": "GET",
+  "path": "/api/health",
+  "expected": 400,
+  "status": 400,
+  "pass": true,
+  "latency_ms": 1.9,
+  "body": "Invalid host header"
+ },
+ {
+  "case": "source valid",
+  "method": "GET",
+  "path": "/api/source?path=voice/VoiceHandler.js&version=working-tree",
+  "expected": 200,
+  "status": 200,
+  "pass": true,
+  "latency_ms": 2.0,
+  "body": "{\"path\":\"voice/VoiceHandler.js\",\"version\":\"working-tree\",\"version_key\":\"64d9450a1a3108bc9b1af783\",\"start_line\":1,\"end_line\":12,\"total_lines\":12,\"content\":\"import { normalizeInput } from './normalizeInput.js';\\nimport { IntentRouter } from './IntentRouter.js';\\n\\nexport class VoiceHandler {\\n  constr"
+ },
+ {
+  "case": "source range",
+  "method": "GET",
+  "path": "/api/source?path=voice/VoiceHandler.js&start_line=2&end_line=3",
+  "expected": 200,
+  "status": 200,
+  "pass": true,
+  "latency_ms": 1.8,
+  "body": "{\"path\":\"voice/VoiceHandler.js\",\"version\":\"working-tree\",\"version_key\":\"64d9450a1a3108bc9b1af783\",\"start_line\":2,\"end_line\":3,\"total_lines\":12,\"content\":\"import { IntentRouter } from './IntentRouter.js';\\n\\n\",\"full_content\":\"import { normalizeInput } from './normalizeInput.js';\\nimport { IntentRoute"
+ },
+ {
+  "case": "source traversal",
+  "method": "GET",
+  "path": "/api/source?path=../../README.md",
+  "expected": 400,
+  "status": 400,
+  "pass": true,
+  "latency_ms": 17.8,
+  "body": "{\"detail\":\"Source paths must be repository-relative POSIX paths\"}"
+ },
+ {
+  "case": "source absolute",
+  "method": "GET",
+  "path": "/api/source?path=/etc/passwd",
+  "expected": 400,
+  "status": 400,
+  "pass": true,
+  "latency_ms": 15.1,
+  "body": "{\"detail\":\"Source paths must be repository-relative POSIX paths\"}"
+ },
+ {
+  "case": "source backslash",
+  "method": "GET",
+  "path": "/api/source?path=voice%5CVoiceHandler.js",
+  "expected": 400,
+  "status": 400,
+  "pass": true,
+  "latency_ms": 15.9,
+  "body": "{\"detail\":\"Source paths must be repository-relative POSIX paths\"}"
+ },
+ {
+  "case": "source windows drive",
+  "method": "GET",
+  "path": "/api/source?path=C:/Windows/win.ini",
+  "expected": 404,
+  "status": 404,
+  "pass": true,
+  "latency_ms": 15.4,
+  "body": "{\"detail\":\"Source file is not in this indexed snapshot\"}"
+ },
+ {
+  "case": "source not in snapshot",
+  "method": "GET",
+  "path": "/api/source?path=package.json",
+  "expected": 404,
+  "status": 404,
+  "pass": true,
+  "latency_ms": 1.6,
+  "body": "{\"detail\":\"Source file is not in this indexed snapshot\"}"
+ },
+ {
+  "case": "source range outside",
+  "method": "GET",
+  "path": "/api/source?path=voice/VoiceHandler.js&start_line=999",
+  "expected": 400,
+  "status": 400,
+  "pass": true,
+  "latency_ms": 13.2,
+  "body": "{\"detail\":\"Source line range is outside the file\"}"
+ },
+ {
+  "case": "source end < start",
+  "method": "GET",
+  "path": "/api/source?path=voice/VoiceHandler.js&start_line=3&end_line=2",
+  "expected": 400,
+  "status": 400,
+  "pass": true,
+  "latency_ms": 1.5,
+  "body": "{\"detail\":\"Source line range is outside the file\"}"
+ },
+ {
+  "case": "source start 0",
+  "method": "GET",
+  "path": "/api/source?path=voice/VoiceHandler.js&start_line=0",
+  "expected": 422,
+  "status": 422,
+  "pass": true,
+  "latency_ms": 14.2,
+  "body": "{\"detail\":[{\"type\":\"greater_than_equal\",\"loc\":[\"query\",\"start_line\"],\"msg\":\"Input should be greater than or equal to 1\",\"input\":\"0\",\"ctx\":{\"ge\":1}}]}"
+ },
+ {
+  "case": "source missing path",
+  "method": "GET",
+  "path": "/api/source",
+  "expected": 422,
+  "status": 422,
+  "pass": true,
+  "latency_ms": 15.4,
+  "body": "{\"detail\":[{\"type\":\"missing\",\"loc\":[\"query\",\"path\"],\"msg\":\"Field required\",\"input\":null}]}"
+ },
+ {
+  "case": "source unindexed version",
+  "method": "GET",
+  "path": "/api/source?path=voice/VoiceHandler.js&version=7826d38cae72db7ba0e53a0bcc5aa339783e09f0",
+  "expected": 400,
+  "status": 400,
+  "pass": true,
+  "latency_ms": 15.4,
+  "body": "{\"detail\":\"Version '7826d38cae72db7ba0e53a0bcc5aa339783e09f0' is not indexed; select it and index it first\"}"
+ },
+ {
+  "case": "map overview",
+  "method": "GET",
+  "path": "/api/map?version=working-tree",
+  "expected": 200,
+  "status": 200,
+  "pass": true,
+  "latency_ms": 16.9,
+  "body": "{\"nodes\":[{\"symbol_id\":\"auth/AuthService.js\",\"qualified_name\":\"AuthService.js\",\"file\":\"auth/AuthService.js\",\"start_line\":1,\"end_line\":13,\"kind\":\"file\"},{\"symbol_id\":\"auth/credentials.js\",\"qualified_name\":\"credentials.js\",\"file\":\"auth/credentials.js\",\"start_line\":1,\"end_line\":5,\"kind\":\"file\"},{\"symbo"
+ },
+ {
+  "case": "map file",
+  "method": "GET",
+  "path": "/api/map?version=working-tree&file=voice/VoiceHandler.js",
+  "expected": 200,
+  "status": 200,
+  "pass": true,
+  "latency_ms": 14.1,
+  "body": "{\"nodes\":[{\"symbol_id\":\"voice/VoiceHandler.js::VoiceHandler.constructor\",\"qualified_name\":\"VoiceHandler.constructor\",\"file\":\"voice/VoiceHandler.js\",\"start_line\":5,\"end_line\":5,\"kind\":\"method\"},{\"symbol_id\":\"voice/VoiceHandler.js::VoiceHandler.handle\",\"qualified_name\":\"VoiceHandler.handle\",\"file\":\"vo"
+ },
+ {
+  "case": "map unknown file",
+  "method": "GET",
+  "path": "/api/map?version=working-tree&file=nope.js",
+  "expected": 404,
+  "status": 404,
+  "pass": true,
+  "latency_ms": 15.6,
+  "body": "{\"detail\":\"Source file is not in this indexed snapshot\"}"
+ },
+ {
+  "case": "map symbol depth 3",
+  "method": "GET",
+  "path": "/api/map?version=working-tree&symbol=voice/VoiceHandler.js::VoiceHandler.handle&depth=3",
+  "expected": 200,
+  "status": 200,
+  "pass": true,
+  "latency_ms": 16.0,
+  "body": "{\"nodes\":[{\"symbol_id\":\"bluetooth/BluetoothAgent.js::BluetoothAgent.execute\",\"qualified_name\":\"BluetoothAgent.execute\",\"file\":\"bluetooth/BluetoothAgent.js\",\"start_line\":6,\"end_line\":9,\"kind\":\"method\"},{\"symbol_id\":\"settings/deeplinks.js::openWifiSettings\",\"qualified_name\":\"openWifiSettings\",\"file\":\""
+ },
+ {
+  "case": "map symbol depth 4",
+  "method": "GET",
+  "path": "/api/map?version=working-tree&symbol=voice/VoiceHandler.js::VoiceHandler.handle&depth=4",
+  "expected": 422,
+  "status": 422,
+  "pass": true,
+  "latency_ms": 1.6,
+  "body": "{\"detail\":[{\"type\":\"less_than_equal\",\"loc\":[\"query\",\"depth\"],\"msg\":\"Input should be less than or equal to 3\",\"input\":\"4\",\"ctx\":{\"le\":3}}]}"
+ },
+ {
+  "case": "map unknown symbol",
+  "method": "GET",
+  "path": "/api/map?version=working-tree&symbol=nope",
+  "expected": 404,
+  "status": 404,
+  "pass": true,
+  "latency_ms": 2.5,
+  "body": "{\"detail\":\"Unknown callable symbol\"}"
+ },
+ {
+  "case": "symbol valid",
+  "method": "GET",
+  "path": "/api/symbol/voice/VoiceHandler.js::VoiceHandler.handle",
+  "expected": 200,
+  "status": 200,
+  "pass": true,
+  "latency_ms": 27.4,
+  "body": "{\"symbol_id\":\"voice/VoiceHandler.js::VoiceHandler.handle\",\"qualified_name\":\"VoiceHandler.handle\",\"name\":\"handle\",\"kind\":\"method\",\"file_path\":\"voice/VoiceHandler.js\",\"start_line\":7,\"end_line\":10,\"start_byte\":260,\"end_byte\":354,\"parent_symbol_id\":\"voice/VoiceHandler.js::VoiceHandler\",\"source_text\":\"ha"
+ },
+ {
+  "case": "symbol unknown",
+  "method": "GET",
+  "path": "/api/symbol/nope::x",
+  "expected": 404,
+  "status": 404,
+  "pass": true,
+  "latency_ms": 16.1,
+  "body": "{\"detail\":\"Unknown symbol\"}"
+ },
+ {
+  "case": "trace valid",
+  "method": "POST",
+  "path": "/api/trace",
+  "expected": 200,
+  "status": 200,
+  "pass": true,
+  "latency_ms": 16.1,
+  "body": "{\"nodes\":[{\"symbol_id\":\"bluetooth/BluetoothAgent.js::BluetoothAgent.execute\",\"qualified_name\":\"BluetoothAgent.execute\",\"file\":\"bluetooth/BluetoothAgent.js\",\"start_line\":6,\"end_line\":9,\"kind\":\"method\"},{\"symbol_id\":\"voice/IntentRouter.js::IntentRouter.route\",\"qualified_name\":\"IntentRouter.route\",\"fil"
+ },
+ {
+  "case": "trace unknown symbols",
+  "method": "POST",
+  "path": "/api/trace",
+  "expected": 200,
+  "status": 200,
+  "pass": true,
+  "latency_ms": 15.7,
+  "body": "{\"nodes\":[],\"edges\":[],\"paths\":[],\"status\":\"NO_STATIC_PATH_FOUND\",\"message\":\"No supported call path in this snapshot. Search results may still identify related code.\",\"max_depth\":5,\"version_key\":\"64d9450a1a3108bc9b1af783\"}"
+ },
+ {
+  "case": "trace depth 9",
+  "method": "POST",
+  "path": "/api/trace",
+  "expected": 422,
+  "status": 422,
+  "pass": true,
+  "latency_ms": 14.3,
+  "body": "{\"detail\":[{\"type\":\"less_than_equal\",\"loc\":[\"body\",\"max_depth\"],\"msg\":\"Input should be less than or equal to 8\",\"input\":9,\"ctx\":{\"le\":8}}]}"
+ },
+ {
+  "case": "trace missing target",
+  "method": "POST",
+  "path": "/api/trace",
+  "expected": 422,
+  "status": 422,
+  "pass": true,
+  "latency_ms": 15.9,
+  "body": "{\"detail\":[{\"type\":\"missing\",\"loc\":[\"body\",\"target_symbol_id\"],\"msg\":\"Field required\",\"input\":{\"source_symbol_id\":\"a\"}}]}"
+ },
+ {
+  "case": "compare v1 v2",
+  "method": "POST",
+  "path": "/api/compare",
+  "expected": 200,
+  "status": 200,
+  "pass": true,
+  "latency_ms": 41.2,
+  "body": "{\"query\":\"session restoration\",\"version_a\":\"v1\",\"version_b\":\"v2\",\"version_key_a\":\"5d129997b9ce476b07ea9ba5\",\"version_key_b\":\"8521a64bbaf84e5ae66668f5\",\"results_a\":[{\"rank\":1,\"chunk_id\":\"auth/AuthService.js::createSession\",\"symbol_id\":\"auth/AuthService.js::createSession\",\"symbol_name\":\"createSession\""
+ },
+ {
+  "case": "compare same version",
+  "method": "POST",
+  "path": "/api/compare",
+  "expected": 200,
+  "status": 200,
+  "pass": true,
+  "latency_ms": 34.0,
+  "body": "{\"query\":\"auth\",\"version_a\":\"v2\",\"version_b\":\"v2\",\"version_key_a\":\"8521a64bbaf84e5ae66668f5\",\"version_key_b\":\"8521a64bbaf84e5ae66668f5\",\"results_a\":[{\"rank\":1,\"chunk_id\":\"auth/credentials.js::validateCredentials\",\"symbol_id\":\"auth/credentials.js::validateCredentials\",\"symbol_name\":\"validateCredentia"
+ },
+ {
+  "case": "compare unindexed",
+  "method": "POST",
+  "path": "/api/compare",
+  "expected": 400,
+  "status": 400,
+  "pass": true,
+  "latency_ms": 17.9,
+  "body": "{\"detail\":\"Version '7826d38cae72db7ba0e53a0bcc5aa339783e09f0' is not indexed; select it and index it first\"}"
+ },
+ {
+  "case": "compare missing field",
+  "method": "POST",
+  "path": "/api/compare",
+  "expected": 422,
+  "status": 422,
+  "pass": true,
+  "latency_ms": 14.8,
+  "body": "{\"detail\":[{\"type\":\"missing\",\"loc\":[\"body\",\"version_b\"],\"msg\":\"Field required\",\"input\":{\"query\":\"auth\",\"version_a\":\"v1\"}}]}"
+ },
+ {
+  "case": "index missing path",
+  "method": "POST",
+  "path": "/api/index",
+  "expected": 422,
+  "status": 422,
+  "pass": true,
+  "latency_ms": 2.3,
+  "body": "{\"detail\":[{\"type\":\"missing\",\"loc\":[\"body\",\"repo_path\"],\"msg\":\"Field required\",\"input\":{\"version\":\"v1\"}}]}"
+ },
+ {
+  "case": "index nonexistent path",
+  "method": "POST",
+  "path": "/api/index",
+  "expected": 404,
+  "status": 404,
+  "pass": true,
+  "latency_ms": 14.4,
+  "body": "{\"detail\":\"Repository or index file does not exist\"}"
+ },
+ {
+  "case": "index file not dir",
+  "method": "POST",
+  "path": "/api/index",
+  "expected": 400,
+  "status": 400,
+  "pass": true,
+  "latency_ms": 15.7,
+  "body": "{\"detail\":\"Repository path must be a directory\"}"
+ },
+ {
+  "case": "index bad revision",
+  "method": "POST",
+  "path": "/api/index",
+  "expected": 400,
+  "status": 400,
+  "pass": true,
+  "latency_ms": 117.2,
+  "body": "{\"detail\":\"fatal: Needed a single revision\"}"
+ },
+ {
+  "case": "index revision injection",
+  "method": "POST",
+  "path": "/api/index",
+  "expected": 400,
+  "status": 400,
+  "pass": true,
+  "latency_ms": 79.5,
+  "body": "{\"detail\":\"Invalid Git revision\"}"
+ }
+]

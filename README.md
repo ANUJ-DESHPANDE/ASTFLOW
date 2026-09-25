@@ -4,7 +4,7 @@
 
 Updated to the supplied editor-video visual reference. See [changes and limits](docs/CHANGES.md).
 
-**Engineering audit (20 September):** [report](docs/audit/REPORT.md), [official requirements matrix](docs/audit/REQUIREMENTS.md), [defect ledger](docs/audit/BUGS.md), [UI inventory](docs/audit/UI-INVENTORY.md) and [remaining checklist](docs/audit/CHECKLIST.md). Full AppsRetrieval scores are substantially lower than the small demo benchmark; use the official figures for screening claims.
+**Engineering audit (25 September):** [final report and dashboard](audit/FINAL-ASTFLOW-ENGINEERING-REPORT.md), [findings database](audit/findings.json), [remediation plan](audit/18-remediation-plan.md); earlier audit (20 September): [report](docs/audit/REPORT.md), [official requirements matrix](docs/audit/REQUIREMENTS.md), [defect ledger](docs/audit/BUGS.md), [UI inventory](docs/audit/UI-INVENTORY.md) and [remaining checklist](docs/audit/CHECKLIST.md). Full AppsRetrieval scores are substantially lower than the small demo benchmark; use the official figures for screening claims.
 
 ASTFLOW is a local repository investigation engine for JavaScript. Ask a question, get ranked source snippets, follow supported call relationships, and compare the answer across Git snapshots. The snippet list is the canonical answer; graphs and explanations supplement it.
 

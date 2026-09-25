@@ -1,0 +1,670 @@
+
+Running 1 test using 1 worker
+
+[1/1] audit\tools\ui-crawl.audit.ts:105:1 › exhaustive control crawl
+  1) audit\tools\ui-crawl.audit.ts:100:1 › exhaustive control crawl ────────────────────────────────
+
+    Test timeout of 3600000ms exceeded.
+
+    Error: page.goto: Target page, context or browser has been closed
+
+      13 |
+      14 | async function ready(page: Page) {
+    > 15 |   await page.goto('/', { timeout: 30_000 });
+         |              ^
+      16 |   await page.locator('.monaco-editor').first().waitFor({ timeout: 30_000 });
+      17 |   await page.waitForLoadState('networkidle', { timeout: 5_000 }).catch(() => {});
+      18 | }
+        at ready (C:\Users\aarus\Downloads\ASTFLOW-main\ASTFLOW-repo\audit\tools\ui-crawl.audit.ts:15:14)
+        at Object.code (initial) (C:\Users\aarus\Downloads\ASTFLOW-main\ASTFLOW-repo\audit\tools\ui-crawl.audit.ts:25:43)
+        at C:\Users\aarus\Downloads\ASTFLOW-main\ASTFLOW-repo\audit\tools\ui-crawl.audit.ts:120:28
+
+    Error Context: test-results\ui-crawl.audit.ts-exhaustive-control-crawl\error-context.md
+
+
+  Slow test file: audit\tools\ui-crawl.audit.ts (1.0h)
+  Consider running tests from slow files in parallel. See: https://playwright.dev/docs/test-parallel
+  1 failed
+    audit\tools\ui-crawl.audit.ts:100:1 › exhaustive control crawl ─────────────────────────────────
+ "tests"
+
+[19:58:31] desktop | code (initial) | button "JSsession.test.js"
+
+[19:58:33] desktop | code (initial) | button "voice"
+
+[19:58:35] desktop | code (initial) | button "JSdynamicDispatch.js"
+
+[19:58:37] desktop | code (initial) | button "JSIntentRouter.js"
+
+[19:58:39] desktop | code (initial) | button "JSnormalizeInput.js"
+
+[19:58:41] desktop | code (initial) | button "JSVoiceHandler.js"
+
+[19:58:43] desktop | code (initial) | combobox "Repository version"
+
+[19:58:45] desktop | code (initial) | button "Reindex repository"
+
+[19:58:48] desktop | code (initial) | tab "JSAuthService.js"
+
+[19:58:50] desktop | code (initial) | button "Close auth/AuthService.js"
+
+[19:58:52] desktop | code (initial) | button "Find another file"
+
+[19:58:54] desktop | code (initial) | combobox "Editor zoom"
+
+[19:58:56] desktop | code (initial) | button "Copy selected source"
+
+[19:58:58] desktop | code (initial) | button "Expand workspace"
+
+[19:59:00] desktop | code (initial) | textbox ""
+
+[19:59:12] desktop | code (initial) | button "Chat"
+
+[19:59:14] desktop | code (initial) | summary "How this works"
+
+[19:59:16] desktop | code (initial) | checkbox "Allow one retrieval refinement"
+
+[19:59:27] desktop | code (initial) | button "Explain this code"
+
+[19:59:29] desktop | code (initial) | button "Explore connections"
+
+[19:59:32] desktop | code (initial) | button "See what changed"
+
+[19:59:34] desktop | code (initial) | summary "Unresolved calls · 9 (external / dynamic)"
+
+[19:59:36] desktop | code (initial) | button "Date.now()No unambiguous supported binding; shadowed, reassigned, dynamic or ext"
+
+[19:59:42] desktop | code (initial) | button "Date.now()No unambiguous supported binding; shadowed, reassigned, dynamic or ext"
+
+[19:59:49] desktop | code (initial) | button "assert.equal(sessions.restore(), null)No unambiguous supported binding; shadowed"
+
+[19:59:56] desktop | code (initial) | button "sessions.restore()No unambiguous supported binding; shadowed, reassigned, dynami"
+
+[20:00:02] desktop | code (initial) | button "input.includes('bluetooth')No unambiguous supported binding; shadowed, reassigne"
+
+[20:00:09] desktop | code (initial) | button "input.includes('wifi')No unambiguous supported binding; shadowed, reassigned, dy"
+
+[20:00:16] desktop | code (initial) | button "plugins[name]()No unambiguous supported binding; shadowed, reassigned, dynamic o"
+
+[20:00:22] desktop | code (initial) | button "raw.trim().toLowerCase()No unambiguous supported binding; shadowed, reassigned, "
+
+[20:00:29] desktop | code (initial) | button "raw.trim()No unambiguous supported binding; shadowed, reassigned, dynamic or ext"
+
+[20:00:36] desktop | code (initial) | textbox "Ask about your code"
+
+[20:00:38] desktop | code (initial) | button "Open repository"
+
+[20:00:40] desktop | code (initial) | button "Focus source context"
+
+[20:00:42] desktop | code (initial) | button "Send question"
+
+[20:00:45] desktop | code after search | tab "JSdeeplinks.js"
+
+[20:00:47] desktop | code after search | button "Close settings/deeplinks.js"
+
+[20:00:50] desktop | code after search | summary "Investigation"
+
+[20:00:52] desktop | code after search | button "JS1. openBluetoothSettingssettings/deeplinks.js:2–2Lexical #1 · Semantic #1 · 1 "
+
+[20:00:54] desktop | code after search | button "JS2. BluetoothAgent.executebluetooth/BluetoothAgent.js:6–9Lexical #2 · Semantic "
+
+[20:00:56] desktop | code after search | button "JS3. checkBluetoothPermissionbluetooth/permissions.js:2–2Lexical #5 · Semantic #"
+
+[20:00:59] desktop | code after search | button "JS4. openSettingsUrisettings/deeplinks.js:6–6Lexical #4 · Semantic #7 · 1 call h"
+
+[20:01:01] desktop | code after search | button "JS5. IntentRouter.routevoice/IntentRouter.js:7–11Lexical #6 · Semantic #4 · 1 ca"
+
+[20:01:03] desktop | code after search | button "JS6. openWifiSettingssettings/deeplinks.js:4–4Lexical #3 · Semantic #6 · 2 call "
+
+[20:01:05] desktop | code after search | button "JS7. IntentRouter.constructorvoice/IntentRouter.js:5–5Lexical #7 · Semantic #5 ·"
+
+[20:01:07] desktop | code after search | button "JS8. VoiceHandler.handleRequestvoice/VoiceHandler.js:11–11Semantic #11 · 2 call "
+
+[20:01:09] desktop | code after search | button "JS9. VoiceHandler.handlevoice/VoiceHandler.js:7–10Semantic #8 ·"
+
+[20:01:11] desktop | code after search | button "JS10. VoiceHandler.constructorvoice/VoiceHandler.js:5–5Semantic #9 ·"
+
+[20:01:16] desktop | code after structural search | tab "JSnormalizeInput.js"
+
+[20:01:19] desktop | code after structural search | button "Close voice/normalizeInput.js"
+
+[20:01:21] desktop | code after structural search | button "JS1. normalizeInputvoice/normalizeInput.js:2–2Exact symbol · Lexical #3 · Semant"
+
+[20:01:23] desktop | code after structural search | button "JS2. VoiceHandler.handlevoice/VoiceHandler.js:7–10Lexical #2 · Semantic #1 · 1 c"
+
+[20:01:26] desktop | code after structural search | button "JS3. IntentRouter.routevoice/IntentRouter.js:7–11Lexical #5 · Semantic #3 · 1 ca"
+
+[20:01:28] desktop | code after structural search | button "JS4. VoiceHandler.handleRequestvoice/VoiceHandler.js:11–11Lexical #4 · Semantic "
+
+[20:01:30] desktop | code after structural search | button "JS5. VoiceHandler.constructorvoice/VoiceHandler.js:5–5Lexical #1 · Semantic #2 ·"
+
+[20:01:32] desktop | code after structural search | button "JS6. IntentRouter.constructorvoice/IntentRouter.js:5–5Lexical #6 · Semantic #6 ·"
+
+[20:01:34] desktop | code after structural search | button "JS7. dispatchPluginvoice/dynamicDispatch.js:2–2Lexical #7 · Semantic #7 ·"
+
+[20:01:36] desktop | code after structural search | button "JS8. BluetoothAgent.executebluetooth/BluetoothAgent.js:6–9Semantic #8 · 1 call h"
+
+[20:01:38] desktop | code after structural search | button "JS9. openWifiSettingssettings/deeplinks.js:4–4Semantic #12 · 1 call hop(s)"
+
+[20:01:41] desktop | code after structural search | button "JS10. checkBluetoothPermissionbluetooth/permissions.js:2–2Semantic #9 · 2 call h"
+
+[20:01:45] desktop | explorer filter open | textbox "Filter repository files"
+
+[20:01:51] desktop | repository dialog | button "Close dialog"
+
+[20:01:53] desktop | repository dialog | textbox "Repository path"
+
+[20:01:56] desktop | repository dialog | textbox "Snapshot"
+
+[20:01:58] desktop | repository dialog | button "Open & index"
+
+[20:02:01] desktop | repository dialog | button "Use demo repository"
+
+[20:02:07] desktop | map overview | combobox "Map file focus"
+
+[20:02:09] desktop | map overview | button "Trace a path"
+
+[20:02:12] desktop | map overview | textbox "Search graph nodes"
+
+[20:02:15] desktop | map overview | button "Fit graph"
+
+[20:02:18] desktop | map overview | button "Reset graph"
+
+[20:02:21] desktop | map overview | group "Edge from auth/AuthService.js to session/SessionManager.js"
+
+[20:02:24] desktop | map overview | group "Edge from bluetooth/BluetoothAgent.js to settings/deeplinks.js"
+
+[20:02:26] desktop | map overview | group "Edge from voice/IntentRouter.js to bluetooth/BluetoothAgent.js"
+
+[20:02:29] desktop | map overview | group "Edge from voice/IntentRouter.js to settings/deeplinks.js"
+
+[20:02:32] desktop | map overview | group "Edge from voice/VoiceHandler.js to voice/normalizeInput.js"
+
+[20:02:35] desktop | map overview | group "fileAuthService.jsauth/AuthService.js:1"
+
+[20:02:38] desktop | map overview | group "filecredentials.jsauth/credentials.js:1"
+
+[20:02:41] desktop | map overview | group "fileBluetoothAgent.jsbluetooth/BluetoothAgent.js:1"
+
+[20:02:44] desktop | map overview | group "filepermissions.jsbluetooth/permissions.js:1"
+
+[20:02:46] desktop | map overview | group "fileSessionManager.jssession/SessionManager.js:1"
+
+[20:02:49] desktop | map overview | group "filedeeplinks.jssettings/deeplinks.js:1"
+
+[20:02:52] desktop | map overview | group "filesession.test.jstests/session.test.js:1"
+
+[20:02:55] desktop | map overview | group "filedynamicDispatch.jsvoice/dynamicDispatch.js:1"
+
+[20:02:58] desktop | map overview | group "fileIntentRouter.jsvoice/IntentRouter.js:1"
+
+[20:03:01] desktop | map overview | group "filenormalizeInput.jsvoice/normalizeInput.js:1"
+
+[20:03:04] desktop | map overview | group "fileVoiceHandler.jsvoice/VoiceHandler.js:1"
+
+[20:03:07] desktop | map overview | button "Zoom In"
+
+[20:03:10] desktop | map overview | button "Zoom Out"
+
+[20:03:12] desktop | map overview | button "Fit View"
+
+[20:03:15] desktop | map overview | link "React Flow attribution"
+
+[20:03:24] desktop | map file focus | group "Edge from voice/VoiceHandler.js::VoiceHandler.handle to voice/VoiceHandler.js::V"
+
+[20:03:28] desktop | map file focus | group "methodVoiceHandler.constructorvoice/VoiceHandler.js:5"
+
+[20:03:34] desktop | map file focus | group "methodVoiceHandler.handlevoice/VoiceHandler.js:7"
+
+[20:03:37] desktop | map file focus | group "methodVoiceHandler.handleRequestvoice/VoiceHandler.js:11"
+
+[20:03:52] desktop | map node selected | button "Open source"
+
+[20:04:01] desktop | map node selected | button "Explore calls"
+
+[20:04:08] desktop | map node selected | button "Hide unrelated"
+
+[20:04:15] desktop | map node selected | combobox "Neighborhood depth"
+
+[20:04:22] desktop | map node selected | combobox "Call direction"
+
+[20:04:35] desktop | trace mode | textbox "Trace source symbol"
+
+[20:04:40] desktop | trace mode | textbox "Trace target symbol"
+
+[20:04:46] desktop | trace mode | button "Trace"
+
+[20:04:53] desktop | trace mode | group "methodBluetoothAgent.executebluetooth/BluetoothAgent.js:6"
+
+[20:04:58] desktop | trace mode | group "methodIntentRouter.routevoice/IntentRouter.js:7"
+
+[20:05:08] desktop | compare (before run) | combobox "Version A"
+
+[20:05:11] desktop | compare (before run) | combobox "Version B"
+
+[20:05:15] desktop | compare (before run) | button "Compare"
+
+[20:05:26] desktop | compare (after run) | combobox "Changed symbol"
+
+[20:05:31] desktop | compare (after run) | textbox ""
+
+[20:05:46] desktop | compare (after run) | summary "Before & after"
+
+[20:05:52] desktop | compare (after run) | button "Copy code"
+
+[20:06:00] desktop | compare (after run) | button "auth/AuthService.js:21"
+
+[20:06:08] desktop | compare (after run) | button "Copy code"
+
+[20:06:15] desktop | compare (after run) | button "auth/AuthService.js:12"
+
+[20:06:24] desktop | compare (after run) | button "Inspect change"
+
+[20:06:30] desktop | compare (after run) | summary "All changed symbols"
+
+[20:06:41] tablet | code (initial) | link "ASTFLOW home"
+
+[20:06:45] tablet | code (initial) | button "demo-repo"
+
+[20:06:47] tablet | code (initial) | button "Map"
+
+[20:06:50] tablet | code (initial) | button "Compare"
+
+[20:06:52] tablet | code (initial) | button "Code"
+
+[20:06:55] tablet | code (initial) | button "Explain"
+
+[20:06:58] tablet | code (initial) | button "Explorer"
+
+[20:07:01] tablet | code (initial) | button "System map"
+
+[20:07:05] tablet | code (initial) | button "Compare versions"
+
+[20:07:08] tablet | code (initial) | button "Repository settings"
+
+[20:07:11] tablet | code (initial) | button "Filter files"
+
+[20:07:15] tablet | code (initial) | button "auth"
+
+[20:07:17] tablet | code (initial) | button "JSAuthService.js"
+
+[20:07:20] tablet | code (initial) | button "JScredentials.js"
+
+[20:07:23] tablet | code (initial) | button "bluetooth"
+
+[20:07:25] tablet | code (initial) | button "JSBluetoothAgent.js"
+
+[20:07:29] tablet | code (initial) | button "JSpermissions.js"
+
+[20:07:31] tablet | code (initial) | button "session"
+
+[20:07:33] tablet | code (initial) | button "JSSessionManager.js"
+
+[20:07:36] tablet | code (initial) | button "settings"
+
+[20:07:39] tablet | code (initial) | button "JSdeeplinks.js"
+
+[20:07:42] tablet | code (initial) | button "tests"
+
+[20:07:44] tablet | code (initial) | button "JSsession.test.js"
+
+[20:07:46] tablet | code (initial) | button "voice"
+
+[20:07:49] tablet | code (initial) | button "JSdynamicDispatch.js"
+
+[20:07:51] tablet | code (initial) | button "JSIntentRouter.js"
+
+[20:07:54] tablet | code (initial) | button "JSnormalizeInput.js"
+
+[20:07:56] tablet | code (initial) | button "JSVoiceHandler.js"
+
+[20:07:59] tablet | code (initial) | combobox "Repository version"
+
+[20:08:01] tablet | code (initial) | button "Reindex repository"
+
+[20:08:03] tablet | code (initial) | tab "JSAuthService.js"
+
+[20:08:07] tablet | code (initial) | button "Close auth/AuthService.js"
+
+[20:08:09] tablet | code (initial) | button "Find another file"
+
+[20:08:12] tablet | code (initial) | combobox "Editor zoom"
+
+[20:08:14] tablet | code (initial) | button "Copy selected source"
+
+[20:08:17] tablet | code (initial) | button "Expand workspace"
+
+[20:08:21] tablet | code (initial) | textbox ""
+
+[20:08:40] tablet | code after search | tab "JSdeeplinks.js"
+
+[20:08:45] tablet | code after search | button "Close settings/deeplinks.js"
+
+[20:08:54] tablet | code after search | button "Close companion"
+
+[20:08:59] tablet | code after search | summary "How this works"
+
+[20:09:04] tablet | code after search | checkbox "Allow one retrieval refinement"
+
+[20:09:19] tablet | code after search | summary "Investigation"
+
+[20:09:24] tablet | code after search | button "JS1. openBluetoothSettingssettings/deeplinks.js:2–2Lexical #1 · Semantic #1 · 1 "
+
+[20:09:29] tablet | code after search | button "JS2. BluetoothAgent.executebluetooth/BluetoothAgent.js:6–9Lexical #2 · Semantic "
+
+[20:09:34] tablet | code after search | button "JS3. checkBluetoothPermissionbluetooth/permissions.js:2–2Lexical #5 · Semantic #"
+
+[20:09:37] tablet | code after search | button "JS4. openSettingsUrisettings/deeplinks.js:6–6Lexical #4 · Semantic #7 · 1 call h"
+
+[20:09:41] tablet | code after search | button "JS5. IntentRouter.routevoice/IntentRouter.js:7–11Lexical #6 · Semantic #4 · 1 ca"
+
+[20:09:45] tablet | code after search | button "JS6. openWifiSettingssettings/deeplinks.js:4–4Lexical #3 · Semantic #6 · 2 call "
+
+[20:09:50] tablet | code after search | button "JS7. IntentRouter.constructorvoice/IntentRouter.js:5–5Lexical #7 · Semantic #5 ·"
+
+[20:09:54] tablet | code after search | button "JS8. VoiceHandler.handleRequestvoice/VoiceHandler.js:11–11Semantic #11 · 2 call "
+
+[20:09:57] tablet | code after search | button "JS9. VoiceHandler.handlevoice/VoiceHandler.js:7–10Semantic #8 ·"
+
+[20:10:01] tablet | code after search | button "JS10. VoiceHandler.constructorvoice/VoiceHandler.js:5–5Semantic #9 ·"
+
+[20:10:05] tablet | code after search | button "Explain this code"
+
+[20:10:09] tablet | code after search | button "Explore connections"
+
+[20:10:14] tablet | code after search | button "See what changed"
+
+[20:10:19] tablet | code after search | summary "Unresolved calls · 9 (external / dynamic)"
+
+[20:10:23] tablet | code after search | button "Date.now()No unambiguous supported binding; shadowed, reassigned, dynamic or ext"
+
+[20:10:32] tablet | code after search | button "Date.now()No unambiguous supported binding; shadowed, reassigned, dynamic or ext"
+
+[20:10:40] tablet | code after search | button "assert.equal(sessions.restore(), null)No unambiguous supported binding; shadowed"
+
+[20:10:48] tablet | code after search | button "sessions.restore()No unambiguous supported binding; shadowed, reassigned, dynami"
+
+[20:10:58] tablet | code after search | button "input.includes('bluetooth')No unambiguous supported binding; shadowed, reassigne"
+
+[20:11:06] tablet | code after search | button "input.includes('wifi')No unambiguous supported binding; shadowed, reassigned, dy"
+
+[20:11:16] tablet | code after search | button "plugins[name]()No unambiguous supported binding; shadowed, reassigned, dynamic o"
+
+[20:11:25] tablet | code after search | button "raw.trim().toLowerCase()No unambiguous supported binding; shadowed, reassigned, "
+
+[20:11:35] tablet | code after search | button "raw.trim()No unambiguous supported binding; shadowed, reassigned, dynamic or ext"
+
+[20:11:44] tablet | code after search | textbox "Ask about your code"
+
+[20:11:48] tablet | code after search | button "Open repository"
+
+[20:11:53] tablet | code after search | button "Focus source context"
+
+[20:11:57] tablet | code after search | button "Send question"
+
+[20:12:03] tablet | map overview | combobox "Map file focus"
+
+[20:12:07] tablet | map overview | button "Trace a path"
+
+[20:12:13] tablet | map overview | textbox "Search graph nodes"
+
+[20:12:18] tablet | map overview | button "Fit graph"
+
+[20:12:23] tablet | map overview | button "Reset graph"
+
+[20:12:29] tablet | map overview | group "Edge from auth/AuthService.js to session/SessionManager.js"
+
+[20:12:34] tablet | map overview | group "Edge from bluetooth/BluetoothAgent.js to settings/deeplinks.js"
+
+[20:12:40] tablet | map overview | group "Edge from voice/IntentRouter.js to bluetooth/BluetoothAgent.js"
+
+[20:12:45] tablet | map overview | group "Edge from voice/IntentRouter.js to settings/deeplinks.js"
+
+[20:12:50] tablet | map overview | group "Edge from voice/VoiceHandler.js to voice/normalizeInput.js"
+
+[20:12:56] tablet | map overview | group "fileAuthService.jsauth/AuthService.js:1"
+
+[20:13:01] tablet | map overview | group "filecredentials.jsauth/credentials.js:1"
+
+[20:13:07] tablet | map overview | group "fileBluetoothAgent.jsbluetooth/BluetoothAgent.js:1"
+
+[20:13:13] tablet | map overview | group "filepermissions.jsbluetooth/permissions.js:1"
+
+[20:13:19] tablet | map overview | group "fileSessionManager.jssession/SessionManager.js:1"
+
+[20:13:24] tablet | map overview | group "filedeeplinks.jssettings/deeplinks.js:1"
+
+[20:13:30] tablet | map overview | group "filesession.test.jstests/session.test.js:1"
+
+[20:13:35] tablet | map overview | group "filedynamicDispatch.jsvoice/dynamicDispatch.js:1"
+
+[20:13:40] tablet | map overview | group "fileIntentRouter.jsvoice/IntentRouter.js:1"
+
+[20:13:45] tablet | map overview | group "filenormalizeInput.jsvoice/normalizeInput.js:1"
+
+[20:13:51] tablet | map overview | group "fileVoiceHandler.jsvoice/VoiceHandler.js:1"
+
+[20:13:56] tablet | map overview | button "Zoom In"
+
+[20:14:03] tablet | map overview | button "Zoom Out"
+
+[20:14:09] tablet | map overview | button "Fit View"
+
+[20:14:14] tablet | map overview | link "React Flow attribution"
+
+[20:14:24] tablet | compare (after run) | combobox "Version A"
+
+[20:14:29] tablet | compare (after run) | combobox "Version B"
+
+[20:14:34] tablet | compare (after run) | button "Compare"
+
+[20:14:43] tablet | compare (after run) | combobox "Changed symbol"
+
+[20:14:49] tablet | compare (after run) | textbox ""
+
+[20:15:04] tablet | compare (after run) | summary "Before & after"
+
+[20:15:11] tablet | compare (after run) | button "Copy code"
+
+[20:15:18] tablet | compare (after run) | button "auth/AuthService.js:21"
+
+[20:15:23] tablet | compare (after run) | button "Copy code"
+
+[20:15:32] tablet | compare (after run) | button "auth/AuthService.js:12"
+
+[20:15:38] tablet | compare (after run) | button "Inspect change"
+
+[20:15:44] tablet | compare (after run) | summary "All changed symbols"
+
+[20:15:55] tablet | repository dialog | button "Close dialog"
+
+[20:15:59] tablet | repository dialog | textbox "Repository path"
+
+[20:16:02] tablet | repository dialog | textbox "Snapshot"
+
+[20:16:05] tablet | repository dialog | button "Open & index"
+
+[20:16:10] tablet | repository dialog | button "Use demo repository"
+
+[20:16:18] mobile | code (initial) | link "ASTFLOW home"
+
+[20:16:23] mobile | code (initial) | button "Map"
+
+[20:16:26] mobile | code (initial) | button "Compare"
+
+[20:16:29] mobile | code (initial) | button "Code"
+
+[20:16:32] mobile | code (initial) | button "Explain"
+
+[20:16:35] mobile | code (initial) | button "Explorer"
+
+[20:16:37] mobile | code (initial) | button "System map"
+
+[20:16:40] mobile | code (initial) | button "Compare versions"
+
+[20:16:42] mobile | code (initial) | button "Repository settings"
+
+[20:16:45] mobile | code (initial) | tab "JSAuthService.js"
+
+[20:16:47] mobile | code (initial) | button "Close auth/AuthService.js"
+
+[20:16:50] mobile | code (initial) | button "Find another file"
+
+[20:16:53] mobile | code (initial) | combobox "Editor zoom"
+
+[20:16:55] mobile | code (initial) | textbox ""
+
+[20:17:12] mobile | code after search | tab "JSdeeplinks.js"
+
+[20:17:20] mobile | code after search | button "Close settings/deeplinks.js"
+
+[20:17:28] mobile | code after search | button "Close companion"
+
+[20:17:33] mobile | code after search | summary "How this works"
+
+[20:17:38] mobile | code after search | checkbox "Allow one retrieval refinement"
+
+[20:17:52] mobile | code after search | summary "Investigation"
+
+[20:17:57] mobile | code after search | button "JS1. openBluetoothSettingssettings/deeplinks.js:2–2Lexical #1 · Semantic #1 · 1 "
+
+[20:18:02] mobile | code after search | button "JS2. BluetoothAgent.executebluetooth/BluetoothAgent.js:6–9Lexical #2 · Semantic "
+
+[20:18:05] mobile | code after search | button "JS3. checkBluetoothPermissionbluetooth/permissions.js:2–2Lexical #5 · Semantic #"
+
+[20:18:10] mobile | code after search | button "JS4. openSettingsUrisettings/deeplinks.js:6–6Lexical #4 · Semantic #7 · 1 call h"
+
+[20:18:13] mobile | code after search | button "JS5. IntentRouter.routevoice/IntentRouter.js:7–11Lexical #6 · Semantic #4 · 1 ca"
+
+[20:18:17] mobile | code after search | button "JS6. openWifiSettingssettings/deeplinks.js:4–4Lexical #3 · Semantic #6 · 2 call "
+
+[20:18:20] mobile | code after search | button "JS7. IntentRouter.constructorvoice/IntentRouter.js:5–5Lexical #7 · Semantic #5 ·"
+
+[20:18:25] mobile | code after search | button "JS8. VoiceHandler.handleRequestvoice/VoiceHandler.js:11–11Semantic #11 · 2 call "
+
+[20:18:29] mobile | code after search | button "JS9. VoiceHandler.handlevoice/VoiceHandler.js:7–10Semantic #8 ·"
+
+[20:18:32] mobile | code after search | button "JS10. VoiceHandler.constructorvoice/VoiceHandler.js:5–5Semantic #9 ·"
+
+[20:18:36] mobile | code after search | button "Explain this code"
+
+[20:18:41] mobile | code after search | button "Explore connections"
+
+[20:18:45] mobile | code after search | button "See what changed"
+
+[20:18:50] mobile | code after search | summary "Unresolved calls · 9 (external / dynamic)"
+
+[20:18:55] mobile | code after search | button "Date.now()No unambiguous supported binding; shadowed, reassigned, dynamic or ext"
+
+[20:19:04] mobile | code after search | button "Date.now()No unambiguous supported binding; shadowed, reassigned, dynamic or ext"
+
+[20:19:12] mobile | code after search | button "assert.equal(sessions.restore(), null)No unambiguous supported binding; shadowed"
+
+[20:19:20] mobile | code after search | button "sessions.restore()No unambiguous supported binding; shadowed, reassigned, dynami"
+
+[20:19:29] mobile | code after search | button "input.includes('bluetooth')No unambiguous supported binding; shadowed, reassigne"
+
+[20:19:37] mobile | code after search | button "input.includes('wifi')No unambiguous supported binding; shadowed, reassigned, dy"
+
+[20:19:46] mobile | code after search | button "plugins[name]()No unambiguous supported binding; shadowed, reassigned, dynamic o"
+
+[20:19:55] mobile | code after search | button "raw.trim().toLowerCase()No unambiguous supported binding; shadowed, reassigned, "
+
+[20:20:04] mobile | code after search | button "raw.trim()No unambiguous supported binding; shadowed, reassigned, dynamic or ext"
+
+[20:20:12] mobile | code after search | textbox "Ask about your code"
+
+[20:20:16] mobile | code after search | button "Open repository"
+
+[20:20:21] mobile | code after search | button "Focus source context"
+
+[20:20:26] mobile | code after search | button "Send question"
+
+[20:20:32] mobile | map overview | combobox "Map file focus"
+
+[20:20:36] mobile | map overview | button "Trace a path"
+
+[20:20:40] mobile | map overview | textbox "Search graph nodes"
+
+[20:20:45] mobile | map overview | button "Fit graph"
+
+[20:20:49] mobile | map overview | button "Reset graph"
+
+[20:20:55] mobile | map overview | group "Edge from auth/AuthService.js to session/SessionManager.js"
+
+[20:21:00] mobile | map overview | group "Edge from bluetooth/BluetoothAgent.js to settings/deeplinks.js"
+
+[20:21:05] mobile | map overview | group "Edge from voice/IntentRouter.js to bluetooth/BluetoothAgent.js"
+
+[20:21:10] mobile | map overview | group "Edge from voice/IntentRouter.js to settings/deeplinks.js"
+
+[20:21:14] mobile | map overview | group "Edge from voice/VoiceHandler.js to voice/normalizeInput.js"
+
+[20:21:18] mobile | map overview | group "fileAuthService.jsauth/AuthService.js:1"
+
+[20:21:24] mobile | map overview | group "filecredentials.jsauth/credentials.js:1"
+
+[20:21:29] mobile | map overview | group "fileBluetoothAgent.jsbluetooth/BluetoothAgent.js:1"
+
+[20:21:36] mobile | map overview | group "filepermissions.jsbluetooth/permissions.js:1"
+
+[20:21:42] mobile | map overview | group "fileSessionManager.jssession/SessionManager.js:1"
+
+[20:21:46] mobile | map overview | group "filedeeplinks.jssettings/deeplinks.js:1"
+
+[20:21:51] mobile | map overview | group "filesession.test.jstests/session.test.js:1"
+
+[20:22:03] mobile | map overview | group "filedynamicDispatch.jsvoice/dynamicDispatch.js:1"
+
+[20:22:07] mobile | map overview | group "fileIntentRouter.jsvoice/IntentRouter.js:1"
+
+[20:22:11] mobile | map overview | group "filenormalizeInput.jsvoice/normalizeInput.js:1"
+
+[20:22:15] mobile | map overview | group "fileVoiceHandler.jsvoice/VoiceHandler.js:1"
+
+[20:22:23] mobile | map overview | button "Zoom In"
+
+[20:22:27] mobile | map overview | button "Zoom Out"
+
+[20:22:31] mobile | map overview | button "Fit View"
+
+[20:22:35] mobile | map overview | link "React Flow attribution"
+
+[20:22:47] mobile | compare (after run) | combobox "Version A"
+
+[20:22:52] mobile | compare (after run) | combobox "Version B"
+
+[20:22:57] mobile | compare (after run) | button "Compare"
+
+[20:23:08] mobile | compare (after run) | combobox "Changed symbol"
+
+[20:23:12] mobile | compare (after run) | textbox ""
+
+[20:23:28] mobile | compare (after run) | summary "Before & after"
+
+[20:23:35] mobile | compare (after run) | button "Copy code"
+
+[20:23:43] mobile | compare (after run) | button "auth/AuthService.js:21"
+
+[20:23:50] mobile | compare (after run) | button "Copy code"
+
+[20:23:57] mobile | compare (after run) | button "auth/AuthService.js:12"
+
+[20:24:04] mobile | compare (after run) | button "Inspect change"
+
+[20:24:12] mobile | compare (after run) | summary "All changed symbols"
+
+[20:24:23] mobile | repository dialog | button "Close dialog"
+
+[20:24:28] mobile | repository dialog | textbox "Repository path"
+
+[20:24:32] mobile | repository dialog | textbox "Snapshot"
+
+[20:24:35] mobile | repository dialog | button "Open & index"
+
+[20:24:40] mobile | repository dialog | button "Use demo repository"
+
+  Slow test file: audit\tools\ui-crawl.audit.ts (27.1m)
+  Consider running tests from slow files in parallel. See: https://playwright.dev/docs/test-parallel
+  1 passed (27.1m)
+exit 0 in 1628s

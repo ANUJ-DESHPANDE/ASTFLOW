@@ -1,0 +1,805 @@
+F..F.F...........EE.....F........................EEEEE.................. [ 80%]
+............FF..s.                                                       [100%]
+=================================== ERRORS ====================================
+_________ ERROR at setup of test_real_lexical_search_graph_and_cache __________
+
+settings = Settings(model='sentence-transformers/all-MiniLM-L6-v2', semantic='off', cache=WindowsPath('C:/Users/aarus/AppData/Loc...ranker_model='cross-encoder/ms-marco-MiniLM-L-6-v2', reranker_depth=100, reranker_batch_size=32, reranker_device='cpu')
+
+    @pytest.fixture
+    def demo(settings):
+>       return IndexService(settings).index(str(ROOT / "examples/demo-repo"))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+backend\tests\test_core.py:22: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <backend.app.indexing.service.IndexService object at 0x0000025CC21FABD0>
+repo_path = 'C:\\Users\\aarus\\Downloads\\ASTFLOW-main\\ASTFLOW-repo\\examples\\demo-repo'
+version = 'working-tree'
+
+    def index(self, repo_path: str, version: str = "working-tree"):
+        with self.lock:
+            started = time.perf_counter()
+            try:
+                repo = Path(repo_path).expanduser().resolve(strict=True)
+                self.status = {"state": "indexing", "stage": "Reading source snapshot", "progress": 5}
+                files, revision, warnings = read_snapshot(repo, version, self.settings)
+                if not files:
+>                   raise ValueError("No supported JavaScript source files were found")
+E                   ValueError: No supported JavaScript source files were found
+
+backend\app\indexing\service.py:78: ValueError
+_________ ERROR at setup of test_agent_refines_from_observed_symbols __________
+
+settings = Settings(model='sentence-transformers/all-MiniLM-L6-v2', semantic='off', cache=WindowsPath('C:/Users/aarus/AppData/Loc...ranker_model='cross-encoder/ms-marco-MiniLM-L-6-v2', reranker_depth=100, reranker_batch_size=32, reranker_device='cpu')
+
+    @pytest.fixture
+    def demo(settings):
+>       return IndexService(settings).index(str(ROOT / "examples/demo-repo"))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+backend\tests\test_core.py:22: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <backend.app.indexing.service.IndexService object at 0x0000025CC21F8FE0>
+repo_path = 'C:\\Users\\aarus\\Downloads\\ASTFLOW-main\\ASTFLOW-repo\\examples\\demo-repo'
+version = 'working-tree'
+
+    def index(self, repo_path: str, version: str = "working-tree"):
+        with self.lock:
+            started = time.perf_counter()
+            try:
+                repo = Path(repo_path).expanduser().resolve(strict=True)
+                self.status = {"state": "indexing", "stage": "Reading source snapshot", "progress": 5}
+                files, revision, warnings = read_snapshot(repo, version, self.settings)
+                if not files:
+>                   raise ValueError("No supported JavaScript source files were found")
+E                   ValueError: No supported JavaScript source files were found
+
+backend\app\indexing\service.py:78: ValueError
+_ ERROR at setup of test_pack_rebuilds_identical_runs_and_analysis_uses_packed_files _
+
+tmp_path = WindowsPath('C:/Users/aarus/AppData/Local/Temp/pytest-of-aarus/pytest-7/test_pack_rebuilds_identical_r0')
+isolated_cache = None
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000025CC24753D0>
+
+    @pytest.fixture
+    def synthetic_run(tmp_path, isolated_cache, monkeypatch):  # noqa: F811
+        monkeypatch.setattr(Embedder, "load", lambda self, download=False: setattr(self, "model", object()) or self.model)
+        monkeypatch.setattr(Embedder, "encode", lambda self, texts, **kw: np.stack([_vec(t) for t in texts]))
+        monkeypatch.setattr(verify_retrieval, "model_identity", lambda e, s: {"name": "fake-bow", "weights_sha256": None})
+        args = _args(tmp_path, _export(tmp_path), "bm25,dense,hybrid")
+>       assert verify_retrieval.full_run(args) == 0
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+benchmark\test_analyze_baseline.py:20: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+args = Namespace(data='C:\\Users\\aarus\\AppData\\Local\\Temp\\pytest-of-aarus\\pytest-7\\test_pack_rebuilds_identical_r0\\ap...5,dense,hybrid', max_queries=0, tag='t', trec_eval=None, allow_unknown_revision=False, skip_published_count_check=True)
+
+    def full_run(args) -> int:
+        from backend.app.retrieval.embeddings import Embedder
+        from backend.app.retrieval.search import CROSS_ENCODER_AVAILABLE, Retriever
+        out = Path(args.out)
+        (out / "runs").mkdir(parents=True, exist_ok=True)
+        data = Path(args.data)
+        corpus, queries, qrels = load_export(data, "test")
+        data_stats = integrity.check_dataset(data, corpus, queries, qrels)
+        meta = json.loads((data / "metadata.json").read_text()) if (data / "metadata.json").exists() else {}
+        revision = meta.get("revision")
+        if revision != EXPECTED_DATASET_REVISION and not args.allow_unknown_revision:
+            raise integrity.IntegrityError(f"Dataset revision {revision!r} != expected {EXPECTED_DATASET_REVISION}")
+        judged = evaluation.judged_queries(qrels)
+        published = mteb_published_stats()
+        if published and not getattr(args, "skip_published_count_check", False):  # independent check: MTEB ships its own counts for this task
+            rel = published["relevant_docs_statistics"]
+            integrity._check(data_stats["documents"] == published["num_documents"], f"Documents {data_stats['documents']} != MTEB's {published['num_documents']}")
+            integrity._check(len(judged) == published["num_queries"], f"Judged queries {len(judged)} != MTEB's {published['num_queries']}")
+            integrity._check(data_stats["positive_pairs"] == rel["num_relevant_docs"], f"Positive qrels {data_stats['positive_pairs']} != MTEB's {rel['num_relevant_docs']}")
+        if args.split != "all":
+            split = json.loads((ROOT / "benchmark/dev_split.json").read_text())
+            keep = set(split["dev_query_ids" if args.split == "dev" else "confirmation_query_ids"])
+            judged = [q for q in judged if q in keep]
+        if args.max_queries:
+            judged = judged[:args.max_queries]
+        qrels_eval = {q: qrels[q] for q in judged}
+    
+        settings = Settings(ts_enrich=False)
+        modes = args.modes.split(",")
+        embedder, vectors, vector_stats, model_info = None, None, None, {"name": None}
+        if set(modes) - {"bm25"}:
+            embedder = Embedder(settings)
+            if embedder.load() is None:
+                raise integrity.IntegrityError(f"Dense/hybrid requested but model unavailable: {embedder.reason}")
+            model_info = model_identity(embedder, settings)
+        chunks = sorted((Chunk(d, d, "", d, "dataset_document", 1, max(1, len(t.splitlines())), t, t,
+                               hashlib.sha256(t.encode()).hexdigest()) for d, t in corpus.items()), key=lambda c: c.chunk_id)
+        integrity._check([c.chunk_id for c in chunks] == sorted(corpus), "Chunk order is not the sorted document id order")
+        if embedder:
+            vectors, vector_stats = load_vectors(chunks, embedder, settings, model_info)
+>           if args.dense_windows:
+               ^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'Namespace' object has no attribute 'dense_windows'
+
+benchmark\verify_retrieval.py:199: AttributeError
+_ ERROR at setup of test_synthetic_data_is_flagged_as_not_the_real_benchmark __
+
+tmp_path = WindowsPath('C:/Users/aarus/AppData/Local/Temp/pytest-of-aarus/pytest-7/test_synthetic_data_is_flagged0')
+isolated_cache = None
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000025CC23E33E0>
+
+    @pytest.fixture
+    def synthetic_run(tmp_path, isolated_cache, monkeypatch):  # noqa: F811
+        monkeypatch.setattr(Embedder, "load", lambda self, download=False: setattr(self, "model", object()) or self.model)
+        monkeypatch.setattr(Embedder, "encode", lambda self, texts, **kw: np.stack([_vec(t) for t in texts]))
+        monkeypatch.setattr(verify_retrieval, "model_identity", lambda e, s: {"name": "fake-bow", "weights_sha256": None})
+        args = _args(tmp_path, _export(tmp_path), "bm25,dense,hybrid")
+>       assert verify_retrieval.full_run(args) == 0
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+benchmark\test_analyze_baseline.py:20: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+args = Namespace(data='C:\\Users\\aarus\\AppData\\Local\\Temp\\pytest-of-aarus\\pytest-7\\test_synthetic_data_is_flagged0\\ap...5,dense,hybrid', max_queries=0, tag='t', trec_eval=None, allow_unknown_revision=False, skip_published_count_check=True)
+
+    def full_run(args) -> int:
+        from backend.app.retrieval.embeddings import Embedder
+        from backend.app.retrieval.search import CROSS_ENCODER_AVAILABLE, Retriever
+        out = Path(args.out)
+        (out / "runs").mkdir(parents=True, exist_ok=True)
+        data = Path(args.data)
+        corpus, queries, qrels = load_export(data, "test")
+        data_stats = integrity.check_dataset(data, corpus, queries, qrels)
+        meta = json.loads((data / "metadata.json").read_text()) if (data / "metadata.json").exists() else {}
+        revision = meta.get("revision")
+        if revision != EXPECTED_DATASET_REVISION and not args.allow_unknown_revision:
+            raise integrity.IntegrityError(f"Dataset revision {revision!r} != expected {EXPECTED_DATASET_REVISION}")
+        judged = evaluation.judged_queries(qrels)
+        published = mteb_published_stats()
+        if published and not getattr(args, "skip_published_count_check", False):  # independent check: MTEB ships its own counts for this task
+            rel = published["relevant_docs_statistics"]
+            integrity._check(data_stats["documents"] == published["num_documents"], f"Documents {data_stats['documents']} != MTEB's {published['num_documents']}")
+            integrity._check(len(judged) == published["num_queries"], f"Judged queries {len(judged)} != MTEB's {published['num_queries']}")
+            integrity._check(data_stats["positive_pairs"] == rel["num_relevant_docs"], f"Positive qrels {data_stats['positive_pairs']} != MTEB's {rel['num_relevant_docs']}")
+        if args.split != "all":
+            split = json.loads((ROOT / "benchmark/dev_split.json").read_text())
+            keep = set(split["dev_query_ids" if args.split == "dev" else "confirmation_query_ids"])
+            judged = [q for q in judged if q in keep]
+        if args.max_queries:
+            judged = judged[:args.max_queries]
+        qrels_eval = {q: qrels[q] for q in judged}
+    
+        settings = Settings(ts_enrich=False)
+        modes = args.modes.split(",")
+        embedder, vectors, vector_stats, model_info = None, None, None, {"name": None}
+        if set(modes) - {"bm25"}:
+            embedder = Embedder(settings)
+            if embedder.load() is None:
+                raise integrity.IntegrityError(f"Dense/hybrid requested but model unavailable: {embedder.reason}")
+            model_info = model_identity(embedder, settings)
+        chunks = sorted((Chunk(d, d, "", d, "dataset_document", 1, max(1, len(t.splitlines())), t, t,
+                               hashlib.sha256(t.encode()).hexdigest()) for d, t in corpus.items()), key=lambda c: c.chunk_id)
+        integrity._check([c.chunk_id for c in chunks] == sorted(corpus), "Chunk order is not the sorted document id order")
+        if embedder:
+            vectors, vector_stats = load_vectors(chunks, embedder, settings, model_info)
+>           if args.dense_windows:
+               ^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'Namespace' object has no attribute 'dense_windows'
+
+benchmark\verify_retrieval.py:199: AttributeError
+__ ERROR at setup of test_oracle_equals_hit_rate_with_one_relevant_document ___
+
+tmp_path = WindowsPath('C:/Users/aarus/AppData/Local/Temp/pytest-of-aarus/pytest-7/test_oracle_equals_hit_rate_wi0')
+isolated_cache = None
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000025CC23676E0>
+
+    @pytest.fixture
+    def synthetic_run(tmp_path, isolated_cache, monkeypatch):  # noqa: F811
+        monkeypatch.setattr(Embedder, "load", lambda self, download=False: setattr(self, "model", object()) or self.model)
+        monkeypatch.setattr(Embedder, "encode", lambda self, texts, **kw: np.stack([_vec(t) for t in texts]))
+        monkeypatch.setattr(verify_retrieval, "model_identity", lambda e, s: {"name": "fake-bow", "weights_sha256": None})
+        args = _args(tmp_path, _export(tmp_path), "bm25,dense,hybrid")
+>       assert verify_retrieval.full_run(args) == 0
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+benchmark\test_analyze_baseline.py:20: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+args = Namespace(data='C:\\Users\\aarus\\AppData\\Local\\Temp\\pytest-of-aarus\\pytest-7\\test_oracle_equals_hit_rate_wi0\\ap...5,dense,hybrid', max_queries=0, tag='t', trec_eval=None, allow_unknown_revision=False, skip_published_count_check=True)
+
+    def full_run(args) -> int:
+        from backend.app.retrieval.embeddings import Embedder
+        from backend.app.retrieval.search import CROSS_ENCODER_AVAILABLE, Retriever
+        out = Path(args.out)
+        (out / "runs").mkdir(parents=True, exist_ok=True)
+        data = Path(args.data)
+        corpus, queries, qrels = load_export(data, "test")
+        data_stats = integrity.check_dataset(data, corpus, queries, qrels)
+        meta = json.loads((data / "metadata.json").read_text()) if (data / "metadata.json").exists() else {}
+        revision = meta.get("revision")
+        if revision != EXPECTED_DATASET_REVISION and not args.allow_unknown_revision:
+            raise integrity.IntegrityError(f"Dataset revision {revision!r} != expected {EXPECTED_DATASET_REVISION}")
+        judged = evaluation.judged_queries(qrels)
+        published = mteb_published_stats()
+        if published and not getattr(args, "skip_published_count_check", False):  # independent check: MTEB ships its own counts for this task
+            rel = published["relevant_docs_statistics"]
+            integrity._check(data_stats["documents"] == published["num_documents"], f"Documents {data_stats['documents']} != MTEB's {published['num_documents']}")
+            integrity._check(len(judged) == published["num_queries"], f"Judged queries {len(judged)} != MTEB's {published['num_queries']}")
+            integrity._check(data_stats["positive_pairs"] == rel["num_relevant_docs"], f"Positive qrels {data_stats['positive_pairs']} != MTEB's {rel['num_relevant_docs']}")
+        if args.split != "all":
+            split = json.loads((ROOT / "benchmark/dev_split.json").read_text())
+            keep = set(split["dev_query_ids" if args.split == "dev" else "confirmation_query_ids"])
+            judged = [q for q in judged if q in keep]
+        if args.max_queries:
+            judged = judged[:args.max_queries]
+        qrels_eval = {q: qrels[q] for q in judged}
+    
+        settings = Settings(ts_enrich=False)
+        modes = args.modes.split(",")
+        embedder, vectors, vector_stats, model_info = None, None, None, {"name": None}
+        if set(modes) - {"bm25"}:
+            embedder = Embedder(settings)
+            if embedder.load() is None:
+                raise integrity.IntegrityError(f"Dense/hybrid requested but model unavailable: {embedder.reason}")
+            model_info = model_identity(embedder, settings)
+        chunks = sorted((Chunk(d, d, "", d, "dataset_document", 1, max(1, len(t.splitlines())), t, t,
+                               hashlib.sha256(t.encode()).hexdigest()) for d, t in corpus.items()), key=lambda c: c.chunk_id)
+        integrity._check([c.chunk_id for c in chunks] == sorted(corpus), "Chunk order is not the sorted document id order")
+        if embedder:
+            vectors, vector_stats = load_vectors(chunks, embedder, settings, model_info)
+>           if args.dense_windows:
+               ^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'Namespace' object has no attribute 'dense_windows'
+
+benchmark\verify_retrieval.py:199: AttributeError
+_______________ ERROR at setup of test_tampered_run_is_rejected _______________
+
+tmp_path = WindowsPath('C:/Users/aarus/AppData/Local/Temp/pytest-of-aarus/pytest-7/test_tampered_run_is_rejected0')
+isolated_cache = None
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000025CC237A990>
+
+    @pytest.fixture
+    def synthetic_run(tmp_path, isolated_cache, monkeypatch):  # noqa: F811
+        monkeypatch.setattr(Embedder, "load", lambda self, download=False: setattr(self, "model", object()) or self.model)
+        monkeypatch.setattr(Embedder, "encode", lambda self, texts, **kw: np.stack([_vec(t) for t in texts]))
+        monkeypatch.setattr(verify_retrieval, "model_identity", lambda e, s: {"name": "fake-bow", "weights_sha256": None})
+        args = _args(tmp_path, _export(tmp_path), "bm25,dense,hybrid")
+>       assert verify_retrieval.full_run(args) == 0
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+benchmark\test_analyze_baseline.py:20: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+args = Namespace(data='C:\\Users\\aarus\\AppData\\Local\\Temp\\pytest-of-aarus\\pytest-7\\test_tampered_run_is_rejected0\\app...5,dense,hybrid', max_queries=0, tag='t', trec_eval=None, allow_unknown_revision=False, skip_published_count_check=True)
+
+    def full_run(args) -> int:
+        from backend.app.retrieval.embeddings import Embedder
+        from backend.app.retrieval.search import CROSS_ENCODER_AVAILABLE, Retriever
+        out = Path(args.out)
+        (out / "runs").mkdir(parents=True, exist_ok=True)
+        data = Path(args.data)
+        corpus, queries, qrels = load_export(data, "test")
+        data_stats = integrity.check_dataset(data, corpus, queries, qrels)
+        meta = json.loads((data / "metadata.json").read_text()) if (data / "metadata.json").exists() else {}
+        revision = meta.get("revision")
+        if revision != EXPECTED_DATASET_REVISION and not args.allow_unknown_revision:
+            raise integrity.IntegrityError(f"Dataset revision {revision!r} != expected {EXPECTED_DATASET_REVISION}")
+        judged = evaluation.judged_queries(qrels)
+        published = mteb_published_stats()
+        if published and not getattr(args, "skip_published_count_check", False):  # independent check: MTEB ships its own counts for this task
+            rel = published["relevant_docs_statistics"]
+            integrity._check(data_stats["documents"] == published["num_documents"], f"Documents {data_stats['documents']} != MTEB's {published['num_documents']}")
+            integrity._check(len(judged) == published["num_queries"], f"Judged queries {len(judged)} != MTEB's {published['num_queries']}")
+            integrity._check(data_stats["positive_pairs"] == rel["num_relevant_docs"], f"Positive qrels {data_stats['positive_pairs']} != MTEB's {rel['num_relevant_docs']}")
+        if args.split != "all":
+            split = json.loads((ROOT / "benchmark/dev_split.json").read_text())
+            keep = set(split["dev_query_ids" if args.split == "dev" else "confirmation_query_ids"])
+            judged = [q for q in judged if q in keep]
+        if args.max_queries:
+            judged = judged[:args.max_queries]
+        qrels_eval = {q: qrels[q] for q in judged}
+    
+        settings = Settings(ts_enrich=False)
+        modes = args.modes.split(",")
+        embedder, vectors, vector_stats, model_info = None, None, None, {"name": None}
+        if set(modes) - {"bm25"}:
+            embedder = Embedder(settings)
+            if embedder.load() is None:
+                raise integrity.IntegrityError(f"Dense/hybrid requested but model unavailable: {embedder.reason}")
+            model_info = model_identity(embedder, settings)
+        chunks = sorted((Chunk(d, d, "", d, "dataset_document", 1, max(1, len(t.splitlines())), t, t,
+                               hashlib.sha256(t.encode()).hexdigest()) for d, t in corpus.items()), key=lambda c: c.chunk_id)
+        integrity._check([c.chunk_id for c in chunks] == sorted(corpus), "Chunk order is not the sorted document id order")
+        if embedder:
+            vectors, vector_stats = load_vectors(chunks, embedder, settings, model_info)
+>           if args.dense_windows:
+               ^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'Namespace' object has no attribute 'dense_windows'
+
+benchmark\verify_retrieval.py:199: AttributeError
+_________________ ERROR at setup of test_reports_are_written __________________
+
+tmp_path = WindowsPath('C:/Users/aarus/AppData/Local/Temp/pytest-of-aarus/pytest-7/test_reports_are_written0')
+isolated_cache = None
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000025C2F3441D0>
+
+    @pytest.fixture
+    def synthetic_run(tmp_path, isolated_cache, monkeypatch):  # noqa: F811
+        monkeypatch.setattr(Embedder, "load", lambda self, download=False: setattr(self, "model", object()) or self.model)
+        monkeypatch.setattr(Embedder, "encode", lambda self, texts, **kw: np.stack([_vec(t) for t in texts]))
+        monkeypatch.setattr(verify_retrieval, "model_identity", lambda e, s: {"name": "fake-bow", "weights_sha256": None})
+        args = _args(tmp_path, _export(tmp_path), "bm25,dense,hybrid")
+>       assert verify_retrieval.full_run(args) == 0
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+benchmark\test_analyze_baseline.py:20: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+args = Namespace(data='C:\\Users\\aarus\\AppData\\Local\\Temp\\pytest-of-aarus\\pytest-7\\test_reports_are_written0\\apps', o...5,dense,hybrid', max_queries=0, tag='t', trec_eval=None, allow_unknown_revision=False, skip_published_count_check=True)
+
+    def full_run(args) -> int:
+        from backend.app.retrieval.embeddings import Embedder
+        from backend.app.retrieval.search import CROSS_ENCODER_AVAILABLE, Retriever
+        out = Path(args.out)
+        (out / "runs").mkdir(parents=True, exist_ok=True)
+        data = Path(args.data)
+        corpus, queries, qrels = load_export(data, "test")
+        data_stats = integrity.check_dataset(data, corpus, queries, qrels)
+        meta = json.loads((data / "metadata.json").read_text()) if (data / "metadata.json").exists() else {}
+        revision = meta.get("revision")
+        if revision != EXPECTED_DATASET_REVISION and not args.allow_unknown_revision:
+            raise integrity.IntegrityError(f"Dataset revision {revision!r} != expected {EXPECTED_DATASET_REVISION}")
+        judged = evaluation.judged_queries(qrels)
+        published = mteb_published_stats()
+        if published and not getattr(args, "skip_published_count_check", False):  # independent check: MTEB ships its own counts for this task
+            rel = published["relevant_docs_statistics"]
+            integrity._check(data_stats["documents"] == published["num_documents"], f"Documents {data_stats['documents']} != MTEB's {published['num_documents']}")
+            integrity._check(len(judged) == published["num_queries"], f"Judged queries {len(judged)} != MTEB's {published['num_queries']}")
+            integrity._check(data_stats["positive_pairs"] == rel["num_relevant_docs"], f"Positive qrels {data_stats['positive_pairs']} != MTEB's {rel['num_relevant_docs']}")
+        if args.split != "all":
+            split = json.loads((ROOT / "benchmark/dev_split.json").read_text())
+            keep = set(split["dev_query_ids" if args.split == "dev" else "confirmation_query_ids"])
+            judged = [q for q in judged if q in keep]
+        if args.max_queries:
+            judged = judged[:args.max_queries]
+        qrels_eval = {q: qrels[q] for q in judged}
+    
+        settings = Settings(ts_enrich=False)
+        modes = args.modes.split(",")
+        embedder, vectors, vector_stats, model_info = None, None, None, {"name": None}
+        if set(modes) - {"bm25"}:
+            embedder = Embedder(settings)
+            if embedder.load() is None:
+                raise integrity.IntegrityError(f"Dense/hybrid requested but model unavailable: {embedder.reason}")
+            model_info = model_identity(embedder, settings)
+        chunks = sorted((Chunk(d, d, "", d, "dataset_document", 1, max(1, len(t.splitlines())), t, t,
+                               hashlib.sha256(t.encode()).hexdigest()) for d, t in corpus.items()), key=lambda c: c.chunk_id)
+        integrity._check([c.chunk_id for c in chunks] == sorted(corpus), "Chunk order is not the sorted document id order")
+        if embedder:
+            vectors, vector_stats = load_vectors(chunks, embedder, settings, model_info)
+>           if args.dense_windows:
+               ^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'Namespace' object has no attribute 'dense_windows'
+
+benchmark\verify_retrieval.py:199: AttributeError
+================================== FAILURES ===================================
+___________________ test_end_to_end_api_and_source_snapshot ___________________
+
+tmp_path = WindowsPath('C:/Users/aarus/AppData/Local/Temp/pytest-of-aarus/pytest-7/test_end_to_end_api_and_source0')
+
+    def test_end_to_end_api_and_source_snapshot(tmp_path):
+        app = create_app(Settings(cache=tmp_path / "cache", semantic="off", ts_enrich=False))
+        client = TestClient(app)
+        assert client.get("/api/health").status_code == 200
+        response = client.post("/api/index", json={"repo_path": str(ROOT / "examples/demo-repo"), "background": False})
+>       assert response.status_code == 200, response.text
+E       AssertionError: {"detail":"No supported JavaScript source files were found"}
+E       assert 400 == 200
+E        +  where 400 = <Response [400 Bad Request]>.status_code
+
+backend\tests\test_api_versions.py:15: AssertionError
+________ test_corrupt_index_is_rejected_and_explicit_reindex_recovers _________
+
+tmp_path = WindowsPath('C:/Users/aarus/AppData/Local/Temp/pytest-of-aarus/pytest-7/test_corrupt_index_is_rejected0')
+
+    def test_corrupt_index_is_rejected_and_explicit_reindex_recovers(tmp_path):
+        settings=Settings(cache=tmp_path/'cache',semantic='off',ts_enrich=False)
+>       service=IndexService(settings);index=service.index(str(ROOT/'examples/demo-repo'))
+                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+backend\tests\test_audit_reliability.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <backend.app.indexing.service.IndexService object at 0x0000025CC21EEDB0>
+repo_path = 'C:\\Users\\aarus\\Downloads\\ASTFLOW-main\\ASTFLOW-repo\\examples\\demo-repo'
+version = 'working-tree'
+
+    def index(self, repo_path: str, version: str = "working-tree"):
+        with self.lock:
+            started = time.perf_counter()
+            try:
+                repo = Path(repo_path).expanduser().resolve(strict=True)
+                self.status = {"state": "indexing", "stage": "Reading source snapshot", "progress": 5}
+                files, revision, warnings = read_snapshot(repo, version, self.settings)
+                if not files:
+>                   raise ValueError("No supported JavaScript source files were found")
+E                   ValueError: No supported JavaScript source files were found
+
+backend\app\indexing\service.py:78: ValueError
+________ test_indexed_revision_expression_remains_in_version_selector _________
+
+tmp_path = WindowsPath('C:/Users/aarus/AppData/Local/Temp/pytest-of-aarus/pytest-7/test_indexed_revision_expressi0')
+
+    def test_indexed_revision_expression_remains_in_version_selector(tmp_path):
+        service=IndexService(Settings(cache=tmp_path/'cache',semantic='off',ts_enrich=False))
+>       index=service.index(str(ROOT/'examples/demo-repo'),'HEAD~0')
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+backend\tests\test_audit_reliability.py:48: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+backend\app\indexing\service.py:76: in index
+    files, revision, warnings = read_snapshot(repo, version, self.settings)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+repo = WindowsPath('C:/Users/aarus/Downloads/ASTFLOW-main/ASTFLOW-repo/examples/demo-repo')
+version = 'HEAD~0'
+settings = Settings(model='sentence-transformers/all-MiniLM-L6-v2', semantic='off', cache=WindowsPath('C:/Users/aarus/AppData/Loc...ranker_model='cross-encoder/ms-marco-MiniLM-L-6-v2', reranker_depth=100, reranker_batch_size=32, reranker_device='cpu')
+
+    def read_snapshot(repo: Path, version: str, settings: Settings) -> tuple[dict[str, str], str, list[str]]:
+        repo = repo.resolve(strict=True)
+        if not repo.is_dir():
+            raise ValueError("Repository path must be a directory")
+        files, warnings = {}, []
+        total_bytes = 0
+        resolved = "working-tree"
+        if version == "working-tree":
+            for current, dirs, names in os.walk(repo, followlinks=False):
+                dirs[:] = sorted(d for d in dirs if d not in EXCLUDED and not (Path(current) / d).is_symlink()
+                                 and not getattr(Path(current) / d, "is_junction", lambda: False)())
+                for name in sorted(names):
+                    path = Path(current) / name
+                    relative = path.relative_to(repo).as_posix()
+                    if not useful(relative) or path.is_symlink() or not path.resolve().is_relative_to(repo):
+                        continue
+                    if path.stat().st_size > settings.max_file_bytes:
+                        warnings.append(f"Skipped large file: {relative}")
+                        continue
+                    try:
+                        with path.open("rb") as stream:
+                            raw = stream.read(settings.max_file_bytes + 1)
+                        if len(raw) > settings.max_file_bytes:
+                            warnings.append(f"Skipped large file: {relative}")
+                            continue
+                        total_bytes += len(raw)
+                        if total_bytes > settings.max_total_bytes:
+                            raise ValueError("Repository exceeds total source byte limit")
+                        files[relative] = raw.decode("utf-8")
+                    except UnicodeDecodeError:
+                        warnings.append(f"Skipped non-UTF-8 file: {relative}")
+                    if len(files) > settings.max_files:
+                        raise ValueError(f"Repository exceeds {settings.max_files} JavaScript files")
+        else:
+            if Path(git(repo, "rev-parse", "--show-toplevel")).resolve() != repo:
+>               raise ValueError("Select the Git repository root to index a revision")
+E               ValueError: Select the Git repository root to index a revision
+
+backend\app\indexing\discovery.py:62: ValueError
+__________ test_actual_cpu_semantic_retrieval_and_persisted_vectors ___________
+
+tmp_path = WindowsPath('C:/Users/aarus/AppData/Local/Temp/pytest-of-aarus/pytest-7/test_actual_cpu_semantic_retri0')
+
+    def test_actual_cpu_semantic_retrieval_and_persisted_vectors(tmp_path):
+        pytest.importorskip("sentence_transformers", reason="Optional semantic dependencies are not installed")
+        base = Settings()
+        if not (base.cache / "models" / base.model.replace("/", "--") / "modules.json").exists():
+            pytest.skip("Install the CPU model with astflow model-download for semantic integration testing")
+        # Share model assets, isolate the index and its registry from application state.
+        service = IndexService(Settings(cache=tmp_path / "cache", ts_enrich=False))
+        service.embedder = Embedder(base)
+>       index = service.index(str(ROOT / "examples/demo-repo"))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+backend\tests\test_metrics_semantic.py:31: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <backend.app.indexing.service.IndexService object at 0x0000025CC2379EB0>
+repo_path = 'C:\\Users\\aarus\\Downloads\\ASTFLOW-main\\ASTFLOW-repo\\examples\\demo-repo'
+version = 'working-tree'
+
+    def index(self, repo_path: str, version: str = "working-tree"):
+        with self.lock:
+            started = time.perf_counter()
+            try:
+                repo = Path(repo_path).expanduser().resolve(strict=True)
+                self.status = {"state": "indexing", "stage": "Reading source snapshot", "progress": 5}
+                files, revision, warnings = read_snapshot(repo, version, self.settings)
+                if not files:
+>                   raise ValueError("No supported JavaScript source files were found")
+E                   ValueError: No supported JavaScript source files were found
+
+backend\app\indexing\service.py:78: ValueError
+________________________ test_bm25_pipeline_end_to_end ________________________
+
+tmp_path = WindowsPath('C:/Users/aarus/AppData/Local/Temp/pytest-of-aarus/pytest-7/test_bm25_pipeline_end_to_end0')
+isolated_cache = None
+
+    def test_bm25_pipeline_end_to_end(tmp_path, isolated_cache):
+>       assert verify_retrieval.full_run(_args(tmp_path, _export(tmp_path), "bm25")) == 0
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+benchmark\test_verify_retrieval.py:59: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+args = Namespace(data='C:\\Users\\aarus\\AppData\\Local\\Temp\\pytest-of-aarus\\pytest-7\\test_bm25_pipeline_end_to_end0\\app...', modes='bm25', max_queries=0, tag='t', trec_eval=None, allow_unknown_revision=False, skip_published_count_check=True)
+
+    def full_run(args) -> int:
+        from backend.app.retrieval.embeddings import Embedder
+        from backend.app.retrieval.search import CROSS_ENCODER_AVAILABLE, Retriever
+        out = Path(args.out)
+        (out / "runs").mkdir(parents=True, exist_ok=True)
+        data = Path(args.data)
+        corpus, queries, qrels = load_export(data, "test")
+        data_stats = integrity.check_dataset(data, corpus, queries, qrels)
+        meta = json.loads((data / "metadata.json").read_text()) if (data / "metadata.json").exists() else {}
+        revision = meta.get("revision")
+        if revision != EXPECTED_DATASET_REVISION and not args.allow_unknown_revision:
+            raise integrity.IntegrityError(f"Dataset revision {revision!r} != expected {EXPECTED_DATASET_REVISION}")
+        judged = evaluation.judged_queries(qrels)
+        published = mteb_published_stats()
+        if published and not getattr(args, "skip_published_count_check", False):  # independent check: MTEB ships its own counts for this task
+            rel = published["relevant_docs_statistics"]
+            integrity._check(data_stats["documents"] == published["num_documents"], f"Documents {data_stats['documents']} != MTEB's {published['num_documents']}")
+            integrity._check(len(judged) == published["num_queries"], f"Judged queries {len(judged)} != MTEB's {published['num_queries']}")
+            integrity._check(data_stats["positive_pairs"] == rel["num_relevant_docs"], f"Positive qrels {data_stats['positive_pairs']} != MTEB's {rel['num_relevant_docs']}")
+        if args.split != "all":
+            split = json.loads((ROOT / "benchmark/dev_split.json").read_text())
+            keep = set(split["dev_query_ids" if args.split == "dev" else "confirmation_query_ids"])
+            judged = [q for q in judged if q in keep]
+        if args.max_queries:
+            judged = judged[:args.max_queries]
+        qrels_eval = {q: qrels[q] for q in judged}
+    
+        settings = Settings(ts_enrich=False)
+        modes = args.modes.split(",")
+        embedder, vectors, vector_stats, model_info = None, None, None, {"name": None}
+        if set(modes) - {"bm25"}:
+            embedder = Embedder(settings)
+            if embedder.load() is None:
+                raise integrity.IntegrityError(f"Dense/hybrid requested but model unavailable: {embedder.reason}")
+            model_info = model_identity(embedder, settings)
+        chunks = sorted((Chunk(d, d, "", d, "dataset_document", 1, max(1, len(t.splitlines())), t, t,
+                               hashlib.sha256(t.encode()).hexdigest()) for d, t in corpus.items()), key=lambda c: c.chunk_id)
+        integrity._check([c.chunk_id for c in chunks] == sorted(corpus), "Chunk order is not the sorted document id order")
+        if embedder:
+            vectors, vector_stats = load_vectors(chunks, embedder, settings, model_info)
+            if args.dense_windows:
+                window, overlap = (int(x) for x in args.dense_windows.split(":"))
+                vectors, window_stats = load_window_vectors(chunks, embedder, settings, model_info, vectors, window, overlap)
+                vector_stats = {"whole_document": vector_stats, "windows": window_stats}
+        retriever = Retriever(chunks, vectors, embedder, settings)
+        corpus_ids = set(corpus)
+    
+        qrels_path = out / "apps.qrels"
+        qrels_sha = evaluation.write_qrels(qrels_eval, qrels_path)
+        runs, reports, run_hashes, latency = {}, {}, {}, {}
+        for mode in modes:
+            rankings, times = {}, []
+            for qid in judged:
+                started = time.perf_counter()
+                rows, _ = retriever.rank(queries[qid], mode=mode, boosts=False, limit=DEPTH)
+                times.append((time.perf_counter() - started) * 1000)
+                rankings[qid] = [r["chunk"].chunk_id for r in rows[:DEPTH]]
+            integrity.check_rankings(rankings, corpus_ids, judged, DEPTH)
+            run_path = out / "runs" / f"{args.tag}-{mode}.trec"
+            run_hashes[mode] = evaluation.write_run(rankings, run_path, tag=f"astflow-{mode}")
+            reports[mode] = evaluation.cross_check(rankings, qrels_eval, run_path, qrels_path, args.trec_eval)
+            runs[mode] = rankings
+            latency[mode] = {"median_ms": statistics.median(times), "mean_ms": statistics.fmean(times),
+                             "p95_ms": float(np.percentile(times, 95))}
+            agg = reports[mode]["evaluators"]["reference"]
+            print(f"{mode:7s} ndcg@10={agg['ndcg@10']:.5f} mrr@10={agg['mrr@10']:.5f} r@10={agg['recall@10']:.5f} "
+                  f"r@100={agg['recall@100']:.5f} agree={reports[mode]['agree']}")
+    
+        diag = {"buckets": {m: forensics.rank_buckets(r, qrels_eval, judged) for m, r in runs.items()},
+                "mode_comparison": forensics.mode_comparison(runs, qrels_eval, judged)}
+        if "hybrid" in runs:
+            diag["oracle_ceiling_hybrid"] = {f"top{k}": forensics.oracle_ceiling(runs["hybrid"], qrels_eval, judged, k)
+                                             for k in (10, 20, 50, 100, 500, 1000)}
+        for mode, rep in reports.items():
+            lines = [f"{q}\t" + "\t".join(f"{rep['per_query'][ev][q]['ndcg@10']:.6f}" for ev in rep["per_query"]) for q in judged]
+            (out / f"per-query-{args.tag}-{mode}.tsv").write_text("query\t" + "\t".join(rep["per_query"]) + "\n" + "\n".join(lines) + "\n")
+    
+        manifest = {
+            "generated_by": "benchmark/verify_retrieval.py", "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "git": git_state(), "environment": integrity.environment(),
+            "dataset": {"name": "CoIR-Retrieval/apps (MTEB AppsRetrieval)", "revision": revision, "split": "test",
+                        "query_selection": args.split, "evaluated_queries": len(judged), **data_stats,
+                        **integrity.fingerprint(corpus, queries, qrels), "qrels_file_sha256": qrels_sha},
+            "retrieval_config": {"representation": (f"id-aligned sliding windows {args.dense_windows} (window:overlap word-pieces), max over windows, title\\ntext"
+>                                                   if args.dense_windows else "one vector per document (no windows), title\\ntext"), "depth": DEPTH,
+                                                       ^^^^^^^^^^^^^^^^^^
+                                 "candidates": settings.candidates, "rrf_k": settings.rrf_k,
+                                 "lexical_weight": settings.lexical_weight, "semantic_weight": settings.semantic_weight,
+                                 "bm25_k1": retriever.bm25.k1, "bm25_b": retriever.bm25.b, "dense_threshold": 0.05,
+                                 "boosts": False, "reranker": "none (CROSS_ENCODER_AVAILABLE=%s)" % CROSS_ENCODER_AVAILABLE},
+            "model": model_info, "vectors": vector_stats, "run_sha256": run_hashes, "latency": latency,
+            "evaluation_protocol": "trec_eval -c semantics; canonical scores n-rank+1; linear gain NDCG; MRR@10 = RR within top 10",
+            "evaluators": {m: {"aggregates": r["evaluators"], "agree": r["agree"], "disagreements": r["disagreements"][:20],
+                               "trec_eval_binary": r.get("trec_eval_binary")} for m, r in reports.items()},
+            "forensics": diag,
+        }
+E       AttributeError: 'Namespace' object has no attribute 'dense_windows'
+
+benchmark\verify_retrieval.py:243: AttributeError
+---------------------------- Captured stdout call -----------------------------
+bm25    ndcg@10=0.69672 mrr@10=0.60417 r@10=1.00000 r@100=1.00000 agree=True
+____________ test_dense_and_hybrid_pipeline_with_injected_encoder _____________
+
+tmp_path = WindowsPath('C:/Users/aarus/AppData/Local/Temp/pytest-of-aarus/pytest-7/test_dense_and_hybrid_pipeline0')
+isolated_cache = None
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000025CF78B75F0>
+
+    def test_dense_and_hybrid_pipeline_with_injected_encoder(tmp_path, isolated_cache, monkeypatch):
+        monkeypatch.setattr(Embedder, "load", lambda self, download=False: setattr(self, "model", object()) or self.model)
+        monkeypatch.setattr(Embedder, "encode", lambda self, texts, **kw: np.stack([_vec(t) for t in texts]))
+        monkeypatch.setattr(verify_retrieval, "model_identity", lambda e, s: {"name": "fake-bow", "weights_sha256": None})
+>       assert verify_retrieval.full_run(_args(tmp_path, _export(tmp_path), "bm25,dense,hybrid")) == 0
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+benchmark\test_verify_retrieval.py:71: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+args = Namespace(data='C:\\Users\\aarus\\AppData\\Local\\Temp\\pytest-of-aarus\\pytest-7\\test_dense_and_hybrid_pipeline0\\ap...5,dense,hybrid', max_queries=0, tag='t', trec_eval=None, allow_unknown_revision=False, skip_published_count_check=True)
+
+    def full_run(args) -> int:
+        from backend.app.retrieval.embeddings import Embedder
+        from backend.app.retrieval.search import CROSS_ENCODER_AVAILABLE, Retriever
+        out = Path(args.out)
+        (out / "runs").mkdir(parents=True, exist_ok=True)
+        data = Path(args.data)
+        corpus, queries, qrels = load_export(data, "test")
+        data_stats = integrity.check_dataset(data, corpus, queries, qrels)
+        meta = json.loads((data / "metadata.json").read_text()) if (data / "metadata.json").exists() else {}
+        revision = meta.get("revision")
+        if revision != EXPECTED_DATASET_REVISION and not args.allow_unknown_revision:
+            raise integrity.IntegrityError(f"Dataset revision {revision!r} != expected {EXPECTED_DATASET_REVISION}")
+        judged = evaluation.judged_queries(qrels)
+        published = mteb_published_stats()
+        if published and not getattr(args, "skip_published_count_check", False):  # independent check: MTEB ships its own counts for this task
+            rel = published["relevant_docs_statistics"]
+            integrity._check(data_stats["documents"] == published["num_documents"], f"Documents {data_stats['documents']} != MTEB's {published['num_documents']}")
+            integrity._check(len(judged) == published["num_queries"], f"Judged queries {len(judged)} != MTEB's {published['num_queries']}")
+            integrity._check(data_stats["positive_pairs"] == rel["num_relevant_docs"], f"Positive qrels {data_stats['positive_pairs']} != MTEB's {rel['num_relevant_docs']}")
+        if args.split != "all":
+            split = json.loads((ROOT / "benchmark/dev_split.json").read_text())
+            keep = set(split["dev_query_ids" if args.split == "dev" else "confirmation_query_ids"])
+            judged = [q for q in judged if q in keep]
+        if args.max_queries:
+            judged = judged[:args.max_queries]
+        qrels_eval = {q: qrels[q] for q in judged}
+    
+        settings = Settings(ts_enrich=False)
+        modes = args.modes.split(",")
+        embedder, vectors, vector_stats, model_info = None, None, None, {"name": None}
+        if set(modes) - {"bm25"}:
+            embedder = Embedder(settings)
+            if embedder.load() is None:
+                raise integrity.IntegrityError(f"Dense/hybrid requested but model unavailable: {embedder.reason}")
+            model_info = model_identity(embedder, settings)
+        chunks = sorted((Chunk(d, d, "", d, "dataset_document", 1, max(1, len(t.splitlines())), t, t,
+                               hashlib.sha256(t.encode()).hexdigest()) for d, t in corpus.items()), key=lambda c: c.chunk_id)
+        integrity._check([c.chunk_id for c in chunks] == sorted(corpus), "Chunk order is not the sorted document id order")
+        if embedder:
+            vectors, vector_stats = load_vectors(chunks, embedder, settings, model_info)
+>           if args.dense_windows:
+               ^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'Namespace' object has no attribute 'dense_windows'
+
+benchmark\verify_retrieval.py:199: AttributeError
+============================== warnings summary ===============================
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  C:\Users\aarus\Downloads\ASTFLOW-main\ASTFLOW-repo\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+.venv\Lib\site-packages\starlette\testclient.py:53
+  C:\Users\aarus\Downloads\ASTFLOW-main\ASTFLOW-repo\.venv\Lib\site-packages\starlette\testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=============================== tests coverage ================================
+_______________ coverage: platform win32, python 3.12.4-final-0 _______________
+
+Name                                            Stmts   Miss  Cover
+-------------------------------------------------------------------
+backend\__init__.py                                 0      0   100%
+backend\app\__init__.py                             0      0   100%
+backend\app\agent\__init__.py                       0      0   100%
+backend\app\agent\investigate.py                  125     16    87%
+backend\app\api\__init__.py                         0      0   100%
+backend\app\api\schemas.py                         28      1    96%
+backend\app\cli.py                                 58     58     0%
+backend\app\config.py                              36      0   100%
+backend\app\indexing\__init__.py                    0      0   100%
+backend\app\indexing\discovery.py                 113     20    82%
+backend\app\indexing\service.py                   179     28    84%
+backend\app\main.py                               168     33    80%
+backend\app\models\__init__.py                      0      0   100%
+backend\app\models\entities.py                     65      0   100%
+backend\app\parsing\__init__.py                     0      0   100%
+backend\app\parsing\javascript.py                 202     13    94%
+backend\app\retrieval\__init__.py                   0      0   100%
+backend\app\retrieval\embedding_cache.py           32      2    94%
+backend\app\retrieval\embeddings.py                62     39    37%
+backend\app\retrieval\reranker.py                  72     10    86%
+backend\app\retrieval\search.py                   106      5    95%
+backend\app\runtime\__init__.py                     0      0   100%
+backend\app\storage\__init__.py                     0      0   100%
+backend\app\storage\store.py                       47     17    64%
+backend\app\structure\__init__.py                   0      0   100%
+backend\app\structure\graph.py                     76      4    95%
+backend\app\structure\resolver.py                 135     16    88%
+backend\app\structure\typescript.py                28      2    93%
+backend\app\versions\__init__.py                    0      0   100%
+backend\app\versions\compare.py                    31      3    90%
+backend\tests\test_api_versions.py                 61     19    69%
+backend\tests\test_audit_reliability.py            81     13    84%
+backend\tests\test_audit_retrieval.py              12      0   100%
+backend\tests\test_core.py                        111     22    80%
+backend\tests\test_dataset_adapter.py              15      0   100%
+backend\tests\test_enrichment.py                   24      1    96%
+backend\tests\test_metrics_semantic.py             32      9    72%
+backend\tests\test_regressions.py                  95      0   100%
+benchmark\__init__.py                               0      0   100%
+benchmark\ablate.py                                26     26     0%
+benchmark\analyze_baseline.py                     182    149    18%
+benchmark\analyze_corpus.py                        51     31    39%
+benchmark\build_dev_split.py                       45      4    91%
+benchmark\compare_runs.py                          28     28     0%
+benchmark\evaluate.py                              61     61     0%
+benchmark\foundation_audit.py                      86     86     0%
+benchmark\metrics.py                               10      0   100%
+benchmark\mteb_appretrieval.py                    147     62    58%
+benchmark\precompute_embeddings.py                 38      3    92%
+benchmark\profile_system.py                        34     34     0%
+benchmark\run_fusion_sweep.py                     197    197     0%
+benchmark\run_mteb.py                              91     91     0%
+benchmark\run_parallel_reranker.py                189    189     0%
+benchmark\run_reranker_benchmark.py               150    150     0%
+benchmark\score_e002.py                            79     79     0%
+benchmark\score_e003.py                           116    116     0%
+benchmark\test_analyze_baseline.py                 52     34    35%
+benchmark\test_analyze_corpus.py                    9      0   100%
+benchmark\test_dev_split.py                        44      0   100%
+benchmark\test_mteb_adapter.py                     16     16     0%
+benchmark\test_precompute_alignment.py             79      1    99%
+benchmark\test_reranker.py                         96      0   100%
+benchmark\test_rrf_reconstruction.py               31      2    94%
+benchmark\test_trust_evaluation.py                 68      3    96%
+benchmark\test_tune_bm25.py                        62      0   100%
+benchmark\test_verify_retrieval.py                 71     12    83%
+benchmark\trust\__init__.py                         0      0   100%
+benchmark\trust\evaluation.py                     134     24    82%
+benchmark\trust\forensics.py                       41     14    66%
+benchmark\trust\integrity.py                       75      3    96%
+benchmark\tune_bm25.py                            107     17    84%
+benchmark\verify_dense_alignment_synthetic.py     112    112     0%
+benchmark\verify_retrieval.py                     197     77    61%
+-------------------------------------------------------------------
+TOTAL                                            4718   1952    59%
+Coverage JSON written to file audit/evidence/coverage-before.json
+=========================== short test summary info ===========================
+FAILED backend/tests/test_api_versions.py::test_end_to_end_api_and_source_snapshot
+FAILED backend/tests/test_audit_reliability.py::test_corrupt_index_is_rejected_and_explicit_reindex_recovers
+FAILED backend/tests/test_audit_reliability.py::test_indexed_revision_expression_remains_in_version_selector
+FAILED backend/tests/test_metrics_semantic.py::test_actual_cpu_semantic_retrieval_and_persisted_vectors
+FAILED benchmark/test_verify_retrieval.py::test_bm25_pipeline_end_to_end - At...
+FAILED benchmark/test_verify_retrieval.py::test_dense_and_hybrid_pipeline_with_injected_encoder
+ERROR backend/tests/test_core.py::test_real_lexical_search_graph_and_cache - ...
+ERROR backend/tests/test_core.py::test_agent_refines_from_observed_symbols - ...
+ERROR benchmark/test_analyze_baseline.py::test_pack_rebuilds_identical_runs_and_analysis_uses_packed_files
+ERROR benchmark/test_analyze_baseline.py::test_synthetic_data_is_flagged_as_not_the_real_benchmark
+ERROR benchmark/test_analyze_baseline.py::test_oracle_equals_hit_rate_with_one_relevant_document
+ERROR benchmark/test_analyze_baseline.py::test_tampered_run_is_rejected - Att...
+ERROR benchmark/test_analyze_baseline.py::test_reports_are_written - Attribut...
+SKIPPED [1] benchmark\test_verify_retrieval.py:95: mteb not installed

@@ -1,0 +1,830 @@
+{
+ "generated": "2026-09-25",
+ "branch": "audit/master-remediation",
+ "summary_by_severity": {
+  "P0": {
+   "total": 1,
+   "fixed": 1,
+   "open": 0,
+   "other": 0
+  },
+  "P1": {
+   "total": 10,
+   "fixed": 9,
+   "open": 1,
+   "other": 0
+  },
+  "P2": {
+   "total": 17,
+   "fixed": 11,
+   "open": 4,
+   "other": 2
+  },
+  "P3": {
+   "total": 11,
+   "fixed": 7,
+   "open": 3,
+   "other": 1
+  }
+ },
+ "findings": [
+  {
+   "id": "F-001",
+   "category": "build/demo",
+   "severity": "P0",
+   "confidence": "confirmed",
+   "title": "Demo fixture is a dangling gitlink; every clone is empty",
+   "description": "examples/demo-repo was committed as a gitlink (160000) to 31b94fc with no .gitmodules and no reachable object. npm run setup / npm run demo fail with 'Demo source files are missing'; 5 backend tests fail or error; the Docker image copies an empty directory.",
+   "evidence": [
+    "audit/evidence/startup-before.log",
+    "clean clone: setup exit 1 after 455 s (08-runtime-startup.md)",
+    "audit/evidence/pytest-before.log"
+   ],
+   "reproduction": "git clone ...; npm run setup",
+   "files": "examples/demo-repo, scripts/setup_demo.py",
+   "affected_feature": "startup, demo, tests",
+   "requirement": "S2 P1, S1 C8",
+   "recommended_action": "Restore the 11 fixture sources (setup_demo rebuilds v2 == 31b94fc exactly); pin LF",
+   "estimated_effort": "S",
+   "dependencies": "",
+   "status": "FIXED",
+   "fix_commit": "b2ea145"
+  },
+  {
+   "id": "F-002",
+   "category": "benchmark",
+   "severity": "P1",
+   "confidence": "confirmed",
+   "title": "E003 commit broke verify_retrieval for callers without dense_windows",
+   "description": "args.dense_windows read unconditionally: test_verify_retrieval (2 failed) and test_analyze_baseline (5 errors). Introduced by this engagement's own E003 commit 95953a4.",
+   "evidence": [
+    "audit/evidence/pytest-before.log"
+   ],
+   "reproduction": "pytest benchmark/test_verify_retrieval.py",
+   "files": "benchmark/verify_retrieval.py",
+   "affected_feature": "trust harness",
+   "requirement": "E1",
+   "recommended_action": "getattr with a None default",
+   "estimated_effort": "XS",
+   "dependencies": "",
+   "status": "FIXED",
+   "fix_commit": "41fcee0"
+  },
+  {
+   "id": "F-011",
+   "category": "retrieval/UX",
+   "severity": "P1",
+   "confidence": "confirmed",
+   "title": "Nonsense queries presented as 'the relevant code'",
+   "description": "Dense retrieval always returns nearest neighbours (cosine 0.11-0.15 for 'qxzjvnonexistentidentifier'); the UI headed them 'Here's the relevant code'.",
+   "evidence": [
+    "audit/evidence/api-probe.json (search nonsense)",
+    "playwright-before audit spec failure"
+   ],
+   "reproduction": "Ask 'qxzjvnonexistentidentifier'",
+   "files": "backend/app/agent/investigate.py, frontend/src/App.tsx",
+   "affected_feature": "search answer",
+   "requirement": "C1, product honesty",
+   "recommended_action": "Add match_basis; honest heading",
+   "estimated_effort": "S",
+   "dependencies": "",
+   "status": "FIXED",
+   "fix_commit": "c992b87, 4746151"
+  },
+  {
+   "id": "F-014",
+   "category": "retrieval/product",
+   "severity": "P1",
+   "confidence": "confirmed",
+   "title": "Rejected E002 cross-encoder still reachable in the product; misleading availability flag",
+   "description": "ASTFLOW_RERANKER_ENABLED (undocumented) routed search through a model that lowered NDCG@10 by 0.0187 (CI excludes 0); CROSS_ENCODER_AVAILABLE=True was written into manifests.",
+   "evidence": [
+    "benchmark/experiments/E002.json",
+    "backend/app/retrieval/search.py at f0f2fc9"
+   ],
+   "reproduction": "ASTFLOW_RERANKER_ENABLED=true",
+   "files": "backend/app/retrieval/search.py, reranker.py, config.py",
+   "affected_feature": "ranking",
+   "requirement": "mission section 21",
+   "recommended_action": "Remove from the product; reject unknown modes",
+   "estimated_effort": "S",
+   "dependencies": "",
+   "status": "FIXED",
+   "fix_commit": "aa14805"
+  },
+  {
+   "id": "F-020",
+   "category": "benchmark",
+   "severity": "P1",
+   "confidence": "confirmed",
+   "title": "No MTEB artifact for the current code",
+   "description": "results/mteb, mteb-bm25, mteb-hybrid came from three older code states (0.089 / 0.06104 / 0.08815).",
+   "evidence": [
+    "02-retrieval-baseline.md"
+   ],
+   "reproduction": "-",
+   "files": "benchmark/results/",
+   "affected_feature": "submission artifact",
+   "requirement": "C3, C8",
+   "recommended_action": "Generate artifacts for the current code",
+   "estimated_effort": "S",
+   "dependencies": "F-036, F-042",
+   "status": "FIXED",
+   "fix_commit": "c42b78a"
+  },
+  {
+   "id": "F-023",
+   "category": "graph",
+   "severity": "P1",
+   "confidence": "confirmed",
+   "title": "Call graph essentially empty on real repositories",
+   "description": "Every call inside a nested function was rejected: express 12 edges / 3,120 callables (99.3% isolated), lodash 20 / 4,463.",
+   "evidence": [
+    "audit/evidence/graph-stats-before.json",
+    "audit/evidence/resolver-nested-measure.json"
+   ],
+   "reproduction": "index expressjs/express",
+   "files": "backend/app/structure/resolver.py",
+   "affected_feature": "Map, Trace, structural answers",
+   "requirement": "C10, C11, C14",
+   "recommended_action": "Resolve identifier calls from nested scopes via the scope-chain lookup; verify with the TS language service",
+   "estimated_effort": "M",
+   "dependencies": "",
+   "status": "FIXED",
+   "fix_commit": "52063cf"
+  },
+  {
+   "id": "F-025",
+   "category": "accessibility",
+   "severity": "P1",
+   "confidence": "confirmed",
+   "title": "Critical ARIA violation in every view",
+   "description": "role=tablist contained close buttons (aria-required-children) in 21/21 crawled states.",
+   "evidence": [
+    "audit/evidence/ui-crawl-before.json",
+    "Lighthouse accessibility 0.87 before"
+   ],
+   "reproduction": "axe",
+   "files": "frontend/src/App.tsx",
+   "affected_feature": "all views",
+   "requirement": "mission section 15",
+   "recommended_action": "Labelled group + aria-current",
+   "estimated_effort": "XS",
+   "dependencies": "",
+   "status": "FIXED",
+   "fix_commit": "4746151"
+  },
+  {
+   "id": "F-032",
+   "category": "UI",
+   "severity": "P1",
+   "confidence": "confirmed",
+   "title": "Uncaught page error when leaving the Compare diff",
+   "description": "'TextModel got disposed before DiffEditorWidget model got reset' in 10 crawl interactions (all viewports).",
+   "evidence": [
+    "audit/evidence/ui-crawl-before.json"
+   ],
+   "reproduction": "Compare, then click a source link",
+   "files": "frontend/src/components/SourceViewer.tsx",
+   "affected_feature": "Compare",
+   "requirement": "-",
+   "recommended_action": "keepCurrentOriginalModel / keepCurrentModifiedModel",
+   "estimated_effort": "XS",
+   "dependencies": "",
+   "status": "FIXED",
+   "fix_commit": "4746151"
+  },
+  {
+   "id": "F-036",
+   "category": "benchmark",
+   "severity": "P1",
+   "confidence": "confirmed",
+   "title": "MTEB artifact scored a tie-broken order ASTFLOW never returns",
+   "description": "Raw RRF scores tie inside the top 10 for ~9% of queries; MTEB re-sorted ties: NDCG@10 0.089 / MRR@10 0.07338 vs 0.0884 / 0.07257 for the actual order.",
+   "evidence": [
+    "audit/evidence/mteb-hybrid-raw-rrf-scores",
+    "benchmark/results/mteb-current-hybrid"
+   ],
+   "reproduction": "run_mteb --mode hybrid",
+   "files": "benchmark/run_mteb.py",
+   "affected_feature": "official artifact",
+   "requirement": "C2, C3",
+   "recommended_action": "Emit rank-preserving scores (as the trust harness does)",
+   "estimated_effort": "XS",
+   "dependencies": "",
+   "status": "FIXED",
+   "fix_commit": "f0a88b3"
+  },
+  {
+   "id": "F-044",
+   "category": "retrieval quality",
+   "severity": "P1",
+   "confidence": "confirmed",
+   "title": "Retrieval accuracy on AppsRetrieval is low; candidate generation is the limit",
+   "description": "Hybrid NDCG@10 0.0884 (Recall@100 0.298); 65% of answers are in neither retriever's top 100; 89% of queries exceed the dense model's 256 word-pieces; median query/document vocabulary overlap 5.8%.",
+   "evidence": [
+    "02-retrieval-baseline.md",
+    "post-E003 audit"
+   ],
+   "reproduction": "verify_retrieval / run_mteb",
+   "files": "retrieval",
+   "affected_feature": "retrieval",
+   "requirement": "C2 (P0 screening criterion)",
+   "recommended_action": "E004 (pre-registered, awaiting approval); E005 candidate (offline NL descriptions)",
+   "estimated_effort": "L",
+   "dependencies": "approval",
+   "status": "OPEN",
+   "fix_commit": null
+  },
+  {
+   "id": "F-046",
+   "category": "graph",
+   "severity": "P1",
+   "confidence": "confirmed",
+   "title": "Graph intermittently rendered invisible nodes / no edges",
+   "description": "After the canvas remounted, React Flow sometimes never measured nodes: nodes stayed hidden, then edges were never drawn (2 of 32 diagnostic traces; studio map test failed 3 of 12 repeats); the canvas also jumped once after render (two fits with different padding).",
+   "evidence": [
+    "audit/tools/trace-edges.audit.ts results in 11-e2e / 12-graph-audit"
+   ],
+   "reproduction": "Map -> file focus -> open source -> Trace",
+   "files": "frontend/src/components/TraceGraph.tsx",
+   "affected_feature": "Map, Trace",
+   "requirement": "C10",
+   "recommended_action": "fixed node size + declared handles; same fit padding",
+   "estimated_effort": "S",
+   "dependencies": "",
+   "status": "FIXED",
+   "fix_commit": "537233e"
+  },
+  {
+   "id": "F-010",
+   "category": "tests",
+   "severity": "P2",
+   "confidence": "confirmed",
+   "title": "investigation.spec.ts targets a removed UI",
+   "description": "6/6 tests fail on .result-card / nav 'Trace' selectors from a deleted component.",
+   "evidence": [
+    "audit/evidence/playwright-before.log"
+   ],
+   "reproduction": "npx playwright test investigation",
+   "files": "frontend/e2e/investigation.spec.ts",
+   "affected_feature": "E2E",
+   "requirement": "E3",
+   "recommended_action": "Replace with journeys against the current UI",
+   "estimated_effort": "S",
+   "dependencies": "",
+   "status": "FIXED",
+   "fix_commit": "46a3d28"
+  },
+  {
+   "id": "F-013",
+   "category": "benchmark protocol",
+   "severity": "P2",
+   "confidence": "confirmed",
+   "title": "Confirmation split used three times during BM25 tuning",
+   "description": "bm25-tuning-log.json records 3 confirmation runs (k1 1.6 twice, 1.5 once); the ledger requires confirmation once per candidate. The README also claimed the tuning scripts were never run.",
+   "evidence": [
+    "benchmark/results/bm25-tuning-log.json"
+   ],
+   "reproduction": "inspect the log",
+   "files": "benchmark/tune_bm25.py, README.md",
+   "affected_feature": "experiment protocol",
+   "requirement": "E2",
+   "recommended_action": "Record the breach; correct the README",
+   "estimated_effort": "XS",
+   "dependencies": "",
+   "status": "DOCUMENTED",
+   "fix_commit": null
+  },
+  {
+   "id": "F-015",
+   "category": "UX naming",
+   "severity": "P2",
+   "confidence": "confirmed",
+   "title": "'Explain' implies generated explanations that do not exist",
+   "description": "Top-bar Explain toggled a panel; 'Explain this code' ran a search. Generation is out of S1 scope.",
+   "evidence": [
+    "frontend/src/App.tsx at f0f2fc9"
+   ],
+   "reproduction": "click Explain",
+   "files": "frontend/src/App.tsx",
+   "affected_feature": "companion",
+   "requirement": "C16",
+   "recommended_action": "Rename to Ask / Find related code",
+   "estimated_effort": "XS",
+   "dependencies": "",
+   "status": "FIXED",
+   "fix_commit": "4746151"
+  },
+  {
+   "id": "F-019",
+   "category": "performance",
+   "severity": "P2",
+   "confidence": "confirmed",
+   "title": "Title field re-tokenised every chunk on every query; two unused corpus copies",
+   "description": "lexical_scores looped over all chunks tokenising qualified_name per query (91.2 ms/query on 8,765 docs).",
+   "evidence": [
+    "scores bit-identical on 300 queries x 8,765 docs; 91.2 -> 1.9 ms/query"
+   ],
+   "reproduction": "see commit message",
+   "files": "backend/app/retrieval/search.py",
+   "affected_feature": "search latency",
+   "requirement": "C15",
+   "recommended_action": "Precompute title tokens",
+   "estimated_effort": "S",
+   "dependencies": "",
+   "status": "FIXED",
+   "fix_commit": "4cac3a9"
+  },
+  {
+   "id": "F-021",
+   "category": "maintainability",
+   "severity": "P2",
+   "confidence": "confirmed",
+   "title": "Frontend source written as very long single lines",
+   "description": "App.tsx lines up to 1,881 chars; studio.css up to 14,088; Semgrep could only partially parse two files.",
+   "evidence": [
+    "06-static-analysis.md"
+   ],
+   "reproduction": "measure line lengths",
+   "files": "frontend/src/*",
+   "affected_feature": "all UI",
+   "requirement": "-",
+   "recommended_action": "Format with a formatter in a dedicated no-behaviour-change commit",
+   "estimated_effort": "S",
+   "dependencies": "",
+   "status": "OPEN",
+   "fix_commit": null
+  },
+  {
+   "id": "F-022",
+   "category": "build",
+   "severity": "P2",
+   "confidence": "confirmed",
+   "title": "Trust-harness evaluators not declared as dependencies",
+   "description": "pytrec_eval / ir_measures imported but in no requirements file; a fresh MTEB venv fails 3 tests.",
+   "evidence": [
+    "eval-venv pytest output"
+   ],
+   "reproduction": "pip install -r benchmark/requirements-mteb.txt; pytest benchmark/test_verify_retrieval.py",
+   "files": "pyproject.toml, benchmark/requirements-mteb.txt",
+   "affected_feature": "reproducibility",
+   "requirement": "E1",
+   "recommended_action": "Pin the versions recorded in the baseline manifest",
+   "estimated_effort": "XS",
+   "dependencies": "",
+   "status": "FIXED",
+   "fix_commit": "8b6713c"
+  },
+  {
+   "id": "F-026",
+   "category": "accessibility",
+   "severity": "P2",
+   "confidence": "confirmed",
+   "title": "Insufficient contrast (hints, captions, Monaco tokens, highlighted and diff lines)",
+   "description": "3.5-4.4:1 in 17/21 states.",
+   "evidence": [
+    "audit/evidence/ui-crawl-before.json",
+    "frontend/e2e/a11y.spec.ts"
+   ],
+   "reproduction": "axe",
+   "files": "frontend/src/studio.css, frontend/src/components/SourceViewer.tsx",
+   "affected_feature": "all views",
+   "requirement": "mission section 15",
+   "recommended_action": "Raise to >= 4.5:1",
+   "estimated_effort": "S",
+   "dependencies": "",
+   "status": "FIXED",
+   "fix_commit": "4746151"
+  },
+  {
+   "id": "F-028",
+   "category": "benchmark provenance",
+   "severity": "P2",
+   "confidence": "confirmed",
+   "title": "Baseline-v1 generated from an unpublished dirty commit; '5 evaluators' overstated",
+   "description": "manifest-baseline-v1 records commit 7df804f8 (not in the repository) with modified search.py/embeddings.py; the manifest shows 4 evaluators.",
+   "evidence": [
+    "benchmark/verification/manifest-baseline-v1.json"
+   ],
+   "reproduction": "inspect the manifest",
+   "files": "docs",
+   "affected_feature": "trust",
+   "requirement": "E1",
+   "recommended_action": "Reproduce from committed code (done: identical metrics, 0 per-query metric changes) and correct the docs",
+   "estimated_effort": "S",
+   "dependencies": "",
+   "status": "MITIGATED",
+   "fix_commit": null
+  },
+  {
+   "id": "F-029",
+   "category": "graph",
+   "severity": "P2",
+   "confidence": "confirmed",
+   "title": "No cross-file edges for CommonJS or member calls",
+   "description": "express/lodash cross_file_edges = 0 after F-023.",
+   "evidence": [
+    "audit/evidence/graph-stats-after.json"
+   ],
+   "reproduction": "index expressjs/express; open Map",
+   "files": "backend/app/structure/resolver.py",
+   "affected_feature": "Map overview",
+   "requirement": "C10, C14",
+   "recommended_action": "Conservative CommonJS require/exports resolution with a judged precision check",
+   "estimated_effort": "L",
+   "dependencies": "",
+   "status": "OPEN",
+   "fix_commit": null
+  },
+  {
+   "id": "F-030",
+   "category": "graph UX",
+   "severity": "P2",
+   "confidence": "confirmed",
+   "title": "Large-repository overview is a grid of unconnected boxes",
+   "description": "60 of 141 files, 0 edges at fit-to-screen zoom.",
+   "evidence": [
+    "12-graph-audit.md"
+   ],
+   "reproduction": "express instance, Map",
+   "files": "frontend/src/components/TraceGraph.tsx",
+   "affected_feature": "Map",
+   "requirement": "-",
+   "recommended_action": "Cluster by directory; show connected files first",
+   "estimated_effort": "M",
+   "dependencies": "F-029",
+   "status": "OPEN",
+   "fix_commit": null
+  },
+  {
+   "id": "F-033",
+   "category": "responsive UX",
+   "severity": "P2",
+   "confidence": "confirmed",
+   "title": "Companion drawer covers the Compare result and opened sources on narrow screens",
+   "description": "Controls intercepted at 768/390 px (Playwright: companion subtree intercepts pointer events).",
+   "evidence": [
+    "audit/tools/diag.audit.ts output"
+   ],
+   "reproduction": "768 px: run Compare",
+   "files": "frontend/src/App.tsx",
+   "affected_feature": "Compare, results on mobile",
+   "requirement": "-",
+   "recommended_action": "Do not auto-open over the diff; close the drawer when a link is chosen",
+   "estimated_effort": "S",
+   "dependencies": "",
+   "status": "FIXED",
+   "fix_commit": "4746151"
+  },
+  {
+   "id": "F-037",
+   "category": "performance",
+   "severity": "P2",
+   "confidence": "confirmed",
+   "title": "plan() compiled one regex per symbol per query",
+   "description": "88% of search time on express (319 ms/query); 498 ms on lodash.",
+   "evidence": [
+    "cProfile in the session log",
+    "plan() outputs identical on 36 query/repository pairs"
+   ],
+   "reproduction": "search on a large repo",
+   "files": "backend/app/agent/investigate.py",
+   "affected_feature": "search latency",
+   "requirement": "C15",
+   "recommended_action": "Substring pre-filter",
+   "estimated_effort": "XS",
+   "dependencies": "",
+   "status": "FIXED",
+   "fix_commit": "fb3e982"
+  },
+  {
+   "id": "F-038",
+   "category": "retrieval quality",
+   "severity": "P2",
+   "confidence": "confirmed",
+   "title": "Test code crowds results on real repositories",
+   "description": "express: >= 4 test results in the top 5 for 4 of 8 hand-written questions; test/ directories are not detected as tests.",
+   "evidence": [
+    "audit/evidence/rejected-parser-heuristics.md (probe ran lexical-only: model not in the scratch cache)"
+   ],
+   "reproduction": "express instance",
+   "files": "backend/app/parsing/javascript.py, search.py",
+   "affected_feature": "search answers",
+   "requirement": "C1",
+   "recommended_action": "Detect test directories without adding test descriptions to the title field; evaluate on a judged set",
+   "estimated_effort": "M",
+   "dependencies": "",
+   "status": "OPEN",
+   "fix_commit": null
+  },
+  {
+   "id": "F-039",
+   "category": "docs",
+   "severity": "P2",
+   "confidence": "confirmed",
+   "title": "README claims contradicted by evidence",
+   "description": "Said the tuning scripts never ran (they did); local table produced without the model; the fixture was described as included (it was not); 'Explain' step; no mention of the reranker flag.",
+   "evidence": [
+    "README.md at f0f2fc9"
+   ],
+   "reproduction": "-",
+   "files": "README.md",
+   "affected_feature": "documentation",
+   "requirement": "mission section 34",
+   "recommended_action": "Correct the README",
+   "estimated_effort": "S",
+   "dependencies": "",
+   "status": "FIXED",
+   "fix_commit": "58fa778"
+  },
+  {
+   "id": "F-040",
+   "category": "CI",
+   "severity": "P2",
+   "confidence": "confirmed",
+   "title": "No CI",
+   "description": "",
+   "evidence": [
+    "no .github directory"
+   ],
+   "reproduction": "-",
+   "files": ".github/workflows",
+   "affected_feature": "all",
+   "requirement": "E4",
+   "recommended_action": "Add PR validation and a manual benchmark workflow",
+   "estimated_effort": "S",
+   "dependencies": "",
+   "status": "FIXED (not yet run on GitHub)",
+   "fix_commit": "275fe27"
+  },
+  {
+   "id": "F-042",
+   "category": "benchmark",
+   "severity": "P2",
+   "confidence": "confirmed",
+   "title": "MTEB runs recorded no code provenance",
+   "description": "run_metadata.json had no commit.",
+   "evidence": [
+    "benchmark/results/mteb*/run_metadata.json"
+   ],
+   "reproduction": "-",
+   "files": "benchmark/run_mteb.py",
+   "affected_feature": "artifact provenance",
+   "requirement": "E1",
+   "recommended_action": "Record commit + dirty files at start",
+   "estimated_effort": "XS",
+   "dependencies": "",
+   "status": "FIXED",
+   "fix_commit": "3d47567"
+  },
+  {
+   "id": "F-045",
+   "category": "performance",
+   "severity": "P2",
+   "confidence": "confirmed",
+   "title": "rank() compiled one regex per candidate row",
+   "description": "The exact-symbol check built a case-insensitive boundary regex for up to 1,000 candidates per query: hybrid rank() 84.6 ms (express) / 93.1 ms (lodash).",
+   "evidence": [
+    "audit/evidence/perf-scale-before-f045.json",
+    "audit/evidence/perf-scale.json"
+   ],
+   "reproduction": "search on a large repo",
+   "files": "backend/app/retrieval/search.py",
+   "affected_feature": "search latency",
+   "requirement": "C15",
+   "recommended_action": "casefold substring pre-filter before the unchanged regex",
+   "estimated_effort": "XS",
+   "dependencies": "",
+   "status": "FIXED",
+   "fix_commit": "be291ba"
+  },
+  {
+   "id": "F-012",
+   "category": "tests",
+   "severity": "P3",
+   "confidence": "confirmed",
+   "title": "Compare-copy test asserted the wrong text",
+   "description": "The copied 'Before' snippet is a method body without 'AuthService'; a later step used a removed control.",
+   "evidence": [
+    "audit/evidence/playwright-before.log"
+   ],
+   "reproduction": "npx playwright test audit.spec.ts:23",
+   "files": "frontend/e2e/audit.spec.ts",
+   "affected_feature": "E2E",
+   "requirement": "E3",
+   "recommended_action": "Compare with the displayed snippet; use the Chat button",
+   "estimated_effort": "XS",
+   "dependencies": "",
+   "status": "FIXED",
+   "fix_commit": "46a3d28"
+  },
+  {
+   "id": "F-016",
+   "category": "API",
+   "severity": "P3",
+   "confidence": "confirmed",
+   "title": "/docs and /redoc render blank",
+   "description": "Swagger/ReDoc scripts load from cdn.jsdelivr.net; the app's own CSP blocks them.",
+   "evidence": [
+    "curl /docs"
+   ],
+   "reproduction": "open /docs",
+   "files": "backend/app/main.py",
+   "affected_feature": "API docs",
+   "requirement": "P7",
+   "recommended_action": "Disable; keep /openapi.json",
+   "estimated_effort": "XS",
+   "dependencies": "",
+   "status": "FIXED",
+   "fix_commit": "dc0365a"
+  },
+  {
+   "id": "F-017",
+   "category": "API naming",
+   "severity": "P3",
+   "confidence": "confirmed",
+   "title": "Agent step named RERANK although it only sorts scores",
+   "description": "",
+   "evidence": [
+    "backend/app/agent/investigate.py"
+   ],
+   "reproduction": "any search",
+   "files": "backend/app/agent/investigate.py",
+   "affected_feature": "investigation log",
+   "requirement": "mission section 21",
+   "recommended_action": "Rename to RANK",
+   "estimated_effort": "XS",
+   "dependencies": "",
+   "status": "FIXED",
+   "fix_commit": "dc0365a"
+  },
+  {
+   "id": "F-018",
+   "category": "architecture",
+   "severity": "P3",
+   "confidence": "confirmed",
+   "title": "Two IndexService instances per CLI process",
+   "description": "main.py builds a module-level app at import; cli demo builds another.",
+   "evidence": [
+    "04-architecture-current.md"
+   ],
+   "reproduction": "python -m backend.app.cli demo",
+   "files": "backend/app/main.py, cli.py",
+   "affected_feature": "startup",
+   "requirement": "-",
+   "recommended_action": "Make the module-level app lazy or reuse it",
+   "estimated_effort": "XS",
+   "dependencies": "",
+   "status": "OPEN",
+   "fix_commit": null
+  },
+  {
+   "id": "F-024",
+   "category": "benchmark",
+   "severity": "P3",
+   "confidence": "confirmed",
+   "title": "verify_retrieval recorded git state at the end of a run",
+   "description": "A 27-minute run recorded a commit made mid-run.",
+   "evidence": [
+    "02-retrieval-baseline.md"
+   ],
+   "reproduction": "-",
+   "files": "benchmark/verify_retrieval.py",
+   "affected_feature": "provenance",
+   "requirement": "E1",
+   "recommended_action": "Capture at start",
+   "estimated_effort": "XS",
+   "dependencies": "",
+   "status": "FIXED",
+   "fix_commit": "4e9622d"
+  },
+  {
+   "id": "F-027",
+   "category": "UI",
+   "severity": "P3",
+   "confidence": "confirmed",
+   "title": "favicon.ico 404 on every load",
+   "description": "Console error; Lighthouse best practices 0.96.",
+   "evidence": [
+    "audit/evidence/lighthouse/before-desktop.json"
+   ],
+   "reproduction": "load /",
+   "files": "frontend/index.html",
+   "affected_feature": "-",
+   "requirement": "-",
+   "recommended_action": "Inline SVG favicon",
+   "estimated_effort": "XS",
+   "dependencies": "",
+   "status": "FIXED",
+   "fix_commit": "4746151"
+  },
+  {
+   "id": "F-031",
+   "category": "graph UX",
+   "severity": "P3",
+   "confidence": "confirmed",
+   "title": "Functions assigned to properties are labelled anonymous@L:C",
+   "description": "e.g. express res.cookie. A naming fix was prototyped and rejected (it hurt an 8-question retrieval probe).",
+   "evidence": [
+    "audit/evidence/rejected-parser-heuristics.md"
+   ],
+   "reproduction": "express Map",
+   "files": "backend/app/parsing/javascript.py",
+   "affected_feature": "Map labels, results",
+   "requirement": "-",
+   "recommended_action": "Use the property path as a display name only (not the BM25 title field) and evaluate",
+   "estimated_effort": "S",
+   "dependencies": "",
+   "status": "OPEN",
+   "fix_commit": null
+  },
+  {
+   "id": "F-034",
+   "category": "UI",
+   "severity": "P3",
+   "confidence": "confirmed",
+   "title": "Monaco CancellationError surfaced as an unhandled rejection on tab switch",
+   "description": "Pre-existing (reproduced on the old build).",
+   "evidence": [
+    "diagnostic run on old and new builds"
+   ],
+   "reproduction": "switch tabs quickly",
+   "files": "frontend/src/components/SourceViewer.tsx",
+   "affected_feature": "source viewer",
+   "requirement": "-",
+   "recommended_action": "Swallow only Monaco 'Canceled' rejections",
+   "estimated_effort": "XS",
+   "dependencies": "",
+   "status": "FIXED",
+   "fix_commit": "4746151"
+  },
+  {
+   "id": "F-035",
+   "category": "performance",
+   "severity": "P3",
+   "confidence": "confirmed",
+   "title": "/api/versions spawns ~15 git processes per call",
+   "description": "P50 345 ms on the demo; called on every refresh.",
+   "evidence": [
+    "audit/evidence/perf-api-before.json"
+   ],
+   "reproduction": "GET /api/versions",
+   "files": "backend/app/indexing/discovery.py",
+   "affected_feature": "snapshot selector",
+   "requirement": "-",
+   "recommended_action": "Cache per refs state",
+   "estimated_effort": "S",
+   "dependencies": "",
+   "status": "OPEN",
+   "fix_commit": null
+  },
+  {
+   "id": "F-041",
+   "category": "deployment",
+   "severity": "P3",
+   "confidence": "confirmed",
+   "title": "Docker image unverified",
+   "description": "Docker is not installed on the audit machine.",
+   "evidence": [
+    "00-tooling-feasibility.md"
+   ],
+   "reproduction": "docker build .",
+   "files": "Dockerfile",
+   "affected_feature": "container",
+   "requirement": "P6",
+   "recommended_action": "Build and run on a Docker host",
+   "estimated_effort": "S",
+   "dependencies": "external",
+   "status": "BLOCKED (external)",
+   "fix_commit": null
+  },
+  {
+   "id": "F-047",
+   "category": "accessibility",
+   "severity": "P3",
+   "confidence": "confirmed",
+   "title": "Heading levels skipped (h1 -> h3) in answer views",
+   "description": "axe heading-order (moderate) in 5 of 21 crawled states.",
+   "evidence": [
+    "audit/evidence/ui-crawl.json (pre-fix)"
+   ],
+   "reproduction": "axe",
+   "files": "frontend/src/App.tsx",
+   "affected_feature": "companion",
+   "requirement": "mission section 15",
+   "recommended_action": "companion title as h2",
+   "estimated_effort": "XS",
+   "dependencies": "",
+   "status": "FIXED",
+   "fix_commit": "89bb5da"
+  }
+ ],
+ "security_accepted": [
+  "S-1 no authentication (local single-user tool, loopback only)",
+  "S-2 absolute paths and raw git error text in responses",
+  "S-3 git honours the target repository's config (no hooks run)",
+  "S-4 CSP style-src 'unsafe-inline' (React Flow / Monaco)",
+  "S-5 container process binds all interfaces inside the container"
+ ]
+}

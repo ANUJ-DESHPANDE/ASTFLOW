@@ -1,0 +1,95 @@
+........................................................................ [ 74%]
+.......................s.                                                [100%]
+============================== warnings summary ===============================
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  C:\Users\aarus\Downloads\ASTFLOW-main\ASTFLOW-repo\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+.venv\Lib\site-packages\starlette\testclient.py:53
+  C:\Users\aarus\Downloads\ASTFLOW-main\ASTFLOW-repo\.venv\Lib\site-packages\starlette\testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=============================== tests coverage ================================
+_______________ coverage: platform win32, python 3.12.4-final-0 _______________
+
+Name                                            Stmts   Miss  Cover
+-------------------------------------------------------------------
+backend\__init__.py                                 0      0   100%
+backend\app\__init__.py                             0      0   100%
+backend\app\agent\__init__.py                       0      0   100%
+backend\app\agent\investigate.py                  131      8    94%
+backend\app\api\__init__.py                         0      0   100%
+backend\app\api\schemas.py                         28      1    96%
+backend\app\cli.py                                 58     58     0%
+backend\app\config.py                              31      0   100%
+backend\app\indexing\__init__.py                    0      0   100%
+backend\app\indexing\discovery.py                 113     21    81%
+backend\app\indexing\service.py                   179     20    89%
+backend\app\main.py                               168     23    86%
+backend\app\models\__init__.py                      0      0   100%
+backend\app\models\entities.py                     65      0   100%
+backend\app\parsing\__init__.py                     0      0   100%
+backend\app\parsing\javascript.py                 202      5    98%
+backend\app\retrieval\__init__.py                   0      0   100%
+backend\app\retrieval\embedding_cache.py           32      2    94%
+backend\app\retrieval\embeddings.py                62     25    60%
+backend\app\retrieval\search.py                    93      1    99%
+backend\app\runtime\__init__.py                     0      0   100%
+backend\app\storage\__init__.py                     0      0   100%
+backend\app\storage\store.py                       47      2    96%
+backend\app\structure\__init__.py                   0      0   100%
+backend\app\structure\graph.py                     76      3    96%
+backend\app\structure\resolver.py                 139     15    89%
+backend\app\structure\typescript.py                28      2    93%
+backend\app\versions\__init__.py                    0      0   100%
+backend\app\versions\compare.py                    31      3    90%
+backend\tests\test_api_contract.py                 21      0   100%
+backend\tests\test_api_versions.py                 61      0   100%
+backend\tests\test_audit_reliability.py            81      0   100%
+backend\tests\test_audit_retrieval.py              12      0   100%
+backend\tests\test_core.py                        111      0   100%
+backend\tests\test_dataset_adapter.py              15      0   100%
+backend\tests\test_enrichment.py                   24      1    96%
+backend\tests\test_metrics_semantic.py             32      1    97%
+backend\tests\test_nested_scope_calls.py           26      0   100%
+backend\tests\test_regressions.py                  95      0   100%
+backend\tests\test_retrieval_modes.py              28      0   100%
+benchmark\__init__.py                               0      0   100%
+benchmark\ablate.py                                26     26     0%
+benchmark\analyze_baseline.py                     182     21    88%
+benchmark\analyze_corpus.py                        51     31    39%
+benchmark\build_dev_split.py                       45      4    91%
+benchmark\compare_runs.py                          28     28     0%
+benchmark\evaluate.py                              61     61     0%
+benchmark\foundation_audit.py                      86     86     0%
+benchmark\metrics.py                               10      0   100%
+benchmark\mteb_appretrieval.py                    147     62    58%
+benchmark\precompute_embeddings.py                 38      3    92%
+benchmark\profile_system.py                        34     34     0%
+benchmark\run_fusion_sweep.py                     197    197     0%
+benchmark\run_mteb.py                              95     95     0%
+benchmark\run_parallel_reranker.py                189    189     0%
+benchmark\run_reranker_benchmark.py               149    149     0%
+benchmark\score_e002.py                            79     79     0%
+benchmark\score_e003.py                           116    116     0%
+benchmark\test_analyze_baseline.py                 52      0   100%
+benchmark\test_analyze_corpus.py                    9      0   100%
+benchmark\test_dev_split.py                        44      0   100%
+benchmark\test_mteb_adapter.py                     16     16     0%
+benchmark\test_precompute_alignment.py             79      1    99%
+benchmark\test_rrf_reconstruction.py               31      2    94%
+benchmark\test_trust_evaluation.py                 68      3    96%
+benchmark\test_tune_bm25.py                        62      0   100%
+benchmark\test_verify_retrieval.py                 71      2    97%
+benchmark\trust\__init__.py                         0      0   100%
+benchmark\trust\evaluation.py                     134     24    82%
+benchmark\trust\forensics.py                       41      6    85%
+benchmark\trust\integrity.py                       75      3    96%
+benchmark\tune_bm25.py                            107     17    84%
+benchmark\verify_dense_alignment_synthetic.py     112    112     0%
+benchmark\verify_retrieval.py                     199     71    64%
+-------------------------------------------------------------------
+TOTAL                                            4622   1629    65%
+Coverage JSON written to file audit/evidence/coverage-after.json
+96 passed, 1 skipped, 2 warnings in 41.62s

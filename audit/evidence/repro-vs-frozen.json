@@ -1,0 +1,104 @@
+{
+ "tag": "repro-baseline",
+ "git": {
+  "commit": "52063cff87b39ebff52124cd40e170f4b0cceb45",
+  "branch": "audit/master-remediation",
+  "dirty": true,
+  "dirty_files": [
+   "M backend/app/agent/investigate.py",
+   " M backend/tests/test_retrieval_modes.py",
+   " M benchmark/requirements-mteb.txt",
+   " M package-lock.json",
+   " M package.json",
+   " M pyproject.toml",
+   "?? .claude/",
+   "?? ASTFLOW-main/",
+   "?? audit/"
+  ]
+ },
+ "environment": {
+  "python": "3.12.4",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "machine": "AMD64",
+  "processor": "Intel64 Family 6 Model 183 Stepping 1, GenuineIntel",
+  "device": "cuda",
+  "packages": {
+   "mteb": null,
+   "sentence-transformers": "5.7.0",
+   "transformers": "5.17.0",
+   "torch": "2.14.0+cu130",
+   "numpy": "2.5.3",
+   "scipy": "1.18.1",
+   "rank-bm25": "0.2.2",
+   "pytrec-eval-terrier": "0.5.10",
+   "ir-measures": "0.4.3",
+   "datasets": "5.0.1",
+   "huggingface-hub": "1.32.0"
+  }
+ },
+ "modes": {
+  "bm25": {
+   "queries": 3765,
+   "identical_depth_1000": 3765,
+   "identical_top_100": 3765,
+   "queries_with_any_metric_change": 0,
+   "changed_sample": [],
+   "reproduced": {
+    "ndcg@10": 0.06311985864142917,
+    "mrr@10": 0.05420919496616708,
+    "recall@10": 0.09216467463479415,
+    "recall@50": 0.16865869853917662,
+    "recall@100": 0.2260292164674635
+   },
+   "frozen": {
+    "ndcg@10": 0.06311985864142917,
+    "mrr@10": 0.05420919496616708,
+    "recall@10": 0.09216467463479415,
+    "recall@50": 0.16865869853917662,
+    "recall@100": 0.2260292164674635
+   }
+  },
+  "dense": {
+   "queries": 3765,
+   "identical_depth_1000": 2069,
+   "identical_top_100": 3728,
+   "queries_with_any_metric_change": 0,
+   "changed_sample": [],
+   "reproduced": {
+    "ndcg@10": 0.06595686861486243,
+    "mrr@10": 0.055810409157022706,
+    "recall@10": 0.09907038512616202,
+    "recall@50": 0.19389110225763612,
+    "recall@100": 0.25258964143426293
+   },
+   "frozen": {
+    "ndcg@10": 0.06595686861486243,
+    "mrr@10": 0.055810409157022706,
+    "recall@10": 0.09907038512616202,
+    "recall@50": 0.19389110225763612,
+    "recall@100": 0.25258964143426293
+   }
+  },
+  "hybrid": {
+   "queries": 3765,
+   "identical_depth_1000": 3063,
+   "identical_top_100": 3751,
+   "queries_with_any_metric_change": 0,
+   "changed_sample": [],
+   "reproduced": {
+    "ndcg@10": 0.08840343465090716,
+    "mrr@10": 0.07257330466493812,
+    "recall@10": 0.1397078353253652,
+    "recall@50": 0.23399734395750332,
+    "recall@100": 0.29774236387782205
+   },
+   "frozen": {
+    "ndcg@10": 0.08840343465090716,
+    "mrr@10": 0.07257330466493812,
+    "recall@10": 0.1397078353253652,
+    "recall@50": 0.23399734395750332,
+    "recall@100": 0.29774236387782205
+   }
+  }
+ }
+}

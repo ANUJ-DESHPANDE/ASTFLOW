@@ -1,0 +1,68 @@
+{
+ "demo-repo": {
+  "off": {
+   "edges": 12,
+   "ts_confirmed": 12,
+   "unresolved": 9,
+   "sequences": 0,
+   "nested_edges": 0,
+   "nested_ts_confirmed": 0,
+   "enrich": "ready",
+   "unconfirmed_nested_sample": []
+  },
+  "on": {
+   "edges": 12,
+   "ts_confirmed": 12,
+   "unresolved": 9,
+   "sequences": 0,
+   "nested_edges": 0,
+   "nested_ts_confirmed": 0,
+   "enrich": "ready",
+   "unconfirmed_nested_sample": []
+  }
+ },
+ "express": {
+  "off": {
+   "edges": 14,
+   "ts_confirmed": 12,
+   "unresolved": 10744,
+   "sequences": 0,
+   "nested_edges": 0,
+   "nested_ts_confirmed": 0,
+   "enrich": "ready",
+   "unconfirmed_nested_sample": []
+  },
+  "on": {
+   "edges": 286,
+   "ts_confirmed": 284,
+   "unresolved": 10472,
+   "sequences": 12,
+   "nested_edges": 272,
+   "nested_ts_confirmed": 272,
+   "enrich": "ready",
+   "unconfirmed_nested_sample": []
+  }
+ },
+ "lodash": {
+  "off": {
+   "edges": 24,
+   "ts_confirmed": 23,
+   "unresolved": 18487,
+   "sequences": 15,
+   "nested_edges": 0,
+   "nested_ts_confirmed": 0,
+   "enrich": "ready",
+   "unconfirmed_nested_sample": []
+  },
+  "on": {
+   "edges": 1572,
+   "ts_confirmed": 1571,
+   "unresolved": 16939,
+   "sequences": 16,
+   "nested_edges": 1548,
+   "nested_ts_confirmed": 1548,
+   "enrich": "ready",
+   "unconfirmed_nested_sample": []
+  }
+ }
+}

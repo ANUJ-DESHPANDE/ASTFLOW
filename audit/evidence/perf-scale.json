@@ -1,0 +1,63 @@
+{
+ "rss_start_mb": 65,
+ "demo-repo": {
+  "files": 11,
+  "chunks": 21,
+  "edges": 12,
+  "model_load_s": 8.38,
+  "index_cold_s": 0.56,
+  "index_cached_s": 0.044,
+  "rss_after_index_mb": 946,
+  "search_ms": {
+   "p50": 5.9,
+   "p95": 13.4,
+   "p99": 13.7,
+   "n": 30
+  },
+  "rank_median_ms": {
+   "bm25": 0.0,
+   "dense": 5.5,
+   "hybrid": 5.6
+  }
+ },
+ "express": {
+  "files": 141,
+  "chunks": 3120,
+  "edges": 286,
+  "model_load_s": 0.13,
+  "index_cold_s": 38.59,
+  "index_cached_s": 0.793,
+  "rss_after_index_mb": 1214,
+  "search_ms": {
+   "p50": 42.8,
+   "p95": 50.1,
+   "p99": 51.1,
+   "n": 30
+  },
+  "rank_median_ms": {
+   "bm25": 0.7,
+   "dense": 10.9,
+   "hybrid": 11.0
+  }
+ },
+ "lodash": {
+  "files": 27,
+  "chunks": 4463,
+  "edges": 1572,
+  "model_load_s": 0.13,
+  "index_cold_s": 97.49,
+  "index_cached_s": 1.835,
+  "rss_after_index_mb": 1255,
+  "search_ms": {
+   "p50": 54.4,
+   "p95": 76.0,
+   "p99": 77.0,
+   "n": 30
+  },
+  "rank_median_ms": {
+   "bm25": 1.0,
+   "dense": 11.5,
+   "hybrid": 11.4
+  }
+ }
+}

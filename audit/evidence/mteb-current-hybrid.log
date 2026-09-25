@@ -1,0 +1,249 @@
+C:\Users\aarus\Downloads\ASTFLOW-main\ASTFLOW-repo\.eval-venv\Lib\site-packages\torch\jit\_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|##########| 103/103 [00:00<00:00, 2560.81it/s]
+Evaluating tasks:   0%|          | 0/1 [00:00<?, ?it/s]Evaluating task AppsRetrieval:   0%|          | 0/1 [00:00<?, ?it/s]Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Retrieved 100 queries
+Retrieved 200 queries
+Retrieved 300 queries
+Retrieved 400 queries
+Retrieved 500 queries
+Retrieved 600 queries
+Retrieved 700 queries
+Retrieved 800 queries
+Retrieved 900 queries
+Retrieved 1000 queries
+Retrieved 1100 queries
+Retrieved 1200 queries
+Retrieved 1300 queries
+Retrieved 1400 queries
+Retrieved 1500 queries
+Retrieved 1600 queries
+Retrieved 1700 queries
+Retrieved 1800 queries
+Retrieved 1900 queries
+Retrieved 2000 queries
+Retrieved 2100 queries
+Retrieved 2200 queries
+Retrieved 2300 queries
+Retrieved 2400 queries
+Retrieved 2500 queries
+Retrieved 2600 queries
+Retrieved 2700 queries
+Retrieved 2800 queries
+Retrieved 2900 queries
+Retrieved 3000 queries
+Retrieved 3100 queries
+Retrieved 3200 queries
+Retrieved 3300 queries
+Retrieved 3400 queries
+Retrieved 3500 queries
+Retrieved 3600 queries
+Retrieved 3700 queries
+Evaluating task AppsRetrieval: 100%|##########| 1/1 [03:56<00:00, 236.92s/it]Evaluating task AppsRetrieval: 100%|##########| 1/1 [03:56<00:00, 236.92s/it]
+{
+  "dataset_revision": "f22508f96b7a36c2415181ed8bb76f76e04ae2d5",
+  "task_name": "AppsRetrieval",
+  "mteb_version": "2.21.0",
+  "scores": {
+    "test": [
+      {
+        "ndcg_at_1": 0.04648,
+        "ndcg_at_3": 0.06929,
+        "ndcg_at_5": 0.0769,
+        "ndcg_at_10": 0.0884,
+        "ndcg_at_20": 0.09763,
+        "ndcg_at_100": 0.11929,
+        "ndcg_at_1000": 0.1612,
+        "map_at_1": 0.04648,
+        "map_at_3": 0.06352,
+        "map_at_5": 0.06777,
+        "map_at_10": 0.07257,
+        "map_at_20": 0.07512,
+        "map_at_100": 0.07779,
+        "map_at_1000": 0.07903,
+        "recall_at_1": 0.04648,
+        "recall_at_3": 0.08606,
+        "recall_at_5": 0.10438,
+        "recall_at_10": 0.13971,
+        "recall_at_20": 0.1761,
+        "recall_at_100": 0.29774,
+        "recall_at_1000": 0.64754,
+        "accuracy": 0.04648,
+        "precision_at_1": 0.04648,
+        "precision_at_3": 0.02869,
+        "precision_at_5": 0.02088,
+        "precision_at_10": 0.01397,
+        "precision_at_20": 0.0088,
+        "precision_at_100": 0.00298,
+        "precision_at_1000": 0.00065,
+        "mrr_at_1": 0.046481,
+        "mrr_at_3": 0.063524,
+        "mrr_at_5": 0.067773,
+        "mrr_at_10": 0.072573,
+        "mrr_at_20": 0.075119,
+        "mrr_at_100": 0.077789,
+        "mrr_at_1000": 0.079028,
+        "nauc_ndcg_at_1_max": 0.050242,
+        "nauc_ndcg_at_1_std": 0.050242,
+        "nauc_ndcg_at_1_diff1": 0.050242,
+        "nauc_ndcg_at_3_max": 0.066583,
+        "nauc_ndcg_at_3_std": 0.066583,
+        "nauc_ndcg_at_3_diff1": 0.066583,
+        "nauc_ndcg_at_5_max": 0.065296,
+        "nauc_ndcg_at_5_std": 0.065296,
+        "nauc_ndcg_at_5_diff1": 0.065296,
+        "nauc_ndcg_at_10_max": 0.072632,
+        "nauc_ndcg_at_10_std": 0.072632,
+        "nauc_ndcg_at_10_diff1": 0.072632,
+        "nauc_ndcg_at_20_max": 0.07526,
+        "nauc_ndcg_at_20_std": 0.07526,
+        "nauc_ndcg_at_20_diff1": 0.07526,
+        "nauc_ndcg_at_100_max": 0.074554,
+        "nauc_ndcg_at_100_std": 0.074554,
+        "nauc_ndcg_at_100_diff1": 0.074554,
+        "nauc_ndcg_at_1000_max": 0.065388,
+        "nauc_ndcg_at_1000_std": 0.065388,
+        "nauc_ndcg_at_1000_diff1": 0.065388,
+        "nauc_map_at_1_max": 0.050242,
+        "nauc_map_at_1_std": 0.050242,
+        "nauc_map_at_1_diff1": 0.050242,
+        "nauc_map_at_3_max": 0.062223,
+        "nauc_map_at_3_std": 0.062223,
+        "nauc_map_at_3_diff1": 0.062223,
+        "nauc_map_at_5_max": 0.061603,
+        "nauc_map_at_5_std": 0.061603,
+        "nauc_map_at_5_diff1": 0.061603,
+        "nauc_map_at_10_max": 0.065201,
+        "nauc_map_at_10_std": 0.065201,
+        "nauc_map_at_10_diff1": 0.065201,
+        "nauc_map_at_20_max": 0.066228,
+        "nauc_map_at_20_std": 0.066228,
+        "nauc_map_at_20_diff1": 0.066228,
+        "nauc_map_at_100_max": 0.066355,
+        "nauc_map_at_100_std": 0.066355,
+        "nauc_map_at_100_diff1": 0.066355,
+        "nauc_map_at_1000_max": 0.065905,
+        "nauc_map_at_1000_std": 0.065905,
+        "nauc_map_at_1000_diff1": 0.065905,
+        "nauc_recall_at_1_max": 0.050242,
+        "nauc_recall_at_1_std": 0.050242,
+        "nauc_recall_at_1_diff1": 0.050242,
+        "nauc_recall_at_3_max": 0.07632,
+        "nauc_recall_at_3_std": 0.07632,
+        "nauc_recall_at_3_diff1": 0.07632,
+        "nauc_recall_at_5_max": 0.072591,
+        "nauc_recall_at_5_std": 0.072591,
+        "nauc_recall_at_5_diff1": 0.072591,
+        "nauc_recall_at_10_max": 0.08683,
+        "nauc_recall_at_10_std": 0.08683,
+        "nauc_recall_at_10_diff1": 0.08683,
+        "nauc_recall_at_20_max": 0.090884,
+        "nauc_recall_at_20_std": 0.090884,
+        "nauc_recall_at_20_diff1": 0.090884,
+        "nauc_recall_at_100_max": 0.084751,
+        "nauc_recall_at_100_std": 0.084751,
+        "nauc_recall_at_100_diff1": 0.084751,
+        "nauc_recall_at_1000_max": 0.045981,
+        "nauc_recall_at_1000_std": 0.045981,
+        "nauc_recall_at_1000_diff1": 0.045981,
+        "nauc_precision_at_1_max": 0.050242,
+        "nauc_precision_at_1_std": 0.050242,
+        "nauc_precision_at_1_diff1": 0.050242,
+        "nauc_precision_at_3_max": 0.07632,
+        "nauc_precision_at_3_std": 0.07632,
+        "nauc_precision_at_3_diff1": 0.07632,
+        "nauc_precision_at_5_max": 0.072591,
+        "nauc_precision_at_5_std": 0.072591,
+        "nauc_precision_at_5_diff1": 0.072591,
+        "nauc_precision_at_10_max": 0.08683,
+        "nauc_precision_at_10_std": 0.08683,
+        "nauc_precision_at_10_diff1": 0.08683,
+        "nauc_precision_at_20_max": 0.090884,
+        "nauc_precision_at_20_std": 0.090884,
+        "nauc_precision_at_20_diff1": 0.090884,
+        "nauc_precision_at_100_max": 0.084751,
+        "nauc_precision_at_100_std": 0.084751,
+        "nauc_precision_at_100_diff1": 0.084751,
+        "nauc_precision_at_1000_max": 0.045981,
+        "nauc_precision_at_1000_std": 0.045981,
+        "nauc_precision_at_1000_diff1": 0.045981,
+        "nauc_mrr_at_1_max": 0.050242,
+        "nauc_mrr_at_1_std": 0.050242,
+        "nauc_mrr_at_1_diff1": 0.050242,
+        "nauc_mrr_at_3_max": 0.062223,
+        "nauc_mrr_at_3_std": 0.062223,
+        "nauc_mrr_at_3_diff1": 0.062223,
+        "nauc_mrr_at_5_max": 0.061603,
+        "nauc_mrr_at_5_std": 0.061603,
+        "nauc_mrr_at_5_diff1": 0.061603,
+        "nauc_mrr_at_10_max": 0.065201,
+        "nauc_mrr_at_10_std": 0.065201,
+        "nauc_mrr_at_10_diff1": 0.065201,
+        "nauc_mrr_at_20_max": 0.066228,
+        "nauc_mrr_at_20_std": 0.066228,
+        "nauc_mrr_at_20_diff1": 0.066228,
+        "nauc_mrr_at_100_max": 0.066355,
+        "nauc_mrr_at_100_std": 0.066355,
+        "nauc_mrr_at_100_diff1": 0.066355,
+        "nauc_mrr_at_1000_max": 0.065905,
+        "nauc_mrr_at_1000_std": 0.065905,
+        "nauc_mrr_at_1000_diff1": 0.065905,
+        "hit_rate_at_1": 0.04648,
+        "hit_rate_at_3": 0.08606,
+        "hit_rate_at_5": 0.10438,
+        "hit_rate_at_10": 0.13971,
+        "hit_rate_at_20": 0.1761,
+        "hit_rate_at_100": 0.29774,
+        "hit_rate_at_1000": 0.64754,
+        "main_score": 0.0884,
+        "hf_subset": "default",
+        "languages": [
+          "eng-Latn",
+          "python-Code"
+        ],
+        "mteb_version": "2.21.0"
+      }
+    ]
+  },
+  "evaluation_time": 236.90599999998813,
+  "kg_co2_emissions": null,
+  "date": 1790280890.049128,
+  "evaluation_phases": [
+    {
+      "name": "Data loading",
+      "start": 0.0,
+      "end": 14.296999999991385,
+      "split": "",
+      "subset": ""
+    },
+    {
+      "name": "Dataset transform",
+      "start": 14.296999999991385,
+      "end": 14.296999999991385,
+      "split": "",
+      "subset": ""
+    },
+    {
+      "name": "Encoding corpus",
+      "start": 14.343999999997322,
+      "end": 16.625,
+      "split": "test",
+      "subset": "default"
+    },
+    {
+      "name": "Encoding queries",
+      "start": 16.625,
+      "end": 228.20299999999406,
+      "split": "test",
+      "subset": "default"
+    },
+    {
+      "name": "Scoring",
+      "start": 234.125,
+      "end": 236.85899999999674,
+      "split": "test",
+      "subset": "default"
+    }
+  ]
+}
+exit 0

@@ -1,0 +1,118 @@
+{
+ "demo-repo": {
+  "files": 11,
+  "symbols": 26,
+  "chunks": 21,
+  "callable_nodes": 21,
+  "edges": 12,
+  "edge_records": 12,
+  "cross_file_edges": 9,
+  "unresolved_calls": 9,
+  "isolated_nodes": 7,
+  "isolated_share": 0.333,
+  "components": 10,
+  "largest_components": [
+   9,
+   3,
+   2,
+   1,
+   1
+  ],
+  "cycles_len_le_6": 0,
+  "max_degree": [
+   3,
+   3,
+   2,
+   2,
+   2
+  ],
+  "index_seconds_cold": 9.4,
+  "enrichment": {
+   "status": "ready",
+   "edges_added": 0,
+   "edges_confirmed": 12
+  },
+  "warnings": 0,
+  "unresolved_reasons": {
+   "No unambiguous supported binding; shadowed, reassigned, dynamic or external call": 9
+  }
+ },
+ "express": {
+  "files": 141,
+  "symbols": 3120,
+  "chunks": 3120,
+  "callable_nodes": 3120,
+  "edges": 284,
+  "edge_records": 286,
+  "cross_file_edges": 0,
+  "unresolved_calls": 10472,
+  "isolated_nodes": 2833,
+  "isolated_share": 0.908,
+  "components": 2861,
+  "largest_components": [
+   41,
+   38,
+   32,
+   26,
+   22
+  ],
+  "cycles_len_le_6": 0,
+  "max_degree": [
+   35,
+   32,
+   31,
+   25,
+   21
+  ],
+  "index_seconds_cold": 4.2,
+  "enrichment": {
+   "status": "ready",
+   "edges_added": 0,
+   "edges_confirmed": 284
+  },
+  "warnings": 0,
+  "unresolved_reasons": {
+   "No unambiguous supported binding; shadowed, reassigned, dynamic or external call": 4346,
+   "Unsupported method or nested callback scope": 6126
+  }
+ },
+ "lodash": {
+  "files": 27,
+  "symbols": 4463,
+  "chunks": 4463,
+  "callable_nodes": 4463,
+  "edges": 1336,
+  "edge_records": 1572,
+  "cross_file_edges": 0,
+  "unresolved_calls": 16939,
+  "isolated_nodes": 3457,
+  "isolated_share": 0.775,
+  "components": 3486,
+  "largest_components": [
+   511,
+   363,
+   17,
+   10,
+   10
+  ],
+  "cycles_len_le_6": 1,
+  "max_degree": [
+   325,
+   49,
+   37,
+   31,
+   28
+  ],
+  "index_seconds_cold": 42.3,
+  "enrichment": {
+   "status": "ready",
+   "edges_added": 0,
+   "edges_confirmed": 1571
+  },
+  "warnings": 0,
+  "unresolved_reasons": {
+   "No unambiguous supported binding; shadowed, reassigned, dynamic or external call": 3674,
+   "Unsupported method or nested callback scope": 13265
+  }
+ }
+}

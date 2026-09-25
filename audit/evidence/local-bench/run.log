@@ -1,0 +1,19 @@
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|##########| 103/103 [00:00<00:00, 1975.83it/s]
+# ASTFLOW local benchmark
+
+Small handcrafted fixture; not a held-out or official MTEB/CoIR result. MRR is over at most 50 candidates.
+
+16 queries · 21 source chunks · model: sentence-transformers/all-MiniLM-L6-v2
+
+| System | NDCG@10 | MRR | Recall@10 | Median ms | p95 ms |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| BM25 only | 0.8354 | 0.9115 | 0.8646 | 0.99 | 4.60 |
+| Dense only | 0.9311 | 0.9583 | 1.0000 | 10.49 | 13.89 |
+| Hybrid | 0.9054 | 0.9375 | 1.0000 | 10.54 | 12.65 |
+| Hybrid + structure | 0.9122 | 0.9688 | 1.0000 | 12.03 | 13.86 |
+| ASTFLOW full | 0.8661 | 0.9688 | 1.0000 | 12.37 | 28.72 |
+
+Generated from an executed evaluation. Full per-query rankings are in `local.json`.
+
+Category metrics are included in each baseline's `categories` object in `local.json`.
+

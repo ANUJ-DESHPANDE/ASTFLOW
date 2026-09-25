@@ -1,0 +1,124 @@
+backend\app\agent\investigate.py:3:18: F401 [*] `copy.deepcopy` imported but unused
+backend\app\agent\investigate.py:133:47: FURB167 [*] Use of regular expression alias `re.I`
+backend\app\cli.py:38:31: B008 Do not perform function call `typer.Argument` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
+backend\app\cli.py:39:5: I001 [*] Import block is un-sorted or un-formatted
+backend\app\cli.py:61:5: I001 [*] Import block is un-sorted or un-formatted
+backend\app\config.py:15:19: RUF009 Do not perform function call in dataclass defaults
+backend\app\indexing\discovery.py:21:14: PLW1510 `subprocess.run` without explicit `check` argument
+backend\app\indexing\service.py:115:60: UP017 [*] Use `datetime.UTC` alias
+backend\app\main.py:1:1: I001 [*] Import block is un-sorted or un-formatted
+backend\app\retrieval\embeddings.py:3:21: F401 [*] `pathlib.Path` imported but unused
+backend\app\retrieval\embeddings.py:27:17: I001 [*] Import block is un-sorted or un-formatted
+backend\app\retrieval\embeddings.py:38:20: BLE001 Do not catch blind exception: `Exception`
+backend\app\retrieval\reranker.py:2:1: I001 [*] Import block is un-sorted or un-formatted
+backend\app\retrieval\reranker.py:4:1: UP035 `typing.List` is deprecated, use `list` instead
+backend\app\retrieval\reranker.py:32:22: UP045 [*] Use `X | None` for type annotations
+backend\app\retrieval\reranker.py:53:24: G201 Logging `.exception(...)` should be used instead of `.error(..., exc_info=True)`
+backend\app\retrieval\reranker.py:56:30: UP006 [*] Use `list` instead of `List` for type annotation
+backend\app\retrieval\reranker.py:56:35: UP006 [*] Use `list` instead of `List` for type annotation
+backend\app\retrieval\reranker.py:71:24: G201 Logging `.exception(...)` should be used instead of `.error(..., exc_info=True)`
+backend\app\retrieval\reranker.py:74:40: UP006 [*] Use `list` instead of `List` for type annotation
+backend\app\retrieval\reranker.py:74:73: UP006 [*] Use `list` instead of `List` for type annotation
+backend\app\retrieval\search.py:12:12: F401 `sentence_transformers` imported but unused; consider using `importlib.util.find_spec` to test for availability
+backend\app\retrieval\search.py:17:12: SIM905 [*] Consider using a list literal instead of `str.split`
+backend\app\retrieval\search.py:128:182: FURB167 [*] Use of regular expression alias `re.I`
+backend\app\retrieval\search.py:137:127: FURB167 [*] Use of regular expression alias `re.I`
+backend\app\structure\typescript.py:5:41: F401 [*] `backend.app.models.entities.Edge` imported but unused
+backend\app\structure\typescript.py:11:19: PLW1510 `subprocess.run` without explicit `check` argument
+backend\app\versions\compare.py:1:1: I001 [*] Import block is un-sorted or un-formatted
+backend\tests\test_api_versions.py:1:1: I001 [*] Import block is un-sorted or un-formatted
+backend\tests\test_api_versions.py:1:21: F401 [*] `pathlib.Path` imported but unused
+backend\tests\test_audit_reliability.py:1:1: I001 [*] Import block is un-sorted or un-formatted
+backend\tests\test_audit_reliability.py:1:8: F401 [*] `json` imported but unused
+backend\tests\test_audit_reliability.py:2:8: F401 [*] `subprocess` imported but unused
+backend\tests\test_audit_reliability.py:3:21: F401 [*] `pathlib.Path` imported but unused
+backend\tests\test_audit_reliability.py:10:46: F401 [*] `backend.app.retrieval.embeddings.Embedder` imported but unused
+backend\tests\test_audit_retrieval.py:1:1: I001 [*] Import block is un-sorted or un-formatted
+backend\tests\test_core.py:1:25: F401 [*] `dataclasses.replace` imported but unused
+backend\tests\test_core.py:2:21: F401 [*] `pathlib.Path` imported but unused
+backend\tests\test_metrics_semantic.py:1:8: F401 [*] `math` imported but unused
+backend\tests\test_metrics_semantic.py:2:21: F401 [*] `pathlib.Path` imported but unused
+backend\tests\test_regressions.py:1:1: I001 [*] Import block is un-sorted or un-formatted
+backend\tests\test_regressions.py:1:21: F401 [*] `pathlib.Path` imported but unused
+backend\tests\test_regressions.py:2:25: F401 [*] `dataclasses.replace` imported but unused
+benchmark\ablate.py:2:1: I001 [*] Import block is un-sorted or un-formatted
+benchmark\ablate.py:2:32: F401 [*] `time` imported but unused
+benchmark\ablate.py:3:21: F401 [*] `pathlib.Path` imported but unused
+benchmark\analyze_baseline.py:90:5: I001 [*] Import block is un-sorted or un-formatted
+benchmark\analyze_baseline.py:252:19: ISC004 Unparenthesized implicit string concatenation in collection
+benchmark\compare_runs.py:1:1: I001 [*] Import block is un-sorted or un-formatted
+benchmark\compare_runs.py:1:8: F401 [*] `json` imported but unused
+benchmark\evaluate.py:10:38: F401 [*] `backend.app.config.Settings` imported but unused
+benchmark\evaluate.py:26:90: UP017 [*] Use `datetime.UTC` alias
+benchmark\foundation_audit.py:1:1: I001 [*] Import block is un-sorted or un-formatted
+benchmark\foundation_audit.py:4:17: F401 [*] `numpy` imported but unused
+benchmark\foundation_audit.py:17:32: B006 Do not use mutable data structures for argument defaults
+benchmark\foundation_audit.py:50:154: FURB167 [*] Use of regular expression alias `re.I`
+benchmark\foundation_audit.py:61:152: FURB167 [*] Use of regular expression alias `re.I`
+benchmark\precompute_embeddings.py:1:1: I001 [*] Import block is un-sorted or un-formatted
+benchmark\precompute_embeddings.py:2:21: F401 [*] `pathlib.Path` imported but unused
+benchmark\profile_system.py:2:1: I001 [*] Import block is un-sorted or un-formatted
+benchmark\profile_system.py:24:57: B023 Function definition does not bind loop variable `repo`
+benchmark\profile_system.py:24:77: B023 Function definition does not bind loop variable `settings`
+benchmark\profile_system.py:25:70: B023 Function definition does not bind loop variable `snapshot`
+benchmark\profile_system.py:26:57: B023 Function definition does not bind loop variable `parsed`
+benchmark\profile_system.py:27:72: B023 Function definition does not bind loop variable `service`
+benchmark\profile_system.py:27:90: B023 Function definition does not bind loop variable `repo`
+benchmark\profile_system.py:28:38: B023 Function definition does not bind loop variable `service`
+benchmark\profile_system.py:28:56: B023 Function definition does not bind loop variable `repo`
+benchmark\profile_system.py:29:51: B023 Function definition does not bind loop variable `settings`
+benchmark\profile_system.py:33:45: B023 Function definition does not bind loop variable `service`
+benchmark\profile_system.py:33:63: B023 Function definition does not bind loop variable `repo`
+benchmark\run_fusion_sweep.py:2:1: I001 [*] Import block is un-sorted or un-formatted
+benchmark\run_fusion_sweep.py:2:8: F401 [*] `gzip` imported but unused
+benchmark\run_fusion_sweep.py:5:8: F401 [*] `sys` imported but unused
+benchmark\run_fusion_sweep.py:7:21: F401 [*] `pathlib.Path` imported but unused
+benchmark\run_fusion_sweep.py:99:9: PLC0206 Extracting value from dictionary without calling `.items()`
+benchmark\run_mteb.py:6:1: I001 [*] Import block is un-sorted or un-formatted
+benchmark\run_mteb.py:107:17: RUF015 Prefer `next(iter(result.task_results))` over single element slice
+benchmark\run_parallel_reranker.py:6:1: I001 [*] Import block is un-sorted or un-formatted
+benchmark\run_parallel_reranker.py:12:21: F401 [*] `pathlib.Path` imported but unused
+benchmark\run_parallel_reranker.py:14:8: F401 [*] `sys` imported but unused
+benchmark\run_parallel_reranker.py:52:16: BLE001 Do not catch blind exception: `Exception`
+benchmark\run_parallel_reranker.py:59:16: BLE001 Do not catch blind exception: `Exception`
+benchmark\run_parallel_reranker.py:214:12: BLE001 Do not catch blind exception: `Exception`
+benchmark\run_reranker_benchmark.py:9:1: I001 [*] Import block is un-sorted or un-formatted
+benchmark\run_reranker_benchmark.py:13:8: F401 [*] `sys` imported but unused
+benchmark\run_reranker_benchmark.py:15:21: F401 [*] `pathlib.Path` imported but unused
+benchmark\run_reranker_benchmark.py:19:52: F401 [*] `benchmark.analyze_baseline.pack` imported but unused
+benchmark\run_reranker_benchmark.py:19:58: F401 [*] `benchmark.analyze_baseline.unpack` imported but unused
+benchmark\run_reranker_benchmark.py:20:41: F401 [*] `benchmark.trust.forensics` imported but unused
+benchmark\run_reranker_benchmark.py:159:5: F841 Local variable `delta_ndcg` is assigned to but never used
+benchmark\run_reranker_benchmark.py:182:12: BLE001 Do not catch blind exception: `Exception`
+benchmark\score_e002.py:79:52: B023 Function definition does not bind loop variable `qids`
+benchmark\score_e002.py:79:64: B023 Function definition does not bind loop variable `qids`
+benchmark\score_e003.py:107:56: B023 Function definition does not bind loop variable `qids`
+benchmark\score_e003.py:107:68: B023 Function definition does not bind loop variable `qids`
+benchmark\test_analyze_baseline.py:4:1: I001 [*] Import block is un-sorted or un-formatted
+benchmark\test_dev_split.py:20:19: RUF012 Mutable default value for class attribute
+benchmark\test_dev_split.py:37:19: RUF012 Mutable default value for class attribute
+benchmark\test_dev_split.py:44:5: I001 [*] Import block is un-sorted or un-formatted
+benchmark\test_dev_split.py:45:36: F401 [*] `backend.app.config.ROOT` imported but unused
+benchmark\test_dev_split.py:53:19: RUF012 Mutable default value for class attribute
+benchmark\test_mteb_adapter.py:19:59: UP017 [*] Use `datetime.UTC` alias
+benchmark\test_reranker.py:2:1: I001 [*] Import block is un-sorted or un-formatted
+benchmark\test_reranker.py:156:14: RUF059 Unpacked variable `meta` is never used
+benchmark\test_rrf_reconstruction.py:2:1: I001 [*] Import block is un-sorted or un-formatted
+benchmark\test_rrf_reconstruction.py:3:21: F401 [*] `pathlib.Path` imported but unused
+benchmark\test_trust_evaluation.py:7:1: I001 [*] Import block is un-sorted or un-formatted
+benchmark\trust\evaluation.py:119:5: I001 [*] Import block is un-sorted or un-formatted
+benchmark\trust\integrity.py:77:21: RUF046 [*] Value being cast to `int` is already an integer
+benchmark\tune_bm25.py:38:1: I001 [*] Import block is un-sorted or un-formatted
+benchmark\tune_bm25.py:88:12: BLE001 Do not catch blind exception: `Exception`
+benchmark\tune_bm25.py:150:58: F401 [*] `backend.app.retrieval.search.STOP` imported but unused
+benchmark\verify_dense_alignment_synthetic.py:21:32: F401 [*] `backend.app.config.ROOT` imported but unused
+benchmark\verify_retrieval.py:41:22: PLW1510 `subprocess.run` without explicit `check` argument
+benchmark\verify_retrieval.py:84:5: S110 `try`-`except`-`pass` detected, consider logging the exception
+benchmark\verify_retrieval.py:84:12: BLE001 Do not catch blind exception: `Exception`
+benchmark\verify_retrieval.py:248:59: UP031 Use format specifiers instead of percent format
+scripts\audit_api.py:1:1: I001 [*] Import block is un-sorted or un-formatted
+scripts\container_start.py:2:1: I001 [*] Import block is un-sorted or un-formatted
+scripts\setup_demo.py:5:8: F401 [*] `sys` imported but unused
+scripts\verify_demo.py:2:1: I001 [*] Import block is un-sorted or un-formatted
+Found 122 errors.
+[*] 80 fixable with the `--fix` option (6 hidden fixes can be enabled with the `--unsafe-fixes` option).

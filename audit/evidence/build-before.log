@@ -1,0 +1,29 @@
+
+> build
+> npm run build --workspace frontend
+
+
+> astflow-frontend@0.1.0 build
+> tsc -b && vite build
+
+[36mvite v7.3.6 [32mbuilding client environment for production...[36m[39m
+transforming...
+[32m✓[39m 2944 modules transformed.
+rendering chunks...
+computing gzip size...
+[2mdist/[22m[32mindex.html                        [39m[1m[2m    0.58 kB[22m[1m[22m[2m │ gzip:   0.38 kB[22m
+[2mdist/[22m[32massets/codicon-ngg6Pgfi.ttf       [39m[1m[2m  121.97 kB[22m[1m[22m
+[2mdist/[22m[32massets/editor.worker-CdQrwHl8.js  [39m[1m[2m  251.81 kB[22m[1m[22m
+[2mdist/[22m[35massets/TraceGraph-BnuhLJ6X.css    [39m[1m[2m   15.87 kB[22m[1m[22m[2m │ gzip:   2.67 kB[22m
+[2mdist/[22m[35massets/index-3VzbLITf.css         [39m[1m[2m   18.96 kB[22m[1m[22m[2m │ gzip:   5.01 kB[22m
+[2mdist/[22m[35massets/SourceViewer-WGlpN-0L.css  [39m[1m[2m  146.36 kB[22m[1m[22m[2m │ gzip:  23.09 kB[22m
+[2mdist/[22m[36massets/javascript-CE3xdujh.js     [39m[1m[2m    4.88 kB[22m[1m[22m[2m │ gzip:   1.89 kB[22m
+[2mdist/[22m[36massets/TraceGraph-DuLS3Xek.js     [39m[1m[2m  186.88 kB[22m[1m[22m[2m │ gzip:  61.49 kB[22m
+[2mdist/[22m[36massets/index-Cq6bj_Sc.js          [39m[1m[2m  258.99 kB[22m[1m[22m[2m │ gzip:  81.09 kB[22m
+[2mdist/[22m[36massets/SourceViewer-D3Q4BXK8.js   [39m[1m[33m3,688.50 kB[39m[22m[2m │ gzip: 953.31 kB[22m
+[33m
+(!) Some chunks are larger than 3500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+[32m✓ built in 43.28s[39m
