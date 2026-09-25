@@ -125,6 +125,9 @@ ever deleted. Current human-readable status lives in [/RETRIEVAL-PROGRESS.md](..
 
 ### Pre-registration for E004-long-query (written 2026-09-25, before any E004 code)
 
+> **Status: cancelled for now** by the project owner on 2026-09-25, before any E004 code or run. The design below is
+> kept unchanged so the experiment can be resumed exactly as registered; nothing in it has been executed.
+
 **Question.** Does allowing dense retrieval to represent the complete query, rather than only the first 256
 word-pieces, significantly improve dense retrieval recall, and does that improvement carry through to the production
 hybrid ranking?
@@ -243,7 +246,7 @@ Which experiment runs first is decided by `BOTTLENECK_RULES_V1` in
 | **E001-fusion** | Verdict FUSION (gain ≥ 0.03) | **EVALUATED — REJECT** | RRF parameter tuning recovers lost candidates without harming precision | RRF k, weights, depth sweep offline | NDCG@10, Hit@100 | Minutes, CPU | **No** |
 | **E002-reranker** | Next in queue (RRF cannot fix ranking or recover candidates cleanly) | **EVALUATED — REJECT** | A cross-encoder reading query and code together can score relevance directly over the top 50–100 candidates | Rerank Hybrid top-k (k ∈ {20, 50, 100}) with a real cross-encoder over frozen candidates; candidate retrieval unchanged | NDCG@10, MRR@10 (bounded above by Oracle@k = 0.2977) | Hours of CPU on benchmark machine | **Yes** |
 | **E003-dense-windows** | Candidate expansion for the 65% of queries missed by both engines | **EVALUATED — REJECT** | 23.5% of documents are cut at 256 word-pieces; incomplete embeddings lose documents in candidate generation | Whole-document vector → id-aligned sliding windows (256/64, max over windows) | Dense and Hybrid Hit@100, then NDCG@10 | ~3× embedding time | **Yes** |
-| **E004-long-query** | Post-E003 audit: 89% of queries exceed Dense's 256 word-piece limit | **PRE-REGISTERED — awaiting approval to run** | Dense sees only the first 254 query word-pieces; representing the complete query improves Dense recall and carries into Hybrid | Query vector = token-weighted mean over non-overlapping 254-piece query chunks (one condition, `longquery-mean254`); documents, BM25, RRF unchanged | Hybrid NDCG@10 (decides); Dense Recall@100/NDCG@10 (diagnostic) | ≈ +2 min query encoding; no re-embedding | **Yes** (model already cached) |
+| **E004-long-query** | Post-E003 audit: 89% of queries exceed Dense's 256 word-piece limit | **CANCELLED FOR NOW (owner decision, 2026-09-25) — not run** | Dense sees only the first 254 query word-pieces; representing the complete query improves Dense recall and carries into Hybrid | Query vector = token-weighted mean over non-overlapping 254-piece query chunks (one condition, `longquery-mean254`); documents, BM25, RRF unchanged | Hybrid NDCG@10 (decides); Dense Recall@100/NDCG@10 (diagnostic) | ≈ +2 min query encoding; no re-embedding | **Yes** (model already cached) |
 
 ---
 

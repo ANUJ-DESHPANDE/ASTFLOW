@@ -38,7 +38,7 @@ performance → P2 → P3. "Done" items were implemented in this audit, each as 
 
 | Order | ID | Why | Files | Implementation | Test / acceptance | Regression risk |
 |---|---|---|---|---|---|---|
-| 1 | F-044 P1 | Retrieval accuracy is the S1 P0 criterion and is low (0.0884) | benchmark, retrieval | Run E004 (pre-registered; needs your approval), then E005 (offline NL descriptions; needs a model/licensing decision) | Ledger rule: Hybrid NDCG@10 CI excludes 0 on dev and confirmation | experiment-gated |
+| 1 | F-044 P1 | Retrieval accuracy is the S1 P0 criterion and is low (0.0884) | benchmark, retrieval | E004 is pre-registered but cancelled for now by the owner; resume it or E005 (offline NL descriptions; needs a model/licensing decision) | Ledger rule: Hybrid NDCG@10 CI excludes 0 on dev and confirmation | experiment-gated |
 | 2 | F-029 P2 | No cross-file edges for CommonJS | `structure/resolver.py`, `parsing/javascript.py` | `require('./x')` + `module.exports`/`exports.y` bindings; member calls on those bindings only | TS corroboration ≥ 99% on express/lodash + a hand-judged sample; demo unchanged | medium |
 | 3 | F-038 P2 | Tests crowd real-repo results | parser, `search.py` | test-directory detection without test descriptions in the title field | judged set of ≥ 30 questions on 2 repos; no regression on the demo benchmark | medium |
 | 4 | F-030 P2 | Overview unreadable at scale | `TraceGraph.tsx`, `/api/map` | directory clusters; connected files first | E2E on a generated 150-file fixture | low |

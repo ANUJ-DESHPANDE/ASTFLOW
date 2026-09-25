@@ -2,7 +2,7 @@
 
 > **Read this file first.** It is the only document that describes the *current* state of
 > ASTFLOW's search quality. Older files under `docs/audit/` are historical records.
-> Last updated: 2026-09-25 (E001–E003 rejected; E004 pre-registered, awaiting approval; engineering audit in `audit/` re-generated baseline-v1 from committed code and produced official MTEB artifacts for the current code — identical scores).
+> Last updated: 2026-09-25 (E001–E003 rejected; E004 pre-registered, then cancelled for now by the project owner (2026-09-25); engineering audit in `audit/` re-generated baseline-v1 from committed code and produced official MTEB artifacts for the current code — identical scores).
 
 ---
 
@@ -106,7 +106,7 @@ The top results are returned (Candidate depth = 1,000 on benchmark)
 
 ## 5. Next Steps
 
-- **No experiment is active.** The pre-registered queue (E001–E003) is exhausted; E004 must be written into
-  `benchmark/EXPERIMENTS.md` (hypothesis, one variable, decision rule) before any code.
+- **No experiment is active.** E001–E003 are rejected. E004 (complete-query dense representation) was pre-registered and
+  then cancelled for now by the project owner (2026-09-25); pre-registration kept in the ledger, not run.
 - Evidence to choose from: Dense improves when it sees whole documents (E003), but Hybrid's RRF merge absorbs it (E001, E003),
   and a web-trained cross-encoder hurts (E002). Candidate pool headroom (Oracle@100 = 0.2977) still supports the ~0.20 target.

@@ -132,9 +132,9 @@
   ],
   "active_experiment": {
     "id": null,
-    "description": "Pre-registered queue (E001-E003) is exhausted; E004 must be pre-registered in benchmark/EXPERIMENTS.md before any code",
-    "status": "NOT YET REGISTERED",
+    "description": "E004-long-query was pre-registered (benchmark/EXPERIMENTS.md) and then cancelled for now by the project owner on 2026-09-25; not run",
+    "status": "NONE ACTIVE",
     "needs_hugging_face": null
   },
-  "next_action": "Pre-register E004 from the E001-E003 evidence (see RETRIEVAL-PROGRESS.md section 5), then execute it."
+  "next_action": "No retrieval experiment scheduled (E004 cancelled for now). Engineering follow-ups: audit/18-remediation-plan.md."
 }

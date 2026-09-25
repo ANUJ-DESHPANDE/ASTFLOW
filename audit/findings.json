@@ -230,7 +230,7 @@
    "files": "retrieval",
    "affected_feature": "retrieval",
    "requirement": "C2 (P0 screening criterion)",
-   "recommended_action": "E004 (pre-registered, awaiting approval); E005 candidate (offline NL descriptions)",
+   "recommended_action": "E004 pre-registered but cancelled for now by the owner; E005 candidate (offline NL descriptions)",
    "estimated_effort": "L",
    "dependencies": "approval",
    "status": "OPEN",

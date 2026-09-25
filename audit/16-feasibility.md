@@ -35,4 +35,4 @@ Docker on this machine).
 
 **Overall:** feasible as a local, CPU-only, single-user investigation tool for JavaScript repositories up to tens of
 thousands of files. The hard, unsolved part is retrieval accuracy on natural-language → code queries, which the
-pre-registered experiment queue (E004, then E005) addresses.
+next retrieval experiments would address (E004 was pre-registered and cancelled for now; E005 is a candidate).

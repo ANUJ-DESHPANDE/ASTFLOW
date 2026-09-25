@@ -1,6 +1,6 @@
 # ASTFLOW Retrieval — Session Handoff
 
-_Last updated 2026-09-25 (E001–E003 rejected; E004 pre-registered and awaiting approval; engineering audit on `audit/master-remediation`, see `audit/FINAL-ASTFLOW-ENGINEERING-REPORT.md`). Contains only verified information._
+_Last updated 2026-09-25 (E001–E003 rejected; E004 pre-registered, then cancelled for now by the project owner (2026-09-25); engineering audit on `audit/master-remediation`, see `audit/FINAL-ASTFLOW-ENGINEERING-REPORT.md`). Contains only verified information._
 
 ## TRUST STATUS
 Measurement system: **VERIFIED** (4 evaluators agree on the frozen runs; MTEB 2.21.0 gives the same numbers for the current code; baseline-v1 re-generated from committed code with 0 per-query metric changes).
@@ -54,9 +54,9 @@ Reranker: NONE (E002 cross-encoder rejected and removed from the product)
 | E003-dense-windows | Sliding-window Dense vectors (256/64, max over windows) | 0.08840 | 0.08932 | Conf: +0.00091 ([-0.00231, +0.00441]); All: +0.00092 ([-0.00145, +0.00333]) | **REJECT** |
 
 ## NEXT ACTION
-The pre-registered queue (E001–E003) is exhausted. Pre-register **E004** in `benchmark/EXPERIMENTS.md` (hypothesis, one
-variable, decision rule) before writing code, using the E001–E003 evidence: Dense improves when it sees whole documents,
-RRF absorbs that gain, and a web-trained cross-encoder hurts.
+No retrieval experiment is active. E004 (complete-query dense representation, pre-registered in
+`benchmark/EXPERIMENTS.md`) was cancelled for now by the project owner (2026-09-25); pre-registration kept in the ledger, not run. Engineering follow-ups are ordered in
+`audit/18-remediation-plan.md` (CommonJS edges F-029, test code in results F-038, graph overview F-030).
 
 ## FILES TO READ
 1. `RETRIEVAL-PROGRESS.md`

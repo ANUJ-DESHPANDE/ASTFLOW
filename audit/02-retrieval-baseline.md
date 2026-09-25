@@ -72,7 +72,7 @@ web-trained cross-encoder makes it worse.
 | E001 RRF sweep (315 configs) | REJECT | `EXPERIMENTS.md` |
 | E002 cross-encoder (d 20/50/100) | REJECT (−0.0187 NDCG@10, significant) | `experiments/E002.json` |
 | E003 dense windows | REJECT (Dense +0.0047 significant; Hybrid +0.0009 not) | `experiments/E003.json` |
-| E004 long-query dense | pre-registered, **awaiting approval** — not run in this audit | `EXPERIMENTS.md` |
+| E004 long-query dense | pre-registered, then **cancelled for now** by the owner — not run | `EXPERIMENTS.md` |
 
 ## Mission items 19–21
 

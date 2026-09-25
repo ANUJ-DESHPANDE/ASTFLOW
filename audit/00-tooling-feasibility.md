@@ -60,4 +60,4 @@ Only tools that add independent evidence are used.
 - "Reranked" retrieval mode: the UI has **no retrieval-mode selector**; the only `reranked` path is benchmark-only
   and off by default (see 05-feature-inventory).
 - BM25 tuning / document expansion / reranker experiments are governed by `benchmark/EXPERIMENTS.md` rules
-  (pre-registration, dev → confirmation once). E004 is pre-registered and awaiting approval; it is not run here.
+  (pre-registration, dev → confirmation once). E004 was pre-registered and then cancelled for now by the project owner (2026-09-25); pre-registration kept in the ledger, not run.

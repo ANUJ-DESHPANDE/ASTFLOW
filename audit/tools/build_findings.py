@@ -173,7 +173,7 @@ f("F-044", "retrieval quality", "P1", "confirmed",
   "Hybrid NDCG@10 0.0884 (Recall@100 0.298); 65% of answers are in neither retriever's top 100; 89% of queries exceed "
   "the dense model's 256 word-pieces; median query/document vocabulary overlap 5.8%.",
   ["02-retrieval-baseline.md", "post-E003 audit"], "verify_retrieval / run_mteb", "retrieval", "retrieval",
-  "C2 (P0 screening criterion)", "E004 (pre-registered, awaiting approval); E005 candidate (offline NL descriptions)",
+  "C2 (P0 screening criterion)", "E004 pre-registered but cancelled for now by the owner; E005 candidate (offline NL descriptions)",
   "L", "approval", "OPEN")
 
 f("F-045", "performance", "P2", "confirmed", "rank() compiled one regex per candidate row",

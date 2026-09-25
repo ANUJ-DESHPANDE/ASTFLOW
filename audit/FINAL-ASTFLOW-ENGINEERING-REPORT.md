@@ -21,8 +21,8 @@ bit-identical rankings; the frozen retrieval baseline was **re-generated from co
 changes, and official MTEB artifacts for the current code now match it exactly.
 
 What is **not** solved: retrieval accuracy itself (Hybrid NDCG@10 0.0884; 65% of answers are not in either retriever's
-top 100). The evidence points at candidate generation (query truncation, vocabulary mismatch); E004 is pre-registered
-and awaits your approval. CommonJS cross-file edges, directory clustering in the graph overview and a code formatter
+top 100). The evidence points at candidate generation (query truncation, vocabulary mismatch); E004 was pre-registered
+and then cancelled for now by the owner. CommonJS cross-file edges, directory clustering in the graph overview and a code formatter
 pass are the main remaining engineering items. Docker could not be verified (not installed here).
 
 ## Starting state (`01-baseline-state.md`)
@@ -115,7 +115,7 @@ fresh clone before the graph fix, 28/28 on the final build.
 
 ## Remaining limitations / known issues / future work
 
-Open, in order (`18-remediation-plan.md`): F-044 retrieval accuracy (run E004 — needs your approval; then E005 —
+Open, in order (`18-remediation-plan.md`): F-044 retrieval accuracy (E004 pre-registered but cancelled for now; E005 candidate —
 needs a model/licensing decision), F-029 CommonJS edges, F-038 tests crowding real-repo results, F-030 graph overview
 clustering, F-021 formatter pass, F-035 cached versions, F-031 display names, F-018 duplicate app instance, F-041
 Docker verification. CI workflows were added but have not run on GitHub (no push authorisation).
@@ -161,7 +161,7 @@ Retrieval (AppsRetrieval test, 3,765 queries; frozen harness = MTEB 2.21.0 on cu
   BM25:   NDCG@10 0.06312  MRR@10 0.05421  R@10 0.09216  R@50 0.16866  R@100 0.22603
   Dense:  NDCG@10 0.06596  MRR@10 0.05581  R@10 0.09907  R@50 0.19389  R@100 0.25259
   Hybrid: NDCG@10 0.08840  MRR@10 0.07257  R@10 0.13971  R@50 0.23400  R@100 0.29774
-  Final:  = Hybrid (E001–E003 rejected; E004 awaiting approval)
+  Final:  = Hybrid (E001–E003 rejected; E004 cancelled for now)
 
 Performance (CPU, semantic on)
   Startup: demo healthy 13 s from a fresh clone (model load 8.4 s when cold)
@@ -172,9 +172,9 @@ Performance (CPU, semantic on)
 
 P0 Remaining: 0
 P1 Remaining: 1 (F-044 retrieval accuracy — experiment-gated)
-Known blockers: Docker not installed (F-041); CI not yet run on GitHub (no push authorisation); E004 needs approval
+Known blockers: Docker not installed (F-041); CI first runs on GitHub with this push; E004 cancelled for now
 
-Next recommended action: approve and run E004 (pre-registered long-query dense experiment), then implement F-029
+Next recommended action: check the first CI run on GitHub, then implement F-029
 (CommonJS resolution) with TS-corroboration precision checks.
 
 Exact commands to reproduce validation
