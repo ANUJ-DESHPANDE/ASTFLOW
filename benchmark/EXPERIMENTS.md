@@ -81,6 +81,13 @@ ever deleted. Current human-readable status lives in [/RETRIEVAL-PROGRESS.md](..
 - **What it shows:** windows make Dense itself significantly better on every split (all: +0.00469, CI excludes 0;
   +23 answers in the top 100), confirming that truncation costs Dense. RRF k=60 absorbs almost all of that gain:
   Hybrid moves +0.0009 and gains only 4 top-100 answers on the full set. Recall@100 CIs include 0 in both modes.
+- **Correction (post-E003 read-only audit, 2026-09-25):** "RRF absorbs the gain" is incomplete. Split by the relevant
+  document's length (all 3,765 queries, frozen runs): for the 1,168 queries whose answer is longer than 256 word-pieces,
+  Dense NDCG@10 0.0634 → 0.0866 and **Hybrid 0.0989 → 0.1145** (Dense Hit@100 308 → 374); for the 2,597 queries whose
+  answer is ≤ 256, Dense 0.0671 → 0.0635 and **Hybrid 0.0837 → 0.0780** (Dense Hit@100 643 → 600). Max-pooling over
+  windows favours long documents, pushing short correct answers down. Hybrid kept about half of the positive Dense
+  gain (+17.6 of +33.3 summed NDCG points on the 65 queries Dense improved); the short-document losses cancelled it.
+  The null Hybrid result is therefore a representation trade-off, not only fusion absorption.
 - **Verification:** runs generated and cross-checked by `benchmark.verify_retrieval` (reference, astflow,
   pytrec_eval, ir_measures agree on all 6 runs); window alignment proven (all 6,726 single-window documents match
   their whole-document vectors, min cosine 0.9999996; 25 probe documents re-embedded window by window, min cosine

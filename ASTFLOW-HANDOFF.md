@@ -1,9 +1,9 @@
 # ASTFLOW Retrieval — Session Handoff
 
-_Last updated 2026-09-24 (baseline-v1 verified; E001-fusion, E002-reranker and E003-dense-windows evaluated and rejected). Contains only verified information._
+_Last updated 2026-09-25 (E001–E003 rejected; E004 pre-registered and awaiting approval; engineering audit on `audit/master-remediation`, see `audit/FINAL-ASTFLOW-ENGINEERING-REPORT.md`). Contains only verified information._
 
 ## TRUST STATUS
-Measurement system: **VERIFIED** (evaluators verified across 5 scoring tools).
+Measurement system: **VERIFIED** (4 evaluators agree on the frozen runs; MTEB 2.21.0 gives the same numbers for the current code; baseline-v1 re-generated from committed code with 0 per-query metric changes).
 Current trusted baseline: **VERIFIED BASELINE V1 (baseline-v1)**
 - **Hybrid NDCG@10:** `0.08840` (MRR@10 `0.07257`, Recall@10 `0.13971`, Recall@100 `0.29774`)
 - **Dense NDCG@10:** `0.06596` (MRR@10 `0.05581`, Recall@10 `0.09907`, Recall@100 `0.25259`)
@@ -13,9 +13,9 @@ Current trusted baseline: **VERIFIED BASELINE V1 (baseline-v1)**
 ## EXACT CODE STATE
 Repository: https://github.com/ANUJ-DESHPANDE/ASTFLOW
 Branch: `exp/E003-dense-windows` (see `git log -1`)
-Retrieval code (`backend/app/retrieval/`): baseline BM25 / Dense / Hybrid unchanged. `reranker.py` adds an
-opt-in cross-encoder (`ASTFLOW_RERANKER_ENABLED`, default `false`); with it off, Hybrid ranking is bit-for-bit baseline.
-E002 was rejected, so the reranker must stay off. E003's windowed Dense exists only as the benchmark option
+Retrieval code (`backend/app/retrieval/`): BM25 / Dense / Hybrid produce the baseline-v1 rankings (lexical scores
+bit-identical after the audit's title-token precomputation). The rejected E002 cross-encoder was removed from the product
+path in the audit (`aa14805`); `Retriever.rank` accepts only `bm25`, `dense`, `hybrid`. E003's windowed Dense exists only as the benchmark option
 `verify_retrieval --dense-windows`; production indexing still uses one vector per document.
 
 ## TWO-MACHINE SETUP
@@ -29,7 +29,7 @@ Documents: 8,765 · Queries: 3,765 · Qrels: 3,765 pairs, exactly 1 relevant doc
 Embedding model: `sentence-transformers/all-MiniLM-L6-v2` (384-d, normalized, threshold 0.05, single vector per doc)
 BM25: BM25Okapi k1 1.6, b 0.75, positive IDF, identifier splitting, English+code stopwords
 Hybrid: RRF k=60, weights 1/1, depth 1,000 — 100% reconstructible offline from BM25 and Dense runs
-Reranker: NONE in the trusted config (E002 cross-encoder rejected; opt-in flag defaults to off)
+Reranker: NONE (E002 cross-encoder rejected and removed from the product)
 
 ## CURRENT BOTTLENECK
 **RANKING** — the answer is in the Hybrid top 100 for 29.8% of queries but in the top 10 for only 14.0%.

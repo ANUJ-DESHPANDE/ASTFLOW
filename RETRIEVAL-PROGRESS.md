@@ -2,7 +2,7 @@
 
 > **Read this file first.** It is the only document that describes the *current* state of
 > ASTFLOW's search quality. Older files under `docs/audit/` are historical records.
-> Last updated: 2026-09-24 (baseline-v1 completed; E001-fusion, E002-reranker and E003-dense-windows evaluated and rejected).
+> Last updated: 2026-09-25 (E001–E003 rejected; E004 pre-registered, awaiting approval; engineering audit in `audit/` re-generated baseline-v1 from committed code and produced official MTEB artifacts for the current code — identical scores).
 
 ---
 
@@ -97,7 +97,7 @@ The top results are returned (Candidate depth = 1,000 on benchmark)
 
 | ID | Description | Dev NDCG@10 | Conf NDCG@10 | Full NDCG@10 | Decision | Key Takeaway |
 |---|---|:---:|:---:|:---:|:---:|---|
-| **BASE** | Verified baseline-v1 | 0.09351 | 0.08342 | **0.08840** | **VERIFIED** | First trusted baseline; established 5-way evaluator consensus. |
+| **BASE** | Verified baseline-v1 | 0.09351 | 0.08342 | **0.08840** | **VERIFIED** | First trusted baseline; 4 evaluators agree (reference, astflow, pytrec_eval, ir_measures); MTEB's own scorer agrees on the current code (2026-09-25). |
 | **E001-fusion** | Controlled RRF sweep (315 configs) | 0.09383 | 0.08321 | **0.08845** | **REJECT** | Parameter tuning cannot resolve merger dilution without harming NDCG; unlocks E002. |
 | **E002-reranker** | MS-MARCO MiniLM cross-encoder over Hybrid top-k (k = 20 / 50 / 100) | 0.07281 (k=20) | 0.06670 | **0.06972** | **REJECT** | Worse than RRF at every depth (CI excludes 0); web-trained reranker does not transfer to code. |
 | **E003-dense-windows** | Sliding-window Dense vectors (256/64, max over windows) | 0.09444 | 0.08433 | **0.08932** | **REJECT** | Dense alone +0.0047 (CI excludes 0), but Hybrid +0.0009 (CI includes 0): RRF absorbs the gain. |

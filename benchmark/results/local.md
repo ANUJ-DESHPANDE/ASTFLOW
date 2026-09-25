@@ -2,18 +2,16 @@
 
 Small handcrafted fixture; not a held-out or official MTEB/CoIR result. MRR is over at most 50 candidates.
 
-16 queries · 21 source chunks · model: unavailable
+16 queries · 21 source chunks · model: sentence-transformers/all-MiniLM-L6-v2
 
 | System | NDCG@10 | MRR | Recall@10 | Median ms | p95 ms |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| BM25 only | 0.8205 | 0.8802 | 0.8646 | 1.04 | 5.97 |
-| Dense only | unavailable | — | — | — | — |
-| Hybrid | 0.8205 | 0.8802 | 0.8646 | 0.94 | 1.49 |
-| Hybrid + structure | 0.8695 | 0.9115 | 0.9792 | 1.25 | 2.16 |
-| ASTFLOW full | 0.8516 | 0.9115 | 0.9792 | 1.45 | 3.00 |
+| BM25 only | 0.8354 | 0.9115 | 0.8646 | 0.36 | 0.94 |
+| Dense only | 0.9311 | 0.9583 | 1.0000 | 6.08 | 6.97 |
+| Hybrid | 0.9054 | 0.9375 | 1.0000 | 5.97 | 6.74 |
+| Hybrid + structure | 0.9122 | 0.9688 | 1.0000 | 6.02 | 6.95 |
+| ASTFLOW full | 0.8661 | 0.9688 | 1.0000 | 6.95 | 14.73 |
 
 Generated from an executed evaluation. Full per-query rankings are in `local.json`.
-
-Semantic model unavailable: hybrid/full rows used lexical fallback, not dense retrieval.
 
 Category metrics are included in each baseline's `categories` object in `local.json`.

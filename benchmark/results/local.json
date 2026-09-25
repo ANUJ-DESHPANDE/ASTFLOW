@@ -3,39 +3,39 @@
   "query_count": 16,
   "chunk_count": 21,
   "source_hash": "dd6b2ebc60992aa886b3badb27d6e82c6131b43e137c801302c5c2ac2d8c41bc",
-  "generated_at": "2026-09-19T07:54:23.794299+00:00",
+  "generated_at": "2026-09-25T00:39:09.219589+00:00",
   "semantic": {
-    "available": false,
-    "model": null,
-    "message": "Semantic search disabled by configuration"
+    "available": true,
+    "model": "sentence-transformers/all-MiniLM-L6-v2",
+    "message": "CPU semantic model ready"
   },
-  "configuration_hash": "c5124c5abc6e477b",
+  "configuration_hash": "8aaa1a140e0a6778",
   "limitations": "Small handcrafted fixture; not a held-out or official MTEB/CoIR result. MRR is over at most 50 candidates.",
   "baselines": {
     "BM25 only": {
       "status": "evaluated",
-      "ndcg@10": 0.8205,
-      "mrr": 0.8802,
+      "ndcg@10": 0.8354,
+      "mrr": 0.9115,
       "recall@10": 0.8646,
-      "latency_median_ms": 1.04,
-      "latency_p95_ms": 5.97,
+      "latency_median_ms": 0.36,
+      "latency_p95_ms": 0.94,
       "queries": [
         {
           "id": "locate-bluetooth",
           "category": "locate",
           "query": "Where is Bluetooth settings handled?",
-          "ndcg@10": 0.9921161603996311,
+          "ndcg@10": 0.9848049117051951,
           "mrr": 1.0,
           "recall@10": 1.0,
-          "latency_ms": 5.97,
+          "latency_ms": 0.94,
           "ranking": [
             "settings/deeplinks.js::openBluetoothSettings",
             "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
-            "voice/IntentRouter.js::IntentRouter.route",
             "settings/deeplinks.js::openWifiSettings",
             "settings/deeplinks.js::openSettingsUri",
-            "voice/IntentRouter.js::IntentRouter.constructor",
-            "bluetooth/permissions.js::checkBluetoothPermission"
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "voice/IntentRouter.js::IntentRouter.constructor"
           ]
         },
         {
@@ -45,34 +45,34 @@
           "ndcg@10": 1.0,
           "mrr": 1.0,
           "recall@10": 1.0,
-          "latency_ms": 1.03,
+          "latency_ms": 0.49,
           "ranking": [
             "settings/deeplinks.js::openBluetoothSettings",
             "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
-            "voice/IntentRouter.js::IntentRouter.route",
             "settings/deeplinks.js::openWifiSettings",
             "settings/deeplinks.js::openSettingsUri",
-            "voice/IntentRouter.js::IntentRouter.constructor",
-            "bluetooth/permissions.js::checkBluetoothPermission"
+            "voice/IntentRouter.js::IntentRouter.route",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "voice/IntentRouter.js::IntentRouter.constructor"
           ]
         },
         {
           "id": "voice-path",
           "category": "path",
           "query": "How does VoiceHandler reach BluetoothAgent?",
-          "ndcg@10": 0.6955762265703533,
-          "mrr": 0.5,
+          "ndcg@10": 0.8768488056296351,
+          "mrr": 1.0,
           "recall@10": 1.0,
-          "latency_ms": 4.66,
+          "latency_ms": 0.62,
           "ranking": [
-            "voice/IntentRouter.js::IntentRouter.constructor",
             "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
             "voice/VoiceHandler.js::VoiceHandler.constructor",
             "voice/VoiceHandler.js::VoiceHandler.handleRequest",
             "voice/VoiceHandler.js::VoiceHandler.handle",
+            "voice/IntentRouter.js::IntentRouter.constructor",
             "settings/deeplinks.js::openBluetoothSettings",
-            "voice/IntentRouter.js::IntentRouter.route",
             "bluetooth/permissions.js::checkBluetoothPermission",
+            "voice/IntentRouter.js::IntentRouter.route",
             "voice/normalizeInput.js::normalizeInput",
             "voice/dynamicDispatch.js::dispatchPlugin"
           ]
@@ -84,7 +84,7 @@
           "ndcg@10": 0.3065735963827292,
           "mrr": 0.3333333333333333,
           "recall@10": 0.5,
-          "latency_ms": 2.55,
+          "latency_ms": 0.28,
           "ranking": [
             "session/SessionManager.js::SessionManager.clear",
             "session/SessionManager.js::SessionManager.constructor",
@@ -101,7 +101,7 @@
           "ndcg@10": 0.3096811645763381,
           "mrr": 0.25,
           "recall@10": 0.6666666666666666,
-          "latency_ms": 1.36,
+          "latency_ms": 0.36,
           "ranking": [
             "session/SessionManager.js::SessionManager.clear",
             "session/SessionManager.js::SessionManager.constructor",
@@ -119,7 +119,7 @@
           "ndcg@10": 0.8451593915771352,
           "mrr": 1.0,
           "recall@10": 1.0,
-          "latency_ms": 0.95,
+          "latency_ms": 0.39,
           "ranking": [
             "voice/VoiceHandler.js::VoiceHandler.handleRequest",
             "voice/VoiceHandler.js::VoiceHandler.handle",
@@ -131,34 +131,34 @@
           "id": "deeplink-usage",
           "category": "usage",
           "query": "Where is the settings://bluetooth deeplink used?",
-          "ndcg@10": 0.9879538239787087,
+          "ndcg@10": 0.9926195041747018,
           "mrr": 1.0,
           "recall@10": 1.0,
-          "latency_ms": 1.05,
+          "latency_ms": 0.36,
           "ranking": [
             "settings/deeplinks.js::openBluetoothSettings",
             "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
-            "voice/IntentRouter.js::IntentRouter.route",
             "settings/deeplinks.js::openWifiSettings",
             "settings/deeplinks.js::openSettingsUri",
-            "voice/IntentRouter.js::IntentRouter.constructor",
-            "bluetooth/permissions.js::checkBluetoothPermission"
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "voice/IntentRouter.js::IntentRouter.constructor"
           ]
         },
         {
           "id": "device-permission",
           "category": "sequence",
           "query": "Where is permission checked before settings are opened?",
-          "ndcg@10": 1.0,
+          "ndcg@10": 0.8981342840006799,
           "mrr": 1.0,
           "recall@10": 1.0,
-          "latency_ms": 1.05,
+          "latency_ms": 0.33,
           "ranking": [
-            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
             "bluetooth/permissions.js::checkBluetoothPermission",
             "settings/deeplinks.js::openBluetoothSettings",
             "settings/deeplinks.js::openWifiSettings",
             "settings/deeplinks.js::openSettingsUri",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
             "voice/IntentRouter.js::IntentRouter.route"
           ]
         },
@@ -169,7 +169,7 @@
           "ndcg@10": 0.9173194127129571,
           "mrr": 1.0,
           "recall@10": 0.5,
-          "latency_ms": 0.61,
+          "latency_ms": 0.22,
           "ranking": [
             "settings/deeplinks.js::openWifiSettings"
           ]
@@ -181,7 +181,7 @@
           "ndcg@10": 0.9173194127129571,
           "mrr": 1.0,
           "recall@10": 0.5,
-          "latency_ms": 0.67,
+          "latency_ms": 0.22,
           "ranking": [
             "voice/normalizeInput.js::normalizeInput"
           ]
@@ -193,7 +193,7 @@
           "ndcg@10": 0.6403662530558959,
           "mrr": 1.0,
           "recall@10": 0.6666666666666666,
-          "latency_ms": 1.32,
+          "latency_ms": 0.25,
           "ranking": [
             "tests/session.test.js::test:expired sessions require the user to sign in again",
             "auth/AuthService.js::AuthService.restore",
@@ -208,12 +208,12 @@
           "ndcg@10": 1.0,
           "mrr": 1.0,
           "recall@10": 1.0,
-          "latency_ms": 0.83,
+          "latency_ms": 0.47,
           "ranking": [
             "session/SessionManager.js::SessionManager.clear",
             "session/SessionManager.js::SessionManager.constructor",
-            "session/SessionManager.js::SessionManager.create",
             "session/SessionManager.js::SessionManager.restore",
+            "session/SessionManager.js::SessionManager.create",
             "auth/AuthService.js::AuthService.constructor",
             "tests/session.test.js::test:expired sessions require the user to sign in again"
           ]
@@ -225,7 +225,7 @@
           "ndcg@10": 1.0,
           "mrr": 1.0,
           "recall@10": 1.0,
-          "latency_ms": 0.91,
+          "latency_ms": 0.28,
           "ranking": [
             "voice/dynamicDispatch.js::dispatchPlugin",
             "session/SessionManager.js::SessionManager.create",
@@ -240,7 +240,7 @@
           "ndcg@10": 1.0,
           "mrr": 1.0,
           "recall@10": 1.0,
-          "latency_ms": 0.93,
+          "latency_ms": 0.35,
           "ranking": [
             "auth/credentials.js::validateCredentials",
             "auth/AuthService.js::AuthService.login",
@@ -252,16 +252,16 @@
           "id": "voice-router",
           "category": "cross-file",
           "query": "Route a voice request to a device agent",
-          "ndcg@10": 0.68154288742782,
+          "ndcg@10": 0.8428282648809379,
           "mrr": 1.0,
           "recall@10": 1.0,
-          "latency_ms": 1.06,
+          "latency_ms": 0.31,
           "ranking": [
             "voice/VoiceHandler.js::VoiceHandler.handleRequest",
-            "voice/IntentRouter.js::IntentRouter.constructor",
-            "voice/VoiceHandler.js::VoiceHandler.handle",
             "voice/IntentRouter.js::IntentRouter.route",
             "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "voice/IntentRouter.js::IntentRouter.constructor",
             "voice/VoiceHandler.js::VoiceHandler.constructor",
             "voice/normalizeInput.js::normalizeInput",
             "voice/dynamicDispatch.js::dispatchPlugin"
@@ -274,7 +274,7 @@
           "ndcg@10": 0.8339912323981488,
           "mrr": 1.0,
           "recall@10": 1.0,
-          "latency_ms": 0.79,
+          "latency_ms": 0.38,
           "ranking": [
             "voice/normalizeInput.js::normalizeInput",
             "voice/VoiceHandler.js::VoiceHandler.handle",
@@ -286,7 +286,7 @@
       "categories": {
         "cross-file": {
           "queries": 1,
-          "ndcg@10": 0.6815,
+          "ndcg@10": 0.8428,
           "mrr": 1.0,
           "recall@10": 1.0
         },
@@ -298,14 +298,14 @@
         },
         "locate": {
           "queries": 1,
-          "ndcg@10": 0.9921,
+          "ndcg@10": 0.9848,
           "mrr": 1.0,
           "recall@10": 1.0
         },
         "path": {
           "queries": 1,
-          "ndcg@10": 0.6956,
-          "mrr": 0.5,
+          "ndcg@10": 0.8768,
+          "mrr": 1.0,
           "recall@10": 1.0
         },
         "semantic": {
@@ -316,7 +316,7 @@
         },
         "sequence": {
           "queries": 3,
-          "ndcg@10": 0.7183,
+          "ndcg@10": 0.6843,
           "mrr": 0.75,
           "recall@10": 0.8889
         },
@@ -334,40 +334,48 @@
         },
         "usage": {
           "queries": 2,
-          "ndcg@10": 0.911,
+          "ndcg@10": 0.9133,
           "mrr": 1.0,
           "recall@10": 1.0
         }
       }
     },
     "Dense only": {
-      "status": "unavailable",
-      "reason": "Semantic model not installed"
-    },
-    "Hybrid": {
       "status": "evaluated",
-      "ndcg@10": 0.8205,
-      "mrr": 0.8802,
-      "recall@10": 0.8646,
-      "latency_median_ms": 0.94,
-      "latency_p95_ms": 1.49,
+      "ndcg@10": 0.9311,
+      "mrr": 0.9583,
+      "recall@10": 1.0,
+      "latency_median_ms": 6.08,
+      "latency_p95_ms": 6.97,
       "queries": [
         {
           "id": "locate-bluetooth",
           "category": "locate",
           "query": "Where is Bluetooth settings handled?",
-          "ndcg@10": 0.9921161603996311,
+          "ndcg@10": 1.0,
           "mrr": 1.0,
           "recall@10": 1.0,
-          "latency_ms": 1.03,
+          "latency_ms": 5.93,
           "ranking": [
             "settings/deeplinks.js::openBluetoothSettings",
             "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "bluetooth/permissions.js::checkBluetoothPermission",
             "voice/IntentRouter.js::IntentRouter.route",
+            "voice/IntentRouter.js::IntentRouter.constructor",
             "settings/deeplinks.js::openWifiSettings",
             "settings/deeplinks.js::openSettingsUri",
-            "voice/IntentRouter.js::IntentRouter.constructor",
-            "bluetooth/permissions.js::checkBluetoothPermission"
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "session/SessionManager.js::SessionManager.constructor",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "session/SessionManager.js::SessionManager.clear",
+            "auth/AuthService.js::AuthService.restore",
+            "auth/AuthService.js::AuthService.constructor",
+            "voice/normalizeInput.js::normalizeInput",
+            "session/SessionManager.js::SessionManager.restore",
+            "voice/dynamicDispatch.js::dispatchPlugin",
+            "session/SessionManager.js::SessionManager.create",
+            "auth/AuthService.js::AuthService.login"
           ]
         },
         {
@@ -377,160 +385,264 @@
           "ndcg@10": 1.0,
           "mrr": 1.0,
           "recall@10": 1.0,
-          "latency_ms": 0.96,
+          "latency_ms": 6.49,
           "ranking": [
             "settings/deeplinks.js::openBluetoothSettings",
             "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
-            "voice/IntentRouter.js::IntentRouter.route",
             "settings/deeplinks.js::openWifiSettings",
             "settings/deeplinks.js::openSettingsUri",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "session/SessionManager.js::SessionManager.clear",
             "voice/IntentRouter.js::IntentRouter.constructor",
-            "bluetooth/permissions.js::checkBluetoothPermission"
+            "auth/AuthService.js::AuthService.restore",
+            "session/SessionManager.js::SessionManager.constructor",
+            "auth/AuthService.js::AuthService.constructor",
+            "session/SessionManager.js::SessionManager.restore",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "voice/dynamicDispatch.js::dispatchPlugin",
+            "auth/AuthService.js::AuthService.login",
+            "session/SessionManager.js::SessionManager.create",
+            "tests/session.test.js::test:expired sessions require the user to sign in again",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "voice/normalizeInput.js::normalizeInput"
           ]
         },
         {
           "id": "voice-path",
           "category": "path",
           "query": "How does VoiceHandler reach BluetoothAgent?",
-          "ndcg@10": 0.6955762265703533,
-          "mrr": 0.5,
+          "ndcg@10": 0.6533933590057492,
+          "mrr": 0.3333333333333333,
           "recall@10": 1.0,
-          "latency_ms": 1.49,
+          "latency_ms": 6.5,
           "ranking": [
             "voice/IntentRouter.js::IntentRouter.constructor",
-            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
             "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
             "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "voice/IntentRouter.js::IntentRouter.route",
             "voice/VoiceHandler.js::VoiceHandler.handle",
             "settings/deeplinks.js::openBluetoothSettings",
-            "voice/IntentRouter.js::IntentRouter.route",
             "bluetooth/permissions.js::checkBluetoothPermission",
+            "voice/dynamicDispatch.js::dispatchPlugin",
             "voice/normalizeInput.js::normalizeInput",
-            "voice/dynamicDispatch.js::dispatchPlugin"
+            "auth/AuthService.js::AuthService.constructor",
+            "auth/AuthService.js::AuthService.restore",
+            "session/SessionManager.js::SessionManager.constructor",
+            "settings/deeplinks.js::openWifiSettings",
+            "session/SessionManager.js::SessionManager.clear",
+            "settings/deeplinks.js::openSettingsUri",
+            "auth/AuthService.js::AuthService.login"
           ]
         },
         {
           "id": "restore-session",
           "category": "semantic",
           "query": "Where is session restoration handled?",
-          "ndcg@10": 0.3065735963827292,
-          "mrr": 0.3333333333333333,
-          "recall@10": 0.5,
-          "latency_ms": 0.88,
+          "ndcg@10": 1.0,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 5.73,
           "ranking": [
+            "auth/AuthService.js::AuthService.restore",
+            "session/SessionManager.js::SessionManager.restore",
+            "tests/session.test.js::test:expired sessions require the user to sign in again",
             "session/SessionManager.js::SessionManager.clear",
             "session/SessionManager.js::SessionManager.constructor",
-            "session/SessionManager.js::SessionManager.restore",
+            "auth/AuthService.js::AuthService.constructor",
             "session/SessionManager.js::SessionManager.create",
-            "tests/session.test.js::test:expired sessions require the user to sign in again",
-            "auth/AuthService.js::AuthService.constructor"
+            "auth/AuthService.js::AuthService.login",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "auth/credentials.js::validateCredentials",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "settings/deeplinks.js::openSettingsUri",
+            "settings/deeplinks.js::openBluetoothSettings",
+            "voice/dynamicDispatch.js::dispatchPlugin"
           ]
         },
         {
           "id": "auth-sequence",
           "category": "sequence",
           "query": "Where is authentication validated before a session is created?",
-          "ndcg@10": 0.3096811645763381,
-          "mrr": 0.25,
-          "recall@10": 0.6666666666666666,
-          "latency_ms": 1.0,
+          "ndcg@10": 0.902763980283475,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 6.03,
           "ranking": [
-            "session/SessionManager.js::SessionManager.clear",
-            "session/SessionManager.js::SessionManager.constructor",
-            "session/SessionManager.js::SessionManager.restore",
-            "session/SessionManager.js::SessionManager.create",
+            "auth/AuthService.js::AuthService.login",
+            "auth/AuthService.js::AuthService.constructor",
             "auth/credentials.js::validateCredentials",
+            "session/SessionManager.js::SessionManager.constructor",
+            "session/SessionManager.js::SessionManager.create",
+            "auth/AuthService.js::AuthService.restore",
             "tests/session.test.js::test:expired sessions require the user to sign in again",
-            "auth/AuthService.js::AuthService.constructor"
+            "session/SessionManager.js::SessionManager.clear",
+            "session/SessionManager.js::SessionManager.restore",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "settings/deeplinks.js::openBluetoothSettings",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "voice/IntentRouter.js::IntentRouter.constructor",
+            "settings/deeplinks.js::openWifiSettings",
+            "settings/deeplinks.js::openSettingsUri",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "voice/VoiceHandler.js::VoiceHandler.handle"
           ]
         },
         {
           "id": "clean-input",
           "category": "sequence",
           "query": "How is input cleaned before handleRequest?",
-          "ndcg@10": 0.8451593915771352,
+          "ndcg@10": 0.9218842208520892,
           "mrr": 1.0,
           "recall@10": 1.0,
-          "latency_ms": 0.9,
+          "latency_ms": 5.93,
           "ranking": [
-            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
             "voice/VoiceHandler.js::VoiceHandler.handle",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "session/SessionManager.js::SessionManager.clear",
             "voice/normalizeInput.js::normalizeInput",
-            "voice/IntentRouter.js::IntentRouter.route"
+            "session/SessionManager.js::SessionManager.constructor",
+            "voice/dynamicDispatch.js::dispatchPlugin",
+            "session/SessionManager.js::SessionManager.restore",
+            "auth/AuthService.js::AuthService.restore",
+            "tests/session.test.js::test:expired sessions require the user to sign in again",
+            "settings/deeplinks.js::openSettingsUri",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "session/SessionManager.js::SessionManager.create",
+            "auth/AuthService.js::AuthService.constructor",
+            "bluetooth/permissions.js::checkBluetoothPermission"
           ]
         },
         {
           "id": "deeplink-usage",
           "category": "usage",
           "query": "Where is the settings://bluetooth deeplink used?",
-          "ndcg@10": 0.9879538239787087,
+          "ndcg@10": 0.9360403422435027,
           "mrr": 1.0,
           "recall@10": 1.0,
-          "latency_ms": 1.0,
+          "latency_ms": 6.97,
           "ranking": [
             "settings/deeplinks.js::openBluetoothSettings",
-            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
-            "voice/IntentRouter.js::IntentRouter.route",
             "settings/deeplinks.js::openWifiSettings",
             "settings/deeplinks.js::openSettingsUri",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "bluetooth/permissions.js::checkBluetoothPermission",
             "voice/IntentRouter.js::IntentRouter.constructor",
-            "bluetooth/permissions.js::checkBluetoothPermission"
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "session/SessionManager.js::SessionManager.clear",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "session/SessionManager.js::SessionManager.constructor",
+            "auth/AuthService.js::AuthService.restore",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "voice/dynamicDispatch.js::dispatchPlugin",
+            "session/SessionManager.js::SessionManager.restore",
+            "auth/AuthService.js::AuthService.constructor",
+            "session/SessionManager.js::SessionManager.create",
+            "voice/normalizeInput.js::normalizeInput",
+            "auth/AuthService.js::AuthService.login"
           ]
         },
         {
           "id": "device-permission",
           "category": "sequence",
           "query": "Where is permission checked before settings are opened?",
-          "ndcg@10": 1.0,
+          "ndcg@10": 0.9737203297462859,
           "mrr": 1.0,
           "recall@10": 1.0,
-          "latency_ms": 1.03,
+          "latency_ms": 6.14,
           "ranking": [
-            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
             "bluetooth/permissions.js::checkBluetoothPermission",
-            "settings/deeplinks.js::openBluetoothSettings",
-            "settings/deeplinks.js::openWifiSettings",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
             "settings/deeplinks.js::openSettingsUri",
-            "voice/IntentRouter.js::IntentRouter.route"
+            "settings/deeplinks.js::openWifiSettings",
+            "settings/deeplinks.js::openBluetoothSettings",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "session/SessionManager.js::SessionManager.clear",
+            "auth/AuthService.js::AuthService.restore",
+            "session/SessionManager.js::SessionManager.constructor",
+            "session/SessionManager.js::SessionManager.restore",
+            "session/SessionManager.js::SessionManager.create",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "auth/AuthService.js::AuthService.login",
+            "auth/AuthService.js::AuthService.constructor",
+            "tests/session.test.js::test:expired sessions require the user to sign in again"
           ]
         },
         {
           "id": "wireless-network",
           "category": "semantic",
           "query": "Configure the wireless network connection",
-          "ndcg@10": 0.9173194127129571,
+          "ndcg@10": 1.0,
           "mrr": 1.0,
-          "recall@10": 0.5,
-          "latency_ms": 0.59,
+          "recall@10": 1.0,
+          "latency_ms": 6.02,
           "ranking": [
-            "settings/deeplinks.js::openWifiSettings"
+            "settings/deeplinks.js::openWifiSettings",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "settings/deeplinks.js::openBluetoothSettings",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "voice/IntentRouter.js::IntentRouter.constructor",
+            "auth/AuthService.js::AuthService.constructor",
+            "session/SessionManager.js::SessionManager.create",
+            "auth/AuthService.js::AuthService.login",
+            "session/SessionManager.js::SessionManager.constructor",
+            "settings/deeplinks.js::openSettingsUri",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "session/SessionManager.js::SessionManager.clear",
+            "session/SessionManager.js::SessionManager.restore"
           ]
         },
         {
           "id": "spoken-whitespace",
           "category": "semantic",
           "query": "Trim extra whitespace and lowercase spoken commands",
-          "ndcg@10": 0.9173194127129571,
+          "ndcg@10": 1.0,
           "mrr": 1.0,
-          "recall@10": 0.5,
-          "latency_ms": 0.67,
+          "recall@10": 1.0,
+          "latency_ms": 5.89,
           "ranking": [
-            "voice/normalizeInput.js::normalizeInput"
+            "voice/normalizeInput.js::normalizeInput",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "voice/dynamicDispatch.js::dispatchPlugin",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "session/SessionManager.js::SessionManager.clear",
+            "auth/credentials.js::validateCredentials",
+            "voice/IntentRouter.js::IntentRouter.constructor"
           ]
         },
         {
           "id": "expired-session",
           "category": "test",
           "query": "Expired sessions require the user to sign in again",
-          "ndcg@10": 0.6403662530558959,
+          "ndcg@10": 0.9941825709069458,
           "mrr": 1.0,
-          "recall@10": 0.6666666666666666,
-          "latency_ms": 0.91,
+          "recall@10": 1.0,
+          "latency_ms": 5.74,
           "ranking": [
             "tests/session.test.js::test:expired sessions require the user to sign in again",
+            "session/SessionManager.js::SessionManager.restore",
+            "session/SessionManager.js::SessionManager.create",
             "auth/AuthService.js::AuthService.restore",
+            "session/SessionManager.js::SessionManager.clear",
             "auth/AuthService.js::AuthService.constructor",
-            "auth/AuthService.js::AuthService.login"
+            "session/SessionManager.js::SessionManager.constructor",
+            "auth/AuthService.js::AuthService.login",
+            "auth/credentials.js::validateCredentials",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "voice/IntentRouter.js::IntentRouter.route"
           ]
         },
         {
@@ -540,14 +652,28 @@
           "ndcg@10": 1.0,
           "mrr": 1.0,
           "recall@10": 1.0,
-          "latency_ms": 0.83,
+          "latency_ms": 5.64,
           "ranking": [
             "session/SessionManager.js::SessionManager.clear",
             "session/SessionManager.js::SessionManager.constructor",
-            "session/SessionManager.js::SessionManager.create",
             "session/SessionManager.js::SessionManager.restore",
+            "tests/session.test.js::test:expired sessions require the user to sign in again",
             "auth/AuthService.js::AuthService.constructor",
-            "tests/session.test.js::test:expired sessions require the user to sign in again"
+            "session/SessionManager.js::SessionManager.create",
+            "auth/AuthService.js::AuthService.restore",
+            "auth/AuthService.js::AuthService.login",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "settings/deeplinks.js::openBluetoothSettings",
+            "settings/deeplinks.js::openWifiSettings",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "settings/deeplinks.js::openSettingsUri",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "auth/credentials.js::validateCredentials",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "voice/IntentRouter.js::IntentRouter.constructor",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "voice/dynamicDispatch.js::dispatchPlugin"
           ]
         },
         {
@@ -557,12 +683,20 @@
           "ndcg@10": 1.0,
           "mrr": 1.0,
           "recall@10": 1.0,
-          "latency_ms": 0.89,
+          "latency_ms": 6.19,
           "ranking": [
             "voice/dynamicDispatch.js::dispatchPlugin",
-            "session/SessionManager.js::SessionManager.create",
-            "session/SessionManager.js::SessionManager.restore",
-            "tests/session.test.js::test:expired sessions require the user to sign in again"
+            "settings/deeplinks.js::openSettingsUri",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "voice/IntentRouter.js::IntentRouter.constructor",
+            "auth/AuthService.js::AuthService.login",
+            "auth/AuthService.js::AuthService.constructor",
+            "session/SessionManager.js::SessionManager.constructor",
+            "settings/deeplinks.js::openWifiSettings"
           ]
         },
         {
@@ -572,12 +706,21 @@
           "ndcg@10": 1.0,
           "mrr": 1.0,
           "recall@10": 1.0,
-          "latency_ms": 0.98,
+          "latency_ms": 6.6,
           "ranking": [
             "auth/credentials.js::validateCredentials",
             "auth/AuthService.js::AuthService.login",
+            "auth/AuthService.js::AuthService.restore",
+            "tests/session.test.js::test:expired sessions require the user to sign in again",
+            "auth/AuthService.js::AuthService.constructor",
             "session/SessionManager.js::SessionManager.create",
-            "tests/session.test.js::test:expired sessions require the user to sign in again"
+            "session/SessionManager.js::SessionManager.clear",
+            "session/SessionManager.js::SessionManager.constructor",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "session/SessionManager.js::SessionManager.restore",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "voice/normalizeInput.js::normalizeInput"
           ]
         },
         {
@@ -587,735 +730,23 @@
           "ndcg@10": 0.68154288742782,
           "mrr": 1.0,
           "recall@10": 1.0,
-          "latency_ms": 1.12,
+          "latency_ms": 6.29,
           "ranking": [
             "voice/VoiceHandler.js::VoiceHandler.handleRequest",
-            "voice/IntentRouter.js::IntentRouter.constructor",
-            "voice/VoiceHandler.js::VoiceHandler.handle",
-            "voice/IntentRouter.js::IntentRouter.route",
-            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
             "voice/VoiceHandler.js::VoiceHandler.constructor",
-            "voice/normalizeInput.js::normalizeInput",
-            "voice/dynamicDispatch.js::dispatchPlugin"
-          ]
-        },
-        {
-          "id": "caller-clean",
-          "category": "usage",
-          "query": "Where is normalizeInput called?",
-          "ndcg@10": 0.8339912323981488,
-          "mrr": 1.0,
-          "recall@10": 1.0,
-          "latency_ms": 0.84,
-          "ranking": [
-            "voice/normalizeInput.js::normalizeInput",
-            "voice/VoiceHandler.js::VoiceHandler.handle",
-            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
-            "voice/IntentRouter.js::IntentRouter.route"
-          ]
-        }
-      ],
-      "categories": {
-        "cross-file": {
-          "queries": 1,
-          "ndcg@10": 0.6815,
-          "mrr": 1.0,
-          "recall@10": 1.0
-        },
-        "general": {
-          "queries": 1,
-          "ndcg@10": 1.0,
-          "mrr": 1.0,
-          "recall@10": 1.0
-        },
-        "locate": {
-          "queries": 1,
-          "ndcg@10": 0.9921,
-          "mrr": 1.0,
-          "recall@10": 1.0
-        },
-        "path": {
-          "queries": 1,
-          "ndcg@10": 0.6956,
-          "mrr": 0.5,
-          "recall@10": 1.0
-        },
-        "semantic": {
-          "queries": 4,
-          "ndcg@10": 0.7853,
-          "mrr": 0.8333,
-          "recall@10": 0.625
-        },
-        "sequence": {
-          "queries": 3,
-          "ndcg@10": 0.7183,
-          "mrr": 0.75,
-          "recall@10": 0.8889
-        },
-        "symbol": {
-          "queries": 2,
-          "ndcg@10": 1.0,
-          "mrr": 1.0,
-          "recall@10": 1.0
-        },
-        "test": {
-          "queries": 1,
-          "ndcg@10": 0.6404,
-          "mrr": 1.0,
-          "recall@10": 0.6667
-        },
-        "usage": {
-          "queries": 2,
-          "ndcg@10": 0.911,
-          "mrr": 1.0,
-          "recall@10": 1.0
-        }
-      },
-      "effective_mode": "lexical fallback; dense contribution unavailable"
-    },
-    "Hybrid + structure": {
-      "status": "evaluated",
-      "ndcg@10": 0.8695,
-      "mrr": 0.9115,
-      "recall@10": 0.9792,
-      "latency_median_ms": 1.25,
-      "latency_p95_ms": 2.16,
-      "queries": [
-        {
-          "id": "locate-bluetooth",
-          "category": "locate",
-          "query": "Where is Bluetooth settings handled?",
-          "ndcg@10": 0.9939687165963618,
-          "mrr": 1.0,
-          "recall@10": 1.0,
-          "latency_ms": 1.57,
-          "ranking": [
-            "settings/deeplinks.js::openBluetoothSettings",
-            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
-            "voice/IntentRouter.js::IntentRouter.route",
-            "settings/deeplinks.js::openWifiSettings",
-            "settings/deeplinks.js::openSettingsUri",
-            "bluetooth/permissions.js::checkBluetoothPermission",
             "voice/IntentRouter.js::IntentRouter.constructor",
-            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
-            "voice/VoiceHandler.js::VoiceHandler.handle"
-          ]
-        },
-        {
-          "id": "symbol-deeplink",
-          "category": "symbol",
-          "query": "openBluetoothSettings",
-          "ndcg@10": 1.0,
-          "mrr": 1.0,
-          "recall@10": 1.0,
-          "latency_ms": 2.03,
-          "ranking": [
-            "settings/deeplinks.js::openBluetoothSettings",
-            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
             "voice/IntentRouter.js::IntentRouter.route",
-            "settings/deeplinks.js::openWifiSettings",
-            "settings/deeplinks.js::openSettingsUri",
-            "bluetooth/permissions.js::checkBluetoothPermission",
-            "voice/IntentRouter.js::IntentRouter.constructor",
-            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
-            "voice/VoiceHandler.js::VoiceHandler.handle"
-          ]
-        },
-        {
-          "id": "voice-path",
-          "category": "path",
-          "query": "How does VoiceHandler reach BluetoothAgent?",
-          "ndcg@10": 0.9349366583346499,
-          "mrr": 1.0,
-          "recall@10": 1.0,
-          "latency_ms": 2.16,
-          "ranking": [
-            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
-            "voice/VoiceHandler.js::VoiceHandler.handle",
-            "settings/deeplinks.js::openBluetoothSettings",
-            "voice/IntentRouter.js::IntentRouter.route",
-            "bluetooth/permissions.js::checkBluetoothPermission",
-            "voice/normalizeInput.js::normalizeInput",
             "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
-            "voice/IntentRouter.js::IntentRouter.constructor",
-            "voice/VoiceHandler.js::VoiceHandler.constructor",
             "voice/dynamicDispatch.js::dispatchPlugin",
-            "settings/deeplinks.js::openSettingsUri",
-            "settings/deeplinks.js::openWifiSettings"
-          ]
-        },
-        {
-          "id": "restore-session",
-          "category": "semantic",
-          "query": "Where is session restoration handled?",
-          "ndcg@10": 0.5109559939712154,
-          "mrr": 0.3333333333333333,
-          "recall@10": 1.0,
-          "latency_ms": 1.02,
-          "ranking": [
-            "session/SessionManager.js::SessionManager.clear",
-            "session/SessionManager.js::SessionManager.constructor",
-            "session/SessionManager.js::SessionManager.restore",
-            "session/SessionManager.js::SessionManager.create",
-            "tests/session.test.js::test:expired sessions require the user to sign in again",
-            "auth/AuthService.js::AuthService.constructor",
-            "auth/AuthService.js::AuthService.restore"
-          ]
-        },
-        {
-          "id": "auth-sequence",
-          "category": "sequence",
-          "query": "Where is authentication validated before a session is created?",
-          "ndcg@10": 0.3096811645763381,
-          "mrr": 0.25,
-          "recall@10": 0.6666666666666666,
-          "latency_ms": 1.14,
-          "ranking": [
-            "session/SessionManager.js::SessionManager.clear",
-            "session/SessionManager.js::SessionManager.constructor",
-            "session/SessionManager.js::SessionManager.restore",
-            "session/SessionManager.js::SessionManager.create",
-            "auth/credentials.js::validateCredentials",
-            "tests/session.test.js::test:expired sessions require the user to sign in again",
-            "auth/AuthService.js::AuthService.constructor",
-            "auth/AuthService.js::AuthService.restore"
-          ]
-        },
-        {
-          "id": "clean-input",
-          "category": "sequence",
-          "query": "How is input cleaned before handleRequest?",
-          "ndcg@10": 0.8451593915771352,
-          "mrr": 1.0,
-          "recall@10": 1.0,
-          "latency_ms": 1.19,
-          "ranking": [
-            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
             "voice/VoiceHandler.js::VoiceHandler.handle",
-            "voice/normalizeInput.js::normalizeInput",
-            "voice/IntentRouter.js::IntentRouter.route",
-            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
-            "settings/deeplinks.js::openWifiSettings"
-          ]
-        },
-        {
-          "id": "deeplink-usage",
-          "category": "usage",
-          "query": "Where is the settings://bluetooth deeplink used?",
-          "ndcg@10": 0.7332063582049065,
-          "mrr": 1.0,
-          "recall@10": 1.0,
-          "latency_ms": 1.14,
-          "ranking": [
-            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
-            "voice/IntentRouter.js::IntentRouter.route",
-            "settings/deeplinks.js::openBluetoothSettings",
-            "settings/deeplinks.js::openWifiSettings",
-            "settings/deeplinks.js::openSettingsUri",
-            "voice/IntentRouter.js::IntentRouter.constructor",
             "bluetooth/permissions.js::checkBluetoothPermission",
-            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
-            "voice/VoiceHandler.js::VoiceHandler.handle"
-          ]
-        },
-        {
-          "id": "device-permission",
-          "category": "sequence",
-          "query": "Where is permission checked before settings are opened?",
-          "ndcg@10": 1.0,
-          "mrr": 1.0,
-          "recall@10": 1.0,
-          "latency_ms": 1.3,
-          "ranking": [
-            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
-            "bluetooth/permissions.js::checkBluetoothPermission",
-            "settings/deeplinks.js::openBluetoothSettings",
-            "settings/deeplinks.js::openSettingsUri",
-            "voice/IntentRouter.js::IntentRouter.route",
-            "settings/deeplinks.js::openWifiSettings",
-            "voice/VoiceHandler.js::VoiceHandler.handleRequest"
-          ]
-        },
-        {
-          "id": "wireless-network",
-          "category": "semantic",
-          "query": "Configure the wireless network connection",
-          "ndcg@10": 0.9828422279067397,
-          "mrr": 1.0,
-          "recall@10": 1.0,
-          "latency_ms": 1.05,
-          "ranking": [
-            "settings/deeplinks.js::openWifiSettings",
-            "settings/deeplinks.js::openSettingsUri",
-            "voice/IntentRouter.js::IntentRouter.route",
-            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
-            "settings/deeplinks.js::openBluetoothSettings",
-            "voice/VoiceHandler.js::VoiceHandler.handleRequest"
-          ]
-        },
-        {
-          "id": "spoken-whitespace",
-          "category": "semantic",
-          "query": "Trim extra whitespace and lowercase spoken commands",
-          "ndcg@10": 1.0,
-          "mrr": 1.0,
-          "recall@10": 1.0,
-          "latency_ms": 0.9,
-          "ranking": [
             "voice/normalizeInput.js::normalizeInput",
-            "voice/VoiceHandler.js::VoiceHandler.handle",
-            "voice/VoiceHandler.js::VoiceHandler.handleRequest"
-          ]
-        },
-        {
-          "id": "expired-session",
-          "category": "test",
-          "query": "Expired sessions require the user to sign in again",
-          "ndcg@10": 0.8676114819559485,
-          "mrr": 1.0,
-          "recall@10": 1.0,
-          "latency_ms": 1.04,
-          "ranking": [
-            "tests/session.test.js::test:expired sessions require the user to sign in again",
+            "settings/deeplinks.js::openBluetoothSettings",
+            "auth/AuthService.js::AuthService.constructor",
             "auth/AuthService.js::AuthService.restore",
-            "auth/AuthService.js::AuthService.constructor",
-            "auth/AuthService.js::AuthService.login",
-            "session/SessionManager.js::SessionManager.restore"
-          ]
-        },
-        {
-          "id": "clear-session",
-          "category": "symbol",
-          "query": "SessionManager.clear",
-          "ndcg@10": 1.0,
-          "mrr": 1.0,
-          "recall@10": 1.0,
-          "latency_ms": 1.01,
-          "ranking": [
-            "session/SessionManager.js::SessionManager.clear",
-            "session/SessionManager.js::SessionManager.constructor",
-            "session/SessionManager.js::SessionManager.create",
-            "session/SessionManager.js::SessionManager.restore",
-            "auth/AuthService.js::AuthService.constructor",
-            "tests/session.test.js::test:expired sessions require the user to sign in again",
-            "auth/AuthService.js::AuthService.login",
-            "auth/credentials.js::validateCredentials"
-          ]
-        },
-        {
-          "id": "dynamic-plugin",
-          "category": "general",
-          "query": "Dispatch a plugin by a name chosen at runtime",
-          "ndcg@10": 1.0,
-          "mrr": 1.0,
-          "recall@10": 1.0,
-          "latency_ms": 1.59,
-          "ranking": [
-            "voice/dynamicDispatch.js::dispatchPlugin",
-            "session/SessionManager.js::SessionManager.create",
-            "session/SessionManager.js::SessionManager.restore",
-            "tests/session.test.js::test:expired sessions require the user to sign in again",
-            "auth/AuthService.js::AuthService.login",
-            "auth/AuthService.js::AuthService.restore",
-            "auth/credentials.js::validateCredentials"
-          ]
-        },
-        {
-          "id": "credential-error",
-          "category": "semantic",
-          "query": "Reject a login missing username or token",
-          "ndcg@10": 1.0,
-          "mrr": 1.0,
-          "recall@10": 1.0,
-          "latency_ms": 1.78,
-          "ranking": [
-            "auth/credentials.js::validateCredentials",
+            "settings/deeplinks.js::openWifiSettings",
             "auth/AuthService.js::AuthService.login",
             "session/SessionManager.js::SessionManager.create",
-            "tests/session.test.js::test:expired sessions require the user to sign in again"
-          ]
-        },
-        {
-          "id": "voice-router",
-          "category": "cross-file",
-          "query": "Route a voice request to a device agent",
-          "ndcg@10": 0.7332063582049065,
-          "mrr": 1.0,
-          "recall@10": 1.0,
-          "latency_ms": 1.56,
-          "ranking": [
-            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
-            "voice/VoiceHandler.js::VoiceHandler.handle",
-            "voice/IntentRouter.js::IntentRouter.route",
-            "voice/normalizeInput.js::normalizeInput",
-            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
-            "voice/IntentRouter.js::IntentRouter.constructor",
-            "voice/VoiceHandler.js::VoiceHandler.constructor",
-            "voice/dynamicDispatch.js::dispatchPlugin",
-            "settings/deeplinks.js::openWifiSettings"
-          ]
-        },
-        {
-          "id": "caller-clean",
-          "category": "usage",
-          "query": "Where is normalizeInput called?",
-          "ndcg@10": 1.0,
-          "mrr": 1.0,
-          "recall@10": 1.0,
-          "latency_ms": 1.7,
-          "ranking": [
-            "voice/VoiceHandler.js::VoiceHandler.handle",
-            "voice/normalizeInput.js::normalizeInput",
-            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
-            "voice/IntentRouter.js::IntentRouter.route"
-          ]
-        }
-      ],
-      "categories": {
-        "cross-file": {
-          "queries": 1,
-          "ndcg@10": 0.7332,
-          "mrr": 1.0,
-          "recall@10": 1.0
-        },
-        "general": {
-          "queries": 1,
-          "ndcg@10": 1.0,
-          "mrr": 1.0,
-          "recall@10": 1.0
-        },
-        "locate": {
-          "queries": 1,
-          "ndcg@10": 0.994,
-          "mrr": 1.0,
-          "recall@10": 1.0
-        },
-        "path": {
-          "queries": 1,
-          "ndcg@10": 0.9349,
-          "mrr": 1.0,
-          "recall@10": 1.0
-        },
-        "semantic": {
-          "queries": 4,
-          "ndcg@10": 0.8734,
-          "mrr": 0.8333,
-          "recall@10": 1.0
-        },
-        "sequence": {
-          "queries": 3,
-          "ndcg@10": 0.7183,
-          "mrr": 0.75,
-          "recall@10": 0.8889
-        },
-        "symbol": {
-          "queries": 2,
-          "ndcg@10": 1.0,
-          "mrr": 1.0,
-          "recall@10": 1.0
-        },
-        "test": {
-          "queries": 1,
-          "ndcg@10": 0.8676,
-          "mrr": 1.0,
-          "recall@10": 1.0
-        },
-        "usage": {
-          "queries": 2,
-          "ndcg@10": 0.8666,
-          "mrr": 1.0,
-          "recall@10": 1.0
-        }
-      },
-      "effective_mode": "lexical fallback; dense contribution unavailable"
-    },
-    "ASTFLOW full": {
-      "status": "evaluated",
-      "ndcg@10": 0.8516,
-      "mrr": 0.9115,
-      "recall@10": 0.9792,
-      "latency_median_ms": 1.45,
-      "latency_p95_ms": 3.0,
-      "queries": [
-        {
-          "id": "locate-bluetooth",
-          "category": "locate",
-          "query": "Where is Bluetooth settings handled?",
-          "ndcg@10": 0.9908361951088334,
-          "mrr": 1.0,
-          "recall@10": 1.0,
-          "latency_ms": 1.48,
-          "ranking": [
-            "settings/deeplinks.js::openBluetoothSettings",
-            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
-            "settings/deeplinks.js::openSettingsUri",
-            "bluetooth/permissions.js::checkBluetoothPermission",
-            "voice/IntentRouter.js::IntentRouter.route",
-            "settings/deeplinks.js::openWifiSettings",
-            "voice/IntentRouter.js::IntentRouter.constructor",
-            "voice/VoiceHandler.js::VoiceHandler.handleRequest"
-          ]
-        },
-        {
-          "id": "symbol-deeplink",
-          "category": "symbol",
-          "query": "openBluetoothSettings",
-          "ndcg@10": 0.9324441894571632,
-          "mrr": 1.0,
-          "recall@10": 1.0,
-          "latency_ms": 1.42,
-          "ranking": [
-            "settings/deeplinks.js::openBluetoothSettings",
-            "settings/deeplinks.js::openWifiSettings",
-            "settings/deeplinks.js::openSettingsUri",
-            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
-            "voice/IntentRouter.js::IntentRouter.route",
-            "bluetooth/permissions.js::checkBluetoothPermission",
-            "voice/IntentRouter.js::IntentRouter.constructor",
-            "voice/VoiceHandler.js::VoiceHandler.handleRequest"
-          ]
-        },
-        {
-          "id": "voice-path",
-          "category": "path",
-          "query": "How does VoiceHandler reach BluetoothAgent?",
-          "ndcg@10": 0.9267582364714126,
-          "mrr": 1.0,
-          "recall@10": 1.0,
-          "latency_ms": 3.0,
-          "ranking": [
-            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
-            "voice/VoiceHandler.js::VoiceHandler.handle",
-            "settings/deeplinks.js::openBluetoothSettings",
-            "bluetooth/permissions.js::checkBluetoothPermission",
-            "voice/IntentRouter.js::IntentRouter.route",
-            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
-            "voice/normalizeInput.js::normalizeInput",
-            "voice/VoiceHandler.js::VoiceHandler.constructor",
-            "voice/IntentRouter.js::IntentRouter.constructor",
-            "voice/dynamicDispatch.js::dispatchPlugin",
-            "settings/deeplinks.js::openSettingsUri",
-            "settings/deeplinks.js::openWifiSettings",
-            "session/SessionManager.js::SessionManager.constructor",
-            "auth/AuthService.js::AuthService.constructor"
-          ]
-        },
-        {
-          "id": "restore-session",
-          "category": "semantic",
-          "query": "Where is session restoration handled?",
-          "ndcg@10": 0.5109559939712154,
-          "mrr": 0.3333333333333333,
-          "recall@10": 1.0,
-          "latency_ms": 1.2,
-          "ranking": [
-            "session/SessionManager.js::SessionManager.clear",
-            "session/SessionManager.js::SessionManager.constructor",
-            "session/SessionManager.js::SessionManager.restore",
-            "session/SessionManager.js::SessionManager.create",
-            "auth/AuthService.js::AuthService.constructor",
-            "tests/session.test.js::test:expired sessions require the user to sign in again",
-            "auth/AuthService.js::AuthService.restore"
-          ]
-        },
-        {
-          "id": "auth-sequence",
-          "category": "sequence",
-          "query": "Where is authentication validated before a session is created?",
-          "ndcg@10": 0.3096811645763381,
-          "mrr": 0.25,
-          "recall@10": 0.6666666666666666,
-          "latency_ms": 2.1,
-          "ranking": [
-            "session/SessionManager.js::SessionManager.clear",
-            "session/SessionManager.js::SessionManager.constructor",
-            "session/SessionManager.js::SessionManager.restore",
-            "session/SessionManager.js::SessionManager.create",
-            "auth/credentials.js::validateCredentials",
-            "auth/AuthService.js::AuthService.constructor",
-            "tests/session.test.js::test:expired sessions require the user to sign in again",
-            "auth/AuthService.js::AuthService.restore",
-            "voice/IntentRouter.js::IntentRouter.constructor",
-            "voice/VoiceHandler.js::VoiceHandler.constructor"
-          ]
-        },
-        {
-          "id": "clean-input",
-          "category": "sequence",
-          "query": "How is input cleaned before handleRequest?",
-          "ndcg@10": 0.8451593915771352,
-          "mrr": 1.0,
-          "recall@10": 1.0,
-          "latency_ms": 2.33,
-          "ranking": [
-            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
-            "voice/VoiceHandler.js::VoiceHandler.handle",
-            "voice/normalizeInput.js::normalizeInput",
-            "voice/IntentRouter.js::IntentRouter.route",
-            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
-            "settings/deeplinks.js::openWifiSettings",
-            "voice/VoiceHandler.js::VoiceHandler.constructor",
-            "voice/IntentRouter.js::IntentRouter.constructor",
-            "voice/dynamicDispatch.js::dispatchPlugin"
-          ]
-        },
-        {
-          "id": "deeplink-usage",
-          "category": "usage",
-          "query": "Where is the settings://bluetooth deeplink used?",
-          "ndcg@10": 0.7332063582049065,
-          "mrr": 1.0,
-          "recall@10": 1.0,
-          "latency_ms": 2.0,
-          "ranking": [
-            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
-            "voice/IntentRouter.js::IntentRouter.route",
-            "settings/deeplinks.js::openBluetoothSettings",
-            "settings/deeplinks.js::openWifiSettings",
-            "settings/deeplinks.js::openSettingsUri",
-            "bluetooth/permissions.js::checkBluetoothPermission",
-            "voice/IntentRouter.js::IntentRouter.constructor",
-            "voice/VoiceHandler.js::VoiceHandler.handleRequest"
-          ]
-        },
-        {
-          "id": "device-permission",
-          "category": "sequence",
-          "query": "Where is permission checked before settings are opened?",
-          "ndcg@10": 0.8651946865428847,
-          "mrr": 1.0,
-          "recall@10": 1.0,
-          "latency_ms": 2.17,
-          "ranking": [
-            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
-            "settings/deeplinks.js::openSettingsUri",
-            "voice/IntentRouter.js::IntentRouter.route",
-            "bluetooth/permissions.js::checkBluetoothPermission",
-            "settings/deeplinks.js::openBluetoothSettings",
-            "settings/deeplinks.js::openWifiSettings",
-            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
-            "voice/IntentRouter.js::IntentRouter.constructor"
-          ]
-        },
-        {
-          "id": "wireless-network",
-          "category": "semantic",
-          "query": "Configure the wireless network connection",
-          "ndcg@10": 0.9828422279067397,
-          "mrr": 1.0,
-          "recall@10": 1.0,
-          "latency_ms": 1.09,
-          "ranking": [
-            "settings/deeplinks.js::openWifiSettings",
-            "settings/deeplinks.js::openSettingsUri",
-            "voice/IntentRouter.js::IntentRouter.route",
-            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
-            "settings/deeplinks.js::openBluetoothSettings",
-            "voice/VoiceHandler.js::VoiceHandler.handleRequest"
-          ]
-        },
-        {
-          "id": "spoken-whitespace",
-          "category": "semantic",
-          "query": "Trim extra whitespace and lowercase spoken commands",
-          "ndcg@10": 1.0,
-          "mrr": 1.0,
-          "recall@10": 1.0,
-          "latency_ms": 0.85,
-          "ranking": [
-            "voice/normalizeInput.js::normalizeInput",
-            "voice/VoiceHandler.js::VoiceHandler.handle",
-            "voice/VoiceHandler.js::VoiceHandler.handleRequest"
-          ]
-        },
-        {
-          "id": "expired-session",
-          "category": "test",
-          "query": "Expired sessions require the user to sign in again",
-          "ndcg@10": 0.8676114819559485,
-          "mrr": 1.0,
-          "recall@10": 1.0,
-          "latency_ms": 1.07,
-          "ranking": [
-            "tests/session.test.js::test:expired sessions require the user to sign in again",
-            "auth/AuthService.js::AuthService.restore",
-            "auth/AuthService.js::AuthService.constructor",
-            "auth/AuthService.js::AuthService.login",
-            "session/SessionManager.js::SessionManager.restore"
-          ]
-        },
-        {
-          "id": "clear-session",
-          "category": "symbol",
-          "query": "SessionManager.clear",
-          "ndcg@10": 1.0,
-          "mrr": 1.0,
-          "recall@10": 1.0,
-          "latency_ms": 0.99,
-          "ranking": [
-            "session/SessionManager.js::SessionManager.clear",
-            "session/SessionManager.js::SessionManager.constructor",
-            "session/SessionManager.js::SessionManager.create",
-            "session/SessionManager.js::SessionManager.restore",
-            "auth/AuthService.js::AuthService.constructor",
-            "tests/session.test.js::test:expired sessions require the user to sign in again",
-            "auth/AuthService.js::AuthService.login",
-            "auth/credentials.js::validateCredentials"
-          ]
-        },
-        {
-          "id": "dynamic-plugin",
-          "category": "general",
-          "query": "Dispatch a plugin by a name chosen at runtime",
-          "ndcg@10": 1.0,
-          "mrr": 1.0,
-          "recall@10": 1.0,
-          "latency_ms": 1.22,
-          "ranking": [
-            "voice/dynamicDispatch.js::dispatchPlugin",
-            "session/SessionManager.js::SessionManager.create",
-            "session/SessionManager.js::SessionManager.restore",
-            "tests/session.test.js::test:expired sessions require the user to sign in again",
-            "auth/AuthService.js::AuthService.login",
-            "auth/AuthService.js::AuthService.restore",
-            "auth/credentials.js::validateCredentials"
-          ]
-        },
-        {
-          "id": "credential-error",
-          "category": "semantic",
-          "query": "Reject a login missing username or token",
-          "ndcg@10": 0.8339912323981488,
-          "mrr": 1.0,
-          "recall@10": 1.0,
-          "latency_ms": 1.1,
-          "ranking": [
-            "auth/AuthService.js::AuthService.login",
-            "auth/credentials.js::validateCredentials",
-            "session/SessionManager.js::SessionManager.create",
-            "tests/session.test.js::test:expired sessions require the user to sign in again"
-          ]
-        },
-        {
-          "id": "voice-router",
-          "category": "cross-file",
-          "query": "Route a voice request to a device agent",
-          "ndcg@10": 0.9926195041747018,
-          "mrr": 1.0,
-          "recall@10": 1.0,
-          "latency_ms": 1.56,
-          "ranking": [
-            "voice/IntentRouter.js::IntentRouter.route",
-            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
-            "voice/VoiceHandler.js::VoiceHandler.handle",
-            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
-            "voice/normalizeInput.js::normalizeInput",
-            "voice/IntentRouter.js::IntentRouter.constructor",
-            "voice/VoiceHandler.js::VoiceHandler.constructor",
-            "voice/dynamicDispatch.js::dispatchPlugin",
-            "settings/deeplinks.js::openWifiSettings",
-            "bluetooth/permissions.js::checkBluetoothPermission",
-            "settings/deeplinks.js::openBluetoothSettings",
             "settings/deeplinks.js::openSettingsUri"
           ]
         },
@@ -1326,22 +757,27 @@
           "ndcg@10": 0.8339912323981488,
           "mrr": 1.0,
           "recall@10": 1.0,
-          "latency_ms": 1.62,
+          "latency_ms": 6.31,
           "ranking": [
             "voice/normalizeInput.js::normalizeInput",
             "voice/VoiceHandler.js::VoiceHandler.handle",
-            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "settings/deeplinks.js::openSettingsUri",
+            "settings/deeplinks.js::openBluetoothSettings",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "settings/deeplinks.js::openWifiSettings",
             "voice/IntentRouter.js::IntentRouter.route",
-            "voice/VoiceHandler.js::VoiceHandler.constructor",
-            "voice/IntentRouter.js::IntentRouter.constructor",
-            "voice/dynamicDispatch.js::dispatchPlugin"
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "voice/dynamicDispatch.js::dispatchPlugin",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "auth/AuthService.js::AuthService.restore",
+            "voice/IntentRouter.js::IntentRouter.constructor"
           ]
         }
       ],
       "categories": {
         "cross-file": {
           "queries": 1,
-          "ndcg@10": 0.9926,
+          "ndcg@10": 0.6815,
           "mrr": 1.0,
           "recall@10": 1.0
         },
@@ -1353,31 +789,525 @@
         },
         "locate": {
           "queries": 1,
-          "ndcg@10": 0.9908,
+          "ndcg@10": 1.0,
           "mrr": 1.0,
           "recall@10": 1.0
         },
         "path": {
           "queries": 1,
-          "ndcg@10": 0.9268,
+          "ndcg@10": 0.6534,
+          "mrr": 0.3333,
+          "recall@10": 1.0
+        },
+        "semantic": {
+          "queries": 4,
+          "ndcg@10": 1.0,
+          "mrr": 1.0,
+          "recall@10": 1.0
+        },
+        "sequence": {
+          "queries": 3,
+          "ndcg@10": 0.9328,
+          "mrr": 1.0,
+          "recall@10": 1.0
+        },
+        "symbol": {
+          "queries": 2,
+          "ndcg@10": 1.0,
+          "mrr": 1.0,
+          "recall@10": 1.0
+        },
+        "test": {
+          "queries": 1,
+          "ndcg@10": 0.9942,
+          "mrr": 1.0,
+          "recall@10": 1.0
+        },
+        "usage": {
+          "queries": 2,
+          "ndcg@10": 0.885,
+          "mrr": 1.0,
+          "recall@10": 1.0
+        }
+      }
+    },
+    "Hybrid": {
+      "status": "evaluated",
+      "ndcg@10": 0.9054,
+      "mrr": 0.9375,
+      "recall@10": 1.0,
+      "latency_median_ms": 5.97,
+      "latency_p95_ms": 6.74,
+      "queries": [
+        {
+          "id": "locate-bluetooth",
+          "category": "locate",
+          "query": "Where is Bluetooth settings handled?",
+          "ndcg@10": 0.996450709094314,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 6.74,
+          "ranking": [
+            "settings/deeplinks.js::openBluetoothSettings",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "settings/deeplinks.js::openWifiSettings",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "settings/deeplinks.js::openSettingsUri",
+            "voice/IntentRouter.js::IntentRouter.constructor",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "session/SessionManager.js::SessionManager.constructor",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "session/SessionManager.js::SessionManager.clear",
+            "auth/AuthService.js::AuthService.restore",
+            "auth/AuthService.js::AuthService.constructor",
+            "voice/normalizeInput.js::normalizeInput",
+            "session/SessionManager.js::SessionManager.restore",
+            "voice/dynamicDispatch.js::dispatchPlugin",
+            "session/SessionManager.js::SessionManager.create",
+            "auth/AuthService.js::AuthService.login"
+          ]
+        },
+        {
+          "id": "symbol-deeplink",
+          "category": "symbol",
+          "query": "openBluetoothSettings",
+          "ndcg@10": 1.0,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 5.98,
+          "ranking": [
+            "settings/deeplinks.js::openBluetoothSettings",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "settings/deeplinks.js::openWifiSettings",
+            "settings/deeplinks.js::openSettingsUri",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "voice/IntentRouter.js::IntentRouter.constructor",
+            "session/SessionManager.js::SessionManager.clear",
+            "auth/AuthService.js::AuthService.restore",
+            "session/SessionManager.js::SessionManager.constructor",
+            "auth/AuthService.js::AuthService.constructor",
+            "session/SessionManager.js::SessionManager.restore",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "voice/dynamicDispatch.js::dispatchPlugin",
+            "auth/AuthService.js::AuthService.login",
+            "session/SessionManager.js::SessionManager.create",
+            "tests/session.test.js::test:expired sessions require the user to sign in again",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "voice/normalizeInput.js::normalizeInput"
+          ]
+        },
+        {
+          "id": "voice-path",
+          "category": "path",
+          "query": "How does VoiceHandler reach BluetoothAgent?",
+          "ndcg@10": 0.8485833840018001,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 6.5,
+          "ranking": [
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "voice/IntentRouter.js::IntentRouter.constructor",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "settings/deeplinks.js::openBluetoothSettings",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "voice/dynamicDispatch.js::dispatchPlugin",
+            "voice/normalizeInput.js::normalizeInput",
+            "auth/AuthService.js::AuthService.constructor",
+            "auth/AuthService.js::AuthService.restore",
+            "session/SessionManager.js::SessionManager.constructor",
+            "settings/deeplinks.js::openWifiSettings",
+            "session/SessionManager.js::SessionManager.clear",
+            "settings/deeplinks.js::openSettingsUri",
+            "auth/AuthService.js::AuthService.login"
+          ]
+        },
+        {
+          "id": "restore-session",
+          "category": "semantic",
+          "query": "Where is session restoration handled?",
+          "ndcg@10": 0.5912352048230278,
+          "mrr": 0.5,
+          "recall@10": 1.0,
+          "latency_ms": 5.59,
+          "ranking": [
+            "session/SessionManager.js::SessionManager.clear",
+            "session/SessionManager.js::SessionManager.restore",
+            "session/SessionManager.js::SessionManager.constructor",
+            "tests/session.test.js::test:expired sessions require the user to sign in again",
+            "session/SessionManager.js::SessionManager.create",
+            "auth/AuthService.js::AuthService.constructor",
+            "auth/AuthService.js::AuthService.restore",
+            "auth/AuthService.js::AuthService.login",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "auth/credentials.js::validateCredentials",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "settings/deeplinks.js::openSettingsUri",
+            "settings/deeplinks.js::openBluetoothSettings",
+            "voice/dynamicDispatch.js::dispatchPlugin"
+          ]
+        },
+        {
+          "id": "auth-sequence",
+          "category": "sequence",
+          "query": "Where is authentication validated before a session is created?",
+          "ndcg@10": 0.6027419073676711,
+          "mrr": 0.5,
+          "recall@10": 1.0,
+          "latency_ms": 5.96,
+          "ranking": [
+            "session/SessionManager.js::SessionManager.constructor",
+            "auth/credentials.js::validateCredentials",
+            "session/SessionManager.js::SessionManager.clear",
+            "auth/AuthService.js::AuthService.constructor",
+            "session/SessionManager.js::SessionManager.create",
+            "session/SessionManager.js::SessionManager.restore",
+            "tests/session.test.js::test:expired sessions require the user to sign in again",
+            "auth/AuthService.js::AuthService.login",
+            "auth/AuthService.js::AuthService.restore",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "settings/deeplinks.js::openBluetoothSettings",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "voice/IntentRouter.js::IntentRouter.constructor",
+            "settings/deeplinks.js::openWifiSettings",
+            "settings/deeplinks.js::openSettingsUri",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "voice/VoiceHandler.js::VoiceHandler.handle"
+          ]
+        },
+        {
+          "id": "clean-input",
+          "category": "sequence",
+          "query": "How is input cleaned before handleRequest?",
+          "ndcg@10": 0.9594535145926796,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 6.16,
+          "ranking": [
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "voice/normalizeInput.js::normalizeInput",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "session/SessionManager.js::SessionManager.clear",
+            "session/SessionManager.js::SessionManager.constructor",
+            "voice/dynamicDispatch.js::dispatchPlugin",
+            "session/SessionManager.js::SessionManager.restore",
+            "auth/AuthService.js::AuthService.restore",
+            "tests/session.test.js::test:expired sessions require the user to sign in again",
+            "settings/deeplinks.js::openSettingsUri",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "session/SessionManager.js::SessionManager.create",
+            "auth/AuthService.js::AuthService.constructor",
+            "bluetooth/permissions.js::checkBluetoothPermission"
+          ]
+        },
+        {
+          "id": "deeplink-usage",
+          "category": "usage",
+          "query": "Where is the settings://bluetooth deeplink used?",
+          "ndcg@10": 0.9508013338940989,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 6.4,
+          "ranking": [
+            "settings/deeplinks.js::openBluetoothSettings",
+            "settings/deeplinks.js::openWifiSettings",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "settings/deeplinks.js::openSettingsUri",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "voice/IntentRouter.js::IntentRouter.constructor",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "session/SessionManager.js::SessionManager.clear",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "session/SessionManager.js::SessionManager.constructor",
+            "auth/AuthService.js::AuthService.restore",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "voice/dynamicDispatch.js::dispatchPlugin",
+            "session/SessionManager.js::SessionManager.restore",
+            "auth/AuthService.js::AuthService.constructor",
+            "session/SessionManager.js::SessionManager.create",
+            "voice/normalizeInput.js::normalizeInput",
+            "auth/AuthService.js::AuthService.login"
+          ]
+        },
+        {
+          "id": "device-permission",
+          "category": "sequence",
+          "query": "Where is permission checked before settings are opened?",
+          "ndcg@10": 1.0,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 5.92,
+          "ranking": [
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "settings/deeplinks.js::openBluetoothSettings",
+            "settings/deeplinks.js::openSettingsUri",
+            "settings/deeplinks.js::openWifiSettings",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "session/SessionManager.js::SessionManager.clear",
+            "auth/AuthService.js::AuthService.restore",
+            "session/SessionManager.js::SessionManager.constructor",
+            "session/SessionManager.js::SessionManager.restore",
+            "session/SessionManager.js::SessionManager.create",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "auth/AuthService.js::AuthService.login",
+            "auth/AuthService.js::AuthService.constructor",
+            "tests/session.test.js::test:expired sessions require the user to sign in again"
+          ]
+        },
+        {
+          "id": "wireless-network",
+          "category": "semantic",
+          "query": "Configure the wireless network connection",
+          "ndcg@10": 1.0,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 5.77,
+          "ranking": [
+            "settings/deeplinks.js::openWifiSettings",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "settings/deeplinks.js::openBluetoothSettings",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "voice/IntentRouter.js::IntentRouter.constructor",
+            "auth/AuthService.js::AuthService.constructor",
+            "session/SessionManager.js::SessionManager.create",
+            "auth/AuthService.js::AuthService.login",
+            "session/SessionManager.js::SessionManager.constructor",
+            "settings/deeplinks.js::openSettingsUri",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "session/SessionManager.js::SessionManager.clear",
+            "session/SessionManager.js::SessionManager.restore"
+          ]
+        },
+        {
+          "id": "spoken-whitespace",
+          "category": "semantic",
+          "query": "Trim extra whitespace and lowercase spoken commands",
+          "ndcg@10": 1.0,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 5.92,
+          "ranking": [
+            "voice/normalizeInput.js::normalizeInput",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "voice/dynamicDispatch.js::dispatchPlugin",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "session/SessionManager.js::SessionManager.clear",
+            "auth/credentials.js::validateCredentials",
+            "voice/IntentRouter.js::IntentRouter.constructor"
+          ]
+        },
+        {
+          "id": "expired-session",
+          "category": "test",
+          "query": "Expired sessions require the user to sign in again",
+          "ndcg@10": 0.8676114819559485,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 5.83,
+          "ranking": [
+            "tests/session.test.js::test:expired sessions require the user to sign in again",
+            "auth/AuthService.js::AuthService.restore",
+            "auth/AuthService.js::AuthService.constructor",
+            "auth/AuthService.js::AuthService.login",
+            "session/SessionManager.js::SessionManager.restore",
+            "session/SessionManager.js::SessionManager.create",
+            "session/SessionManager.js::SessionManager.clear",
+            "session/SessionManager.js::SessionManager.constructor",
+            "auth/credentials.js::validateCredentials",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "voice/IntentRouter.js::IntentRouter.route"
+          ]
+        },
+        {
+          "id": "clear-session",
+          "category": "symbol",
+          "query": "SessionManager.clear",
+          "ndcg@10": 1.0,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 5.36,
+          "ranking": [
+            "session/SessionManager.js::SessionManager.clear",
+            "session/SessionManager.js::SessionManager.constructor",
+            "session/SessionManager.js::SessionManager.restore",
+            "session/SessionManager.js::SessionManager.create",
+            "tests/session.test.js::test:expired sessions require the user to sign in again",
+            "auth/AuthService.js::AuthService.constructor",
+            "auth/AuthService.js::AuthService.restore",
+            "auth/AuthService.js::AuthService.login",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "settings/deeplinks.js::openBluetoothSettings",
+            "settings/deeplinks.js::openWifiSettings",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "settings/deeplinks.js::openSettingsUri",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "auth/credentials.js::validateCredentials",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "voice/IntentRouter.js::IntentRouter.constructor",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "voice/dynamicDispatch.js::dispatchPlugin"
+          ]
+        },
+        {
+          "id": "dynamic-plugin",
+          "category": "general",
+          "query": "Dispatch a plugin by a name chosen at runtime",
+          "ndcg@10": 1.0,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 5.97,
+          "ranking": [
+            "voice/dynamicDispatch.js::dispatchPlugin",
+            "session/SessionManager.js::SessionManager.create",
+            "settings/deeplinks.js::openSettingsUri",
+            "session/SessionManager.js::SessionManager.restore",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "tests/session.test.js::test:expired sessions require the user to sign in again",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "voice/IntentRouter.js::IntentRouter.constructor",
+            "auth/AuthService.js::AuthService.login",
+            "auth/AuthService.js::AuthService.constructor",
+            "session/SessionManager.js::SessionManager.constructor",
+            "settings/deeplinks.js::openWifiSettings"
+          ]
+        },
+        {
+          "id": "credential-error",
+          "category": "semantic",
+          "query": "Reject a login missing username or token",
+          "ndcg@10": 1.0,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 6.17,
+          "ranking": [
+            "auth/credentials.js::validateCredentials",
+            "auth/AuthService.js::AuthService.login",
+            "tests/session.test.js::test:expired sessions require the user to sign in again",
+            "session/SessionManager.js::SessionManager.create",
+            "auth/AuthService.js::AuthService.restore",
+            "auth/AuthService.js::AuthService.constructor",
+            "session/SessionManager.js::SessionManager.clear",
+            "session/SessionManager.js::SessionManager.constructor",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "session/SessionManager.js::SessionManager.restore",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "voice/normalizeInput.js::normalizeInput"
+          ]
+        },
+        {
+          "id": "voice-router",
+          "category": "cross-file",
+          "query": "Route a voice request to a device agent",
+          "ndcg@10": 0.8354477690556398,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 5.92,
+          "ranking": [
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "voice/IntentRouter.js::IntentRouter.constructor",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "voice/dynamicDispatch.js::dispatchPlugin",
+            "voice/normalizeInput.js::normalizeInput",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "settings/deeplinks.js::openBluetoothSettings",
+            "auth/AuthService.js::AuthService.constructor",
+            "auth/AuthService.js::AuthService.restore",
+            "settings/deeplinks.js::openWifiSettings",
+            "auth/AuthService.js::AuthService.login",
+            "session/SessionManager.js::SessionManager.create",
+            "settings/deeplinks.js::openSettingsUri"
+          ]
+        },
+        {
+          "id": "caller-clean",
+          "category": "usage",
+          "query": "Where is normalizeInput called?",
+          "ndcg@10": 0.8339912323981488,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 6.0,
+          "ranking": [
+            "voice/normalizeInput.js::normalizeInput",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "settings/deeplinks.js::openSettingsUri",
+            "settings/deeplinks.js::openBluetoothSettings",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "settings/deeplinks.js::openWifiSettings",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "voice/dynamicDispatch.js::dispatchPlugin",
+            "auth/AuthService.js::AuthService.restore",
+            "voice/IntentRouter.js::IntentRouter.constructor"
+          ]
+        }
+      ],
+      "categories": {
+        "cross-file": {
+          "queries": 1,
+          "ndcg@10": 0.8354,
+          "mrr": 1.0,
+          "recall@10": 1.0
+        },
+        "general": {
+          "queries": 1,
+          "ndcg@10": 1.0,
+          "mrr": 1.0,
+          "recall@10": 1.0
+        },
+        "locate": {
+          "queries": 1,
+          "ndcg@10": 0.9965,
+          "mrr": 1.0,
+          "recall@10": 1.0
+        },
+        "path": {
+          "queries": 1,
+          "ndcg@10": 0.8486,
           "mrr": 1.0,
           "recall@10": 1.0
         },
         "semantic": {
           "queries": 4,
-          "ndcg@10": 0.8319,
-          "mrr": 0.8333,
+          "ndcg@10": 0.8978,
+          "mrr": 0.875,
           "recall@10": 1.0
         },
         "sequence": {
           "queries": 3,
-          "ndcg@10": 0.6733,
-          "mrr": 0.75,
-          "recall@10": 0.8889
+          "ndcg@10": 0.8541,
+          "mrr": 0.8333,
+          "recall@10": 1.0
         },
         "symbol": {
           "queries": 2,
-          "ndcg@10": 0.9662,
+          "ndcg@10": 1.0,
           "mrr": 1.0,
           "recall@10": 1.0
         },
@@ -1389,12 +1319,1027 @@
         },
         "usage": {
           "queries": 2,
+          "ndcg@10": 0.8924,
+          "mrr": 1.0,
+          "recall@10": 1.0
+        }
+      }
+    },
+    "Hybrid + structure": {
+      "status": "evaluated",
+      "ndcg@10": 0.9122,
+      "mrr": 0.9688,
+      "recall@10": 1.0,
+      "latency_median_ms": 6.02,
+      "latency_p95_ms": 6.95,
+      "queries": [
+        {
+          "id": "locate-bluetooth",
+          "category": "locate",
+          "query": "Where is Bluetooth settings handled?",
+          "ndcg@10": 1.0,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 5.91,
+          "ranking": [
+            "settings/deeplinks.js::openBluetoothSettings",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "settings/deeplinks.js::openSettingsUri",
+            "settings/deeplinks.js::openWifiSettings",
+            "voice/IntentRouter.js::IntentRouter.constructor",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "session/SessionManager.js::SessionManager.constructor",
+            "session/SessionManager.js::SessionManager.clear",
+            "auth/AuthService.js::AuthService.restore",
+            "auth/AuthService.js::AuthService.constructor",
+            "voice/normalizeInput.js::normalizeInput",
+            "session/SessionManager.js::SessionManager.restore",
+            "voice/dynamicDispatch.js::dispatchPlugin",
+            "session/SessionManager.js::SessionManager.create",
+            "auth/AuthService.js::AuthService.login"
+          ]
+        },
+        {
+          "id": "symbol-deeplink",
+          "category": "symbol",
+          "query": "openBluetoothSettings",
+          "ndcg@10": 1.0,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 6.02,
+          "ranking": [
+            "settings/deeplinks.js::openBluetoothSettings",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "settings/deeplinks.js::openSettingsUri",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "settings/deeplinks.js::openWifiSettings",
+            "voice/IntentRouter.js::IntentRouter.constructor",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "session/SessionManager.js::SessionManager.clear",
+            "auth/AuthService.js::AuthService.restore",
+            "session/SessionManager.js::SessionManager.constructor",
+            "auth/AuthService.js::AuthService.constructor",
+            "session/SessionManager.js::SessionManager.restore",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "voice/dynamicDispatch.js::dispatchPlugin",
+            "auth/AuthService.js::AuthService.login",
+            "session/SessionManager.js::SessionManager.create",
+            "tests/session.test.js::test:expired sessions require the user to sign in again",
+            "voice/normalizeInput.js::normalizeInput"
+          ]
+        },
+        {
+          "id": "voice-path",
+          "category": "path",
+          "query": "How does VoiceHandler reach BluetoothAgent?",
+          "ndcg@10": 0.9709286432396581,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 6.95,
+          "ranking": [
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "settings/deeplinks.js::openBluetoothSettings",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "voice/normalizeInput.js::normalizeInput",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "voice/IntentRouter.js::IntentRouter.constructor",
+            "voice/dynamicDispatch.js::dispatchPlugin",
+            "settings/deeplinks.js::openWifiSettings",
+            "settings/deeplinks.js::openSettingsUri",
+            "auth/AuthService.js::AuthService.constructor",
+            "auth/AuthService.js::AuthService.restore",
+            "session/SessionManager.js::SessionManager.constructor",
+            "session/SessionManager.js::SessionManager.clear",
+            "auth/AuthService.js::AuthService.login"
+          ]
+        },
+        {
+          "id": "restore-session",
+          "category": "semantic",
+          "query": "Where is session restoration handled?",
+          "ndcg@10": 0.5912352048230278,
+          "mrr": 0.5,
+          "recall@10": 1.0,
+          "latency_ms": 5.98,
+          "ranking": [
+            "session/SessionManager.js::SessionManager.clear",
+            "session/SessionManager.js::SessionManager.restore",
+            "session/SessionManager.js::SessionManager.constructor",
+            "tests/session.test.js::test:expired sessions require the user to sign in again",
+            "session/SessionManager.js::SessionManager.create",
+            "auth/AuthService.js::AuthService.constructor",
+            "auth/AuthService.js::AuthService.restore",
+            "auth/AuthService.js::AuthService.login",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "auth/credentials.js::validateCredentials",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "settings/deeplinks.js::openSettingsUri",
+            "settings/deeplinks.js::openBluetoothSettings",
+            "voice/dynamicDispatch.js::dispatchPlugin"
+          ]
+        },
+        {
+          "id": "auth-sequence",
+          "category": "sequence",
+          "query": "Where is authentication validated before a session is created?",
+          "ndcg@10": 0.6741956844757231,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 6.27,
+          "ranking": [
+            "session/SessionManager.js::SessionManager.create",
+            "session/SessionManager.js::SessionManager.constructor",
+            "auth/credentials.js::validateCredentials",
+            "session/SessionManager.js::SessionManager.clear",
+            "auth/AuthService.js::AuthService.constructor",
+            "session/SessionManager.js::SessionManager.restore",
+            "tests/session.test.js::test:expired sessions require the user to sign in again",
+            "auth/AuthService.js::AuthService.login",
+            "auth/AuthService.js::AuthService.restore",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "settings/deeplinks.js::openBluetoothSettings",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "voice/IntentRouter.js::IntentRouter.constructor",
+            "settings/deeplinks.js::openWifiSettings",
+            "settings/deeplinks.js::openSettingsUri",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "voice/VoiceHandler.js::VoiceHandler.handle"
+          ]
+        },
+        {
+          "id": "clean-input",
+          "category": "sequence",
+          "query": "How is input cleaned before handleRequest?",
+          "ndcg@10": 0.9594535145926796,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 6.06,
+          "ranking": [
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "voice/normalizeInput.js::normalizeInput",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "session/SessionManager.js::SessionManager.clear",
+            "session/SessionManager.js::SessionManager.constructor",
+            "voice/dynamicDispatch.js::dispatchPlugin",
+            "session/SessionManager.js::SessionManager.restore",
+            "auth/AuthService.js::AuthService.restore",
+            "tests/session.test.js::test:expired sessions require the user to sign in again",
+            "settings/deeplinks.js::openSettingsUri",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "session/SessionManager.js::SessionManager.create",
+            "auth/AuthService.js::AuthService.constructor",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "settings/deeplinks.js::openWifiSettings"
+          ]
+        },
+        {
+          "id": "deeplink-usage",
+          "category": "usage",
+          "query": "Where is the settings://bluetooth deeplink used?",
+          "ndcg@10": 0.7332063582049065,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 6.44,
+          "ranking": [
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "settings/deeplinks.js::openBluetoothSettings",
+            "settings/deeplinks.js::openWifiSettings",
+            "settings/deeplinks.js::openSettingsUri",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "voice/IntentRouter.js::IntentRouter.constructor",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "session/SessionManager.js::SessionManager.clear",
+            "session/SessionManager.js::SessionManager.constructor",
+            "auth/AuthService.js::AuthService.restore",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "voice/dynamicDispatch.js::dispatchPlugin",
+            "session/SessionManager.js::SessionManager.restore",
+            "auth/AuthService.js::AuthService.constructor",
+            "session/SessionManager.js::SessionManager.create",
+            "voice/normalizeInput.js::normalizeInput",
+            "auth/AuthService.js::AuthService.login"
+          ]
+        },
+        {
+          "id": "device-permission",
+          "category": "sequence",
+          "query": "Where is permission checked before settings are opened?",
+          "ndcg@10": 1.0,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 6.2,
+          "ranking": [
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "settings/deeplinks.js::openBluetoothSettings",
+            "settings/deeplinks.js::openSettingsUri",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "settings/deeplinks.js::openWifiSettings",
+            "session/SessionManager.js::SessionManager.clear",
+            "auth/AuthService.js::AuthService.restore",
+            "session/SessionManager.js::SessionManager.constructor",
+            "session/SessionManager.js::SessionManager.restore",
+            "session/SessionManager.js::SessionManager.create",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "auth/AuthService.js::AuthService.login",
+            "auth/AuthService.js::AuthService.constructor",
+            "tests/session.test.js::test:expired sessions require the user to sign in again",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest"
+          ]
+        },
+        {
+          "id": "wireless-network",
+          "category": "semantic",
+          "query": "Configure the wireless network connection",
+          "ndcg@10": 1.0,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 6.0,
+          "ranking": [
+            "settings/deeplinks.js::openWifiSettings",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "settings/deeplinks.js::openSettingsUri",
+            "settings/deeplinks.js::openBluetoothSettings",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "voice/IntentRouter.js::IntentRouter.constructor",
+            "auth/AuthService.js::AuthService.constructor",
+            "session/SessionManager.js::SessionManager.create",
+            "auth/AuthService.js::AuthService.login",
+            "session/SessionManager.js::SessionManager.constructor",
+            "session/SessionManager.js::SessionManager.clear",
+            "session/SessionManager.js::SessionManager.restore",
+            "voice/VoiceHandler.js::VoiceHandler.handle"
+          ]
+        },
+        {
+          "id": "spoken-whitespace",
+          "category": "semantic",
+          "query": "Trim extra whitespace and lowercase spoken commands",
+          "ndcg@10": 1.0,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 5.95,
+          "ranking": [
+            "voice/normalizeInput.js::normalizeInput",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "voice/dynamicDispatch.js::dispatchPlugin",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "session/SessionManager.js::SessionManager.clear",
+            "auth/credentials.js::validateCredentials",
+            "voice/IntentRouter.js::IntentRouter.constructor"
+          ]
+        },
+        {
+          "id": "expired-session",
+          "category": "test",
+          "query": "Expired sessions require the user to sign in again",
+          "ndcg@10": 0.8676114819559485,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 5.8,
+          "ranking": [
+            "tests/session.test.js::test:expired sessions require the user to sign in again",
+            "auth/AuthService.js::AuthService.restore",
+            "auth/AuthService.js::AuthService.constructor",
+            "auth/AuthService.js::AuthService.login",
+            "session/SessionManager.js::SessionManager.restore",
+            "session/SessionManager.js::SessionManager.create",
+            "session/SessionManager.js::SessionManager.clear",
+            "session/SessionManager.js::SessionManager.constructor",
+            "auth/credentials.js::validateCredentials",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "voice/IntentRouter.js::IntentRouter.route"
+          ]
+        },
+        {
+          "id": "clear-session",
+          "category": "symbol",
+          "query": "SessionManager.clear",
+          "ndcg@10": 1.0,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 5.44,
+          "ranking": [
+            "session/SessionManager.js::SessionManager.clear",
+            "session/SessionManager.js::SessionManager.constructor",
+            "session/SessionManager.js::SessionManager.restore",
+            "session/SessionManager.js::SessionManager.create",
+            "tests/session.test.js::test:expired sessions require the user to sign in again",
+            "auth/AuthService.js::AuthService.constructor",
+            "auth/AuthService.js::AuthService.restore",
+            "auth/AuthService.js::AuthService.login",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "settings/deeplinks.js::openBluetoothSettings",
+            "settings/deeplinks.js::openWifiSettings",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "settings/deeplinks.js::openSettingsUri",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "auth/credentials.js::validateCredentials",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "voice/IntentRouter.js::IntentRouter.constructor",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "voice/dynamicDispatch.js::dispatchPlugin"
+          ]
+        },
+        {
+          "id": "dynamic-plugin",
+          "category": "general",
+          "query": "Dispatch a plugin by a name chosen at runtime",
+          "ndcg@10": 1.0,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 6.02,
+          "ranking": [
+            "voice/dynamicDispatch.js::dispatchPlugin",
+            "auth/AuthService.js::AuthService.login",
+            "session/SessionManager.js::SessionManager.create",
+            "settings/deeplinks.js::openSettingsUri",
+            "session/SessionManager.js::SessionManager.restore",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "tests/session.test.js::test:expired sessions require the user to sign in again",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "voice/IntentRouter.js::IntentRouter.constructor",
+            "auth/AuthService.js::AuthService.constructor",
+            "session/SessionManager.js::SessionManager.constructor",
+            "settings/deeplinks.js::openWifiSettings",
+            "auth/credentials.js::validateCredentials"
+          ]
+        },
+        {
+          "id": "credential-error",
+          "category": "semantic",
+          "query": "Reject a login missing username or token",
+          "ndcg@10": 1.0,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 5.94,
+          "ranking": [
+            "auth/credentials.js::validateCredentials",
+            "auth/AuthService.js::AuthService.login",
+            "session/SessionManager.js::SessionManager.create",
+            "tests/session.test.js::test:expired sessions require the user to sign in again",
+            "auth/AuthService.js::AuthService.restore",
+            "auth/AuthService.js::AuthService.constructor",
+            "session/SessionManager.js::SessionManager.clear",
+            "session/SessionManager.js::SessionManager.constructor",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "session/SessionManager.js::SessionManager.restore",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "voice/normalizeInput.js::normalizeInput"
+          ]
+        },
+        {
+          "id": "voice-router",
+          "category": "cross-file",
+          "query": "Route a voice request to a device agent",
+          "ndcg@10": 0.8428282648809379,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 6.12,
+          "ranking": [
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "voice/normalizeInput.js::normalizeInput",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "voice/IntentRouter.js::IntentRouter.constructor",
+            "voice/dynamicDispatch.js::dispatchPlugin",
+            "settings/deeplinks.js::openWifiSettings",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "settings/deeplinks.js::openBluetoothSettings",
+            "settings/deeplinks.js::openSettingsUri",
+            "auth/AuthService.js::AuthService.constructor",
+            "auth/AuthService.js::AuthService.restore",
+            "auth/AuthService.js::AuthService.login",
+            "session/SessionManager.js::SessionManager.create"
+          ]
+        },
+        {
+          "id": "caller-clean",
+          "category": "usage",
+          "query": "Where is normalizeInput called?",
+          "ndcg@10": 0.95583058934618,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 6.41,
+          "ranking": [
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "voice/normalizeInput.js::normalizeInput",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "settings/deeplinks.js::openSettingsUri",
+            "settings/deeplinks.js::openBluetoothSettings",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "settings/deeplinks.js::openWifiSettings",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "voice/dynamicDispatch.js::dispatchPlugin",
+            "auth/AuthService.js::AuthService.restore",
+            "voice/IntentRouter.js::IntentRouter.constructor"
+          ]
+        }
+      ],
+      "categories": {
+        "cross-file": {
+          "queries": 1,
+          "ndcg@10": 0.8428,
+          "mrr": 1.0,
+          "recall@10": 1.0
+        },
+        "general": {
+          "queries": 1,
+          "ndcg@10": 1.0,
+          "mrr": 1.0,
+          "recall@10": 1.0
+        },
+        "locate": {
+          "queries": 1,
+          "ndcg@10": 1.0,
+          "mrr": 1.0,
+          "recall@10": 1.0
+        },
+        "path": {
+          "queries": 1,
+          "ndcg@10": 0.9709,
+          "mrr": 1.0,
+          "recall@10": 1.0
+        },
+        "semantic": {
+          "queries": 4,
+          "ndcg@10": 0.8978,
+          "mrr": 0.875,
+          "recall@10": 1.0
+        },
+        "sequence": {
+          "queries": 3,
+          "ndcg@10": 0.8779,
+          "mrr": 1.0,
+          "recall@10": 1.0
+        },
+        "symbol": {
+          "queries": 2,
+          "ndcg@10": 1.0,
+          "mrr": 1.0,
+          "recall@10": 1.0
+        },
+        "test": {
+          "queries": 1,
+          "ndcg@10": 0.8676,
+          "mrr": 1.0,
+          "recall@10": 1.0
+        },
+        "usage": {
+          "queries": 2,
+          "ndcg@10": 0.8445,
+          "mrr": 1.0,
+          "recall@10": 1.0
+        }
+      }
+    },
+    "ASTFLOW full": {
+      "status": "evaluated",
+      "ndcg@10": 0.8661,
+      "mrr": 0.9688,
+      "recall@10": 1.0,
+      "latency_median_ms": 6.95,
+      "latency_p95_ms": 14.73,
+      "queries": [
+        {
+          "id": "locate-bluetooth",
+          "category": "locate",
+          "query": "Where is Bluetooth settings handled?",
+          "ndcg@10": 0.996450709094314,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 6.19,
+          "ranking": [
+            "settings/deeplinks.js::openBluetoothSettings",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "settings/deeplinks.js::openSettingsUri",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "settings/deeplinks.js::openWifiSettings",
+            "voice/IntentRouter.js::IntentRouter.constructor",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "session/SessionManager.js::SessionManager.constructor",
+            "session/SessionManager.js::SessionManager.clear",
+            "auth/AuthService.js::AuthService.restore",
+            "auth/AuthService.js::AuthService.constructor",
+            "voice/normalizeInput.js::normalizeInput",
+            "session/SessionManager.js::SessionManager.restore",
+            "voice/dynamicDispatch.js::dispatchPlugin",
+            "session/SessionManager.js::SessionManager.create",
+            "auth/AuthService.js::AuthService.login"
+          ]
+        },
+        {
+          "id": "symbol-deeplink",
+          "category": "symbol",
+          "query": "openBluetoothSettings",
+          "ndcg@10": 1.0,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 6.37,
+          "ranking": [
+            "settings/deeplinks.js::openBluetoothSettings",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "settings/deeplinks.js::openSettingsUri",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "settings/deeplinks.js::openWifiSettings",
+            "voice/IntentRouter.js::IntentRouter.constructor",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "session/SessionManager.js::SessionManager.clear",
+            "auth/AuthService.js::AuthService.restore",
+            "session/SessionManager.js::SessionManager.constructor",
+            "auth/AuthService.js::AuthService.constructor",
+            "session/SessionManager.js::SessionManager.restore",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "voice/dynamicDispatch.js::dispatchPlugin",
+            "auth/AuthService.js::AuthService.login",
+            "session/SessionManager.js::SessionManager.create",
+            "voice/normalizeInput.js::normalizeInput",
+            "tests/session.test.js::test:expired sessions require the user to sign in again"
+          ]
+        },
+        {
+          "id": "voice-path",
+          "category": "path",
+          "query": "How does VoiceHandler reach BluetoothAgent?",
+          "ndcg@10": 0.9709286432396581,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 14.17,
+          "ranking": [
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "settings/deeplinks.js::openBluetoothSettings",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "voice/normalizeInput.js::normalizeInput",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "voice/IntentRouter.js::IntentRouter.constructor",
+            "voice/dynamicDispatch.js::dispatchPlugin",
+            "settings/deeplinks.js::openWifiSettings",
+            "settings/deeplinks.js::openSettingsUri",
+            "auth/AuthService.js::AuthService.constructor",
+            "session/SessionManager.js::SessionManager.constructor",
+            "auth/AuthService.js::AuthService.restore",
+            "session/SessionManager.js::SessionManager.clear",
+            "auth/AuthService.js::AuthService.login",
+            "session/SessionManager.js::SessionManager.restore",
+            "session/SessionManager.js::SessionManager.create",
+            "tests/session.test.js::test:expired sessions require the user to sign in again"
+          ]
+        },
+        {
+          "id": "restore-session",
+          "category": "semantic",
+          "query": "Where is session restoration handled?",
+          "ndcg@10": 0.5912352048230278,
+          "mrr": 0.5,
+          "recall@10": 1.0,
+          "latency_ms": 5.68,
+          "ranking": [
+            "session/SessionManager.js::SessionManager.clear",
+            "session/SessionManager.js::SessionManager.restore",
+            "session/SessionManager.js::SessionManager.constructor",
+            "session/SessionManager.js::SessionManager.create",
+            "auth/AuthService.js::AuthService.constructor",
+            "tests/session.test.js::test:expired sessions require the user to sign in again",
+            "auth/AuthService.js::AuthService.restore",
+            "auth/AuthService.js::AuthService.login",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "auth/credentials.js::validateCredentials",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "settings/deeplinks.js::openSettingsUri",
+            "settings/deeplinks.js::openBluetoothSettings",
+            "voice/dynamicDispatch.js::dispatchPlugin"
+          ]
+        },
+        {
+          "id": "auth-sequence",
+          "category": "sequence",
+          "query": "Where is authentication validated before a session is created?",
+          "ndcg@10": 0.8129351670097633,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 13.56,
+          "ranking": [
+            "auth/credentials.js::validateCredentials",
+            "session/SessionManager.js::SessionManager.constructor",
+            "session/SessionManager.js::SessionManager.clear",
+            "session/SessionManager.js::SessionManager.create",
+            "session/SessionManager.js::SessionManager.restore",
+            "auth/AuthService.js::AuthService.constructor",
+            "tests/session.test.js::test:expired sessions require the user to sign in again",
+            "auth/AuthService.js::AuthService.login",
+            "auth/AuthService.js::AuthService.restore",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "settings/deeplinks.js::openBluetoothSettings",
+            "voice/IntentRouter.js::IntentRouter.constructor",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "settings/deeplinks.js::openWifiSettings",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "settings/deeplinks.js::openSettingsUri",
+            "voice/VoiceHandler.js::VoiceHandler.handle"
+          ]
+        },
+        {
+          "id": "clean-input",
+          "category": "sequence",
+          "query": "How is input cleaned before handleRequest?",
+          "ndcg@10": 0.8451593915771352,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 13.74,
+          "ranking": [
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "voice/normalizeInput.js::normalizeInput",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "session/SessionManager.js::SessionManager.clear",
+            "session/SessionManager.js::SessionManager.constructor",
+            "voice/dynamicDispatch.js::dispatchPlugin",
+            "session/SessionManager.js::SessionManager.restore",
+            "auth/AuthService.js::AuthService.restore",
+            "settings/deeplinks.js::openSettingsUri",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "session/SessionManager.js::SessionManager.create",
+            "auth/AuthService.js::AuthService.constructor",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "tests/session.test.js::test:expired sessions require the user to sign in again",
+            "settings/deeplinks.js::openWifiSettings",
+            "voice/IntentRouter.js::IntentRouter.constructor",
+            "settings/deeplinks.js::openBluetoothSettings",
+            "auth/AuthService.js::AuthService.login"
+          ]
+        },
+        {
+          "id": "deeplink-usage",
+          "category": "usage",
+          "query": "Where is the settings://bluetooth deeplink used?",
+          "ndcg@10": 0.7332063582049065,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 14.64,
+          "ranking": [
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "settings/deeplinks.js::openBluetoothSettings",
+            "settings/deeplinks.js::openWifiSettings",
+            "settings/deeplinks.js::openSettingsUri",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "voice/IntentRouter.js::IntentRouter.constructor",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "session/SessionManager.js::SessionManager.clear",
+            "session/SessionManager.js::SessionManager.constructor",
+            "auth/AuthService.js::AuthService.restore",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "voice/dynamicDispatch.js::dispatchPlugin",
+            "session/SessionManager.js::SessionManager.restore",
+            "auth/AuthService.js::AuthService.constructor",
+            "session/SessionManager.js::SessionManager.create",
+            "voice/normalizeInput.js::normalizeInput",
+            "auth/AuthService.js::AuthService.login",
+            "tests/session.test.js::test:expired sessions require the user to sign in again"
+          ]
+        },
+        {
+          "id": "device-permission",
+          "category": "sequence",
+          "query": "Where is permission checked before settings are opened?",
+          "ndcg@10": 0.6753145177817343,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 14.73,
+          "ranking": [
+            "settings/deeplinks.js::openBluetoothSettings",
+            "settings/deeplinks.js::openWifiSettings",
+            "settings/deeplinks.js::openSettingsUri",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "session/SessionManager.js::SessionManager.clear",
+            "auth/AuthService.js::AuthService.restore",
+            "session/SessionManager.js::SessionManager.constructor",
+            "session/SessionManager.js::SessionManager.restore",
+            "session/SessionManager.js::SessionManager.create",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "auth/AuthService.js::AuthService.login",
+            "auth/AuthService.js::AuthService.constructor",
+            "tests/session.test.js::test:expired sessions require the user to sign in again",
+            "voice/IntentRouter.js::IntentRouter.constructor",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "voice/dynamicDispatch.js::dispatchPlugin",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "auth/credentials.js::validateCredentials"
+          ]
+        },
+        {
+          "id": "wireless-network",
+          "category": "semantic",
+          "query": "Configure the wireless network connection",
+          "ndcg@10": 1.0,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 6.94,
+          "ranking": [
+            "settings/deeplinks.js::openWifiSettings",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "settings/deeplinks.js::openSettingsUri",
+            "settings/deeplinks.js::openBluetoothSettings",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "voice/IntentRouter.js::IntentRouter.constructor",
+            "auth/AuthService.js::AuthService.constructor",
+            "session/SessionManager.js::SessionManager.create",
+            "auth/AuthService.js::AuthService.login",
+            "session/SessionManager.js::SessionManager.constructor",
+            "session/SessionManager.js::SessionManager.clear",
+            "session/SessionManager.js::SessionManager.restore",
+            "voice/VoiceHandler.js::VoiceHandler.handle"
+          ]
+        },
+        {
+          "id": "spoken-whitespace",
+          "category": "semantic",
+          "query": "Trim extra whitespace and lowercase spoken commands",
+          "ndcg@10": 1.0,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 6.96,
+          "ranking": [
+            "voice/normalizeInput.js::normalizeInput",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "voice/dynamicDispatch.js::dispatchPlugin",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "session/SessionManager.js::SessionManager.clear",
+            "auth/credentials.js::validateCredentials",
+            "voice/IntentRouter.js::IntentRouter.constructor"
+          ]
+        },
+        {
+          "id": "expired-session",
+          "category": "test",
+          "query": "Expired sessions require the user to sign in again",
+          "ndcg@10": 0.564150622146522,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 6.6,
+          "ranking": [
+            "auth/AuthService.js::AuthService.restore",
+            "auth/AuthService.js::AuthService.constructor",
+            "auth/AuthService.js::AuthService.login",
+            "tests/session.test.js::test:expired sessions require the user to sign in again",
+            "session/SessionManager.js::SessionManager.restore",
+            "session/SessionManager.js::SessionManager.create",
+            "auth/credentials.js::validateCredentials",
+            "session/SessionManager.js::SessionManager.clear",
+            "session/SessionManager.js::SessionManager.constructor",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "voice/IntentRouter.js::IntentRouter.route"
+          ]
+        },
+        {
+          "id": "clear-session",
+          "category": "symbol",
+          "query": "SessionManager.clear",
+          "ndcg@10": 1.0,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 5.88,
+          "ranking": [
+            "session/SessionManager.js::SessionManager.clear",
+            "session/SessionManager.js::SessionManager.constructor",
+            "session/SessionManager.js::SessionManager.restore",
+            "session/SessionManager.js::SessionManager.create",
+            "auth/AuthService.js::AuthService.constructor",
+            "tests/session.test.js::test:expired sessions require the user to sign in again",
+            "auth/AuthService.js::AuthService.restore",
+            "auth/AuthService.js::AuthService.login",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "settings/deeplinks.js::openBluetoothSettings",
+            "settings/deeplinks.js::openWifiSettings",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "settings/deeplinks.js::openSettingsUri",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "auth/credentials.js::validateCredentials",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "voice/IntentRouter.js::IntentRouter.constructor",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "voice/dynamicDispatch.js::dispatchPlugin"
+          ]
+        },
+        {
+          "id": "dynamic-plugin",
+          "category": "general",
+          "query": "Dispatch a plugin by a name chosen at runtime",
+          "ndcg@10": 1.0,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 14.26,
+          "ranking": [
+            "voice/dynamicDispatch.js::dispatchPlugin",
+            "auth/AuthService.js::AuthService.login",
+            "session/SessionManager.js::SessionManager.create",
+            "settings/deeplinks.js::openSettingsUri",
+            "session/SessionManager.js::SessionManager.restore",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "voice/IntentRouter.js::IntentRouter.constructor",
+            "auth/AuthService.js::AuthService.constructor",
+            "session/SessionManager.js::SessionManager.constructor",
+            "settings/deeplinks.js::openWifiSettings",
+            "tests/session.test.js::test:expired sessions require the user to sign in again",
+            "auth/credentials.js::validateCredentials",
+            "session/SessionManager.js::SessionManager.clear",
+            "auth/AuthService.js::AuthService.restore",
+            "settings/deeplinks.js::openBluetoothSettings"
+          ]
+        },
+        {
+          "id": "credential-error",
+          "category": "semantic",
+          "query": "Reject a login missing username or token",
+          "ndcg@10": 0.8339912323981488,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 6.64,
+          "ranking": [
+            "auth/AuthService.js::AuthService.login",
+            "auth/credentials.js::validateCredentials",
+            "session/SessionManager.js::SessionManager.create",
+            "tests/session.test.js::test:expired sessions require the user to sign in again",
+            "auth/AuthService.js::AuthService.restore",
+            "auth/AuthService.js::AuthService.constructor",
+            "session/SessionManager.js::SessionManager.clear",
+            "session/SessionManager.js::SessionManager.constructor",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "session/SessionManager.js::SessionManager.restore",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "voice/normalizeInput.js::normalizeInput"
+          ]
+        },
+        {
+          "id": "voice-router",
+          "category": "cross-file",
+          "query": "Route a voice request to a device agent",
+          "ndcg@10": 1.0,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 6.45,
+          "ranking": [
+            "voice/IntentRouter.js::IntentRouter.route",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "voice/normalizeInput.js::normalizeInput",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "voice/IntentRouter.js::IntentRouter.constructor",
+            "voice/dynamicDispatch.js::dispatchPlugin",
+            "settings/deeplinks.js::openWifiSettings",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "settings/deeplinks.js::openBluetoothSettings",
+            "settings/deeplinks.js::openSettingsUri",
+            "auth/AuthService.js::AuthService.constructor",
+            "auth/AuthService.js::AuthService.restore",
+            "auth/AuthService.js::AuthService.login",
+            "session/SessionManager.js::SessionManager.create"
+          ]
+        },
+        {
+          "id": "caller-clean",
+          "category": "usage",
+          "query": "Where is normalizeInput called?",
+          "ndcg@10": 0.8339912323981488,
+          "mrr": 1.0,
+          "recall@10": 1.0,
+          "latency_ms": 13.81,
+          "ranking": [
+            "voice/normalizeInput.js::normalizeInput",
+            "voice/VoiceHandler.js::VoiceHandler.handle",
+            "voice/VoiceHandler.js::VoiceHandler.handleRequest",
+            "voice/IntentRouter.js::IntentRouter.route",
+            "settings/deeplinks.js::openSettingsUri",
+            "settings/deeplinks.js::openBluetoothSettings",
+            "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+            "settings/deeplinks.js::openWifiSettings",
+            "bluetooth/permissions.js::checkBluetoothPermission",
+            "voice/dynamicDispatch.js::dispatchPlugin",
+            "auth/AuthService.js::AuthService.restore",
+            "voice/IntentRouter.js::IntentRouter.constructor",
+            "voice/VoiceHandler.js::VoiceHandler.constructor",
+            "session/SessionManager.js::SessionManager.clear",
+            "session/SessionManager.js::SessionManager.constructor",
+            "auth/AuthService.js::AuthService.constructor",
+            "session/SessionManager.js::SessionManager.restore",
+            "auth/AuthService.js::AuthService.login"
+          ]
+        }
+      ],
+      "categories": {
+        "cross-file": {
+          "queries": 1,
+          "ndcg@10": 1.0,
+          "mrr": 1.0,
+          "recall@10": 1.0
+        },
+        "general": {
+          "queries": 1,
+          "ndcg@10": 1.0,
+          "mrr": 1.0,
+          "recall@10": 1.0
+        },
+        "locate": {
+          "queries": 1,
+          "ndcg@10": 0.9965,
+          "mrr": 1.0,
+          "recall@10": 1.0
+        },
+        "path": {
+          "queries": 1,
+          "ndcg@10": 0.9709,
+          "mrr": 1.0,
+          "recall@10": 1.0
+        },
+        "semantic": {
+          "queries": 4,
+          "ndcg@10": 0.8563,
+          "mrr": 0.875,
+          "recall@10": 1.0
+        },
+        "sequence": {
+          "queries": 3,
+          "ndcg@10": 0.7778,
+          "mrr": 1.0,
+          "recall@10": 1.0
+        },
+        "symbol": {
+          "queries": 2,
+          "ndcg@10": 1.0,
+          "mrr": 1.0,
+          "recall@10": 1.0
+        },
+        "test": {
+          "queries": 1,
+          "ndcg@10": 0.5642,
+          "mrr": 1.0,
+          "recall@10": 1.0
+        },
+        "usage": {
+          "queries": 2,
           "ndcg@10": 0.7836,
           "mrr": 1.0,
           "recall@10": 1.0
         }
-      },
-      "effective_mode": "lexical fallback; dense contribution unavailable"
+      }
     }
   }
 }

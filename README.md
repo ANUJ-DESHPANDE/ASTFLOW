@@ -200,10 +200,11 @@ The service binds to loopback and validates Host/Origin headers. Source requests
 
 ## Verification and benchmarks
 
-Requires the demo Git history from Quick start (`scripts/setup_demo.py`) to already exist; on a fresh clone that has not run Quick start, run it first or `test_indexed_revision_expression_remains_in_version_selector` fails because `examples/demo-repo` is not yet its own Git repository.
+The demo fixture sources are committed in `examples/demo-repo`; its Git history (tags `v1`, `v2`) is created by `scripts/setup_demo.py` (run by `npm run setup` and `npm run demo`). On a fresh clone that has not run setup, run that script first or `test_indexed_revision_expression_remains_in_version_selector` fails because `examples/demo-repo` is not yet its own Git repository.
 
 ```powershell
-.\.venv\Scripts\python.exe -m pytest
+.\.venv\Scripts\python.exe -m pytest backend/tests benchmark --ignore=benchmark/test_mteb_adapter.py
+.\.venv\Scripts\python.exe -m benchmark.verify_retrieval --self-test   # evaluator agreement on golden cases
 npm run build
 # With npm run demo running in another terminal:
 .\.venv\Scripts\python.exe scripts/verify_demo.py
@@ -211,13 +212,13 @@ npm run test:ui
 .\.venv\Scripts\python.exe -m benchmark.evaluate
 ```
 
-Browser tests use installed Microsoft Edge by default. For another platform, set the Playwright `channel` in `playwright.config.ts` or install Chromium with `npx playwright install chromium` and remove the Edge channel. Tests use the **real running backend**; they do not mock search or graph responses. They save screenshots under `.astflow/screenshots/`.
+`npm run test:ui` runs the demo-critical journeys (`frontend/e2e/journeys.spec.ts`), an accessibility gate (`a11y.spec.ts`: no serious/critical axe violations in the code, answer, map, compare and dialog views at desktop and phone sizes) and the studio/audit specs. Browser tests use installed Microsoft Edge by default; elsewhere run `npx playwright install chromium` and set `PLAYWRIGHT_CHANNEL=chromium`. `PLAYWRIGHT_BASE_URL` points them at another server. Tests use the **real running backend**; they do not mock search or graph responses (one test injects network failures deliberately). They save screenshots under `.astflow/screenshots/`. CI (`.github/workflows/ci.yml`) runs lint, the Python tests, the frontend build, dependency audits and these browser tests on every push.
 
 Backend coverage includes parser spans/Unicode, named exports, arrows/JSX, deterministic resolution, unsupported-import abstention and cyclic named imports, dynamic and shadowed calls, reassignment and `this` boundaries, conservative sequence ordering, source filters, lexical retrieval, real CPU semantic retrieval, persisted vectors, agent refinement, graph traversal, API/source validation, Git comparison, and real/failing TypeScript enrichment. Semantic integration tests report a skip when the optional model is not installed; language-service tests report a skip when Node dependencies are absent.
 
 The local benchmark computes **NDCG@10, MRR, Recall@10**, median and p95 query latency for BM25-only, dense-only, hybrid, hybrid plus structure, and the full engine. It validates every relevance label against actual indexed symbols. Full per-query rankings and metrics are saved in [`benchmark/results/local.json`](benchmark/results/local.json), with a readable table in [`benchmark/results/local.md`](benchmark/results/local.md). Live API verification measurements are in [`benchmark/results/verification.json`](benchmark/results/verification.json).
 
-The included 16-query/21-chunk benchmark is a small handcrafted regression fixture. It does **not** establish performance on large repositories or an official PRISM/MTEB evaluation. No benchmark numbers are hardcoded into the application. Index time includes CPU model loading on a cold process; query measurements warm the model first.
+The included 16-query/21-chunk benchmark is a small handcrafted regression fixture. It does **not** establish performance on large repositories or an official PRISM/MTEB evaluation. The committed table was regenerated on 2026-09-25 with the MiniLM model available (an earlier committed version had been produced without it, so its dense row was empty and its "hybrid" row was lexical-only). On these 16 queries dense-only (NDCG@10 0.931) scores above hybrid (0.905) and the full agent pipeline (0.866, best MRR 0.969); with 16 queries none of these differences is statistically meaningful. No benchmark numbers are hardcoded into the application. Index time includes CPU model loading on a cold process; query measurements warm the model first.
 
 ### Official full AppsRetrieval evaluation
 
@@ -225,16 +226,16 @@ Use a separate Python 3.12 environment for MTEB. From the project root:
 
 ```powershell
 py -3.12 -m venv .eval-venv
-.\.eval-venv\Scripts\python.exe -m pip install -e '.[dev,semantic]' -r benchmark/requirements-mteb.txt
-.\.eval-venv\Scripts\python.exe benchmark/run_mteb.py --mode bm25 --output benchmark/results/mteb-bm25
-.\.eval-venv\Scripts\python.exe benchmark/run_mteb.py --mode hybrid --download-model --output benchmark/results/mteb-hybrid
+.\.eval-venv\Scripts\python.exe -m pip install -c requirements.lock.txt -e '.[dev,semantic]' -r benchmark/requirements-mteb.txt
+.\.eval-venv\Scripts\python.exe benchmark/run_mteb.py --mode bm25 --output benchmark/results/mteb-current-bm25
+.\.eval-venv\Scripts\python.exe benchmark/run_mteb.py --mode hybrid --download-model --output benchmark/results/mteb-current-hybrid
 .\.eval-venv\Scripts\python.exe -m pytest benchmark/test_mteb_adapter.py
 .\.eval-venv\Scripts\python.exe -m benchmark.ablate
 ```
 
 On Linux use `.eval-venv/bin/python`. Each official run uses MTEB 2.21.0, all 3,765 test queries, all 8,765 documents and pinned dataset revision `f22508f96b7a36c2415181ed8bb76f76e04ae2d5`. `appsretrieval_results.json` is written using the framework serializer. `run_metadata.json` records corpus/model identity and raw timing; `predictions/` retains the ranked document IDs. Upload the generated MTEB JSON as the required release artifact after final review. Large predictions are ignored by Git and excluded from the source ZIP.
 
-Measured full-test NDCG@10: **BM25 .06104; hybrid .08815**. These were measured on older code and are not the current trusted score; see [RETRIEVAL-PROGRESS.md](RETRIEVAL-PROGRESS.md) for current status. MRR@10: **.052202 / .072400**. These evaluate text retrieval on Python dataset documents; they do not evaluate ASTFLOW's JavaScript graph/agent. Do not substitute the much higher curated demo scores. The full hybrid run contains multi-hour timing outliers and is not a clean throughput benchmark; see the audit report.
+Current code (`benchmark/results/mteb-current-*`, MTEB 2.21.0, all 3,765 queries): **BM25 NDCG@10 0.06312, MRR@10 0.054209; hybrid NDCG@10 0.0884, MRR@10 0.072573** (Recall@100 0.22603 / 0.29774). These equal the frozen trust-harness baseline (`benchmark/verification/manifest-baseline-v1.json`, four independent evaluators), which was re-generated from the committed code in the 2026-09-25 audit with 0 per-query metric changes. The runner emits rank-derived scores so MTEB scores ASTFLOW's actual order: hybrid RRF scores contain exact ties that MTEB would otherwise re-order by document id (that variant reported 0.089). The older folders `results/mteb`, `mteb-bm25` (.06104) and `mteb-hybrid` (.08815) came from earlier code states and are historical. These evaluate text retrieval on Python dataset documents; they do not evaluate ASTFLOW's JavaScript graph/agent. Do not substitute the much higher curated demo scores. The full hybrid run contains multi-hour timing outliers and is not a clean throughput benchmark; see the audit report.
 
 Keep the output metadata and evaluation environment's `pip freeze`. Dense/hybrid evaluation fails rather than claiming lexical fallback is semantic retrieval. If a cache was saved by an incompatible sentence-transformers major version, reload the official model with the pinned version.
 
@@ -258,10 +259,12 @@ touched at most once, right before deciding whether a change is worth an officia
 `tune_bm25.py` needs no embedding model (BM25 tuning is model-independent) and appends
 every run to `benchmark/results/bm25-tuning-log.json` with the git commit and timestamp.
 See `docs/audit/RETRIEVAL-EXPERIMENTS.md` for the experiment log format and
-`docs/audit/THEME1-LIVE-GAP-MATRIX.md` for what this tooling does and does not establish
-yet — as of this commit, none of these scripts have been run against the real dataset
-(the sandbox that wrote them had huggingface.co blocked at the network policy level), so
-there are no results to cite; run them locally and record what comes back.
+`docs/audit/THEME1-LIVE-GAP-MATRIX.md` for what this tooling does and does not establish.
+The grid was run on the real dataset on 2026-09-21 (26 configurations on dev; the current
+k1 1.6 / b 0.75 is the dev optimum). The log also shows the confirmation split was used three
+times (k1 1.6 twice, 1.5 once), which the protocol forbids; later experiments therefore treat
+confirmation as not pristine for BM25 parameters. All retrieval experiments since then
+(E001-E004) are recorded in [`benchmark/EXPERIMENTS.md`](benchmark/EXPERIMENTS.md).
 
 ### Legacy CoIR export/smoke adapter
 
