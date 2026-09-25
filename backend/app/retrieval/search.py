@@ -110,11 +110,14 @@ class Retriever:
         candidates = set(lr if mode == "bm25" else sr if mode == "dense" else set(lr) | set(sr))
         rows = []
         query_identifiers = {w.lower() for w in re.findall(r"[\w$]+", query)}
+        query_folded = query.casefold()  # substring pre-filter for the exact-name regex below (never rejects a match)
         term_set = set(terms)
         for i in candidates:
             chunk = self.chunks[i]
             name = chunk.qualified_name.split(".")[-1]
-            exact = chunk.kind != 'dataset_document' and (name.lower() in query_identifiers or bool(re.search(r"(?<![\w$])" + re.escape(chunk.qualified_name) + r"(?![\w$])", query, re.I)))
+            exact = chunk.kind != 'dataset_document' and (name.lower() in query_identifiers or (
+                chunk.qualified_name.casefold() in query_folded
+                and bool(re.search(r"(?<![\w$])" + re.escape(chunk.qualified_name) + r"(?![\w$])", query, re.I))))
             overlap = len(term_set & set(self.tokenize(chunk.qualified_name))) / max(1, len(term_set)) if boosts else 0.
             contributions = {
                 "lexical": self.settings.lexical_weight / (self.settings.rrf_k + lr[i]) if i in lr and mode != "dense" else 0.,
