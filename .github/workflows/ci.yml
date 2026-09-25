@@ -78,6 +78,9 @@ jobs:
       - name: Critical journeys, accessibility gate, audit specs
         run: npx playwright test
         env: { PLAYWRIGHT_CHANNEL: chromium }
+      - name: Demo server log
+        if: failure()
+        run: tail -n 60 demo.log
       - if: failure()
         uses: actions/upload-artifact@v4
         with: { name: playwright-results, path: "test-results\ndemo.log" }
