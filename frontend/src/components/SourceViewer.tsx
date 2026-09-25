@@ -17,7 +17,7 @@ function theme(api: typeof monaco) {
     rules: [{ token: 'keyword', foreground: 'BD79CF' }, { token: 'string', foreground: 'FF9A50' }, { token: 'comment', foreground: '719878' }, { token: 'identifier', foreground: '85C982' }, { token: 'number', foreground: 'E4AF63' }],
     colors: { 'editor.background': '#161616', 'editor.foreground': '#DDDDDF', 'editorLineNumber.foreground': '#878B85', 'editor.selectionBackground': '#285D36', 'diffEditor.insertedLineBackground': '#285E321F', 'diffEditor.removedLineBackground': '#7737371F', 'diffEditor.insertedTextBackground': '#285E321C', 'diffEditor.removedTextBackground': '#7737372A' } });
 }
-const options = (zoom: number): monaco.editor.IStandaloneEditorConstructionOptions => ({ readOnly: true, domReadOnly: true, minimap: { enabled: false }, fontSize: 15 * zoom / 100, lineHeight: 24 * zoom / 100, fontFamily: 'Cascadia Code, Consolas, monospace', scrollBeyondLastLine: false, padding: { top: 16 }, wordWrap: 'on', renderLineHighlight: 'none', automaticLayout: true, overviewRulerLanes: 0, folding: true });
+const options = (zoom: number): monaco.editor.IStandaloneEditorConstructionOptions => ({ readOnly: true, domReadOnly: true, minimap: { enabled: false }, fontSize: 15 * zoom / 100, lineHeight: 24 * zoom / 100, fontFamily: 'Cascadia Code, Consolas, monospace', scrollBeyondLastLine: false, renderFinalNewline: 'on', padding: { top: 16 }, wordWrap: 'on', renderLineHighlight: 'none', automaticLayout: true, overviewRulerLanes: 0, folding: true });
 export function SourceViewer({ source, zoom = 100 }: { source: Source; zoom?: number }) {
   const editor = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
   const decoration = useRef<monaco.editor.IEditorDecorationsCollection | null>(null);
