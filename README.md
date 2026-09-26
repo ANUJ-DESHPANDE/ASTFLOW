@@ -48,7 +48,7 @@ npm run build
 npm run demo
 ```
 
-On macOS/Linux replace `.\.venv\Scripts\python.exe` with `.venv/bin/python`. Activating the environment makes the `astflow` CLI available directly.
+On macOS/Linux replace `.\.venv\Scripts\python.exe` with `.venv/bin/python`. On Linux add `--extra-index-url https://download.pytorch.org/whl/cpu` to the `pip install` so it installs the CPU build of PyTorch (as `npm run setup`, CI and the official evaluation do) rather than the multi-GB CUDA build. Activating the environment makes the `astflow` CLI available directly.
 
 ## Try the investigation
 
