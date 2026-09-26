@@ -1,0 +1,69 @@
+# Time-boxed retrieval experiments (benchmark/EXPERIMENTS.md). Uses only the CoIR Apps *train* qrels; the official
+# test split is scored exclusively by benchmark.yml. Every job has a hard 45-minute limit (experiment kill rule).
+name: experiments
+on:
+  push:
+    branches: ["claude/**", "exp/**"]
+    paths: ["benchmark/e005_screen.py", ".github/workflows/experiments.yml"]
+  workflow_dispatch:
+    inputs:
+      stage: { description: "micro or dev", default: micro }
+      queries: { description: "train-split queries", default: "300" }
+
+permissions:
+  contents: read
+
+env:
+  PIP_EXTRA_INDEX_URL: https://download.pytorch.org/whl/cpu
+  STAGE: ${{ inputs.stage || 'micro' }}
+  QUERIES: ${{ inputs.queries || '300' }}
+
+jobs:
+  failure-analysis:
+    # Control model (MiniLM, product default) on the full corpus: measured failure distribution for E005's hypothesis.
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - run: python -m pip install -c requirements.lock.txt -e ".[semantic,benchmark]"
+      - run: python benchmark/e005_screen.py --stage dev --queries 300 --models sentence-transformers/all-MiniLM-L6-v2 --failure-dump 60 --output out/e005-failures
+      - uses: actions/upload-artifact@v4
+        with: { name: e005-failure-analysis, path: out/e005-failures }
+
+  screen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        model:
+          - sentence-transformers/all-MiniLM-L6-v2
+          - Alibaba-NLP/gte-modernbert-base
+          - ibm-granite/granite-embedding-english-r2
+          - nomic-ai/CodeRankEmbed
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - run: python -m pip install -c requirements.lock.txt -e ".[semantic,benchmark]" einops
+      - run: python benchmark/e005_screen.py --stage "$STAGE" --queries "$QUERIES" --models "${{ matrix.model }}" --output out/e005
+      - uses: actions/upload-artifact@v4
+        with:
+          name: e005-${{ strategy.job-index }}
+          path: out/e005
+
+  combine:
+    needs: screen
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: python -m pip install -c requirements.lock.txt -e .
+      - uses: actions/download-artifact@v4
+        with: { pattern: "e005-[0-9]*", path: out/all }
+      - run: python benchmark/e005_screen.py --combine out/all
