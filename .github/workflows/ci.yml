@@ -84,3 +84,26 @@ jobs:
       - if: failure()
         uses: actions/upload-artifact@v4
         with: { name: playwright-results, path: "test-results\ndemo.log" }
+
+  docker:
+    # F-041: the submission's container must build and answer a real query, not just exist.
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -t astflow .
+      - name: Start container and wait for the demo index
+        run: |
+          docker run -d --name astflow -p 127.0.0.1:8000:8000 astflow
+          for i in $(seq 1 90); do curl -sf http://127.0.0.1:8000/api/health && break; sleep 2; done
+      - name: Search and source through the container
+        run: |
+          curl -sf -X POST http://127.0.0.1:8000/api/search -H 'content-type: application/json' \
+            -d '{"query":"How is the input preprocessed before going to the main function?"}' > search.json
+          python3 -c "import json; r=json.load(open('search.json'))['results']; print([(x['file_path'], x['start_line']) for x in r[:3]]); assert r and r[0]['file_path']=='voice/normalizeInput.js'"
+          curl -sf "http://127.0.0.1:8000/api/source?path=voice/normalizeInput.js&version=working-tree" | head -c 300
+          curl -sf http://127.0.0.1:8000/ | grep -q '<div id="root"'
+      - name: Container log
+        if: always()
+        run: docker logs astflow | tail -n 40
