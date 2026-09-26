@@ -1,0 +1,142 @@
+{
+ "model": "Alibaba-NLP/gte-modernbert-base",
+ "query": "where is the redirect location URL encoded",
+ "versions": [
+  {
+   "changed_since_previous_version": null,
+   "version": "v4.18.2",
+   "index_s": 292.9,
+   "embedding_cache": {
+    "reused": 0,
+    "computed": 156
+   },
+   "chunks": 156,
+   "semantic": {
+    "available": true,
+    "model": "Alibaba-NLP/gte-modernbert-base",
+    "message": "CPU semantic model ready"
+   },
+   "query_ms": 101.2,
+   "top": [
+    {
+     "file": "lib/response.js",
+     "lines": [
+      906,
+      916
+     ],
+     "symbol": "location",
+     "matches_version_source": true
+    },
+    {
+     "file": "lib/response.js",
+     "lines": [
+      936,
+      980
+     ],
+     "symbol": "redirect",
+     "matches_version_source": true
+    },
+    {
+     "file": "lib/response.js",
+     "lines": [
+      961,
+      964
+     ],
+     "symbol": "redirect.anonymous@961:10",
+     "matches_version_source": true
+    }
+   ]
+  },
+  {
+   "changed_since_previous_version": true,
+   "version": "v4.19.2",
+   "index_s": 148.6,
+   "embedding_cache": {
+    "reused": 126,
+    "computed": 30
+   },
+   "chunks": 156,
+   "semantic": {
+    "available": true,
+    "model": "Alibaba-NLP/gte-modernbert-base",
+    "message": "CPU semantic model ready"
+   },
+   "query_ms": 94.7,
+   "top": [
+    {
+     "file": "lib/response.js",
+     "lines": [
+      907,
+      925
+     ],
+     "symbol": "location",
+     "matches_version_source": true
+    },
+    {
+     "file": "lib/response.js",
+     "lines": [
+      945,
+      989
+     ],
+     "symbol": "redirect",
+     "matches_version_source": true
+    },
+    {
+     "file": "lib/response.js",
+     "lines": [
+      970,
+      973
+     ],
+     "symbol": "redirect.anonymous@970:10",
+     "matches_version_source": true
+    }
+   ]
+  },
+  {
+   "changed_since_previous_version": true,
+   "version": "v4.21.2",
+   "index_s": 88.4,
+   "embedding_cache": {
+    "reused": 138,
+    "computed": 18
+   },
+   "chunks": 156,
+   "semantic": {
+    "available": true,
+    "model": "Alibaba-NLP/gte-modernbert-base",
+    "message": "CPU semantic model ready"
+   },
+   "query_ms": 94.5,
+   "top": [
+    {
+     "file": "lib/response.js",
+     "lines": [
+      914,
+      926
+     ],
+     "symbol": "location",
+     "matches_version_source": true
+    },
+    {
+     "file": "lib/response.js",
+     "lines": [
+      946,
+      990
+     ],
+     "symbol": "redirect",
+     "matches_version_source": true
+    },
+    {
+     "file": "lib/response.js",
+     "lines": [
+      971,
+      974
+     ],
+     "symbol": "redirect.anonymous@971:10",
+     "matches_version_source": true
+    }
+   ]
+  }
+ ],
+ "all_snippets_match_their_version": true
+}
