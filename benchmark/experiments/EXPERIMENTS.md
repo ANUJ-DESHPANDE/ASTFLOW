@@ -67,7 +67,9 @@ Frozen 2026-09-26 after the single official run (workflow `official-final`, run 
 Diagnostics: R@10 0.6967 · R@50 0.8483 · R@100 0.8943. Result file: `benchmark/results/mteb-final-gte/appsretrieval_results.json`.
 
 **CPU (4-vCPU GitHub runners):** full index 242 runner-minutes (≈ 15 min on 20 runners; ≈ 4 h on one); incremental
-update and version behaviour in `benchmark/results/p1-final-gte/p1.json`; query encoding P50 4.27 s / P95 4.49 s for full
+update and version behaviour in `benchmark/results/p1-final-gte/p1.json` (P1 **PASS** on express 4.18.2 → 4.19.2 →
+4.21.2: index 292.9 s cold, then 148.6 s and 88.4 s reusing 126/156 and 138/156 chunk vectors; correct `location`
+function per version; query ≈ 95–101 ms); query encoding P50 4.27 s / P95 4.49 s for full
 problem statements; ranking P50 27.7 ms / P95 29.9 ms.
 
 **Frozen at commit:** `036060e` (the evaluated code); freeze recorded on the branch that carries this file.

@@ -76,6 +76,16 @@ Correct version, file, line range and snippet per version; query 1–2 ms. Autom
 (added/removed/modified symbols and edges, indexed-bytes isolation). *Carried over* with the model: express cold index
 38.6 s (embedding-bound), cached ≤ 1.9 s; unchanged chunks reuse vectors.
 
+**With the frozen model** (`gte-modernbert-base`, CI run 36241962291 on a 4-vCPU runner; `benchmark/final_p1.py`,
+report `benchmark/results/p1-final-gte/p1.json`) — **PASS**: every top-3 snippet lies within exactly the reported
+lines of that version's file (`git show <tag>:<file>`).
+
+| Version | Index | Embeddings reused / computed (156 chunks) | Query | Top result | Changed vs previous version |
+|---|---:|---|---:|---|---|
+| v4.18.2 | 292.9 s (cold) | 0 / 156 | 101 ms | `lib/response.js` `location` L906–916 | — |
+| v4.19.2 | 148.6 s | 126 / 30 | 95 ms | `location` L907–925 | yes |
+| v4.21.2 | 88.4 s | 138 / 18 | 95 ms | `location` L914–926 | yes |
+
 Snippet corpora (new): each `-c` is a version; vectors are cached by content hash, so a new version embeds only
 changed snippets (`test_new_version_embeds_only_changed_snippets`).
 
