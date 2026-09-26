@@ -6,7 +6,7 @@ export function FlowMark({ loading = false }: { loading?: boolean }) {
 }
 export function CodeSnippet({ text }: { text: string }) {
   const tokens = text.split(/("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\b(?:export|import|from|const|let|return|class|function|new|if|throw)\b|\b\d+\b|\b[A-Za-z_$][\w$]*\b)/g);
-  return <pre className="syntax-code"><code>{tokens.map((token, index) => <span key={index} className={/^['"]/.test(token) ? 'syntax-string' : /^(export|import|from|const|let|return|class|function|new|if|throw)$/.test(token) ? 'syntax-keyword' : /^\d/.test(token) ? 'syntax-number' : /^[A-Za-z_$]/.test(token) ? 'syntax-name' : undefined}>{token}</span>)}</code></pre>;
+  return <pre className="syntax-code" tabIndex={0}><code>{tokens.map((token, index) => <span key={index} className={/^['"]/.test(token) ? 'syntax-string' : /^(export|import|from|const|let|return|class|function|new|if|throw)$/.test(token) ? 'syntax-keyword' : /^\d/.test(token) ? 'syntax-number' : /^[A-Za-z_$]/.test(token) ? 'syntax-name' : undefined}>{token}</span>)}</code></pre>;
 }
 export function CopyCode({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);

@@ -6,16 +6,20 @@ import type { GraphData, GraphEdge, GraphNode } from '../types';
 import { GitBranch, Focus, RotateCcw, FileCode2 } from 'lucide-react';
 import {layoutGraph,neighborhood} from './graphLayout';
 
+const HUBS=24;
 export function TraceGraph({graph,onNode,onEdge,onExplore}:{graph:GraphData;onNode:(node:GraphNode)=>void;onEdge:(edge:GraphEdge)=>void;onExplore?:(node:GraphNode)=>void}){
  const [selected,setSelected]=useState(''),[query,setQuery]=useState(''),[depth,setDepth]=useState(1),[direction,setDirection]=useState('both'),[local,setLocal]=useState(false);
  const [flow,setFlow]=useState<ReactFlowInstance|null>(null);
  const signature=graph.version_key+':'+graph.nodes.map(n=>n.symbol_id).sort().join('|');
  useEffect(()=>{setSelected('');setLocal(false);setQuery('');},[signature]);
- const positions=useMemo(()=>layoutGraph(graph),[graph]);
+ // A truncated file overview shows the HUBS most connected files (readable at fit): lay those out together so the view is compact
+ // (other nodes, reachable by search or neighborhood, keep a position below them).
+ const positions=useMemo(()=>{const all=layoutGraph(graph);if(graph.nodes[0]?.kind!=='file'||graph.nodes.length<=60)return all;const hubs=graph.nodes.slice(0,HUBS),keep=new Set(hubs.map(n=>n.symbol_id));const top=layoutGraph({...graph,nodes:hubs,edges:graph.edges.filter(e=>keep.has(e.source)&&keep.has(e.target))});const bottom=Math.max(0,...[...top.values()].map(p=>p.y))+400;for(const [id,p] of all)if(!top.has(id))top.set(id,{x:p.x,y:p.y+bottom});return top;},[graph]);
  const nearby=useMemo(()=>selected?neighborhood(graph,selected,depth,direction):new Set<string>(),[graph,selected,depth,direction]);
  const matches=graph.nodes.filter(n=>(n.qualified_name+' '+n.file).toLowerCase().includes(query.toLowerCase()));
  const candidates=local&&selected?graph.nodes.filter(n=>nearby.has(n.symbol_id)):graph.nodes;
- const shown=[...candidates].sort((a,b)=>Number(b.symbol_id===selected)-Number(a.symbol_id===selected)||Number(nearby.has(b.symbol_id))-Number(nearby.has(a.symbol_id))||a.symbol_id.localeCompare(b.symbol_id)).slice(0,60);
+ const fileView=graph.nodes[0]?.kind==='file',order=new Map(graph.nodes.map((n,i)=>[n.symbol_id,i]));
+ const shown=[...candidates].sort((a,b)=>Number(b.symbol_id===selected)-Number(a.symbol_id===selected)||Number(nearby.has(b.symbol_id))-Number(nearby.has(a.symbol_id))||(fileView?order.get(a.symbol_id)!-order.get(b.symbol_id)!:a.symbol_id.localeCompare(b.symbol_id))).slice(0,fileView&&graph.nodes.length>60&&!selected?HUBS:60);
  const visible=new Set(shown.map(n=>n.symbol_id));
  const relevantEdges=graph.edges.map((edge,i)=>({edge,i})).filter(({edge})=>visible.has(edge.source)&&visible.has(edge.target));
  const nodes=shown.map(n=>({id:n.symbol_id,position:positions.get(n.symbol_id)!,width:260,height:84,
