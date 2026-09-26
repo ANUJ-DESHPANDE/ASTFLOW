@@ -56,8 +56,8 @@ E005 (code-retrieval embedder, pre-registered before any run; dev on the CoIR **
 | Candidate | Outcome | Evidence |
 |---|---|---|
 | `nomic-ai/CodeRankEmbed` | **INVALID** | remote code fails under the pinned transformers 5.17 |
-| `Alibaba-NLP/gte-modernbert-base` | **REJECT (CPU cost)** | 45-min cap hit at 1,024 tokens; best measured 2.4 docs/s at 512 tokens on 4 CPUs (threshold ≥ 5) ⇒ ≈ 1 h to index the corpus |
-| `ibm-granite/granite-embedding-english-r2` | **REJECT (CPU cost)** | same architecture and cost |
+| `Alibaba-NLP/gte-modernbert-base` | **REJECT (CPU cost)** — but see below | 45-min cap hit at 1,024 tokens; 512-token proxy (100 train queries × 600 docs): **Dense NDCG@10 0.8865 vs MiniLM Hybrid 0.6145, Δ +0.272 [95% CI +0.199, +0.345]**; 0.5 docs/s on the CI runner, 2.4 in the local profile (threshold ≥ 5) ⇒ ≈ 1 h to index the corpus |
+| `ibm-granite/granite-embedding-english-r2` | **REJECT** | same cost; smaller gain: Dense 0.6877, Δ +0.073 [+0.012, +0.137], not significant on stdin problems |
 
 Measured failure analysis (control, 300 train queries, full corpus): of 127 misses, **59.1%** have the answer outside
 both top-100 lists, 34.6% rank it 11–100, 6.3% lose it in fusion; **76.4%** of missed queries are truncated at MiniLM's
@@ -69,7 +69,9 @@ is not explained by LeetCode-style starter code (stdin programs alone: 0.436). T
 but do not predict test numbers. Earlier test-split tuning (confirmation half used ≥ 3 times) is recorded as historical
 contamination.
 
-Next retrieval step supported by the evidence: E004 (whole-query pooling with the existing MiniLM, ≈ +2 min query
+**Owner decision needed:** gte-modernbert-base's gain on the train proxy is roughly 3× the whole current test score. It fails only this experiment's self-chosen CPU threshold, not an official requirement. If a one-time ≈ 1 h CPU index of the fixed corpus is acceptable, run the official MTEB test once for `gte-modernbert-base` Dense (`benchmark.yml` → `model`, mode `dense`); caveat: the train split may be in that model's training data, so only the test run counts.
+
+Other retrieval step supported by the evidence: E004 (whole-query pooling with the existing MiniLM, ≈ +2 min query
 encoding, no re-index) directly targets the 76% truncated misses; it is pre-registered and currently cancelled by the
 owner.
 
@@ -165,6 +167,6 @@ matrix above plays the same role using the official weights.
 ## Recommended final actions
 
 1. Owner: create the GitHub Release and attach the final `appsretrieval_results.json`.
-2. Decide whether to reinstate E004 (the cheapest experiment aimed at the measured dominant failure); otherwise submit Hybrid 0.0884.
+2. Decide on gte-modernbert-base: accept a ≈ 1 h one-time CPU index and run the official test once, or keep Hybrid 0.0884 (E004 is the cheap alternative).
 3. Record the demo following `docs/DEMO-SCRIPT.md` on a machine with the MiniLM model.
 4. Merge `claude/vibrant-goodall-tof53x` into `main` after CI is green.

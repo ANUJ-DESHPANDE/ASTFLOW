@@ -298,8 +298,21 @@ product's JS indexing time with the winner is measured separately before any def
 
 **Run 3 (2026-09-26, run 36232451630) — proxy: 100 train queries × 600 documents, 512 tokens.**
 - Control MiniLM: BM25 0.5341 · Dense 0.5563 · **Hybrid 0.6145** NDCG@10 (MRR@10 0.5784); 29 docs/s on the runner.
-- `gte-modernbert-base`, `granite-embedding-english-r2`: still encoding after 20+ minutes (a job that should take ~4 minutes
-  at the measured rate below); no metrics readable before the report was written.
+- Both candidates finished (09:47 and 09:52; 26 and 31 minutes). **Accuracy evidence** (paired vs the control's Hybrid on the
+  same 100 queries × 600 documents, bootstrap 95% CI; `combine` job):
+
+  | Model | Mode | NDCG@10 | Δ vs MiniLM Hybrid | 95% CI | stdin stratum (84) Δ | MRR@10 | docs/s (CI runner) |
+  |---|---|---:|---:|---|---:|---:|---:|
+  | MiniLM (control) | Hybrid | 0.6145 | — | — | — | 0.5784 | 29.3 |
+  | **gte-modernbert-base** | **Dense** | **0.8865** | **+0.2720** | **[+0.1992, +0.3448]** | +0.2895 [+0.2078, +0.3745] | 0.8604 | **0.5** |
+  | gte-modernbert-base | Hybrid | 0.7603 | +0.1458 | [+0.0906, +0.2053] | +0.1496 | 0.7180 | 0.5 |
+  | granite-embedding-english-r2 | Dense | 0.6877 | +0.0732 | [+0.0116, +0.1365] | +0.0460 (CI incl. 0) | 0.6653 | 0.42 |
+  | granite-embedding-english-r2 | Hybrid | 0.6779 | +0.0634 | [+0.0286, +0.1024] | +0.0461 | 0.6424 | 0.42 |
+
+  gte-modernbert-base passes the accuracy criterion by a wide margin (Dense, not Hybrid — BM25 fusion *hurts* it) and fails
+  the CPU criterion (0.5 docs/s on the runner, 2.4 in the local profile; threshold ≥ 5). Caveats: 600-document proxy corpus;
+  train split, which retrieval models of this family may have seen in training (CoIR-style data), so the gain may be
+  inflated; test performance unmeasured.
 
 **Profiling (this container, 4 CPU threads, same architecture with random weights; speed does not depend on weights):**
 ModernBERT-base = 10.1 seq/s at 150 tokens, 2.4 seq/s at 512 (MiniLM-L6 shape: 80.9 seq/s at 150); 75% of time in
@@ -315,7 +328,7 @@ read from the development container).
 | Result | CPU cost measured: at the *best* rate (2.4 docs/s at 512 tokens, 4 threads) the 8,765-document corpus takes ≈ 1 h and the 3,765 long test queries ≈ 26 min |
 | Decision | **REJECT on CPU feasibility** — fails the pre-registered ≥ 5 docs/s threshold at 512 tokens, before any accuracy result. The accuracy question for this model class stays open. |
 
-**E005 decision: REJECT (CPU cost) for the 149M ModernBERT class; CodeRankEmbed INVALID.** The product and the submitted
+**E005 decision under the pre-registration: REJECT (CPU cost) for the 149M ModernBERT class; CodeRankEmbed INVALID.** **Owner decision flagged:** the accuracy signal for gte-modernbert-base Dense (+0.27 NDCG@10 on the train proxy) is far larger than anything E001–E003 found. The CPU threshold (≥ 5 docs/s) was this experiment's own choice, not an official requirement (the brief asks for CPU operation and rebuilds in "reasonable time"). If the owner accepts a one-time offline corpus index (≈ 1 h on 4 CPUs at the local rate; reused by content hash afterwards), the next step is exactly one official MTEB test run of `gte-modernbert-base` in Dense mode (`benchmark.yml`, `model` input) — that run, not the train proxy, decides. Nothing is changed in the product until then. The product and the submitted
 MTEB result keep MiniLM hybrid (0.0884).
 
 **What the evidence points to next (not run):** 76.4% of the control's misses have queries truncated at 254 pieces and
