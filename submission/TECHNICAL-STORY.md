@@ -94,6 +94,9 @@ On top of retrieval, ASTFLOW adds what a code question needs and a text benchmar
   runner-minutes: about 15 minutes of wall-clock time sharded over 20 runners, about 4 hours on one 4-vCPU machine.
   Repository timings from the clean-clone walkthrough are in `audit/JUDGE-WALKTHROUGH.md`.
 - **Incremental updates are cheap.** Only changed chunks are embedded.
+- **Precision matters on CPU.** The checkpoint is float16. On CPUs without half-precision hardware (most laptops,
+  AMD EPYC runners) float16 embedded 0.4 chunks/s against 2.3 for float32, so the product runs in float32. Vectors
+  agree with the evaluated float16 ones at cosine ≥ 0.9995; the official result is not re-run.
 - **Long queries cost seconds.** A full problem statement (512 tokens) encodes in about 4.3 s on a 4-vCPU runner;
   a one-line question in well under a second. Ranking after encoding takes about 28 ms.
 
