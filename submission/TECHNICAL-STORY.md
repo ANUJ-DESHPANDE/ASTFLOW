@@ -92,13 +92,15 @@ On top of retrieval, ASTFLOW adds what a code question needs and a text benchmar
 
 - **Initial index is the expensive step.** GTE is 149M parameters on CPU. The official 8,765-document corpus took 242
   runner-minutes: about 15 minutes of wall-clock time sharded over 20 runners, about 4 hours on one 4-vCPU machine.
-  Repository timings from the clean-clone walkthrough are in `audit/JUDGE-WALKTHROUGH.md`.
+  In the product, express (3,226 chunks) indexes in 6.2–11.9 min cold depending on the CPU
+  (`audit/JUDGE-WALKTHROUGH.md`).
 - **Incremental updates are cheap.** Only changed chunks are embedded.
 - **Precision matters on CPU.** The checkpoint is float16. On CPUs without half-precision hardware (most laptops,
   AMD EPYC runners) float16 embedded 0.4 chunks/s against 2.3 for float32, so the product runs in float32. Vectors
   agree with the evaluated float16 ones at cosine ≥ 0.9995; the official result is not re-run.
-- **Long queries cost seconds.** A full problem statement (512 tokens) encodes in about 4.3 s on a 4-vCPU runner;
-  a one-line question in well under a second. Ranking after encoding takes about 28 ms.
+- **Queries.** In the product on a 4-vCPU AMD runner: a one-line question takes 266 ms and a 1,880-character problem
+  statement 1.66 s, end to end on the server. In the official harness, full 512-token statements took P50 4.27 s to
+  encode, using the evaluation's float16. Ranking after encoding takes about 28 ms.
 
 ## Engineering discipline
 

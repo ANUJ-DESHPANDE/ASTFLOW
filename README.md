@@ -34,7 +34,7 @@ Open **http://127.0.0.1:8000**. Setup creates `.venv`, installs Python and Node 
 Retrieval: Alibaba-NLP/gte-modernbert-base · dense · CPU (frozen submission configuration)
 ```
 
-The same information is at `GET /api/health` (`retrieval`, `indexed_versions`) and in the UI under **How this works**. On a clean clone on a 4-vCPU GitHub runner, setup took about 2 minutes and the demo was ready 26 seconds later (`audit/walkthrough/hardware.txt`).
+The same information is at `GET /api/health` (`retrieval`, `indexed_versions`) and in the UI under **How this works**. On a clean clone on a 4-vCPU GitHub runner, setup took 101 s and the demo was ready 12 s later, with a 1.6 GB `.venv` (`audit/walkthrough/hardware.txt`).
 
 On Windows the setup script uses `py -3.12`; on macOS/Linux it uses `python3`. The Python environment can also be prepared manually:
 
@@ -63,7 +63,7 @@ The demo is source code, not a lookup table. Its query strings are only UI examp
 
 ## Use another repository
 
-Click the repository name, enter an absolute local path, and choose `working-tree`, `HEAD`, a tag, or a commit. Index each version you want to investigate. **The first index of a repository is the expensive step:** every callable chunk is embedded by a 149M-parameter model on CPU, with progress shown while it runs. Later versions embed only chunks whose text changed. Measured on a 4-vCPU runner (`index-timing` workflow): expressjs/express 4.18.2, 153 files and 3,226 chunks, **6.2 min cold**; then 4.19.2 in 46 s (2,955 vectors reused, 307 computed) and 4.21.2 in 52 s. Cost grows with the amount of code rather than the number of files: a 512-token chunk takes about 1–2 s on 4 vCPUs, a short callback far less. More in [`audit/JUDGE-WALKTHROUGH.md`](audit/JUDGE-WALKTHROUGH.md). Use the sidebar selector to switch snapshots. A passive notice detects working-tree edits. Select **Update snapshot** to create a fresh snapshot when ready; the current evidence stays stable while you read.
+Click the repository name, enter an absolute local path, and choose `working-tree`, `HEAD`, a tag, or a commit. Index each version you want to investigate. **The first index of a repository is the expensive step:** every callable chunk is embedded by a 149M-parameter model on CPU, with progress shown while it runs. Later versions embed only chunks whose text changed. Measured on a 4-vCPU runner (`index-timing` workflow): expressjs/express 4.18.2, 153 files and 3,226 chunks, **6.2 min (Intel Xeon 8573C) to 11.9 min (AMD EPYC 7763) cold**; then 4.19.2 in 46–79 s (2,955 vectors reused, 307 computed) and 4.21.2 in 52–93 s. Cost grows with the amount of code rather than the number of files: a 512-token chunk takes about 1–2 s on 4 vCPUs, a short callback far less. More in [`audit/JUDGE-WALKTHROUGH.md`](audit/JUDGE-WALKTHROUGH.md). Use the sidebar selector to switch snapshots. A passive notice detects working-tree edits. Select **Update snapshot** to create a fresh snapshot when ready; the current evidence stays stable while you read.
 
 ```powershell
 .\.venv\Scripts\python.exe -m backend.app.cli index C:\projects\my-app --version HEAD

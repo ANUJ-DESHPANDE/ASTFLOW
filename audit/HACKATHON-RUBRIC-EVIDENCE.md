@@ -8,16 +8,17 @@ It does not score the project.
 
 | Evidence | Where |
 |---|---|
-| Clean install from the README only (`npm run setup`, `npm run demo`) on a fresh clone and CPU runner: setup 132 s, demo ready 26 s later, no manual steps | `audit/walkthrough/hardware.txt`, `setup.log`, `demo.log` (workflow `walkthrough.yml`) |
+| Clean install from the README only (`npm run setup`, `npm run demo`) on a fresh clone and 4-vCPU AMD runner: setup 101 s, demo ready 12 s later, 0 manual steps, `.venv` 1.6 GB | `audit/walkthrough/hardware.txt`, `setup.log`, `demo.log` (workflow `walkthrough.yml`, run 36257173755) |
 | The running product reports the frozen configuration at runtime (`Alibaba-NLP/gte-modernbert-base · dense · CPU (frozen submission configuration)`) | `audit/walkthrough/demo.log`, `health.json` |
-| Plain-English retrieval, usage, structural, version, large-repository, graph and no-evidence tasks: expected answers taken from source, every returned snippet checked against the selected version's served source | `audit/JUDGE-WALKTHROUGH.md`, `audit/walkthrough/results.json` |
-| The same journeys in a browser, with screenshots | `audit/walkthrough/ui.spec.ts`, `audit/walkthrough/screens/` |
+| Judge walkthrough: 13 tasks, **9 PASS / 3 PARTIAL / 1 FAIL**; every returned snippet matched the selected version's source; 0 console errors | `audit/JUDGE-WALKTHROUGH.md`, `audit/walkthrough/results.json` |
+| The same journeys in a browser, with 11 screenshots (2/2 passed) | `audit/walkthrough/ui.spec.ts`, `audit/walkthrough/screens/` |
 | Dataset-like queries: `astflow snippets` runs a full CoIR problem statement against the 8,765-document corpus. From an empty cache it downloads the official run's vectors (spot-checked live, min cos 0.9997); the relevant document ranked #1 for test query q5001; search 3.4 s | workflow `apps-vectors.yml` run 36246445235 |
 | CI on every push: 110 Python tests (incl. real GTE semantic test), frontend build, dependency audits, 28 browser tests with an axe accessibility gate (desktop and phone), and a Docker build that answers a query | `.github/workflows/ci.yml` |
 
 **Remaining weakness.**
 
-- The first index of a new repository takes minutes on CPU: express, 3,226 chunks, 6.2 min.
+- The first index of a new repository takes minutes on CPU: express, 3,226 chunks, 6.2–11.9 min depending on the CPU.
+- Relevance: English words that equal symbol names get the exact-symbol boost (walkthrough T1 partial, T5 fail). Open finding J-1; not fixed because ranking is frozen.
 - The Docker image is lexical-only, not the frozen configuration. It says so.
 - The graph overview for large repositories is bounded (150 files, 60 nodes, 250 edges shown).
 
@@ -29,8 +30,8 @@ It does not score the project.
 | Official AppsRetrieval: NDCG@10 0.5511, MRR@10 0.5053 (3,765 × 8,765) | `benchmark/results/mteb-final-gte/`, release `v1.0-submission` |
 | Dense retrieval on CPU with exact cosine ranking; no vector database, no network at query time | `backend/app/retrieval/search.py` |
 | Tree-sitter AST, conservative static call graph (ESM, CommonJS, nested scopes), call-site spans on every edge, TypeScript corroboration, lexical call-order evidence | `backend/app/structure/`, `backend/app/parsing/javascript.py` |
-| Version-aware, content-addressed snapshots; incremental embedding by content hash (express 4.19.2: 2,955 of 3,262 vectors reused, 46 s) | `backend/app/indexing/service.py`, workflow `index-timing.yml` |
-| CPU operation measured everywhere (4-vCPU runners) | `audit/JUDGE-WALKTHROUGH.md` (performance) |
+| Version-aware, content-addressed snapshots; incremental embedding by content hash (express 4.19.2: 2,955 of 3,262 vectors reused, 46–79 s depending on CPU) | `backend/app/indexing/service.py`, workflows `index-timing.yml`, `walkthrough.yml` |
+| CPU operation measured everywhere (4-vCPU runners): short query 266 ms, 1,880-char query 1.66 s, peak RSS 1.96 GB; float16→float32 diagnosis (6× on common CPUs) | `audit/JUDGE-WALKTHROUGH.md` (performance), workflow `index-diagnose.yml` |
 | Rejected experiments kept with numbers (E001–E003); an accepted but unselected one (E004); an invalid run recorded as invalid | `benchmark/experiments/EXPERIMENTS.md` |
 | Reproducibility: pinned MTEB, dataset revision and lock file; sharded reproduction workflows; live re-verification of precomputed vectors | `README.md` (Frozen submission configuration) |
 

@@ -52,13 +52,18 @@ was not requested and is not produced here.
   open-redirect fix. Each snippet was checked against `git show <tag>:<file>`.
 - Frozen model, benchmark harness: `benchmark/results/p1-final-gte/p1.json`. Vectors reused 0/156, then 126/156,
   then 138/156.
-- Through the product (API and browser, real Git tags of the full repository): `audit/JUDGE-WALKTHROUGH.md`, T4.
+- Through the product (API and browser, real Git tags of the full repository, 3,226–3,270 chunks): #1 `location` on
+  all three versions, snippets equal to `git show`, UI selector and source always on the same snapshot.
+  `audit/JUDGE-WALKTHROUGH.md`, T4, and `audit/walkthrough/screens/02-express-*.png`.
 
 ## 6. CPU feasibility
 
 - All measurements are on GitHub-hosted 4-vCPU runners. No GPU is used anywhere.
-- Initial index vs incremental update vs query: `audit/JUDGE-WALKTHROUGH.md` (performance table) and
-  `audit/FINAL-SUBMISSION-READINESS.md` (CPU feasibility).
+- Initial index vs incremental update vs query, express on 4 vCPUs: first index 6.2–11.9 min; next release 46–93 s
+  (about 90% of vectors reused); query 266 ms short and 1.66 s for a 1,880-character statement; peak RSS 1.96 GB.
+  Source: `audit/JUDGE-WALKTHROUGH.md` (performance).
+- float32 vs float16 on CPU: 6× faster on CPUs without half-precision hardware, same speed elsewhere, vectors
+  cos ≥ 0.9995 (`index-diagnose`).
 - Corpus scale: 8,765 documents in 242 runner-minutes, sharded to about 15 minutes of wall-clock time. The published
   vectors let `astflow snippets` skip that cost.
 
