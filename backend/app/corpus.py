@@ -54,6 +54,20 @@ def resolve(spec: str) -> tuple[str, Path]:
     return name or path.stem, path
 
 
+# Document vectors computed for the official AppsRetrieval run (frozen model, 8,765 documents), published with the
+# submission release so that `astflow snippets` does not spend ~4 CPU-hours re-embedding the corpus. They are keyed by
+# the same content hash as this cache and are spot-checked against live encoding before use.
+PREBUILT = {"Alibaba-NLP/gte-modernbert-base":
+            "https://github.com/ANUJ-DESHPANDE/ASTFLOW/releases/download/v1.0-submission/apps-corpus-vectors-gte-modernbert-base.npz"}
+PREBUILT_MIN = 256  # only worth a download when at least this many snippets would otherwise be embedded
+PROBE_COS = 0.995  # live re-encoding agreement required (batch-padding noise measured at 7e-4)
+
+
+def log(message: str):
+    import sys
+    print(message, file=sys.stderr, flush=True)
+
+
 class VectorCache:
     """Per-model vectors keyed by snippet content hash (append-only; unchanged snippets are never re-embedded)."""
 
@@ -66,19 +80,59 @@ class VectorCache:
         self.vectors = np.load(self.vector_path) if self.rows else None
         self.model = settings.model
 
+    def prebuilt(self, hashes: list[str], texts: list[str], embedder: Embedder, url: str | None = None) -> int:
+        """Merge published vectors for the requested snippets after a live spot check; returns rows added."""
+        import urllib.request
+        url = url or PREBUILT.get(self.model)
+        if not url or embedder.load() is None:
+            return 0
+        log(f"Fetching precomputed {self.model} vectors for this corpus from {url} …")
+        try:
+            with urllib.request.urlopen(url, timeout=120) as reply:
+                import io
+                data = np.load(io.BytesIO(reply.read()), allow_pickle=False)
+                model, keys, vectors = str(data["model"]), [str(k) for k in data["hashes"]], data["vectors"]
+        except Exception as exc:  # network or format: fall back to computing, loudly
+            log(f"Could not use precomputed vectors ({type(exc).__name__}: {exc}); embedding on CPU instead.")
+            return 0
+        wanted = {h: i for i, h in enumerate(hashes) if h not in self.rows}
+        rows = [(h, j) for j, h in enumerate(keys) if h in wanted]
+        if model != self.model or not rows:
+            log("Precomputed vectors do not match this model or corpus; embedding on CPU instead.")
+            return 0
+        probe = rows[:: max(1, len(rows) // 8)][:8]
+        live = np.asarray(embedder.encode([texts[wanted[h]] for h, _ in probe]), dtype=np.float32)
+        cos = float(min((live * vectors[[j for _, j in probe]]).sum(axis=1)))
+        if cos < PROBE_COS:
+            log(f"Precomputed vectors disagree with live encoding (cos {cos:.4f}); embedding on CPU instead.")
+            return 0
+        base = len(self.rows)
+        add = np.asarray(vectors[[j for _, j in rows]], dtype=np.float32)
+        self.vectors = add if self.vectors is None else np.vstack([self.vectors, add])
+        for offset, (h, _) in enumerate(rows):
+            self.rows[h] = base + offset
+        self._save()
+        log(f"Using {len(rows)} precomputed vectors (live spot check: min cos {cos:.4f} over {len(probe)} snippets).")
+        return len(rows)
+
     def get(self, hashes: list[str], texts: list[str], embedder: Embedder):
-        missing = [i for i, h in enumerate(hashes) if h not in self.rows]
+        missing, fetched = [i for i, h in enumerate(hashes) if h not in self.rows], 0
+        if len(missing) >= PREBUILT_MIN and self.model in PREBUILT:
+            fetched = self.prebuilt(hashes, texts, embedder)
+            missing = [i for i, h in enumerate(hashes) if h not in self.rows]
         if missing:
+            log(f"Embedding {len(missing)} snippets with {self.model} on CPU (one time; vectors are cached) …")
             new = embedder.encode([texts[i] for i in missing])
             if new is None:
-                return None, {"reused": 0, "computed": 0}
+                return None, {"reused": 0, "computed": 0, "precomputed": 0}
             new = np.asarray(new, dtype=np.float32)
             base = len(self.rows)
             self.vectors = new if self.vectors is None else np.vstack([self.vectors, new])
             for offset, i in enumerate(missing):  # `hashes` are distinct, so rows follow the stacked order
                 self.rows[hashes[i]] = base + offset
             self._save()
-        return self.vectors[[self.rows[h] for h in hashes]], {"reused": len(hashes) - len(missing), "computed": len(missing)}
+        return self.vectors[[self.rows[h] for h in hashes]], {"reused": len(hashes) - len(missing) - fetched,
+                                                              "computed": len(missing), "precomputed": fetched}
 
     def _save(self):
         self.directory.mkdir(parents=True, exist_ok=True)

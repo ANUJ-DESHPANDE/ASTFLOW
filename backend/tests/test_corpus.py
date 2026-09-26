@@ -1,3 +1,4 @@
+import hashlib
 import json
 
 import numpy as np
@@ -55,8 +56,44 @@ def test_new_version_embeds_only_changed_snippets(tmp_path):
     assert sum(map(len, first.calls)) == 2
     second = CountingEmbedder(settings)
     index = SnippetIndex({"v2": V2}, settings, second)
-    assert index.stats["embedding_cache"] == {"reused": 1, "computed": 2}  # a reused; b changed, c new
+    assert index.stats["embedding_cache"] == {"reused": 1, "computed": 2, "precomputed": 0}  # a reused; b changed, c new
     assert sum(map(len, second.calls)) == 2
     third = CountingEmbedder(settings)
     SnippetIndex({"v1": V1, "v2": V2}, settings, third)
     assert third.calls == []  # every version already embedded
+
+
+class UnitEmbedder(CountingEmbedder):
+    def encode(self, texts, **kwargs):
+        self.calls.append(list(texts))
+        rows = np.array([[len(t) % 7 + 1.0, sum(map(ord, t)) % 11 + 1.0, 1.0] for t in texts], dtype=np.float32)
+        return rows / np.linalg.norm(rows, axis=1, keepdims=True)
+
+
+def _published(tmp_path, snippets, vectors, model="Alibaba-NLP/gte-modernbert-base"):
+    path = tmp_path / "published.npz"
+    keys = [hashlib.sha256(t.encode()).hexdigest() for t in snippets.values()]
+    np.savez_compressed(path, model=np.array(model), hashes=np.array(keys), vectors=vectors)
+    return path.as_uri()
+
+
+def test_published_corpus_vectors_are_used_after_a_live_spot_check(tmp_path, monkeypatch):
+    import backend.app.corpus as corpus
+    snippets = {str(i): f"def solve_{i}(n):\n    return n * {i}" for i in range(300)}
+    settings = Settings(cache=tmp_path / "cache")
+    reference = UnitEmbedder(settings).encode(list(snippets.values()))
+    monkeypatch.setitem(corpus.PREBUILT, settings.model, _published(tmp_path, snippets, reference))
+    embedder = UnitEmbedder(settings)
+    index = SnippetIndex({"apps": snippets}, settings, embedder)
+    assert index.stats["embedding_cache"] == {"reused": 0, "computed": 0, "precomputed": 300}
+    assert sum(map(len, embedder.calls)) == 8  # only the spot check was encoded
+
+
+def test_published_vectors_that_disagree_with_live_encoding_are_rejected(tmp_path, monkeypatch):
+    import backend.app.corpus as corpus
+    snippets = {str(i): f"def solve_{i}(n):\n    return n * {i}" for i in range(300)}
+    settings = Settings(cache=tmp_path / "cache")
+    wrong = np.tile(np.array([[0., 0., 1.]], dtype=np.float32), (300, 1))
+    monkeypatch.setitem(corpus.PREBUILT, settings.model, _published(tmp_path, snippets, wrong))
+    index = SnippetIndex({"apps": snippets}, settings, UnitEmbedder(settings))
+    assert index.stats["embedding_cache"] == {"reused": 0, "computed": 300, "precomputed": 0}
