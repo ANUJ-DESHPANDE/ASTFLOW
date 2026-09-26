@@ -98,7 +98,7 @@ class ASTFLOWSearch:
         live = self.embedder.encode([c.text for c in probe])
         cos = [float(a @ vectors[chunks.index(c)]) for a, c in zip(live, probe)]
         self.measurements['precomputed_probe_min_cos_docs'] = min(cos)
-        if min(cos) < 0.999:
+        if min(cos) < 0.995:  # alignment check; batch-padding noise measured at 7e-4 (gate run)
             raise ValueError(f'Precomputed document vectors do not match live encoding (min cos {min(cos):.4f})')
         _, qkeys, qmatrix = self._load('test')
         self.query_vectors = dict(zip(qkeys, qmatrix))
@@ -115,7 +115,7 @@ class ASTFLOWSearch:
             live = self.embedder.encode(texts[:3], kind='query')
             cos = [float(a @ self.query_vectors[text_key(t)]) for a, t in zip(live, texts[:3])]
             self.measurements['precomputed_probe_min_cos_queries'] = min(cos)
-            if min(cos) < 0.999:
+            if min(cos) < 0.995:  # alignment check; batch-padding noise measured at 7e-4 (gate run)
                 raise ValueError(f'Precomputed query vectors do not match live encoding (min cos {min(cos):.4f})')
             self.retriever.embedder = QueryVectors({t: self.query_vectors[text_key(t)] for t in texts})
             self.measurements['query_latency_note'] = 'query_latencies_ms exclude query encoding (precomputed); see precomputed_test'
@@ -134,6 +134,7 @@ class ASTFLOWSearch:
             results[str(row['id'])]={r['chunk'].chunk_id:float(len(ranked)-j) for j,r in enumerate(ranked)}
             self.measurements['query_latencies_ms'].append((time.perf_counter()-started)*1000)
             if (i+1)%100==0: print(f'Retrieved {i+1} queries',flush=True)
+        self.last_results=results
         self.measurements['query_count']=len(results)
         self.measurements['ranking_depth']=top_k
         return results
@@ -143,6 +144,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--mode',choices=['bm25','dense','hybrid'],default='bm25')
     parser.add_argument('--download-model',action='store_true')
+    parser.add_argument('--diagnostics',action='store_true',help='Also record R@10/50/100 from the scored rankings')
     parser.add_argument('--precomputed',default=None,help='Directory of final_retrieval.py embed shards (docs-*, test-*)')
     parser.add_argument('--model',default=None,help='Dense model (default: the product default, ASTFLOW_MODEL or MiniLM)')
     parser.add_argument('--output',type=Path,default=ROOT/'benchmark/results/mteb')
@@ -161,6 +163,13 @@ def main():
     result=mteb.evaluate(model,[task],cache=None,overwrite_strategy='always',num_proc=1,
                          prediction_folder=args.output/'predictions',encode_kwargs={'batch_size':64})
     task_result=list(result.task_results)[0]
+    if args.diagnostics:
+        # Hit@k (one relevant document per query) from the exact rankings MTEB scored, incl. @50 which MTEB does not report.
+        from benchmark.e005_screen import load_dataset_split
+        _, _, qrels = load_dataset_split('test')
+        ranked = {q: sorted(r, key=r.get, reverse=True) for q, r in model.last_results.items()}
+        model.measurements['diagnostic_recall'] = {f'r@{k}': sum(bool(set(ranked.get(q, [])[:k]) & set(rel)) for q, rel in qrels.items()) / len(qrels)
+                                                   for k in (10, 50, 100)}
     task_result.to_disk(args.output/'appsretrieval_results.json')
     model.measurements.update(mteb_version=MTEB_VERSION,dataset_revision=DATASET_REVISION,
                               total_seconds=time.perf_counter()-started,official_mteb_run=True,**provenance)

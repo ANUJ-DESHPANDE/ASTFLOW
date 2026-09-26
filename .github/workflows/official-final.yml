@@ -1,0 +1,82 @@
+# The ONE official AppsRetrieval test run for the frozen candidate (benchmark/EXPERIMENTS.md, final retrieval decision):
+# gte-modernbert-base, Dense, 512 tokens. Document vectors are reused from the gated run 36237821741 (re-verified live);
+# test queries are encoded across 20 CPU runners; MTEB 2.21.0 scores all 3,765 test queries once. Plus the P1 check.
+name: official-final
+on:
+  push:
+    branches: ["claude/**"]
+    paths: [".github/workflows/official-final.yml"]
+
+permissions:
+  contents: read
+  actions: read
+
+env:
+  PIP_EXTRA_INDEX_URL: https://download.pytorch.org/whl/cpu
+  MODEL: Alibaba-NLP/gte-modernbert-base
+
+jobs:
+  test-embed:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - run: python -m pip install -c requirements.lock.txt -e ".[semantic,benchmark]"
+      - run: python benchmark/final_retrieval.py embed --what test --shard ${{ matrix.shard }} --of 20 --output out/test
+      - uses: actions/upload-artifact@v4
+        with: { name: "test-${{ matrix.shard }}", path: out/test }
+
+  official:
+    needs: test-embed
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - run: python -m pip install -c requirements.lock.txt -e ".[dev,semantic]" -r benchmark/requirements-mteb.txt
+      - uses: actions/download-artifact@v4
+        with: { pattern: "gte-[0-9]*", path: out/pre, run-id: 36237821741, github-token: "${{ github.token }}" }
+      - uses: actions/download-artifact@v4
+        with: { pattern: "test-*", path: out/pre }
+      - name: Official MTEB AppsRetrieval (test, all queries) — run once
+        run: python benchmark/run_mteb.py --mode dense --model "$MODEL" --download-model --precomputed out/pre --diagnostics --output out/mteb-final
+      - name: Headline metrics
+        run: |
+          python - <<'PY' | tee -a $GITHUB_STEP_SUMMARY
+          import json
+          s = json.load(open('out/mteb-final/appsretrieval_results.json'))['scores']['test'][0]
+          m = json.load(open('out/mteb-final/run_metadata.json'))
+          print({k: s[k] for k in ('ndcg_at_10', 'mrr_at_10', 'recall_at_10', 'recall_at_100', 'main_score')})
+          print('diagnostic', m.get('diagnostic_recall'), 'queries', m.get('query_count'), 'corpus', m.get('corpus_count'))
+          print('probes', m.get('precomputed_probe_min_cos_docs'), m.get('precomputed_probe_min_cos_queries'))
+          print('query encode', m.get('precomputed_test'), 'docs', m.get('precomputed_docs'))
+          lat = sorted(m['query_latencies_ms']); print('rank ms p50/p95', lat[len(lat)//2], lat[int(.95*(len(lat)-1))])
+          print('commit', m.get('git_commit'), 'dirty', m.get('git_dirty_files'))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mteb-final
+          path: |
+            out/mteb-final/appsretrieval_results.json
+            out/mteb-final/run_metadata.json
+
+  p1:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - run: python -m pip install -c requirements.lock.txt -e ".[semantic]"
+      - run: python benchmark/final_p1.py "$MODEL" out/p1
+      - uses: actions/upload-artifact@v4
+        with: { name: p1, path: out/p1 }

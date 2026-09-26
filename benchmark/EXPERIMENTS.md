@@ -380,6 +380,31 @@ Hybrid ΔNDCG@10: dev **+0.0184 [+0.0038, +0.0331]**, confirmation **+0.0144 [+0
 the pre-registered KEEP rule is met. Dense Δ: dev +0.0211 [+0.0004, +0.0433], confirmation +0.0097 [−0.0083, +0.0283].
 Query encoding P50/P95: 56/58 ms → 73/187 ms (dev), 69/198 ms (confirmation). No re-indexing.
 
+**GTE gate — PASS** (run 36237821741, job `gte-gate`). Full corpus (8,765 documents) embedded on 20 CPU runners.
+
+| Set | System | NDCG@10 | MRR@10 | R@10 | R@50 | R@100 |
+|---|---|---:|---:|---:|---:|---:|
+| dev (300) | current MiniLM Hybrid | 0.4684 | 0.4339 | 0.5767 | 0.6733 | 0.7233 |
+| | **GTE Dense** | **0.6977** | 0.6633 | 0.8067 | 0.9133 | 0.9333 |
+| confirmation (300) | current MiniLM Hybrid | 0.4897 | 0.4543 | 0.6033 | 0.6900 | 0.7167 |
+| | **GTE Dense** | **0.7080** | 0.6710 | 0.8233 | 0.8967 | 0.9133 |
+
+ΔNDCG@10: dev **+0.2293 [+0.1852, +0.2743]**, confirmation **+0.2183 [+0.1720, +0.2647]** (threshold: dev ≥ +0.05 with CI
+lower bound > 0; confirmation CI lower bound > 0). Live re-encode vs shard vectors: min cos 0.999299. Cost: 242
+runner-minutes for the corpus (0.60 docs/s per 4-vCPU runner; per-document P50 1.26 s, P95 4.48 s); query encoding P50
+3.23 s, P95 4.49 s on the runner; dense ranking P50 1.0 ms, P95 1.3 ms; document matrix 26.9 MB.
+DEV performance is not assumed to predict the official test score: the existing system shows a large train/test gap.
+
+**Selection (mechanical, as pre-registered): GTE Dense.** E004 (ACCEPT) is not selected because the GTE gate passed.
+
+**Before the one official run** — FINAL CANDIDATE: `Alibaba-NLP/gte-modernbert-base`, Dense, 512-token cap, no fusion.
+WHY: passed its full-corpus gate by 4.5× the required margin on both sets. EXPECTED RUNTIME: ≈ 25 min (test-query
+encoding on 20 runners ≈ 10 min; MTEB scoring ≈ 10 min). INDEXING COST: none new — document vectors reused from the
+gated run and re-verified live. QUERY COST: ≈ 3.2 s encoding + ≈ 1 ms ranking per query on a runner. ARTIFACTS:
+`appsretrieval_results.json`, `run_metadata.json` (incl. R@10/50/100 from the scored rankings). Integrity note: the
+precomputed-vector alignment probe uses cos ≥ 0.995 (the gate observed 7e-4 batch-padding noise; a misaligned vector
+scores far lower). Workflow: `.github/workflows/official-final.yml`, which also runs the P1 check with this model.
+
 ---
 
 ## Pre-registered queue (evaluated against baseline-v1 evidence)
