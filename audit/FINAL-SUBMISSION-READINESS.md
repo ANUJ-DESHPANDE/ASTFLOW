@@ -38,42 +38,28 @@ does JS repository intelligence and language-agnostic snippet retrieval; both ar
 | Relevance to theme | 15% | Every headline feature answers "where is X / who calls X / what changed" with file:line | — | Removed nothing; demo script is retrieval-only |
 | Presentation & documentation | 10% | README, demo script, experiment log incl. rejected ideas, this report | No PPT/video yet | Demo script + evidence pack |
 
-## Retrieval (P0)
+## Retrieval (P0) — PASS · FROZEN
 
-Official MTEB 2.21.0 AppsRetrieval test, all 3,765 queries, 8,765 documents, pinned revision `f22508f9…`
-(*carried over*, reproduced by the 25 Sep audit with 0 per-query changes; `results/mteb-current-*`):
+**Final configuration (frozen 2026-09-26):** `Alibaba-NLP/gte-modernbert-base`, Dense only, 512-token cap, no fusion,
+no reranker. Official MTEB 2.21.0 AppsRetrieval, test split, all 3,765 queries × 8,765 documents, pinned revision
+`f22508f9…`, run once at commit `036060e` (clean tree): `benchmark/results/mteb-final-gte/appsretrieval_results.json`.
 
-| System | NDCG@10 | MRR@10 | R@10 | R@50 | R@100 |
-|---|---:|---:|---:|---:|---:|
-| BM25 | 0.06312 | 0.05421 | 0.09216 | 0.16866 | 0.22603 |
-| Dense (MiniLM-L6-v2) | 0.06596 | 0.05581 | 0.09907 | 0.19389 | 0.25259 |
-| **Hybrid (submitted system)** | **0.08840** | **0.07257** | 0.13971 | 0.23400 | 0.29774 |
+| System | NDCG@10 | MRR@10 | R@10 | R@50 | R@100 | Status |
+|---|---:|---:|---:|---:|---:|---|
+| BM25 | 0.06312 | 0.05421 | 0.09216 | 0.16866 | 0.22603 | official (25 Sep) |
+| Dense MiniLM | 0.06596 | 0.05581 | 0.09907 | 0.19389 | 0.25259 | frozen harness |
+| Hybrid MiniLM (previous submission) | 0.08840 | 0.07257 | 0.13971 | 0.23400 | 0.29774 | official (25 Sep) |
+| E004 long-query Hybrid | — | — | — | — | — | ACCEPT on train dev/confirmation (+0.018 / +0.014); **not officially evaluated** (not selected) |
+| **GTE Dense (FINAL)** | **0.5511** | **0.5053** | **0.6967** | **0.8483** | **0.8943** | **official, today** |
 
-**No retrieval change is accepted today; the submitted system stays Hybrid 0.0884 / MRR@10 0.0726.**
+Change vs 0.0884: **+0.4627 NDCG@10 (+523%)**, MRR@10 +0.4327. Selection was mechanical and pre-registered: GTE Dense
+passed its full-corpus train-split gate (dev +0.229 [+0.185, +0.274], confirmation +0.218 [+0.172, +0.265]); E004 also
+passed but is not selected when GTE passes. DEV performance was not assumed to predict the official score (large
+train/test gap for the old system). Integrity: shard vectors re-encoded live before scoring (probe cos 0.99954 for
+documents and queries). Caveat: gte-modernbert-base is an off-the-shelf retrieval model whose training data may overlap
+CoIR-style data; the score is the official MTEB number for this configuration, not a claim about ASTFLOW's own training.
 
-E005 (code-retrieval embedder, pre-registered before any run; dev on the CoIR **train** split, test untouched):
-
-| Candidate | Outcome | Evidence |
-|---|---|---|
-| `nomic-ai/CodeRankEmbed` | **INVALID** | remote code fails under the pinned transformers 5.17 |
-| `Alibaba-NLP/gte-modernbert-base` | **REJECT (CPU cost)** — but see below | 45-min cap hit at 1,024 tokens; 512-token proxy (100 train queries × 600 docs): **Dense NDCG@10 0.8865 vs MiniLM Hybrid 0.6145, Δ +0.272 [95% CI +0.199, +0.345]**; 0.5 docs/s on the CI runner, 2.4 in the local profile (threshold ≥ 5) ⇒ ≈ 1 h to index the corpus |
-| `ibm-granite/granite-embedding-english-r2` | **REJECT** | same cost; smaller gain: Dense 0.6877, Δ +0.073 [+0.012, +0.137], not significant on stdin problems |
-
-Measured failure analysis (control, 300 train queries, full corpus): of 127 misses, **59.1%** have the answer outside
-both top-100 lists, 34.6% rank it 11–100, 6.3% lose it in fusion; **76.4%** of missed queries are truncated at MiniLM's
-254 word-pieces; a missed query shares a median 5.1% of its terms with its answer. Diagnostic recall on the test split
-(frozen baseline): R@10 0.1397, R@50 0.2340, R@100 0.2977.
-
-Protocol notes: train-split scores are ~5× test scores for the *same* system, including BM25 (no training), and the gap
-is not explained by LeetCode-style starter code (stdin programs alone: 0.436). Train numbers therefore rank candidates
-but do not predict test numbers. Earlier test-split tuning (confirmation half used ≥ 3 times) is recorded as historical
-contamination.
-
-**Owner decision needed:** gte-modernbert-base's gain on the train proxy is roughly 3× the whole current test score. It fails only this experiment's self-chosen CPU threshold, not an official requirement. If a one-time ≈ 1 h CPU index of the fixed corpus is acceptable, run the official MTEB test once for `gte-modernbert-base` Dense (`benchmark.yml` → `model`, mode `dense`); caveat: the train split may be in that model's training data, so only the test run counts.
-
-Other retrieval step supported by the evidence: E004 (whole-query pooling with the existing MiniLM, ≈ +2 min query
-encoding, no re-index) directly targets the 76% truncated misses; it is pre-registered and currently cancelled by the
-owner.
+Experiment history and freeze record: `benchmark/EXPERIMENTS.md`, `benchmark/experiments/EXPERIMENTS.md` (RETRIEVAL FREEZE).
 
 ## P1 — retrieval across versions
 
@@ -101,9 +87,20 @@ Not done: ranking *near*-duplicates (e.g. preferring the latest variant). Status
 
 ## CPU feasibility
 
-All numbers CPU-only. Repository search P50/P95 (*carried over*): demo 6/13 ms, express 43/50 ms, lodash 54/76 ms.
-Today, lexical mode: demo queries 3–8 ms, an 11,550-character problem statement 35 ms (10 ms without the agent);
-UI question → rendered answer 90 ms. AppsRetrieval MiniLM on a 4-vCPU runner: 41 docs/s, 30 queries/s (E005 control).
+Everything runs on CPU (no GPU anywhere). Final model, measured on GitHub-hosted 4-vCPU runners:
+
+| Item | Measured |
+|---|---|
+| Full corpus index (8,765 docs) | 242 runner-minutes (0.60 docs/s per runner; per-doc P50 1.26 s, P95 4.48 s) — built offline once, ≈ 15 min wall-clock across 20 runners; ≈ 4 h on one runner |
+| Stored index | 8,765 × 768 float32 = 26.9 MB; reusable (content-hash keyed) |
+| Query encoding, full problem statement (512 tokens) | P50 4.27 s, P95 4.49 s per query on a runner |
+| Ranking after encoding (MTEB adapter, incl. BM25 bookkeeping) | P50 27.7 ms, P95 29.9 ms |
+| Short repository question (P1, product path) | ≈ 96 ms end to end |
+| Model weights | ≈ 0.6 GB (149M parameters, fp32); RAM not separately measured |
+
+Unchanged snippets are never re-embedded (content-hash caches in both the repository index and `astflow snippets`).
+Repository search with the product default (MiniLM Hybrid) stays at the carried-over P50/P95: demo 6/13 ms, express
+43/50 ms, lodash 54/76 ms.
 
 ## Demo-critical functionality — judge walkthrough (no source reading)
 
@@ -158,7 +155,7 @@ matrix above plays the same role using the official weights.
 | Artifact | State |
 |---|---|
 | GitHub repo + README | ready (this branch; merge to `main` pending review) |
-| MTEB AppsRetrieval JSON | `benchmark/results/mteb-current-hybrid/appsretrieval_results.json` (NDCG@10 0.0884) |
+| MTEB AppsRetrieval JSON | **`benchmark/results/mteb-final-gte/appsretrieval_results.json`** (NDCG@10 0.5511, MRR@10 0.5053; MTEB 2.21.0, commit `036060e`, frozen configuration). The earlier `mteb-current-hybrid` (0.0884) is superseded. |
 | GitHub Release with the JSON | **missing — needs owner authorisation** |
 | Demo video ≤ 5 min | not recorded; script in `docs/DEMO-SCRIPT.md` |
 | PPT | not produced; evidence pack in this report |
@@ -166,7 +163,9 @@ matrix above plays the same role using the official weights.
 
 ## Recommended final actions
 
-1. Owner: create the GitHub Release and attach the final `appsretrieval_results.json`.
-2. Decide on gte-modernbert-base: accept a ≈ 1 h one-time CPU index and run the official test once, or keep Hybrid 0.0884 (E004 is the cheap alternative).
-3. Record the demo following `docs/DEMO-SCRIPT.md` on a machine with the MiniLM model.
-4. Merge `claude/vibrant-goodall-tof53x` into `main` after CI is green.
+1. Owner: create the GitHub Release and attach `benchmark/results/mteb-final-gte/appsretrieval_results.json`.
+2. Organiser confirmation required: the slide's build window ended 25 Sep.
+3. Owner decision: the product's interactive default stays MiniLM Hybrid (fast repository search). The frozen P0
+   configuration is selected with `ASTFLOW_MODEL=Alibaba-NLP/gte-modernbert-base` and Dense mode (README). Decide whether
+   hands-on runs should default to it.
+4. Record the demo following `docs/DEMO-SCRIPT.md`; update its results slide to 0.5511 / 0.5053.

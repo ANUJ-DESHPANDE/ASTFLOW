@@ -257,6 +257,21 @@ Current code (`benchmark/results/mteb-current-*`, MTEB 2.21.0, all 3,765 queries
 
 Keep the output metadata and evaluation environment's `pip freeze`. Dense/hybrid evaluation fails rather than claiming lexical fallback is semantic retrieval. If a cache was saved by an incompatible sentence-transformers major version, reload the official model with the pinned version.
 
+### Frozen submission configuration (2026-09-26)
+
+The submitted AppsRetrieval result is **`gte-modernbert-base`, Dense, 512 tokens: NDCG@10 0.5511, MRR@10 0.5053**
+(`benchmark/results/mteb-final-gte/`, MTEB 2.21.0, all 3,765 test queries). Reproduce on one CPU machine (hours: the
+corpus and the long test queries are encoded on CPU):
+
+```sh
+python benchmark/run_mteb.py --mode dense --model Alibaba-NLP/gte-modernbert-base --download-model --diagnostics --output out/mteb-final
+```
+
+or in about 25 minutes of wall-clock time with `.github/workflows/final-retrieval.yml` (document shards) and
+`official-final.yml` (test-query shards + one MTEB run with `--precomputed`, which re-verifies the shard vectors live).
+Selection history and the freeze record: `benchmark/EXPERIMENTS.md`, `benchmark/experiments/EXPERIMENTS.md`. The
+interactive repository search keeps MiniLM Hybrid by default for latency; set `ASTFLOW_MODEL` to use the frozen model.
+
 ### Development/validation split and BM25 tuning
 
 The AppsRetrieval task only defines a `test` split — there is no official held-out
