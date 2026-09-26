@@ -2,8 +2,8 @@ cpu: AMD EPYC 7763 64-Core Processor
 vcpus: 4
 ram_mb: 15989
 Linux 6.17.0-1022-azure
-setup_s: 132
-5.8G	.venv
+setup_s: 101
+1.6G	.venv
 226M	node_modules
 576M	.astflow/models
-demo_ready_s: 26
+demo_ready_s: 12

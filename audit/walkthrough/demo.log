@@ -1,46 +1,80 @@
-
-> demo
-> node scripts/start.mjs
-
-
-Preparing ASTFLOW at http://127.0.0.1:8000
-
-Demo Git history ready: v1 -> v2
-Loading the search model on CPU…
-Loading weights:   0%|          | 0/134 [00:00<?, ?it/s]Loading weights: 100%|██████████| 134/134 [00:00<00:00, 3643.37it/s]
-Retrieval: Alibaba-NLP/gte-modernbert-base · dense · CPU (frozen submission configuration)
-v1: 17 snippets, 11 relationships
-v2: 21 snippets, 12 relationships
-working-tree: 21 snippets, 12 relationships
-INFO:     Started server process [2583]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
-INFO:     127.0.0.1:57378 - "GET /api/health HTTP/1.1" 200 OK
-INFO:     127.0.0.1:57380 - "GET /api/health HTTP/1.1" 200 OK
-INFO:     127.0.0.1:57384 - "GET /api/health HTTP/1.1" 200 OK
-INFO:     127.0.0.1:57400 - "POST /api/search HTTP/1.1" 200 OK
-INFO:     127.0.0.1:44486 - "GET /api/source?path=settings%2Fdeeplinks.js&version=working-tree&start_line=2&end_line=2 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:44488 - "GET /api/source?path=bluetooth%2FBluetoothAgent.js&version=working-tree&start_line=6&end_line=9 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:44500 - "GET /api/source?path=voice%2FIntentRouter.js&version=working-tree&start_line=7&end_line=11 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:44510 - "POST /api/search HTTP/1.1" 200 OK
-INFO:     127.0.0.1:44516 - "GET /api/source?path=bluetooth%2Fpermissions.js&version=working-tree&start_line=2&end_line=2 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:44530 - "GET /api/source?path=settings%2Fdeeplinks.js&version=working-tree&start_line=2&end_line=2 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:44534 - "GET /api/source?path=bluetooth%2FBluetoothAgent.js&version=working-tree&start_line=6&end_line=9 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:44540 - "POST /api/search HTTP/1.1" 200 OK
-INFO:     127.0.0.1:44546 - "GET /api/source?path=voice%2FVoiceHandler.js&version=working-tree&start_line=7&end_line=10 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:44550 - "GET /api/source?path=voice%2FVoiceHandler.js&version=working-tree&start_line=11&end_line=11 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:44552 - "GET /api/source?path=voice%2FnormalizeInput.js&version=working-tree&start_line=2&end_line=2 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:44558 - "POST /api/search HTTP/1.1" 200 OK
-INFO:     127.0.0.1:44568 - "GET /api/source?path=auth%2FAuthService.js&version=v1&start_line=13&end_line=18 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:44572 - "GET /api/source?path=auth%2FAuthService.js&version=v1&start_line=4&end_line=6 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:44582 - "GET /api/source?path=auth%2FAuthService.js&version=v1&start_line=21&end_line=24 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:44586 - "POST /api/search HTTP/1.1" 200 OK
-INFO:     127.0.0.1:44600 - "GET /api/source?path=auth%2FAuthService.js&version=v2&start_line=12&end_line=12 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:44608 - "GET /api/source?path=auth%2FAuthService.js&version=v2&start_line=7&end_line=10 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:44618 - "GET /api/source?path=session%2FSessionManager.js&version=v2&start_line=9&end_line=12 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:44624 - "GET /api/map?version=working-tree&file=voice/IntentRouter.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:44632 - "GET /api/map?version=working-tree&symbol=voice/IntentRouter.js%3A%3AIntentRouter.route&depth=1 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:44644 - "GET /api/map?version=working-tree&file=voice/VoiceHandler.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:44646 - "GET /api/map?version=working-tree&file=settings/deeplinks.js HTTP/1.1" 200 OK
-INFO:     127.0.0.1:44660 - "POST /api/trace HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54574 - "POST /api/search HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46144 - "POST /api/search HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46158 - "POST /api/search HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46170 - "POST /api/search HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46180 - "POST /api/search HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46190 - "POST /api/search HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46200 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42420 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42436 - "GET /assets/index-pwbUVyDo.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42420 - "GET /assets/index-BY7eaMym.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42420 - "GET /api/repository?version=working-tree HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42436 - "GET /api/versions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42436 - "GET /api/repository?version=4.18.2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42436 - "GET /api/map?version=662b180bbb6dc78447bffbdb&file=&symbol=&depth=3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42420 - "GET /api/source?path=benchmarks%2Fmiddleware.js&version=4.18.2&start_line=1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42436 - "GET /assets/SourceViewer-WGlpN-0L.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42420 - "GET /assets/SourceViewer-DLDz5buS.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42420 - "GET /assets/javascript-AEpnQAO8.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42420 - "GET /api/repository?version=4.18.2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42420 - "POST /api/search HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42420 - "GET /api/source?path=lib%2Fresponse.js&version=662b180bbb6dc78447bffbdb&start_line=906&end_line=916 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42420 - "GET /assets/editor.worker-CdQrwHl8.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42420 - "GET /assets/codicon-ngg6Pgfi.ttf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42420 - "GET /api/source?path=lib%2Fresponse.js&version=662b180bbb6dc78447bffbdb&start_line=906&end_line=916 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42420 - "GET /api/repository?version=4.19.2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42420 - "GET /api/map?version=4309fb00edaea35759395922&file=&symbol=&depth=3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42420 - "POST /api/search HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42420 - "GET /api/source?path=lib%2Fresponse.js&version=4309fb00edaea35759395922&start_line=907&end_line=925 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42420 - "GET /assets/editor.worker-CdQrwHl8.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42420 - "GET /api/source?path=lib%2Fresponse.js&version=4309fb00edaea35759395922&start_line=907&end_line=925 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42420 - "GET /api/repository?version=4.21.2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42420 - "GET /api/map?version=5bb450e1799bc2ab4f7d6d17&file=&symbol=&depth=3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42420 - "POST /api/search HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42420 - "GET /api/source?path=lib%2Fresponse.js&version=5bb450e1799bc2ab4f7d6d17&start_line=914&end_line=926 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42420 - "GET /assets/editor.worker-CdQrwHl8.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42420 - "GET /api/source?path=lib%2Fresponse.js&version=5bb450e1799bc2ab4f7d6d17&start_line=914&end_line=926 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42420 - "POST /api/search HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42420 - "GET /api/source?path=lib%2Frequest.js&version=5bb450e1799bc2ab4f7d6d17&start_line=132&end_line=135 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42420 - "GET /assets/editor.worker-CdQrwHl8.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42420 - "GET /api/source?path=lib%2Frequest.js&version=5bb450e1799bc2ab4f7d6d17&start_line=132&end_line=135 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42420 - "POST /api/search HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42420 - "GET /api/source?path=lib%2Fview.js&version=5bb450e1799bc2ab4f7d6d17&start_line=52&end_line=95 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42420 - "GET /assets/editor.worker-CdQrwHl8.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42420 - "GET /api/source?path=lib%2Fview.js&version=5bb450e1799bc2ab4f7d6d17&start_line=52&end_line=95 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56152 - "GET /assets/TraceGraph-BnuhLJ6X.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42420 - "GET /assets/TraceGraph-CpY1UlfU.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42420 - "POST /api/search HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42420 - "GET /api/source?path=test%2Facceptance%2Fcookies.js&version=5bb450e1799bc2ab4f7d6d17&start_line=26&end_line=32 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42420 - "GET /assets/editor.worker-CdQrwHl8.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56164 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56164 - "GET /assets/index-BY7eaMym.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56180 - "GET /assets/index-pwbUVyDo.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56164 - "GET /api/repository?version=working-tree HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56180 - "GET /api/versions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56180 - "GET /api/repository?version=4.18.2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56180 - "GET /api/map?version=662b180bbb6dc78447bffbdb&file=&symbol=&depth=3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56164 - "GET /api/source?path=benchmarks%2Fmiddleware.js&version=4.18.2&start_line=1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56180 - "GET /assets/SourceViewer-WGlpN-0L.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56164 - "GET /assets/SourceViewer-DLDz5buS.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56164 - "GET /assets/javascript-AEpnQAO8.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56164 - "GET /assets/editor.worker-CdQrwHl8.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56164 - "POST /api/index HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:56164 - "GET /api/index/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56164 - "GET /api/repository?version=working-tree HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56180 - "GET /api/versions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56180 - "GET /api/source?path=auth%2FAuthService.js&version=working-tree&start_line=1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56180 - "GET /api/map?version=0dc3c5b1104e57e9f1b1eeb4&file=&symbol=&depth=3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56180 - "GET /assets/editor.worker-CdQrwHl8.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56180 - "GET /assets/codicon-ngg6Pgfi.ttf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56180 - "POST /api/search HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56180 - "GET /api/source?path=settings%2Fdeeplinks.js&version=0dc3c5b1104e57e9f1b1eeb4&start_line=2&end_line=2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56180 - "GET /assets/editor.worker-CdQrwHl8.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56180 - "POST /api/search HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56180 - "GET /api/source?path=bluetooth%2Fpermissions.js&version=0dc3c5b1104e57e9f1b1eeb4&start_line=2&end_line=2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56180 - "GET /assets/editor.worker-CdQrwHl8.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56164 - "GET /assets/TraceGraph-BnuhLJ6X.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56180 - "GET /assets/TraceGraph-CpY1UlfU.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56180 - "POST /api/trace HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56180 - "GET /api/source?path=voice%2FIntentRouter.js&version=0dc3c5b1104e57e9f1b1eeb4&start_line=8&end_line=8 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56180 - "GET /assets/editor.worker-CdQrwHl8.js HTTP/1.1" 200 OK

@@ -1,0 +1,1210 @@
+{
+ "health_at_start": {
+  "status": "ok",
+  "service": "ASTFLOW",
+  "version": "0.1.0",
+  "semantic": {
+   "available": true,
+   "model": "Alibaba-NLP/gte-modernbert-base",
+   "message": "Alibaba-NLP/gte-modernbert-base loaded on CPU (float32)"
+  },
+  "retrieval": {
+   "model": "Alibaba-NLP/gte-modernbert-base",
+   "mode": "dense",
+   "model_loaded": true,
+   "device": "cpu",
+   "precision": "float32",
+   "frozen_submission_configuration": true,
+   "message": "Alibaba-NLP/gte-modernbert-base loaded on CPU (float32)"
+  },
+  "repository": "/home/runner/work/ASTFLOW/ASTFLOW/fresh/examples/demo-repo",
+  "indexed_versions": {
+   "v1": {
+    "version_key": "176ecda183f1915eb2a0bf90",
+    "resolved_revision": "7826d38cae72db7ba0e53a0bcc5aa339783e09f0",
+    "embedding_model": "Alibaba-NLP/gte-modernbert-base",
+    "chunks": 17
+   },
+   "v2": {
+    "version_key": "da7f64e9d72bd7b56f1bed8b",
+    "resolved_revision": "31b94fc77db2be533d72aeaefba3e0360312663c",
+    "embedding_model": "Alibaba-NLP/gte-modernbert-base",
+    "chunks": 21
+   },
+   "working-tree": {
+    "version_key": "0dc3c5b1104e57e9f1b1eeb4",
+    "resolved_revision": "working-tree",
+    "embedding_model": "Alibaba-NLP/gte-modernbert-base",
+    "chunks": 21
+   }
+  }
+ },
+ "tasks": [
+  {
+   "id": "T2-demo",
+   "title": "Usage query",
+   "repository": "demo",
+   "version": "working-tree",
+   "query": "Where is openBluetoothSettings used?",
+   "expected": [
+    "bluetooth/BluetoothAgent.js::BluetoothAgent.execute"
+   ],
+   "expected_rank": 2,
+   "verdict": "PASS",
+   "sources_match_selected_version": true,
+   "match_basis": "KEYWORD_MATCH",
+   "intent": "USAGE",
+   "retrieval": {
+    "model": "Alibaba-NLP/gte-modernbert-base",
+    "ranking": "dense",
+    "index_model": "Alibaba-NLP/gte-modernbert-base",
+    "version_key": "0dc3c5b1104e57e9f1b1eeb4",
+    "resolved_revision": "working-tree"
+   },
+   "server_latency_ms": 159.58,
+   "wall_ms": 164.1,
+   "top": [
+    {
+     "rank": 1,
+     "symbol": "openBluetoothSettings",
+     "location": "settings/deeplinks.js:2-2",
+     "exact_symbol": true,
+     "semantic_rank": 2,
+     "keyword_rank": 1,
+     "call_hops": null
+    },
+    {
+     "rank": 2,
+     "symbol": "BluetoothAgent.execute",
+     "location": "bluetooth/BluetoothAgent.js:6-9",
+     "exact_symbol": false,
+     "semantic_rank": 1,
+     "keyword_rank": 2,
+     "call_hops": 1
+    },
+    {
+     "rank": 3,
+     "symbol": "IntentRouter.route",
+     "location": "voice/IntentRouter.js:7-11",
+     "exact_symbol": false,
+     "semantic_rank": 3,
+     "keyword_rank": 5,
+     "call_hops": 1
+    },
+    {
+     "rank": 4,
+     "symbol": "openWifiSettings",
+     "location": "settings/deeplinks.js:4-4",
+     "exact_symbol": false,
+     "semantic_rank": 4,
+     "keyword_rank": 3,
+     "call_hops": null
+    },
+    {
+     "rank": 5,
+     "symbol": "openSettingsUri",
+     "location": "settings/deeplinks.js:6-6",
+     "exact_symbol": false,
+     "semantic_rank": 5,
+     "keyword_rank": 4,
+     "call_hops": null
+    }
+   ],
+   "trace": [
+    "PLAN \u00b7 Usage investigation; at most two retrieval passes",
+    "SEARCH \u00b7 Retrieved 21 candidates (Alibaba-NLP/gte-modernbert-base dense)",
+    "OBSERVE \u00b7 Found 1 exact matches across 6 files; 0 target(s) outside the top ten",
+    "REFINE \u00b7 Caller Expansion around openBluetoothSettings, openWifiSettings",
+    "SEARCH \u00b7 Second pass retrieved 21 candidates using observed symbols",
+    "RANK \u00b7 Ranked 21 candidates using stored evidence",
+    "STOP \u00b7 Returned 10 source snippets after 2 retrieval pass(es)"
+   ],
+   "note": ""
+  },
+  {
+   "id": "T3",
+   "title": "Structural query (call order)",
+   "repository": "demo",
+   "version": "working-tree",
+   "query": "Which functions call checkBluetoothPermission before openBluetoothSettings?",
+   "expected": [
+    "bluetooth/BluetoothAgent.js::BluetoothAgent.execute"
+   ],
+   "expected_rank": 3,
+   "verdict": "PASS",
+   "sources_match_selected_version": true,
+   "match_basis": "KEYWORD_MATCH",
+   "intent": "SEQUENCE",
+   "retrieval": {
+    "model": "Alibaba-NLP/gte-modernbert-base",
+    "ranking": "dense",
+    "index_model": "Alibaba-NLP/gte-modernbert-base",
+    "version_key": "0dc3c5b1104e57e9f1b1eeb4",
+    "resolved_revision": "working-tree"
+   },
+   "server_latency_ms": 144.94,
+   "wall_ms": 149.3,
+   "top": [
+    {
+     "rank": 1,
+     "symbol": "checkBluetoothPermission",
+     "location": "bluetooth/permissions.js:2-2",
+     "exact_symbol": true,
+     "semantic_rank": 2,
+     "keyword_rank": 1,
+     "call_hops": 1
+    },
+    {
+     "rank": 2,
+     "symbol": "openBluetoothSettings",
+     "location": "settings/deeplinks.js:2-2",
+     "exact_symbol": true,
+     "semantic_rank": 3,
+     "keyword_rank": 2,
+     "call_hops": 1
+    },
+    {
+     "rank": 3,
+     "symbol": "BluetoothAgent.execute",
+     "location": "bluetooth/BluetoothAgent.js:6-9",
+     "exact_symbol": false,
+     "semantic_rank": 1,
+     "keyword_rank": 3,
+     "call_hops": 1
+    },
+    {
+     "rank": 4,
+     "symbol": "openSettingsUri",
+     "location": "settings/deeplinks.js:6-6",
+     "exact_symbol": false,
+     "semantic_rank": 7,
+     "keyword_rank": 5,
+     "call_hops": 1
+    },
+    {
+     "rank": 5,
+     "symbol": "IntentRouter.route",
+     "location": "voice/IntentRouter.js:7-11",
+     "exact_symbol": false,
+     "semantic_rank": 4,
+     "keyword_rank": 6,
+     "call_hops": 1
+    }
+   ],
+   "trace": [
+    "PLAN \u00b7 Sequence investigation; at most two retrieval passes",
+    "SEARCH \u00b7 Retrieved 21 candidates (Alibaba-NLP/gte-modernbert-base dense)",
+    "OBSERVE \u00b7 Found 2 exact matches across 7 files; 0 target(s) outside the top ten",
+    "REFINE \u00b7 Graph Neighbor Expansion around checkBluetoothPermission, openBluetoothSettings",
+    "SEARCH \u00b7 Second pass retrieved 21 candidates using observed symbols",
+    "RANK \u00b7 Ranked 21 candidates using stored evidence",
+    "STOP \u00b7 Returned 10 source snippets after 2 retrieval pass(es)"
+   ],
+   "note": "",
+   "sequence_evidence": [
+    {
+     "caller": "bluetooth/BluetoothAgent.js::BluetoothAgent.execute",
+     "before": "bluetooth/permissions.js::checkBluetoothPermission",
+     "after": "settings/deeplinks.js::openBluetoothSettings",
+     "before_line": 7,
+     "after_line": 8,
+     "file_path": "bluetooth/BluetoothAgent.js",
+     "evidence_type": "STATIC_VERIFIED",
+     "relation": "LEXICAL_BEFORE",
+     "explanation": "Direct calls in separate statements of the same function body. Lexical order only; completion is not guaranteed."
+    }
+   ]
+  },
+  {
+   "id": "T6-demo",
+   "title": "No-evidence query (honesty)",
+   "repository": "demo",
+   "version": "working-tree",
+   "query": "qxzjvnonexistentidentifier",
+   "expected": [],
+   "expected_rank": null,
+   "verdict": "PASS",
+   "sources_match_selected_version": true,
+   "match_basis": "SEMANTIC_ONLY",
+   "intent": "GENERAL",
+   "retrieval": {
+    "model": "Alibaba-NLP/gte-modernbert-base",
+    "ranking": "dense",
+    "index_model": "Alibaba-NLP/gte-modernbert-base",
+    "version_key": "0dc3c5b1104e57e9f1b1eeb4",
+    "resolved_revision": "working-tree"
+   },
+   "server_latency_ms": 125.39,
+   "wall_ms": 129.6,
+   "top": [
+    {
+     "rank": 1,
+     "symbol": "VoiceHandler.handle",
+     "location": "voice/VoiceHandler.js:7-10",
+     "exact_symbol": false,
+     "semantic_rank": 1,
+     "keyword_rank": null,
+     "call_hops": 1
+    },
+    {
+     "rank": 2,
+     "symbol": "VoiceHandler.handleRequest",
+     "location": "voice/VoiceHandler.js:11-11",
+     "exact_symbol": false,
+     "semantic_rank": 3,
+     "keyword_rank": null,
+     "call_hops": 1
+    },
+    {
+     "rank": 3,
+     "symbol": "normalizeInput",
+     "location": "voice/normalizeInput.js:2-2",
+     "exact_symbol": false,
+     "semantic_rank": 5,
+     "keyword_rank": null,
+     "call_hops": 1
+    },
+    {
+     "rank": 4,
+     "symbol": "IntentRouter.route",
+     "location": "voice/IntentRouter.js:7-11",
+     "exact_symbol": false,
+     "semantic_rank": 7,
+     "keyword_rank": null,
+     "call_hops": 1
+    },
+    {
+     "rank": 5,
+     "symbol": "AuthService.login",
+     "location": "auth/AuthService.js:7-10",
+     "exact_symbol": false,
+     "semantic_rank": 20,
+     "keyword_rank": null,
+     "call_hops": 1
+    }
+   ],
+   "trace": [
+    "PLAN \u00b7 General investigation; at most two retrieval passes",
+    "SEARCH \u00b7 Retrieved 21 candidates (Alibaba-NLP/gte-modernbert-base dense)",
+    "OBSERVE \u00b7 Found 0 exact matches across 6 files; 0 target(s) outside the top ten",
+    "REFINE \u00b7 Pseudo Relevance Expansion around VoiceHandler.handle, SessionManager.create",
+    "SEARCH \u00b7 Second pass retrieved 21 candidates using observed symbols",
+    "RANK \u00b7 Ranked 21 candidates using stored evidence",
+    "STOP \u00b7 Returned 10 source snippets after 2 retrieval pass(es)"
+   ],
+   "note": ""
+  },
+  {
+   "id": "T4-demo-v1",
+   "title": "Version retrieval (demo refactor)",
+   "repository": "demo",
+   "version": "v1",
+   "query": "Where is the saved session restored after restart?",
+   "expected": [
+    "auth/AuthService.js::AuthService.restore"
+   ],
+   "expected_rank": 3,
+   "verdict": "PARTIAL",
+   "sources_match_selected_version": true,
+   "match_basis": "KEYWORD_MATCH",
+   "intent": "SEQUENCE",
+   "retrieval": {
+    "model": "Alibaba-NLP/gte-modernbert-base",
+    "ranking": "dense",
+    "index_model": "Alibaba-NLP/gte-modernbert-base",
+    "version_key": "176ecda183f1915eb2a0bf90",
+    "resolved_revision": "7826d38cae72db7ba0e53a0bcc5aa339783e09f0"
+   },
+   "server_latency_ms": 130.27,
+   "wall_ms": 134.8,
+   "top": [
+    {
+     "rank": 1,
+     "symbol": "AuthService.login",
+     "location": "auth/AuthService.js:13-18",
+     "exact_symbol": false,
+     "semantic_rank": 4,
+     "keyword_rank": 3,
+     "call_hops": 1
+    },
+    {
+     "rank": 2,
+     "symbol": "createSession",
+     "location": "auth/AuthService.js:4-6",
+     "exact_symbol": false,
+     "semantic_rank": 3,
+     "keyword_rank": 1,
+     "call_hops": null
+    },
+    {
+     "rank": 3,
+     "symbol": "AuthService.restore",
+     "location": "auth/AuthService.js:21-24",
+     "exact_symbol": false,
+     "semantic_rank": 1,
+     "keyword_rank": 2,
+     "call_hops": null
+    },
+    {
+     "rank": 4,
+     "symbol": "validateCredentials",
+     "location": "auth/credentials.js:2-5",
+     "exact_symbol": false,
+     "semantic_rank": 13,
+     "keyword_rank": null,
+     "call_hops": 2
+    },
+    {
+     "rank": 5,
+     "symbol": "AuthService.constructor",
+     "location": "auth/AuthService.js:9-11",
+     "exact_symbol": false,
+     "semantic_rank": 2,
+     "keyword_rank": 4,
+     "call_hops": null
+    }
+   ],
+   "trace": [
+    "PLAN \u00b7 Sequence investigation; at most two retrieval passes",
+    "SEARCH \u00b7 Retrieved 17 candidates (Alibaba-NLP/gte-modernbert-base dense)",
+    "OBSERVE \u00b7 Found 0 exact matches across 6 files; 0 target(s) outside the top ten",
+    "REFINE \u00b7 Graph Neighbor Expansion around createSession, AuthService.restore",
+    "SEARCH \u00b7 Second pass retrieved 17 candidates using observed symbols",
+    "RANK \u00b7 Ranked 17 candidates using stored evidence",
+    "STOP \u00b7 Returned 10 source snippets after 2 retrieval pass(es)"
+   ],
+   "note": ""
+  },
+  {
+   "id": "T4-demo-v2",
+   "title": "Version retrieval (demo refactor)",
+   "repository": "demo",
+   "version": "v2",
+   "query": "Where is the saved session restored after restart?",
+   "expected": [
+    "session/SessionManager.js::SessionManager.restore"
+   ],
+   "expected_rank": 3,
+   "verdict": "PARTIAL",
+   "sources_match_selected_version": true,
+   "match_basis": "KEYWORD_MATCH",
+   "intent": "SEQUENCE",
+   "retrieval": {
+    "model": "Alibaba-NLP/gte-modernbert-base",
+    "ranking": "dense",
+    "index_model": "Alibaba-NLP/gte-modernbert-base",
+    "version_key": "da7f64e9d72bd7b56f1bed8b",
+    "resolved_revision": "31b94fc77db2be533d72aeaefba3e0360312663c"
+   },
+   "server_latency_ms": 142.9,
+   "wall_ms": 147.7,
+   "top": [
+    {
+     "rank": 1,
+     "symbol": "AuthService.restore",
+     "location": "auth/AuthService.js:12-12",
+     "exact_symbol": false,
+     "semantic_rank": 2,
+     "keyword_rank": null,
+     "call_hops": 1
+    },
+    {
+     "rank": 2,
+     "symbol": "AuthService.login",
+     "location": "auth/AuthService.js:7-10",
+     "exact_symbol": false,
+     "semantic_rank": 8,
+     "keyword_rank": null,
+     "call_hops": 1
+    },
+    {
+     "rank": 3,
+     "symbol": "SessionManager.restore",
+     "location": "session/SessionManager.js:9-12",
+     "exact_symbol": false,
+     "semantic_rank": 1,
+     "keyword_rank": 1,
+     "call_hops": null
+    },
+    {
+     "rank": 4,
+     "symbol": "SessionManager.constructor",
+     "location": "session/SessionManager.js:3-3",
+     "exact_symbol": false,
+     "semantic_rank": 3,
+     "keyword_rank": 4,
+     "call_hops": null
+    },
+    {
+     "rank": 5,
+     "symbol": "SessionManager.create",
+     "location": "session/SessionManager.js:4-7",
+     "exact_symbol": false,
+     "semantic_rank": 5,
+     "keyword_rank": 2,
+     "call_hops": null
+    }
+   ],
+   "trace": [
+    "PLAN \u00b7 Sequence investigation; at most two retrieval passes",
+    "SEARCH \u00b7 Retrieved 21 candidates (Alibaba-NLP/gte-modernbert-base dense)",
+    "OBSERVE \u00b7 Found 0 exact matches across 4 files; 0 target(s) outside the top ten",
+    "REFINE \u00b7 Graph Neighbor Expansion around SessionManager.restore, SessionManager.constructor",
+    "SEARCH \u00b7 Second pass retrieved 21 candidates using observed symbols",
+    "RANK \u00b7 Ranked 21 candidates using stored evidence",
+    "STOP \u00b7 Returned 10 source snippets after 2 retrieval pass(es)"
+   ],
+   "note": ""
+  },
+  {
+   "id": "T1",
+   "title": "Plain-English retrieval",
+   "repository": "expressjs/express",
+   "version": "4.21.2",
+   "query": "Which code picks the response format based on what the client says it accepts?",
+   "expected": [
+    "lib/response.js::format"
+   ],
+   "expected_rank": 2,
+   "verdict": "PARTIAL",
+   "sources_match_selected_version": true,
+   "match_basis": "KEYWORD_MATCH",
+   "intent": "GENERAL",
+   "retrieval": {
+    "model": "Alibaba-NLP/gte-modernbert-base",
+    "ranking": "dense",
+    "index_model": "Alibaba-NLP/gte-modernbert-base",
+    "version_key": "5bb450e1799bc2ab4f7d6d17",
+    "resolved_revision": "1faf228935aa0a13111f92c28ee795be64ce3f0f"
+   },
+   "server_latency_ms": 234.23,
+   "wall_ms": 239.7,
+   "top": [
+    {
+     "rank": 1,
+     "symbol": "accepts",
+     "location": "lib/request.js:132-135",
+     "exact_symbol": true,
+     "semantic_rank": 27,
+     "keyword_rank": 8,
+     "call_hops": null
+    },
+    {
+     "rank": 2,
+     "symbol": "format",
+     "location": "lib/response.js:684-709",
+     "exact_symbol": true,
+     "semantic_rank": 49,
+     "keyword_rank": 4,
+     "call_hops": null
+    },
+    {
+     "rank": 3,
+     "symbol": "format",
+     "location": "examples/content-negotiation/index.js:33-38",
+     "exact_symbol": true,
+     "semantic_rank": 63,
+     "keyword_rank": 6,
+     "call_hops": null
+    },
+    {
+     "rank": 4,
+     "symbol": "acceptsEncodings",
+     "location": "lib/request.js:145-148",
+     "exact_symbol": false,
+     "semantic_rank": 8,
+     "keyword_rank": 10,
+     "call_hops": 1
+    },
+    {
+     "rank": 5,
+     "symbol": "test.callback@219:28",
+     "location": "test/res.format.js:219-224",
+     "exact_symbol": false,
+     "semantic_rank": 1,
+     "keyword_rank": 199,
+     "call_hops": null
+    }
+   ],
+   "trace": [
+    "PLAN \u00b7 General investigation; at most two retrieval passes",
+    "SEARCH \u00b7 Retrieved 500 candidates (Alibaba-NLP/gte-modernbert-base dense)",
+    "OBSERVE \u00b7 Found 3 exact matches across 4 files; 0 target(s) outside the top ten",
+    "REFINE \u00b7 Pseudo Relevance Expansion around accepts, format",
+    "SEARCH \u00b7 Second pass retrieved 500 candidates using observed symbols",
+    "RANK \u00b7 Ranked 532 candidates using stored evidence",
+    "STOP \u00b7 Returned 10 source snippets after 2 retrieval pass(es)"
+   ],
+   "note": ""
+  },
+  {
+   "id": "T2",
+   "title": "Usage query",
+   "repository": "expressjs/express",
+   "version": "4.21.2",
+   "query": "Where is compileQueryParser used?",
+   "expected": [
+    "lib/application.js::set"
+   ],
+   "expected_rank": 2,
+   "verdict": "PASS",
+   "sources_match_selected_version": true,
+   "match_basis": "KEYWORD_MATCH",
+   "intent": "USAGE",
+   "retrieval": {
+    "model": "Alibaba-NLP/gte-modernbert-base",
+    "ranking": "dense",
+    "index_model": "Alibaba-NLP/gte-modernbert-base",
+    "version_key": "5bb450e1799bc2ab4f7d6d17",
+    "resolved_revision": "1faf228935aa0a13111f92c28ee795be64ce3f0f"
+   },
+   "server_latency_ms": 305.12,
+   "wall_ms": 310.6,
+   "top": [
+    {
+     "rank": 1,
+     "symbol": "compileQueryParser",
+     "location": "lib/utils.js:182-205",
+     "exact_symbol": true,
+     "semantic_rank": 1,
+     "keyword_rank": 1,
+     "call_hops": null
+    },
+    {
+     "rank": 2,
+     "symbol": "set",
+     "location": "lib/application.js:359-401",
+     "exact_symbol": false,
+     "semantic_rank": 8,
+     "keyword_rank": 2,
+     "call_hops": 1
+    },
+    {
+     "rank": 3,
+     "symbol": "lazyrouter",
+     "location": "lib/application.js:144-154",
+     "exact_symbol": false,
+     "semantic_rank": 19,
+     "keyword_rank": 19,
+     "call_hops": 1
+    },
+    {
+     "rank": 4,
+     "symbol": "callback@7:16.callback@8:21.callback@102:53.callback@103:25",
+     "location": "test/req.query.js:103-106",
+     "exact_symbol": false,
+     "semantic_rank": 2,
+     "keyword_rank": 16,
+     "call_hops": null
+    },
+    {
+     "rank": 5,
+     "symbol": "callback@7:16.callback@8:21",
+     "location": "test/req.query.js:8-108",
+     "exact_symbol": false,
+     "semantic_rank": 3,
+     "keyword_rank": 15,
+     "call_hops": null
+    }
+   ],
+   "trace": [
+    "PLAN \u00b7 Usage investigation; at most two retrieval passes",
+    "SEARCH \u00b7 Retrieved 500 candidates (Alibaba-NLP/gte-modernbert-base dense)",
+    "OBSERVE \u00b7 Found 1 exact matches across 4 files; 0 target(s) outside the top ten",
+    "REFINE \u00b7 Caller Expansion around compileQueryParser, callback@7:16.callback@8:21.callback@102:53.callback@103:25",
+    "SEARCH \u00b7 Second pass retrieved 500 candidates using observed symbols",
+    "RANK \u00b7 Ranked 637 candidates using stored evidence",
+    "STOP \u00b7 Returned 10 source snippets after 2 retrieval pass(es)"
+   ],
+   "note": ""
+  },
+  {
+   "id": "T4-4.18.2",
+   "title": "Version retrieval (P1)",
+   "repository": "expressjs/express",
+   "version": "4.18.2",
+   "query": "where is the redirect location URL encoded",
+   "expected": [
+    "lib/response.js::location"
+   ],
+   "expected_rank": 1,
+   "verdict": "PASS",
+   "sources_match_selected_version": true,
+   "match_basis": "KEYWORD_MATCH",
+   "intent": "LOCATE",
+   "retrieval": {
+    "model": "Alibaba-NLP/gte-modernbert-base",
+    "ranking": "dense",
+    "index_model": "Alibaba-NLP/gte-modernbert-base",
+    "version_key": "662b180bbb6dc78447bffbdb",
+    "resolved_revision": "8368dc178af16b91b576c4c1d135f701a0007e5d"
+   },
+   "server_latency_ms": 117.67,
+   "wall_ms": 122.4,
+   "top": [
+    {
+     "rank": 1,
+     "symbol": "location",
+     "location": "lib/response.js:906-916",
+     "exact_symbol": true,
+     "semantic_rank": 1,
+     "keyword_rank": 2,
+     "call_hops": null
+    },
+    {
+     "rank": 2,
+     "symbol": "redirect",
+     "location": "lib/response.js:936-980",
+     "exact_symbol": true,
+     "semantic_rank": 13,
+     "keyword_rank": 1,
+     "call_hops": null
+    },
+    {
+     "rank": 3,
+     "symbol": "callback@7:16.callback@8:29",
+     "location": "test/res.redirect.js:8-47",
+     "exact_symbol": false,
+     "semantic_rank": 2,
+     "keyword_rank": 3,
+     "call_hops": null
+    },
+    {
+     "rank": 4,
+     "symbol": "callback@6:16.callback@7:29.callback@21:30.callback@24:14",
+     "location": "test/res.location.js:24-26",
+     "exact_symbol": false,
+     "semantic_rank": 3,
+     "keyword_rank": 49,
+     "call_hops": null
+    },
+    {
+     "rank": 5,
+     "symbol": "callback@6:16",
+     "location": "test/res.location.js:6-105",
+     "exact_symbol": false,
+     "semantic_rank": 4,
+     "keyword_rank": 7,
+     "call_hops": null
+    }
+   ],
+   "trace": [
+    "PLAN \u00b7 Locate investigation; at most two retrieval passes",
+    "SEARCH \u00b7 Retrieved 500 candidates (Alibaba-NLP/gte-modernbert-base dense)",
+    "OBSERVE \u00b7 Found 2 exact matches across 3 files; 0 target(s) outside the top ten",
+    "RANK \u00b7 Ranked 500 candidates using stored evidence",
+    "STOP \u00b7 Returned 10 source snippets after 1 retrieval pass(es)"
+   ],
+   "note": "",
+   "top_matches_git_show_at_tag": true,
+   "top_version_key": "4.18.2"
+  },
+  {
+   "id": "T4-4.19.2",
+   "title": "Version retrieval (P1)",
+   "repository": "expressjs/express",
+   "version": "4.19.2",
+   "query": "where is the redirect location URL encoded",
+   "expected": [
+    "lib/response.js::location"
+   ],
+   "expected_rank": 1,
+   "verdict": "PASS",
+   "sources_match_selected_version": true,
+   "match_basis": "KEYWORD_MATCH",
+   "intent": "LOCATE",
+   "retrieval": {
+    "model": "Alibaba-NLP/gte-modernbert-base",
+    "ranking": "dense",
+    "index_model": "Alibaba-NLP/gte-modernbert-base",
+    "version_key": "4309fb00edaea35759395922",
+    "resolved_revision": "04bc62787be974874bc1467b23606c36bc9779ba"
+   },
+   "server_latency_ms": 280.48,
+   "wall_ms": 286.9,
+   "top": [
+    {
+     "rank": 1,
+     "symbol": "location",
+     "location": "lib/response.js:907-925",
+     "exact_symbol": true,
+     "semantic_rank": 1,
+     "keyword_rank": 6,
+     "call_hops": null
+    },
+    {
+     "rank": 2,
+     "symbol": "redirect",
+     "location": "lib/response.js:945-989",
+     "exact_symbol": true,
+     "semantic_rank": 29,
+     "keyword_rank": 1,
+     "call_hops": null
+    },
+    {
+     "rank": 3,
+     "symbol": "callback@8:16.callback@196:39",
+     "location": "test/res.location.js:196-384",
+     "exact_symbol": false,
+     "semantic_rank": 2,
+     "keyword_rank": 10,
+     "call_hops": null
+    },
+    {
+     "rank": 4,
+     "symbol": "callback@7:16.callback@8:29",
+     "location": "test/res.redirect.js:8-47",
+     "exact_symbol": false,
+     "semantic_rank": 3,
+     "keyword_rank": 7,
+     "call_hops": null
+    },
+    {
+     "rank": 5,
+     "symbol": "callback@8:16.callback@196:39.callback@308:56",
+     "location": "test/res.location.js:308-317",
+     "exact_symbol": false,
+     "semantic_rank": 4,
+     "keyword_rank": 37,
+     "call_hops": null
+    }
+   ],
+   "trace": [
+    "PLAN \u00b7 Locate investigation; at most two retrieval passes",
+    "SEARCH \u00b7 Retrieved 500 candidates (Alibaba-NLP/gte-modernbert-base dense)",
+    "OBSERVE \u00b7 Found 2 exact matches across 3 files; 0 target(s) outside the top ten",
+    "REFINE \u00b7 Pseudo Relevance Expansion around location, redirect",
+    "SEARCH \u00b7 Second pass retrieved 500 candidates using observed symbols",
+    "RANK \u00b7 Ranked 547 candidates using stored evidence",
+    "STOP \u00b7 Returned 10 source snippets after 2 retrieval pass(es)"
+   ],
+   "note": "",
+   "top_matches_git_show_at_tag": true,
+   "top_version_key": "4.19.2"
+  },
+  {
+   "id": "T4-4.21.2",
+   "title": "Version retrieval (P1)",
+   "repository": "expressjs/express",
+   "version": "4.21.2",
+   "query": "where is the redirect location URL encoded",
+   "expected": [
+    "lib/response.js::location"
+   ],
+   "expected_rank": 1,
+   "verdict": "PASS",
+   "sources_match_selected_version": true,
+   "match_basis": "KEYWORD_MATCH",
+   "intent": "LOCATE",
+   "retrieval": {
+    "model": "Alibaba-NLP/gte-modernbert-base",
+    "ranking": "dense",
+    "index_model": "Alibaba-NLP/gte-modernbert-base",
+    "version_key": "5bb450e1799bc2ab4f7d6d17",
+    "resolved_revision": "1faf228935aa0a13111f92c28ee795be64ce3f0f"
+   },
+   "server_latency_ms": 270.31,
+   "wall_ms": 275.2,
+   "top": [
+    {
+     "rank": 1,
+     "symbol": "location",
+     "location": "lib/response.js:914-926",
+     "exact_symbol": true,
+     "semantic_rank": 1,
+     "keyword_rank": 1,
+     "call_hops": null
+    },
+    {
+     "rank": 2,
+     "symbol": "redirect",
+     "location": "lib/response.js:946-990",
+     "exact_symbol": true,
+     "semantic_rank": 28,
+     "keyword_rank": 2,
+     "call_hops": null
+    },
+    {
+     "rank": 3,
+     "symbol": "callback@8:16.callback@184:39",
+     "location": "test/res.location.js:184-361",
+     "exact_symbol": false,
+     "semantic_rank": 2,
+     "keyword_rank": 13,
+     "call_hops": null
+    },
+    {
+     "rank": 4,
+     "symbol": "callback@7:16.callback@8:29",
+     "location": "test/res.redirect.js:8-47",
+     "exact_symbol": false,
+     "semantic_rank": 3,
+     "keyword_rank": 7,
+     "call_hops": null
+    },
+    {
+     "rank": 5,
+     "symbol": "callback@8:16.callback@184:39.callback@307:63",
+     "location": "test/res.location.js:307-316",
+     "exact_symbol": false,
+     "semantic_rank": 5,
+     "keyword_rank": 43,
+     "call_hops": null
+    }
+   ],
+   "trace": [
+    "PLAN \u00b7 Locate investigation; at most two retrieval passes",
+    "SEARCH \u00b7 Retrieved 500 candidates (Alibaba-NLP/gte-modernbert-base dense)",
+    "OBSERVE \u00b7 Found 2 exact matches across 3 files; 0 target(s) outside the top ten",
+    "REFINE \u00b7 Pseudo Relevance Expansion around location, redirect",
+    "SEARCH \u00b7 Second pass retrieved 500 candidates using observed symbols",
+    "RANK \u00b7 Ranked 549 candidates using stored evidence",
+    "STOP \u00b7 Returned 10 source snippets after 2 retrieval pass(es)"
+   ],
+   "note": "",
+   "top_matches_git_show_at_tag": true,
+   "top_version_key": "4.21.2"
+  },
+  {
+   "id": "T5",
+   "title": "Large-repository navigation",
+   "repository": "expressjs/express",
+   "version": "4.21.2",
+   "query": "Where is view template rendering implemented?",
+   "expected": [
+    "lib/view.js::render",
+    "lib/application.js::render",
+    "lib/response.js::render",
+    "lib/application.js::tryRender"
+   ],
+   "expected_rank": 9,
+   "verdict": "FAIL",
+   "sources_match_selected_version": true,
+   "match_basis": "KEYWORD_MATCH",
+   "intent": "LOCATE",
+   "retrieval": {
+    "model": "Alibaba-NLP/gte-modernbert-base",
+    "ranking": "dense",
+    "index_model": "Alibaba-NLP/gte-modernbert-base",
+    "version_key": "5bb450e1799bc2ab4f7d6d17",
+    "resolved_revision": "1faf228935aa0a13111f92c28ee795be64ce3f0f"
+   },
+   "server_latency_ms": 307.8,
+   "wall_ms": 312.9,
+   "top": [
+    {
+     "rank": 1,
+     "symbol": "View",
+     "location": "lib/view.js:52-95",
+     "exact_symbol": true,
+     "semantic_rank": 15,
+     "keyword_rank": 1,
+     "call_hops": null
+    },
+    {
+     "rank": 2,
+     "symbol": "callback@8:16.callback@9:32.callback@206:51.callback@207:44.View",
+     "location": "test/app.render.js:210-213",
+     "exact_symbol": true,
+     "semantic_rank": 39,
+     "keyword_rank": 11,
+     "call_hops": null
+    },
+    {
+     "rank": 3,
+     "symbol": "callback@8:16.callback@9:32.callback@61:44.View",
+     "location": "test/app.render.js:64-67",
+     "exact_symbol": true,
+     "semantic_rank": 58,
+     "keyword_rank": 6,
+     "call_hops": null
+    },
+    {
+     "rank": 4,
+     "symbol": "callback@8:16.callback@292:41.callback@334:24.callback@335:43.View",
+     "location": "test/app.render.js:339-343",
+     "exact_symbol": true,
+     "semantic_rank": 82,
+     "keyword_rank": 7,
+     "call_hops": null
+    },
+    {
+     "rank": 5,
+     "symbol": "callback@8:16.callback@9:32.callback@229:24.callback@230:52.View",
+     "location": "test/app.render.js:234-238",
+     "exact_symbol": true,
+     "semantic_rank": 84,
+     "keyword_rank": 8,
+     "call_hops": null
+    }
+   ],
+   "trace": [
+    "PLAN \u00b7 Locate investigation; at most two retrieval passes",
+    "SEARCH \u00b7 Retrieved 500 candidates (Alibaba-NLP/gte-modernbert-base dense)",
+    "OBSERVE \u00b7 Found 7 exact matches across 4 files; 0 target(s) outside the top ten",
+    "REFINE \u00b7 Pseudo Relevance Expansion around View, callback@8:16.callback@9:32.callback@206:51.callback@207:44.View",
+    "SEARCH \u00b7 Second pass retrieved 500 candidates using observed symbols",
+    "RANK \u00b7 Ranked 634 candidates using stored evidence",
+    "STOP \u00b7 Returned 10 source snippets after 2 retrieval pass(es)"
+   ],
+   "note": "",
+   "relationships_of_top_result": {
+    "symbol": "View",
+    "callers": [],
+    "callees": []
+   }
+  },
+  {
+   "id": "T6",
+   "title": "No-evidence query (honesty)",
+   "repository": "expressjs/express",
+   "version": "4.21.2",
+   "query": "Where is the Kafka consumer offset committed?",
+   "expected": [],
+   "expected_rank": null,
+   "verdict": "PASS",
+   "sources_match_selected_version": true,
+   "match_basis": "SEMANTIC_ONLY",
+   "intent": "LOCATE",
+   "retrieval": {
+    "model": "Alibaba-NLP/gte-modernbert-base",
+    "ranking": "dense",
+    "index_model": "Alibaba-NLP/gte-modernbert-base",
+    "version_key": "5bb450e1799bc2ab4f7d6d17",
+    "resolved_revision": "1faf228935aa0a13111f92c28ee795be64ce3f0f"
+   },
+   "server_latency_ms": 338.25,
+   "wall_ms": 343.4,
+   "top": [
+    {
+     "rank": 1,
+     "symbol": "callback@6:20.callback@7:20.callback@21:35.callback@26:19",
+     "location": "test/acceptance/cookies.js:26-32",
+     "exact_symbol": false,
+     "semantic_rank": 1,
+     "keyword_rank": null,
+     "call_hops": null
+    },
+    {
+     "rank": 2,
+     "symbol": "callback@7:20.callback@70:56.foo",
+     "location": "test/exports.js:71-71",
+     "exact_symbol": false,
+     "semantic_rank": 2,
+     "keyword_rank": null,
+     "call_hops": null
+    },
+    {
+     "rank": 3,
+     "symbol": "callback@7:20.callback@52:59.foo",
+     "location": "test/exports.js:53-53",
+     "exact_symbol": false,
+     "semantic_rank": 3,
+     "keyword_rank": null,
+     "call_hops": null
+    },
+    {
+     "rank": 4,
+     "symbol": "callback@6:20.callback@7:20.callback@21:35",
+     "location": "test/acceptance/cookies.js:21-33",
+     "exact_symbol": false,
+     "semantic_rank": 5,
+     "keyword_rank": null,
+     "call_hops": null
+    },
+    {
+     "rank": 5,
+     "symbol": "callback@7:20.callback@57:55.foo",
+     "location": "test/exports.js:58-58",
+     "exact_symbol": false,
+     "semantic_rank": 6,
+     "keyword_rank": null,
+     "call_hops": null
+    }
+   ],
+   "trace": [
+    "PLAN \u00b7 Locate investigation; at most two retrieval passes",
+    "SEARCH \u00b7 Retrieved 500 candidates (Alibaba-NLP/gte-modernbert-base dense)",
+    "OBSERVE \u00b7 Found 0 exact matches across 5 files; 0 target(s) outside the top ten",
+    "REFINE \u00b7 Pseudo Relevance Expansion around callback@6:20.callback@7:20.callback@21:35.callback@26:19, callback@7:20.callback@70:56.foo",
+    "SEARCH \u00b7 Second pass retrieved 500 candidates using observed symbols",
+    "RANK \u00b7 Ranked 719 candidates using stored evidence",
+    "STOP \u00b7 Returned 10 source snippets after 2 retrieval pass(es)"
+   ],
+   "note": "PASS if the UI labels the list as meaning-only (no shared word or symbol) rather than 'relevant code'"
+  }
+ ],
+ "indexing": [
+  {
+   "repository": "expressjs/express",
+   "version": "4.18.2",
+   "wall_s": 712.5,
+   "files": 153,
+   "chunks": 3226,
+   "edges": 298,
+   "embedding_cache": {
+    "reused": 0,
+    "computed": 3226
+   },
+   "embedding_model": "Alibaba-NLP/gte-modernbert-base",
+   "retrieval": {
+    "model": "Alibaba-NLP/gte-modernbert-base",
+    "mode": "dense",
+    "model_loaded": true,
+    "device": "cpu",
+    "precision": "float32",
+    "frozen_submission_configuration": true,
+    "message": "Alibaba-NLP/gte-modernbert-base loaded on CPU (float32)"
+   }
+  },
+  {
+   "repository": "expressjs/express",
+   "version": "4.19.2",
+   "wall_s": 79.4,
+   "files": 152,
+   "chunks": 3262,
+   "edges": 324,
+   "embedding_cache": {
+    "reused": 2955,
+    "computed": 307
+   },
+   "embedding_model": "Alibaba-NLP/gte-modernbert-base",
+   "retrieval": {
+    "model": "Alibaba-NLP/gte-modernbert-base",
+    "mode": "dense",
+    "model_loaded": true,
+    "device": "cpu",
+    "precision": "float32",
+    "frozen_submission_configuration": true,
+    "message": "Alibaba-NLP/gte-modernbert-base loaded on CPU (float32)"
+   }
+  },
+  {
+   "repository": "expressjs/express",
+   "version": "4.21.2",
+   "wall_s": 92.8,
+   "files": 152,
+   "chunks": 3270,
+   "edges": 326,
+   "embedding_cache": {
+    "reused": 2888,
+    "computed": 382
+   },
+   "embedding_model": "Alibaba-NLP/gte-modernbert-base",
+   "retrieval": {
+    "model": "Alibaba-NLP/gte-modernbert-base",
+    "mode": "dense",
+    "model_loaded": true,
+    "device": "cpu",
+    "precision": "float32",
+    "frozen_submission_configuration": true,
+    "message": "Alibaba-NLP/gte-modernbert-base loaded on CPU (float32)"
+   }
+  }
+ ],
+ "graph": {
+  "demo": {
+   "symbol": "IntentRouter.route",
+   "callers": [
+    "VoiceHandler.handleRequest"
+   ],
+   "callees": [
+    "BluetoothAgent.execute",
+    "openWifiSettings"
+   ],
+   "expected_callers": [
+    "VoiceHandler.handleRequest"
+   ],
+   "expected_callees": [
+    "BluetoothAgent.execute",
+    "openWifiSettings"
+   ],
+   "trace": "VoiceHandler.handle -> openBluetoothSettings",
+   "trace_status": "SUPPORTED",
+   "trace_paths": [
+    [
+     "VoiceHandler.handle",
+     "VoiceHandler.handleRequest",
+     "IntentRouter.route",
+     "BluetoothAgent.execute",
+     "openBluetoothSettings"
+    ]
+   ],
+   "verdict": "PASS"
+  }
+ },
+ "latency": {
+  "short": {
+   "characters": 42,
+   "samples_ms": [
+    267.67,
+    271.33,
+    259.3,
+    266.24,
+    261.47,
+    261.07,
+    267.25
+   ],
+   "p50_ms": 266.24,
+   "max_ms": 271.33
+  },
+  "long": {
+   "characters": 1880,
+   "samples_ms": [
+    1666.62,
+    1672.06,
+    1692.09,
+    1637.06,
+    1634.85,
+    1662.54,
+    1661.22
+   ],
+   "p50_ms": 1662.54,
+   "max_ms": 1692.09
+  }
+ },
+ "memory": {
+  "VmHWM": "1961160 kB",
+  "VmRSS": "1412000 kB"
+ },
+ "health_at_end": {
+  "status": "ok",
+  "service": "ASTFLOW",
+  "version": "0.1.0",
+  "semantic": {
+   "available": true,
+   "model": "Alibaba-NLP/gte-modernbert-base",
+   "message": "Alibaba-NLP/gte-modernbert-base loaded on CPU (float32)"
+  },
+  "retrieval": {
+   "model": "Alibaba-NLP/gte-modernbert-base",
+   "mode": "dense",
+   "model_loaded": true,
+   "device": "cpu",
+   "precision": "float32",
+   "frozen_submission_configuration": true,
+   "message": "Alibaba-NLP/gte-modernbert-base loaded on CPU (float32)"
+  },
+  "repository": "/home/runner/work/ASTFLOW/ASTFLOW/express",
+  "indexed_versions": {
+   "4.18.2": {
+    "version_key": "662b180bbb6dc78447bffbdb",
+    "resolved_revision": "8368dc178af16b91b576c4c1d135f701a0007e5d",
+    "embedding_model": "Alibaba-NLP/gte-modernbert-base",
+    "chunks": 3226
+   },
+   "4.19.2": {
+    "version_key": "4309fb00edaea35759395922",
+    "resolved_revision": "04bc62787be974874bc1467b23606c36bc9779ba",
+    "embedding_model": "Alibaba-NLP/gte-modernbert-base",
+    "chunks": 3262
+   },
+   "4.21.2": {
+    "version_key": "5bb450e1799bc2ab4f7d6d17",
+    "resolved_revision": "1faf228935aa0a13111f92c28ee795be64ce3f0f",
+    "embedding_model": "Alibaba-NLP/gte-modernbert-base",
+    "chunks": 3270
+   }
+  }
+ }
+}

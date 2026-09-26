@@ -21,7 +21,7 @@ computing gzip size...
 - Using dynamic import() to code-split the application
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
-[32m✓ built in 11.35s[39m
+[32m✓ built in 11.29s[39m
 {
   "repository": "/home/runner/work/ASTFLOW/ASTFLOW/fresh/examples/demo-repo",
   "v1": "7826d38cae72db7ba0e53a0bcc5aa339783e09f0",
@@ -30,11 +30,11 @@ computing gzip size...
 
 Downloading the search model Alibaba-NLP/gte-modernbert-base (one time, about 0.6 GB; runs on CPU)…
 Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-Loading weights:   0%|          | 0/134 [00:00<?, ?it/s]Loading weights: 100%|██████████| 134/134 [00:00<00:00, 3651.08it/s]
-Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  8.47it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  8.46it/s]
+Loading weights:   0%|          | 0/134 [00:00<?, ?it/s]Loading weights: 100%|██████████| 134/134 [00:00<00:00, 3798.67it/s]
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  9.37it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  9.35it/s]
 {
   "available": true,
   "model": "Alibaba-NLP/gte-modernbert-base",
-  "message": "Alibaba-NLP/gte-modernbert-base loaded on CPU"
+  "message": "Alibaba-NLP/gte-modernbert-base loaded on CPU (float32)"
 }
 Setup complete. Start with npm run demo.
