@@ -72,6 +72,38 @@ def demo(port: int = 8000):
 
 
 @cli.command()
+def snippets(query: str = typer.Argument(None, help="Natural-language query; omit to use --query-file or stdin"),
+             corpus: list[str] = typer.Option(["apps"], "--corpus", "-c",
+                                              help="'apps' (CoIR Apps), 'name=file.jsonl' or 'file.jsonl'; repeat for versions"),
+             query_file: Path | None = typer.Option(None, help="Read the query (e.g. a full problem statement) from a file"),
+             top_k: int = 10, mode: str = "hybrid", lines: int = 12, as_json: bool = typer.Option(False, "--json")):
+    """Rank code snippets from a snippet corpus (the AppsRetrieval setting). Several --corpus values = versions."""
+    import sys
+    from backend.app.corpus import SnippetIndex, read_corpus, resolve
+    text = query_file.read_text(encoding="utf-8") if query_file else query if query else sys.stdin.read()
+    if not text.strip():
+        raise typer.BadParameter("Provide a query, --query-file, or text on stdin")
+    versions = {}
+    for spec in corpus:
+        name, path = resolve(spec)
+        versions[name] = read_corpus(path)
+    index = SnippetIndex(versions)
+    found = index.search(text.strip(), top_k, mode)
+    if as_json:
+        return output({"index": index.stats, **found})
+    typer.echo(f"{index.stats['distinct_snippets']} distinct snippets · versions {index.stats['versions']} · "
+               f"embeddings {index.stats['embedding_cache']} · index {index.stats['index_seconds']} s · "
+               f"{index.stats['semantic']['message']}")
+    typer.echo(f"mode {found['mode']} · {found['latency_ms']} ms\n")
+    for r in found["results"]:
+        typer.echo(f"#{r['rank']}  {', '.join(r['occurrences'][:4])}{' …' if len(r['occurrences']) > 4 else ''}  "
+                   f"score {r['score']}  (lexical rank {r['evidence']['lexical_rank']}, semantic rank {r['evidence']['semantic_rank']})")
+        body = r["snippet"].splitlines()
+        typer.echo("\n".join("    " + line for line in body[:lines]) + (f"\n    … {len(body) - lines} more lines" if len(body) > lines else ""))
+        typer.echo("")
+
+
+@cli.command()
 def benchmark():
     from benchmark.evaluate import main
     main([])

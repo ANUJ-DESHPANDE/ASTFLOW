@@ -105,7 +105,7 @@ class QueryVectors:
     def __init__(self, vectors):
         self.vectors = vectors
 
-    def encode(self, texts):
+    def encode(self, texts, **_):
         return np.stack([self.vectors[t] for t in texts])
 
 

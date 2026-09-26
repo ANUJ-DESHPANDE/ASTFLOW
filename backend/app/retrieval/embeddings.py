@@ -6,6 +6,18 @@ import numpy as np
 
 from backend.app.config import Settings
 
+# How each supported model expects to be called (model cards). Unlisted models are used as-is: no prefixes and
+# their own sequence limit. `max_seq` bounds CPU cost; it never exceeds what the model was trained for.
+PROFILES = {
+    "sentence-transformers/all-MiniLM-L6-v2": {"query_prefix": "", "document_prefix": "", "max_seq": None},
+    "Alibaba-NLP/gte-modernbert-base": {"query_prefix": "", "document_prefix": "", "max_seq": 1024},
+    "ibm-granite/granite-embedding-english-r2": {"query_prefix": "", "document_prefix": "", "max_seq": 1024},
+}
+
+
+def profile(model: str) -> dict:
+    return PROFILES.get(model, {"query_prefix": "", "document_prefix": "", "max_seq": None})
+
 
 class Embedder:
     def __init__(self, settings: Settings):
@@ -34,15 +46,22 @@ class Embedder:
                                                  cache_folder=str(self.settings.cache / "models" / "hub"))
                 if download:
                     self.model.save(str(model_path))
+                cap = profile(self.settings.model)["max_seq"]
+                if cap:
+                    self.model.max_seq_length = min(cap, self.model.max_seq_length or cap)
                 self.reason = "CPU semantic model ready"
             except Exception as exc:
                 self.model = None
                 self.reason = f"Lexical fallback: {type(exc).__name__}; run astflow model-download to enable semantic search"
             return self.model
 
-    def encode(self, texts: list[str], use_windows: bool = False, window_size: int = 256, overlap: int = 64):
+    def encode(self, texts: list[str], use_windows: bool = False, window_size: int = 256, overlap: int = 64,
+               kind: str = "document"):
         if not self.load():
             return None
+        prefix = profile(self.settings.model)["query_prefix" if kind == "query" else "document_prefix"]
+        if prefix:
+            texts = [prefix + t for t in texts]
         with self.lock:
             if not use_windows:
                 return np.asarray(self.model.encode(texts, batch_size=32, normalize_embeddings=True,
