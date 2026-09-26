@@ -114,14 +114,16 @@ class QueryVectors:
         return np.stack([self.vectors[t] for t in texts])
 
 
-def run_model(name, corpus, queries, qrels, qids, doc_ids, cache_dir: Path, threads: int, budget_s: float = 1e9):
+def run_model(name, corpus, queries, qrels, qids, doc_ids, cache_dir: Path, threads: int, budget_s: float = 1e9,
+              max_seq_override: int | None = None):
     import torch
     from sentence_transformers import SentenceTransformer
     torch.set_num_threads(threads)
     profile = PROFILES[name]
     started = time.perf_counter()
     model = SentenceTransformer(name, device="cpu", trust_remote_code=profile["remote_code"])
-    model.max_seq_length = min(profile["max_seq"], model.max_seq_length or profile["max_seq"])
+    cap = min(profile["max_seq"], max_seq_override or profile["max_seq"])
+    model.max_seq_length = min(cap, model.max_seq_length or cap)
     load_s = time.perf_counter() - started
     texts = [corpus[d] for d in doc_ids]
     # Cache identity: model, sequence cap, prefix and every document's id *and* content (never reuse stale vectors).
@@ -268,6 +270,7 @@ def main():
     parser.add_argument("--distractors", type=int, default=2700)
     parser.add_argument("--seed", type=int, default=20260926)
     parser.add_argument("--threads", type=int, default=os.cpu_count() or 4)
+    parser.add_argument("--max-seq", type=int, default=None, help="lower every model's token cap (CPU proxy)")
     parser.add_argument("--encode-budget-min", type=float, default=30, help="stop a model whose document encoding projects longer")
     parser.add_argument("--failure-dump", type=int, default=0, help="print N control-model misses (control only)")
     parser.add_argument("--output", type=Path, default=ROOT / "out" / "e005")
@@ -285,7 +288,7 @@ def main():
     for name in args.models.split(","):
         try:
             result, model = run_model(name, corpus, queries, qrels, qids, doc_ids, ROOT / ".astflow" / "e005-cache", args.threads,
-                                      args.encode_budget_min * 60)
+                                      args.encode_budget_min * 60, args.max_seq)
         except Exception as exc:  # a model that cannot load is recorded, not fatal to the others
             print(f"!! {name}: {type(exc).__name__}: {exc}", flush=True)
             report["results"][name] = {"error": f"{type(exc).__name__}: {exc}"}

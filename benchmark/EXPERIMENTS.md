@@ -275,6 +275,27 @@ product's JS indexing time with the winner is measured separately before any def
 **Tooling:** `benchmark/e005_screen.py` (stages, failure dump, paired bootstrap), `.github/workflows/experiments.yml`
 (runs on GitHub runners because the development container cannot reach Hugging Face).
 
+### E005 run log
+
+**Run 1 (2026-09-26, `experiments` run 36230017131) — STOPPED-TIME-LIMIT.**
+- Control (MiniLM, micro 300 train queries × 3,000 docs): BM25 0.4450 · Dense 0.4997 · Hybrid 0.5274 NDCG@10; 61 docs/s.
+- Control on the full corpus (300 train queries × 8,765 docs): Hybrid 0.4684 NDCG@10 (test split: 0.0884; BM25 shows
+  the same gap, so the train split is intrinsically easier — see `experiments/EXPERIMENTS.md`).
+- `nomic-ai/CodeRankEmbed`: **INVALID** — its remote code fails under the pinned transformers 5.17
+  (`'NomicBertModel' object has no attribute 'get_extended_attention_mask'`). Not pursued (would need a second
+  transformers version, i.e. a second variable, and remote code in the product).
+- `gte-modernbert-base`, `granite-embedding-english-r2`: killed by the 45-minute job cap before finishing 3,000
+  documents + 300 queries at 1,024 tokens → **< ~1.3 docs/s** on a 4-vCPU runner (MiniLM: 61). Fails the
+  pre-registered CPU threshold (≥ 5 docs/s) at this configuration.
+
+| Kill-rule record | |
+|---|---|
+| Task | E005 micro screen, two 149M ModernBERT embedders |
+| Why it was slow | 22-layer 768-d encoders at up to 1,024 tokens on 4 CPU threads: ≥ 47× MiniLM's per-document cost |
+| What we need to know | (a) does a retrieval-trained long-context embedder rank APPS better at all; (b) at what CPU cost |
+| Cheaper alternative | 100 queries × 600 documents, 512-token cap, per-slice throughput printed, in-script encode budget (30 min) |
+| Decision | run the proxy once; the 1,024-token configuration is rejected on CPU cost regardless of its accuracy |
+
 ---
 
 ## Pre-registered queue (evaluated against baseline-v1 evidence)
