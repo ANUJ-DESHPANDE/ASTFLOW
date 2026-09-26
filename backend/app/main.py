@@ -16,6 +16,9 @@ from backend.app.indexing.service import IndexService
 from backend.app.indexing.discovery import read_snapshot, snapshot_hash
 from backend.app.versions.compare import compare_indexes
 
+# JSON bodies stay small and bounded: a full problem-statement query (MAX_QUERY_CHARS) plus escaping headroom.
+MAX_BODY_BYTES = 128 * 1024
+
 logger = logging.getLogger(__name__)
 
 
@@ -46,7 +49,7 @@ def create_app(settings: Settings | None = None):
             body = bytearray()
             async for chunk in request.stream():
                 body.extend(chunk)
-                if len(body) > 16384:
+                if len(body) > MAX_BODY_BYTES:
                     return JSONResponse({"detail": "Request body is too large"}, status_code=413)
             request._body = bytes(body)
         response = await call_next(request)

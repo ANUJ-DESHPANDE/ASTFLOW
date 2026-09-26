@@ -1,6 +1,11 @@
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
+# Longest CoIR Apps (AppsRetrieval) query is ~2,570 word-pieces (~11k characters); hands-on queries are "similar to
+# the dataset", so the limit leaves room for full competitive-programming problem statements.
+MAX_QUERY_CHARS = 32_000
+
+
 class RequestModel(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True, extra='forbid')
 
@@ -12,7 +17,7 @@ class IndexRequest(RequestModel):
 
 
 class SearchRequest(RequestModel):
-    query: str = Field(min_length=1, max_length=2000)
+    query: str = Field(min_length=1, max_length=MAX_QUERY_CHARS)
     version: str = Field(default="working-tree", min_length=1, max_length=200)
     top_k: int = Field(default=10, ge=1, le=50)
     agentic: bool = True
@@ -34,6 +39,6 @@ class TraceRequest(RequestModel):
 
 
 class CompareRequest(RequestModel):
-    query: str = Field(min_length=1, max_length=2000)
+    query: str = Field(min_length=1, max_length=MAX_QUERY_CHARS)
     version_a: str = Field(min_length=1, max_length=200)
     version_b: str = Field(min_length=1, max_length=200)
