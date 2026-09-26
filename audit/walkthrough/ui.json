@@ -1,0 +1,57 @@
+{
+ "retrieval_config_shown": "",
+ "version_journey": {
+  "4.18.2": {
+   "top_result": "JS\n1. location\nlib/response.js:906–916\nExact symbol · Lexical #2 · Semantic #1 ·",
+   "ui_ms": 274,
+   "selector": "4.18.2",
+   "source_status": "lib/response.js\nRead only · L906–916 · 662b180b",
+   "shows_version_specific_source": false
+  },
+  "4.19.2": {
+   "top_result": "JS\n1. location\nlib/response.js:907–925\nExact symbol · Lexical #6 · Semantic #1 ·",
+   "ui_ms": 398,
+   "selector": "4.19.2",
+   "source_status": "lib/response.js\nRead only · L907–925 · 4309fb00",
+   "shows_version_specific_source": true
+  },
+  "4.21.2": {
+   "top_result": "JS\n1. location\nlib/response.js:914–926\nExact symbol · Lexical #1 · Semantic #1 ·",
+   "ui_ms": 478,
+   "selector": "4.21.2",
+   "source_status": "lib/response.js\nRead only · L914–926 · 5bb450e1",
+   "shows_version_specific_source": true
+  }
+ },
+ "t1": {
+  "heading": "Here’s the relevant code",
+  "top": "JS\n1. accepts\nlib/request.js:132–135\nExact symbol · Lexical #8 · Semantic #27 ·",
+  "ui_ms": 104
+ },
+ "t5": {
+  "top3": [
+   "JS\n1. View\nlib/view.js:52–95\nExact symbol · Lexical #1 · Semantic #15 ·",
+   "JS\n2. callback@8:16.callback@9:32.callback@206:51.callback@207:44.View\ntest/app.render.js:210–213\nExact symbol · Lexical #11 · Semantic #39 ·",
+   "JS\n3. callback@8:16.callback@9:32.callback@61:44.View\ntest/app.render.js:64–67\nExact symbol · Lexical #6 · Semantic #58 ·"
+  ],
+  "ui_ms": 75
+ },
+ "express_map_caption": "150 most connected of 152 source files · select a file to explore its symbols\nSupported static calls · not runtime behavior",
+ "t6": {
+  "heading": "Closest matches by meaning",
+  "text": "Where is the Kafka consumer offset committed?\nClosest matches by meaning\n\nNo result shares a word or symbol with your question. These 10 snippets are only the nearest code by meaning and may be unrelated. Try a symbol name or more specific terms.\n\nInvestigation\nJS\n1. callback@6:20.callback@7:20.callback@21:35.callback@26:19\ntest/acceptance/cookies.js:26–32\nSemantic #1 ·\nJS\n2. callback@7:20.callbac"
+ },
+ "t2_demo": {
+  "top3": [
+   "JS\n1. openBluetoothSettings\nsettings/deeplinks.js:2–2\nExact symbol · Lexical #1 · Semantic #2 ·",
+   "JS\n2. BluetoothAgent.execute\nbluetooth/BluetoothAgent.js:6–9\nLexical #2 · Semantic #1 · 1 call hop(s)",
+   "JS\n3. IntentRouter.route\nvoice/IntentRouter.js:7–11\nLexical #5 · Semantic #3 · 1 call hop(s)"
+  ]
+ },
+ "t3": {
+  "sequence_evidence": "Source order evidence\n\ncheckBluetoothPermission → openBluetoothSettings\n\nDirect calls in separate statements of the same function body. Lexical order only; completion is not guaranteed.\n\nbluetooth/BluetoothAgent.js:7–8"
+ },
+ "t7_trace_caption": "2 supported path(s)\nSupported static calls · not runtime behavior",
+ "t7_edge_evidence": "A supported connection\n\nThis call resolves to a known definition in the indexed snapshot.\n\nCall site\nthis.bluetooth.execute()\nSource evidence\ncall site\nvoice/IntentRouter.js:8\nconstructor assignment\nvoice/IntentRouter.js:5\nimport\nvoice/IntentRouter.js:1",
+ "console_errors": []
+}

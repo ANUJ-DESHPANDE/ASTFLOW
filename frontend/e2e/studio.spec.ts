@@ -18,7 +18,11 @@ test('live question shows real loading, evidence and exact source',async({page})
  await page.getByLabel('Ask about your code').fill('Where is session restoration handled?');await page.getByLabel('Send question').click();
  await expect(page.getByRole('status')).toContainText('Analyzing your code');await page.screenshot({path:'.astflow/screenshots/studio-loading.png'});release();
  await expect(page.locator('.source-matches button').first()).toBeVisible();await expect(page.locator('.user-message')).toContainText('session restoration');
- await page.locator('.source-matches button').first().click();await expect(page.locator('.source-status')).toContainText('session/SessionManager.js');
+ // The answer is a restore method (GTE ranks the delegating AuthService.restore, whose comment names "session
+ // restoration", above SessionManager.restore); opening it must show exactly that result's file.
+ const first=page.locator('.source-matches button').first();await expect(first).toContainText('restore');
+ const file=(await first.locator('small').first().innerText()).split(':')[0];
+ await first.click();await expect(page.locator('.source-status')).toContainText(file);
  await page.screenshot({path:'.astflow/screenshots/studio-search.png'});
 });
 test('map file focus and trace evidence navigate to code',async({page})=>{

@@ -7,11 +7,20 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 
+# The frozen submission configuration (benchmark/experiments/EXPERIMENTS.md, "RETRIEVAL FREEZE"): official MTEB
+# AppsRetrieval NDCG@10 0.5511 with this model, ranking by dense cosine similarity only (no BM25 fusion).
+FROZEN_MODEL = "Alibaba-NLP/gte-modernbert-base"
+FROZEN_RETRIEVAL = "dense"
+
 
 @dataclass(frozen=True)
 class Settings:
-    model: str = os.getenv("ASTFLOW_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
-    semantic: str = os.getenv("ASTFLOW_SEMANTIC", "auto")
+    model: str = os.getenv("ASTFLOW_MODEL", FROZEN_MODEL)
+    # "on": the embedding model is required and indexing fails with an actionable error if it cannot load (no
+    # silent lexical fallback). "off": explicit lexical-only mode (tests, low-resource machines), reported as such.
+    semantic: str = os.getenv("ASTFLOW_SEMANTIC", "on")
+    # First-stage ranking for repository search: "dense" (frozen), "hybrid" (BM25 + dense RRF) or "bm25".
+    retrieval: str = os.getenv("ASTFLOW_RETRIEVAL", FROZEN_RETRIEVAL)
     cache: Path = Path(os.getenv("ASTFLOW_CACHE", str(ROOT / ".astflow"))).resolve()
     ts_enrich: bool = os.getenv("ASTFLOW_TS_ENRICH", "true").lower() == "true"
     rrf_k: int = 60
@@ -28,7 +37,18 @@ class Settings:
     max_file_bytes: int = 1_000_000
     max_files: int = 20_000
     max_total_bytes: int = 50_000_000
-    schema: int = 8
+    schema: int = 10
+
+    def __post_init__(self):
+        if self.semantic not in {"on", "auto", "off"}:
+            raise ValueError(f"ASTFLOW_SEMANTIC must be 'on' or 'off', not {self.semantic!r}")
+        if self.retrieval not in {"dense", "hybrid", "bm25"}:
+            raise ValueError(f"ASTFLOW_RETRIEVAL must be 'dense', 'hybrid' or 'bm25', not {self.retrieval!r}")
+
+    @property
+    def frozen(self) -> bool:
+        """True when this is the configuration whose official benchmark result is reported."""
+        return self.model == FROZEN_MODEL and self.retrieval == FROZEN_RETRIEVAL and self.semantic != "off"
 
     def fingerprint(self) -> str:
         values = asdict(self)

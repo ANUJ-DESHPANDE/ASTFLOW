@@ -173,9 +173,13 @@ matrix above plays the same role using the official weights.
 
 ## Recommended final actions
 
-1. Owner: create the GitHub Release and attach `benchmark/results/mteb-final-gte/appsretrieval_results.json`.
+Superseded by the product-integration pass (26 Sep, later the same day). The final state is in
+[`submission/FINAL-DASHBOARD.md`](../submission/FINAL-DASHBOARD.md).
+
+1. ~~Create the GitHub Release~~: done, [`v1.0-submission`](https://github.com/ANUJ-DESHPANDE/ASTFLOW/releases/tag/v1.0-submission)
+   (asset SHA-256 equals the committed result file).
 2. Organiser confirmation required: the slide's build window ended 25 Sep.
-3. Owner decision: the product's interactive default stays MiniLM Hybrid (fast repository search). The frozen P0
-   configuration is selected with `ASTFLOW_MODEL=Alibaba-NLP/gte-modernbert-base` and Dense mode (README). Decide whether
-   hands-on runs should default to it.
-4. Record the demo following `docs/DEMO-SCRIPT.md`; update its results slide to 0.5511 / 0.5053.
+3. ~~Product default~~: the product now runs the frozen configuration by default (GTE dense on CPU, no silent
+   fallback), verified at runtime on a clean clone (`audit/JUDGE-WALKTHROUGH.md`).
+4. Record the demo following `submission/DEMO-SCRIPT.md` with `submission/DEMO-QUERIES.md`. That script supersedes
+   `docs/DEMO-SCRIPT.md`.

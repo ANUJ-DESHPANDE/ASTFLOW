@@ -1,0 +1,52 @@
+# Why is embedding 6x slower on some runners? Record CPU features, the loaded model dtype and encode throughput.
+name: index-diagnose
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/vibrant-goodall-tof53x]
+    paths: [".github/workflows/index-diagnose.yml"]
+
+env:
+  PIP_EXTRA_INDEX_URL: https://download.pytorch.org/whl/cpu
+
+jobs:
+  dtype:
+    strategy:
+      fail-fast: false
+      matrix: { sample: [1, 2, 3, 4] }  # several runners, to catch different CPU models
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - run: python -m pip install -c requirements.lock.txt -e ".[dev,semantic]" > /dev/null
+      - run: python -m backend.app.cli model-download > /dev/null
+      - name: CPU, dtype, throughput
+        run: |
+          python - <<'PY'
+          import re, subprocess, time, glob
+          import numpy as np, torch
+          from backend.app.config import Settings
+          from backend.app.retrieval.embeddings import Embedder
+          lscpu = subprocess.run(["lscpu"], capture_output=True, text=True).stdout
+          name = re.search(r"Model name:\s*(.*)", lscpu).group(1)
+          flags = set(re.search(r"Flags:\s*(.*)", lscpu).group(1).split())
+          print("cpu:", name, "| avx512_bf16:", "avx512_bf16" in flags, "| amx_bf16:", "amx_bf16" in flags, "| avx512f:", "avx512f" in flags)
+          e = Embedder(Settings()); model = e.load()
+          inner = model[0].auto_model
+          print("loaded dtype:", inner.dtype, "| config dtype:", getattr(inner.config, "torch_dtype", None), "| torch threads:", torch.get_num_threads())
+          texts = []
+          for path in sorted(glob.glob("backend/app/**/*.py", recursive=True)):
+              src = open(path, encoding="utf-8").read().split("\n\n")
+              texts += [s for s in src if len(s) > 200]
+          texts = texts[:192]
+          def run(tag):
+              t = time.perf_counter(); v = e.encode(texts); s = time.perf_counter() - t
+              print(f"{tag}: {len(texts)} chunks in {s:.1f} s ({len(texts)/s:.1f}/s)"); return v
+          a = run(f"as loaded ({inner.dtype})")
+          if inner.dtype != torch.float32:
+              model.to(torch.float32)
+              b = run("float32")
+              print("cos(as loaded, float32): min %.5f" % float((a * b).sum(1).min()))
+          PY

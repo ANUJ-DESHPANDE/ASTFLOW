@@ -1,0 +1,31 @@
+# CPU cost of indexing a real repository with the frozen model: express at three Git tags, cold then incremental.
+name: index-timing
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/vibrant-goodall-tof53x]
+    paths: [".github/workflows/index-timing.yml"]
+
+jobs:
+  express:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - run: python -m pip install -c requirements.lock.txt -e ".[dev,semantic]"
+      - run: python -m backend.app.cli model-download
+      - run: git clone -q https://github.com/expressjs/express "$RUNNER_TEMP/express"
+      - name: Index 4.18.2 (cold), 4.19.2 and 4.21.2 (incremental)
+        env: { ASTFLOW_TS_ENRICH: "false" }
+        run: |
+          echo "| Version | Wall s | Files | Chunks | Reused | Computed |" > timing.md; echo "|---|---:|---:|---:|---:|---:|" >> timing.md
+          for v in 4.18.2 4.19.2 4.21.2; do
+            start=$(date +%s.%N)
+            python -m backend.app.cli index "$RUNNER_TEMP/express" --version "$v" > m.json
+            wall=$(python -c "import time;print(round(time.time()-$start,1))")
+            python -c "import json;m=json.load(open('m.json'));c=m['embedding_cache'];print(f\"| $v | $wall | {m['file_count']} | {m['chunk_count']} | {c['reused']} | {c['computed']} |\")" >> timing.md
+            tail -1 timing.md
+          done
+          { echo "cpu: $(lscpu | sed -n 's/^Model name: *//p'), $(nproc) vCPU"; cat timing.md; } | tee -a "$GITHUB_STEP_SUMMARY"

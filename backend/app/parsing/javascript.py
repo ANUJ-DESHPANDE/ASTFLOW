@@ -340,8 +340,14 @@ def parse_file(path: str, source_text: str) -> ParsedFile:
             block = statement.parent
             body = body_by_symbol.get(current.symbol_id)
             direct = bool(block and body and block.id == body.id and statement.type in {"return_statement", "expression_statement", "lexical_declaration", "variable_declaration"})
-            if body and any(n.type in {"return_statement", "throw_statement", "if_statement", "switch_statement", "try_statement", "for_statement", "for_in_statement", "while_statement", "do_statement", "await_expression", "yield_expression"} for n in walk(body)):
-                direct = False
+            if body:
+                # Any early exit, branch, loop or suspension makes lexical order unsafe, except a `return` that is
+                # the body's last statement: every other statement has already run when it is reached.
+                statements = [n for n in body.named_children if n.type != "comment"]
+                final = statements[-1] if statements else None
+                if any(n.type in {"return_statement", "throw_statement", "if_statement", "switch_statement", "try_statement", "for_statement", "for_in_statement", "while_statement", "do_statement", "await_expression", "yield_expression"}
+                       and not (n.type == "return_statement" and final is not None and n.id == final.id) for n in walk(body)):
+                    direct = False
             parsed.calls.append({"source": current.symbol_id, "callee": expression,
                                  "callee_type": callee.type if callee else "", "class": cls.symbol_id if cls else None,
                                  "file": path, "line": node.start_point.row + 1, "end_line": node.end_point.row + 1,

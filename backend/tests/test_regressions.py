@@ -67,6 +67,14 @@ def test_sequence_pair_direction_and_early_exits(tmp_path):
     for middle in ['return;', 'if(x)return;', 'throw Error();']:
         p = parse_file('a.js', 'function check(){} function open(){} function run(x){check();'+middle+'open();}')
         assert not resolve_structure([p])[2]
+    # A final `return` cannot skip anything before it (BluetoothAgent.execute in the demo): order is supported ...
+    p = parse_file('a.js', 'function check(){} function open(){} function run(){check(); return open();}')
+    assert [(s['before'], s['after']) for s in resolve_structure([p])[2]] == [('a.js::check', 'a.js::open')]
+    # ... but not when that return follows an early exit, or is not the last statement.
+    for body in ['check(); if(x) return; return open();', 'check(); return open(); open();',
+                 'check(); return (() => { return 1; })() || open();']:
+        p = parse_file('a.js', 'function check(){} function open(){} function run(x){' + body + '}')
+        assert not resolve_structure([p])[2], body
 
 
 def test_supported_spans_and_reversed_traversal():

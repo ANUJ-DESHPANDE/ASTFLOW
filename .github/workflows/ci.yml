@@ -25,8 +25,8 @@ jobs:
       - name: Demo Git history
         run: python scripts/setup_demo.py
       - uses: actions/cache@v4
-        with: { path: .astflow/models, key: minilm-l6-v2-1377e9af }
-      - name: Model (MiniLM, ~90 MB)
+        with: { path: .astflow/models, key: gte-modernbert-base-v1 }
+      - name: Model (frozen gte-modernbert-base, ~0.6 GB)
         run: python -m backend.app.cli model-download
       - name: Tests (backend + benchmark harness)
         run: python -m pytest backend/tests benchmark --ignore=benchmark/test_mteb_adapter.py -o addopts="" -q
@@ -68,7 +68,7 @@ jobs:
       - run: python -m pip install -c requirements.lock.txt -e ".[dev,semantic]"
       - run: npm ci && npm run build
       - uses: actions/cache@v4
-        with: { path: .astflow/models, key: minilm-l6-v2-1377e9af }
+        with: { path: .astflow/models, key: gte-modernbert-base-v1 }
       - run: python -m backend.app.cli model-download
       - run: npx playwright install --with-deps chromium
       - name: Start the demo (indexes v1, v2, working tree)
