@@ -34,6 +34,8 @@ def test_actual_cpu_semantic_retrieval_and_persisted_vectors(tmp_path):
     assert diagnostics["semantic_available"]
     assert rows[0]["chunk"].qualified_name == "normalizeInput"
     embeddings = index.retriever.embeddings
-    assert np.allclose(np.linalg.norm(embeddings, axis=1), 1, atol=1e-5)
+    # Unit length to within the model's output precision: gte-modernbert-base, loaded exactly as in the official
+    # run, measured up to 4e-4 from 1 in CI (MiniLM was within 1e-5).
+    assert np.allclose(np.linalg.norm(embeddings, axis=1), 1, atol=1e-3)
     again = IndexService(service.settings)
     assert np.array_equal(again.get().retriever.embeddings, embeddings)

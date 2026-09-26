@@ -1,0 +1,61 @@
+# First-time-evaluator walkthrough of the real product on a CPU runner: a fresh clone, the README's two commands,
+# then scripts/judge_walkthrough.py (API) and audit/walkthrough/ui.spec.ts (browser) on the demo and on express.
+# Evidence is committed to audit/walkthrough/ on the branch that ran it.
+name: walkthrough
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/vibrant-goodall-tof53x]
+    paths: [".github/workflows/walkthrough.yml"]
+
+permissions:
+  contents: write
+
+jobs:
+  judge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      # Prerequisites the README lists: Python 3.12, Node.js 22, npm, Git. Nothing else is installed by hand.
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - name: Hardware
+        run: |
+          { echo "cpu: $(lscpu | sed -n 's/^Model name: *//p')"; echo "vcpus: $(nproc)"; free -m | sed -n 2p | awk '{print "ram_mb: "$2}'; uname -sr; } | tee hardware.txt
+      - name: Fresh clone
+        run: git clone -q --branch "$GITHUB_REF_NAME" "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" fresh && git -C fresh log -1 --format='clone at %H'
+      - name: README step 1 - npm run setup
+        working-directory: fresh
+        run: |
+          start=$(date +%s); npm run setup 2>&1 | tee ../setup.log | tail -n 25; echo "setup_s: $(( $(date +%s) - start ))" | tee -a ../hardware.txt
+          du -sh .venv node_modules .astflow/models | tee -a ../hardware.txt
+      - name: README step 2 - npm run demo (indexes the demo v1, v2, working tree)
+        working-directory: fresh
+        run: |
+          start=$(date +%s); npm run demo > ../demo.log 2>&1 &
+          for i in $(seq 1 600); do curl -sf http://127.0.0.1:8000/api/health > /dev/null && break; sleep 2; done
+          echo "demo_ready_s: $(( $(date +%s) - start ))" | tee -a ../hardware.txt; cat ../demo.log
+          curl -s http://127.0.0.1:8000/api/health | tee ../health.json
+      - name: Express repository (real Git tags)
+        run: git clone -q https://github.com/expressjs/express express && git -C express rev-parse 4.21.2
+      - name: API walkthrough (indexes express 4.18.2, 4.19.2, 4.21.2)
+        working-directory: fresh
+        run: .venv/bin/python scripts/judge_walkthrough.py --express "$GITHUB_WORKSPACE/express" --server-pid "$(pgrep -f 'backend.app.cli demo' | head -1)"
+      - name: Browser walkthrough
+        working-directory: fresh
+        run: |
+          npx playwright install --with-deps chromium > /dev/null
+          mkdir -p audit/walkthrough/screens
+          npx playwright test --config audit/walkthrough/playwright.config.ts || echo "ui_walkthrough_failed" >> ../hardware.txt
+      - name: Commit the evidence
+        if: always()
+        working-directory: fresh
+        run: |
+          cp ../hardware.txt ../health.json audit/walkthrough/ 2>/dev/null || true
+          tail -n 80 ../demo.log > audit/walkthrough/demo.log; tail -n 40 ../setup.log > audit/walkthrough/setup.log
+          git config user.name AarushShetty346 && git config user.email aarushshetty3@gmail.com
+          git add -f audit/walkthrough
+          git commit -q -m "audit: judge walkthrough evidence from a clean clone (run ${{ github.run_id }}) [skip ci]" || exit 0
+          for i in 1 2 3; do git pull -q --rebase origin "$GITHUB_REF_NAME" && git push -q origin "HEAD:$GITHUB_REF_NAME" && break; sleep 5; done

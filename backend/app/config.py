@@ -37,7 +37,7 @@ class Settings:
     max_file_bytes: int = 1_000_000
     max_files: int = 20_000
     max_total_bytes: int = 50_000_000
-    schema: int = 8
+    schema: int = 9
 
     def __post_init__(self):
         if self.semantic not in {"on", "auto", "off"}:
