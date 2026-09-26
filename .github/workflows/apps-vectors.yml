@@ -49,5 +49,5 @@ jobs:
           print(json.dumps({"query_id": qid, "relevant": sorted(qrels[qid]), "top10": ids, "mode": found["mode"],
                             "embedding_cache": found["index"]["embedding_cache"], "wall_s": round(time.perf_counter() - started, 1),
                             "search_latency_ms": found["latency_ms"]}, indent=1))
-          assert found["index"]["embedding_cache"]["precomputed"] == 8765 and found["mode"] == "dense"
+          assert found["index"]["embedding_cache"]["computed"] == 0 and found["mode"] == "dense"
           PY

@@ -30,8 +30,14 @@ def main():
     vectors = np.vstack(mats).astype(np.float32)
     corpus = read_corpus(resolve("apps")[1])
     texts = {hashlib.sha256(t.encode()).hexdigest(): t for t in corpus.values()}
-    assert len(keys) == len(set(keys)) == len(vectors), "duplicate or misaligned shard rows"
-    assert set(keys) == set(texts), f"shards cover {len(set(keys) & set(texts))} of {len(texts)} corpus documents"
+    assert len(keys) == len(vectors) == len(corpus), "misaligned shard rows"
+    # Identical document texts (the corpus has some) share one content key: keep one vector per key.
+    first = {}
+    for i, k in enumerate(keys):
+        first.setdefault(k, i)
+    print(f"{len(keys)} shard rows, {len(first)} distinct texts")
+    keys, vectors = list(first), vectors[list(first.values())]
+    assert set(keys) == set(texts), f"shards cover {len(set(keys) & set(texts))} of {len(texts)} corpus texts"
     settings = Settings()
     assert settings.model == FROZEN_MODEL
     embedder = Embedder(settings)
