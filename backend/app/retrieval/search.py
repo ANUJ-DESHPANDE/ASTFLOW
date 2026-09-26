@@ -91,7 +91,7 @@ class Retriever:
         lexical = self.lexical_scores(terms)
         dense = None
         if mode != "bm25" and self.embeddings is not None:
-            query_embedding = self.embedder.encode([query])
+            query_embedding = self.embedder.encode([query], kind="query")
             if query_embedding is not None:
                 q_vec = query_embedding[0]
                 if isinstance(self.embeddings, list):

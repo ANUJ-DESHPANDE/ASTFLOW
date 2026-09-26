@@ -7,6 +7,9 @@ on:
       mode:
         description: bm25, dense or hybrid
         default: hybrid
+      model:
+        description: dense model (Hugging Face id)
+        default: sentence-transformers/all-MiniLM-L6-v2
 
 permissions:
   contents: read
@@ -21,8 +24,9 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: "3.12", cache: pip }
       - run: python -m pip install -c requirements.lock.txt -e ".[dev,semantic]" -r benchmark/requirements-mteb.txt
-      - run: python -m backend.app.cli model-download
-      - run: python benchmark/run_mteb.py --mode ${{ inputs.mode }} --output out/mteb-${{ inputs.mode }}
+      - run: python benchmark/run_mteb.py --mode ${{ inputs.mode }} --model "${{ inputs.model }}" --download-model --output out/mteb-${{ inputs.mode }}
+      - name: Headline metrics
+        run: python -c "import json; s=json.load(open('out/mteb-${{ inputs.mode }}/appsretrieval_results.json'))['scores']['test'][0]; print({k:s[k] for k in ('ndcg_at_10','mrr_at_10','recall_at_10','recall_at_100')})" | tee -a $GITHUB_STEP_SUMMARY
       - uses: actions/upload-artifact@v4
         with:
           name: mteb-${{ inputs.mode }}

@@ -90,7 +90,7 @@ def test_frozen_import_boundaries(statement):
 def test_security_guards_and_size_bounds(tmp_path):
     client = TestClient(create_app(Settings(cache=tmp_path / 'cache', semantic='off')))
     assert client.post('/api/search', content='{}', headers={'content-type':'text/plain'}).status_code == 415
-    assert client.post('/api/search', content='x'*20000, headers={'content-type':'application/json'}).status_code == 413
+    assert client.post('/api/search', content='x'*200000, headers={'content-type':'application/json'}).status_code == 413
     assert client.get('/api/repository', headers={'sec-fetch-site':'cross-site'}).status_code == 403
     assert client.get('/api/health', headers={'host':'evil.example'}).status_code == 400
     assert client.get('/api/health').headers['x-content-type-options'] == 'nosniff'
@@ -131,3 +131,12 @@ def test_trace_ambiguity_and_depth_limits():
     graph = ProjectGraph([s for f in parsed for s in f.symbols], edges)
     assert graph.trace('a', 'c')['status'] == 'AMBIGUOUS_SYMBOL'
     assert graph.trace('a', 'a.js::c', max_depth=1)['status'] == 'SEARCH_LIMIT_REACHED'
+
+
+def test_dataset_length_queries_are_accepted():
+    # Hands-on queries are "similar to the dataset": CoIR Apps problem statements run to ~11k characters.
+    from backend.app.api.schemas import MAX_QUERY_CHARS, CompareRequest, SearchRequest
+    statement = 'Given n integers, print the maximum sum of a contiguous segment. ' * 180
+    assert 10_000 < len(statement) <= MAX_QUERY_CHARS
+    assert SearchRequest(query=statement).query == statement.strip()
+    assert CompareRequest(query=statement, version_a='v1', version_b='v2').query == statement.strip()

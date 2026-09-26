@@ -234,6 +234,109 @@ the agent's follow-up queries), behind a `Settings` flag, with latency growing �
 Queries that fit in 254 word-pieces are unaffected by construction; how long real app queries are has not been measured. Production defaults stay unchanged unless
 E004 is KEEP and a separate change is approved.
 
+### Pre-registration for E005-code-embedder (written 2026-09-26, before any E005 run)
+
+**Gate 0 — failure addressed.** First-stage recall: 65% of test answers are in neither retriever's top 100, and the
+dense model sees only a fragment of each query. Evidence already on file (post-E003 audit, frozen runs): 89.0% of queries
+exceed MiniLM's 254 content word-pieces (median 467); Dense NDCG@10 is 0.161 on queries that fit vs 0.054 on truncated
+ones; E002 showed a *general-domain* model reading query and code together is worse than RRF (domain mismatch, not
+lack of joint reading). E001–E003 all tuned around the same 22M-parameter, 256-token, web-sentence model; none changed
+the representation's domain or context length. The APPS task is problem statement → Python solution with almost no
+shared vocabulary, which is what code-retrieval embedders are trained on.
+
+**Why this should fix it.** A retrieval model trained on text→code pairs with a ≥ 1,024-token window represents
+(nearly) the whole problem statement and solution in one space, which attacks both measured causes at once.
+**Cheapest disproof:** 300 *train-split* queries × 3,000 documents per model, minutes of CPU each.
+
+**The one variable:** the dense model (weights, plus the prefix and sequence cap its model card prescribes — they are
+part of using that model, not tuned). Unchanged: BM25, tokenizer, RRF k=60 1:1, candidates, dense threshold 0.05,
+boosts off, one vector per document.
+
+**Candidates (≤ 3, CPU-sized, open licences):** `Alibaba-NLP/gte-modernbert-base` (149M, Apache-2.0, native
+transformers), `ibm-granite/granite-embedding-english-r2` (149M, Apache-2.0, native), `nomic-ai/CodeRankEmbed`
+(137M, code-specialised, needs `trust_remote_code`). Control: `all-MiniLM-L6-v2`. Cap 1,024 tokens (MiniLM keeps 256).
+
+**No test data in the loop.** Dev and confirmation use the CoIR Apps **train** qrels (disjoint problems, same corpus).
+The historical `dev`/`confirmation` halves of the test split are retired for tuning: the confirmation half was
+consulted at least three times in E001–E003 and BM25 tuning (historical contamination, recorded here). The test split
+is scored once, for the final configuration only, by the official MTEB runner.
+
+| Stage | Setting | Continue threshold | Max runtime |
+|---|---|---|---|
+| A micro | 300 train queries × 3,000 docs (positives + seeded distractors) | a model's Hybrid **or** Dense NDCG@10 ≥ control Hybrid + 0.03 with paired 95% CI excluding 0, and ≥ 5 docs/s on a 4-vCPU runner | 45 min per job (`timeout-minutes`) |
+| B/C dev | ≤ 2 survivors, 1,000 train queries × full 8,765-doc corpus; choose Dense or Hybrid for the winner | CI excludes 0 vs control Hybrid | 45 min per job |
+| D confirmation | winner only, 1,000 *different* train queries (new seed), no changes | CI excludes 0 | 45 min |
+| E official | winner only, MTEB 2.21.0 AppsRetrieval test, once | — (reported, not tuned on) | 45 min |
+
+**Also measured (CPU feasibility, Part 25):** docs/s and queries/s on the runner, model load time, dimension; the
+product's JS indexing time with the winner is measured separately before any default changes.
+
+**Rollback.** Nothing in the product changes unless E005 is ACCEPT; the model is a setting (`ASTFLOW_MODEL`).
+**Tooling:** `benchmark/e005_screen.py` (stages, failure dump, paired bootstrap), `.github/workflows/experiments.yml`
+(runs on GitHub runners because the development container cannot reach Hugging Face).
+
+### E005 run log
+
+**Run 1 (2026-09-26, `experiments` run 36230017131) — STOPPED-TIME-LIMIT.**
+- Control (MiniLM, micro 300 train queries × 3,000 docs): BM25 0.4450 · Dense 0.4997 · Hybrid 0.5274 NDCG@10; 61 docs/s.
+- Control on the full corpus (300 train queries × 8,765 docs): Hybrid 0.4684 NDCG@10 (test split: 0.0884; BM25 shows
+  the same gap, so the train split is intrinsically easier — see `experiments/EXPERIMENTS.md`).
+- `nomic-ai/CodeRankEmbed`: **INVALID** — its remote code fails under the pinned transformers 5.17
+  (`'NomicBertModel' object has no attribute 'get_extended_attention_mask'`). Not pursued (would need a second
+  transformers version, i.e. a second variable, and remote code in the product).
+- `gte-modernbert-base`, `granite-embedding-english-r2`: killed by the 45-minute job cap before finishing 3,000
+  documents + 300 queries at 1,024 tokens → **< ~1.3 docs/s** on a 4-vCPU runner (MiniLM: 61). Fails the
+  pre-registered CPU threshold (≥ 5 docs/s) at this configuration.
+
+| Kill-rule record | |
+|---|---|
+| Task | E005 micro screen, two 149M ModernBERT embedders |
+| Why it was slow | 22-layer 768-d encoders at up to 1,024 tokens on 4 CPU threads: ≥ 47× MiniLM's per-document cost |
+| What we need to know | (a) does a retrieval-trained long-context embedder rank APPS better at all; (b) at what CPU cost |
+| Cheaper alternative | 100 queries × 600 documents, 512-token cap, per-slice throughput printed, in-script encode budget (30 min) |
+| Decision | run the proxy once; the 1,024-token configuration is rejected on CPU cost regardless of its accuracy |
+
+**Run 3 (2026-09-26, run 36232451630) — proxy: 100 train queries × 600 documents, 512 tokens.**
+- Control MiniLM: BM25 0.5341 · Dense 0.5563 · **Hybrid 0.6145** NDCG@10 (MRR@10 0.5784); 29 docs/s on the runner.
+- Both candidates finished (09:47 and 09:52; 26 and 31 minutes). **Accuracy evidence** (paired vs the control's Hybrid on the
+  same 100 queries × 600 documents, bootstrap 95% CI; `combine` job):
+
+  | Model | Mode | NDCG@10 | Δ vs MiniLM Hybrid | 95% CI | stdin stratum (84) Δ | MRR@10 | docs/s (CI runner) |
+  |---|---|---:|---:|---|---:|---:|---:|
+  | MiniLM (control) | Hybrid | 0.6145 | — | — | — | 0.5784 | 29.3 |
+  | **gte-modernbert-base** | **Dense** | **0.8865** | **+0.2720** | **[+0.1992, +0.3448]** | +0.2895 [+0.2078, +0.3745] | 0.8604 | **0.5** |
+  | gte-modernbert-base | Hybrid | 0.7603 | +0.1458 | [+0.0906, +0.2053] | +0.1496 | 0.7180 | 0.5 |
+  | granite-embedding-english-r2 | Dense | 0.6877 | +0.0732 | [+0.0116, +0.1365] | +0.0460 (CI incl. 0) | 0.6653 | 0.42 |
+  | granite-embedding-english-r2 | Hybrid | 0.6779 | +0.0634 | [+0.0286, +0.1024] | +0.0461 | 0.6424 | 0.42 |
+
+  gte-modernbert-base passes the accuracy criterion by a wide margin (Dense, not Hybrid — BM25 fusion *hurts* it) and fails
+  the CPU criterion (0.5 docs/s on the runner, 2.4 in the local profile; threshold ≥ 5). Caveats: 600-document proxy corpus;
+  train split, which retrieval models of this family may have seen in training (CoIR-style data), so the gain may be
+  inflated; test performance unmeasured.
+
+**Profiling (this container, 4 CPU threads, same architecture with random weights; speed does not depend on weights):**
+ModernBERT-base = 10.1 seq/s at 150 tokens, 2.4 seq/s at 512 (MiniLM-L6 shape: 80.9 seq/s at 150); 75% of time in
+`aten::mm` (compute-bound, no pathology); ragged batches cost the same as padded ones; sentence-transformers 5.7 honours
+the 512 cap. Why the CI runners are several times slower still is **not established** (their in-progress logs cannot be
+read from the development container).
+
+| Kill-rule record | |
+|---|---|
+| Task | E005 proxy (run 3) |
+| Why it was slow | ModernBERT-base is ~35× MiniLM's compute per token; CI additionally slower than the local profile, cause unknown |
+| What we need to know | accuracy gain and CPU cost |
+| Result | CPU cost measured: at the *best* rate (2.4 docs/s at 512 tokens, 4 threads) the 8,765-document corpus takes ≈ 1 h and the 3,765 long test queries ≈ 26 min |
+| Decision | **REJECT on CPU feasibility** — fails the pre-registered ≥ 5 docs/s threshold at 512 tokens, before any accuracy result. The accuracy question for this model class stays open. |
+
+**E005 decision under the pre-registration: REJECT (CPU cost) for the 149M ModernBERT class; CodeRankEmbed INVALID.** **Owner decision flagged:** the accuracy signal for gte-modernbert-base Dense (+0.27 NDCG@10 on the train proxy) is far larger than anything E001–E003 found. The CPU threshold (≥ 5 docs/s) was this experiment's own choice, not an official requirement (the brief asks for CPU operation and rebuilds in "reasonable time"). If the owner accepts a one-time offline corpus index (≈ 1 h on 4 CPUs at the local rate; reused by content hash afterwards), the next step is exactly one official MTEB test run of `gte-modernbert-base` in Dense mode (`benchmark.yml`, `model` input) — that run, not the train proxy, decides. Nothing is changed in the product until then. The product and the submitted
+MTEB result keep MiniLM hybrid (0.0884).
+
+**What the evidence points to next (not run):** 76.4% of the control's misses have queries truncated at 254 pieces and
+59% of misses are absent from both top-100 lists. The cheapest experiment aimed at exactly that is **E004**
+(whole-query mean pooling with the existing MiniLM: ≈ +2 min of query encoding, no re-indexing) — currently cancelled by
+the owner; the new measurement is a reason to reconsider. A second option is a *small* (≤ 35M) retrieval-trained
+long-context encoder, screened with the same harness (`--max-seq`, `--encode-budget-min`).
+
 ---
 
 ## Pre-registered queue (evaluated against baseline-v1 evidence)
@@ -247,6 +350,7 @@ Which experiment runs first is decided by `BOTTLENECK_RULES_V1` in
 | **E002-reranker** | Next in queue (RRF cannot fix ranking or recover candidates cleanly) | **EVALUATED — REJECT** | A cross-encoder reading query and code together can score relevance directly over the top 50–100 candidates | Rerank Hybrid top-k (k ∈ {20, 50, 100}) with a real cross-encoder over frozen candidates; candidate retrieval unchanged | NDCG@10, MRR@10 (bounded above by Oracle@k = 0.2977) | Hours of CPU on benchmark machine | **Yes** |
 | **E003-dense-windows** | Candidate expansion for the 65% of queries missed by both engines | **EVALUATED — REJECT** | 23.5% of documents are cut at 256 word-pieces; incomplete embeddings lose documents in candidate generation | Whole-document vector → id-aligned sliding windows (256/64, max over windows) | Dense and Hybrid Hit@100, then NDCG@10 | ~3× embedding time | **Yes** |
 | **E004-long-query** | Post-E003 audit: 89% of queries exceed Dense's 256 word-piece limit | **CANCELLED FOR NOW (owner decision, 2026-09-25) — not run** | Dense sees only the first 254 query word-pieces; representing the complete query improves Dense recall and carries into Hybrid | Query vector = token-weighted mean over non-overlapping 254-piece query chunks (one condition, `longquery-mean254`); documents, BM25, RRF unchanged | Hybrid NDCG@10 (decides); Dense Recall@100/NDCG@10 (diagnostic) | ≈ +2 min query encoding; no re-embedding | **Yes** (model already cached) |
+| **E005-code-embedder** | Stage-A failure evidence: truncation + domain mismatch of the dense model | **REJECT (CPU cost) · CodeRankEmbed INVALID (2026-09-26)** | A code-retrieval embedder with a ≥ 1,024-token window raises first-stage recall and NDCG@10 | Dense model swap (3 candidates) with model-card prefixes; everything else fixed | Hybrid/Dense NDCG@10 vs control, train-split dev | Minutes per model (micro) on GitHub runners | **Yes** (runs in CI) |
 
 ---
 

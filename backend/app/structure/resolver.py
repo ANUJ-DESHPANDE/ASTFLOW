@@ -17,7 +17,10 @@ def resolve_structure(files: list[ParsedFile]) -> tuple[list[Edge], list[dict], 
         if not relative.startswith("."):
             return None
         path = posixpath.normpath(posixpath.join(posixpath.dirname(current), relative))
-        for candidate in ([path] if path.endswith(".js") else [path + ".js"] if not posixpath.splitext(path)[1] else []):
+        candidates = [path] if path.endswith(".js") else [path + ".js"] if not posixpath.splitext(path)[1] else []
+        if not posixpath.splitext(path)[1]:
+            candidates.append(path + "/index.js")  # require('./router') -> router/index.js
+        for candidate in candidates:
             if candidate in by_file:
                 return candidate
         return None
@@ -32,7 +35,13 @@ def resolve_structure(files: list[ParsedFile]) -> tuple[list[Edge], list[dict], 
         target = by_file[path]
         if target.has_errors:
             return None
-        key = member if imp["name"] == "*" else imp["name"]
+        key = member if imp["name"] == "*" and member else imp["name"]
+        if imp.get("cjs"):
+            # CommonJS exports map a key to a top-level callable; the parser dropped ambiguous keys.
+            symbol = symbols.get(target.exports.get(key, ""))
+            if not symbol or symbol.parent_symbol_id is not None or any(symbol.name in names for names in target.reassigned.values()):
+                return None
+            return symbol
         if sum(s.name == key and s.parent_symbol_id is None for s in target.symbols) != 1:
             return None
         if any(key in names for names in target.reassigned.values()):
@@ -56,7 +65,8 @@ def resolve_structure(files: list[ParsedFile]) -> tuple[list[Edge], list[dict], 
             current = symbols.get(current.parent_symbol_id)
         if name in file.reassigned.get("<module>", set()):
             return None
-        if name in file.shadowed.get("<module>", set()) and name not in {s.name for s in file.symbols if s.parent_symbol_id is None}:
+        if (name in file.shadowed.get("<module>", set()) and name not in {s.name for s in file.symbols if s.parent_symbol_id is None}
+                and not file.imports.get(name, {}).get("cjs")):  # `var x = require('./x')` declares x at module scope
             return None
         if name in file.imports:
             return imported(file, name)
@@ -101,7 +111,7 @@ def resolve_structure(files: list[ParsedFile]) -> tuple[list[Edge], list[dict], 
             scope = call["source"]
             if call["callee_type"] == "identifier":
                 target = lookup(file, callee, scope)
-                how = "named_or_default_import" if callee in file.imports else "lexical_scope"
+                how = ("commonjs_require" if file.imports[callee].get("cjs") else "named_or_default_import") if callee in file.imports else "lexical_scope"
                 if nested:
                     how += "_nested"
             elif call["callee_type"] == "member_expression" and re.fullmatch(r"(?:this\.)?[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)*", callee):
@@ -113,7 +123,7 @@ def resolve_structure(files: list[ParsedFile]) -> tuple[list[Edge], list[dict], 
                     how = "same_class_method"
                 elif receiver in file.imports and file.imports[receiver]["name"] == "*" and receiver not in file.shadowed.get(scope, set()):
                     target = imported(file, receiver, name)
-                    how = "namespace_import"
+                    how = "commonjs_require" if file.imports[receiver].get("cjs") else "namespace_import"
                 elif receiver.startswith("this."):
                     if "<computed-write>" in file.bindings.get(call["class"], {}):
                         unresolved.append({**call, "evidence_type": "UNRESOLVED", "reason": "Computed property mutation in class"})

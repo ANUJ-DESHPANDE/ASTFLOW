@@ -30,7 +30,7 @@ def _signal_vector(text: str) -> np.ndarray:
     return vec
 
 
-def _fake_encode(self, texts, use_windows=False, window_size=256, overlap=64):
+def _fake_encode(self, texts, use_windows=False, window_size=256, overlap=64, **_):
     vectors = [np.expand_dims(_signal_vector(t), 0) for t in texts]  # each doc: exactly 1 "window"
     return vectors if use_windows else np.asarray([v[0] for v in vectors], dtype=np.float32)
 

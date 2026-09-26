@@ -31,6 +31,106 @@ def identifiers(node: Node | None, source: bytes) -> list[str]:
     return [value(n, source) for n in walk(node) if n.type in {"identifier", "shorthand_property_identifier_pattern"}] if node else []
 
 
+EXPORT_MEMBER = re.compile(r"(?:module\.)?exports\.([A-Za-z_$][\w$]*)")
+ALIAS_MEMBER = re.compile(r"([A-Za-z_$][\w$]*)\.([A-Za-z_$][\w$]*)")
+
+
+def commonjs(root: Node, source: bytes, parsed: ParsedFile, top: dict[str, Symbol], span):
+    """Top-level CommonJS: relative `require()` bindings and `module.exports` / `exports.x` / export-object members.
+
+    Only statically unambiguous forms are recorded; an export key assigned two different values is dropped.
+    """
+    def required(node):
+        if node is not None and node.type == "call_expression" and value(field(node, "function"), source) == "require":
+            args = field(node, "arguments")
+            items = args.named_children if args else []
+            if len(items) == 1 and items[0].type == "string":
+                module = value(items[0], source).strip("\"'")
+                return module if module.startswith(".") else None
+        return None
+
+    def add_import(alias, module, name, node):
+        parsed.imports[alias] = {"module": module, "name": name, "supported": True, "cjs": True, "span": span(node, "require")}
+
+    def chain(node):  # a = b = c = VALUE -> (["a", "b", "c"], VALUE)
+        lefts = []
+        while node is not None and node.type == "assignment_expression":
+            lefts.append(value(field(node, "left"), source))
+            node = field(node, "right")
+        return lefts, node
+
+    def target(expression):
+        if expression is None:
+            return None
+        if expression.type == "identifier":
+            symbol = top.get(value(expression, source))
+            return symbol if symbol and symbol.kind in CALLABLE | {"class"} else None
+        if expression.type in FUNCTIONS | {"class"}:
+            return next((s for s in parsed.symbols if s.parent_symbol_id is None and s.start_byte == expression.start_byte), None)
+        return None
+
+    statements = []  # (declared name or None, assignment targets, assigned value, statement)
+    for node in root.named_children:
+        if node.type in {"lexical_declaration", "variable_declaration"}:
+            for declarator in (d for d in node.named_children if d.type == "variable_declarator"):
+                lefts, rhs = chain(field(declarator, "value"))
+                name_node = field(declarator, "name")
+                statements.append((name_node, lefts, rhs, node))
+        elif node.type == "expression_statement" and node.named_children and node.named_children[0].type == "assignment_expression":
+            lefts, rhs = chain(node.named_children[0])
+            statements.append((None, lefts, rhs, node))
+
+    aliases = set()  # top-level variables that *are* the export object (`var app = module.exports = {}`, `module.exports = res`)
+    for name_node, lefts, rhs, _ in statements:
+        if "module.exports" in lefts:
+            if name_node is not None and name_node.type == "identifier":
+                aliases.add(value(name_node, source))
+            if rhs is not None and rhs.type == "identifier" and value(rhs, source) not in top:
+                aliases.add(value(rhs, source))
+
+    exports: dict[str, str | None] = {}
+
+    def export(key, symbol):
+        if symbol is None:
+            return
+        exports[key] = symbol.symbol_id if exports.get(key, symbol.symbol_id) == symbol.symbol_id else None
+
+    for name_node, lefts, rhs, node in statements:
+        if name_node is not None and not lefts:
+            module = required(rhs)
+            if module and name_node.type == "identifier":
+                add_import(value(name_node, source), module, "*", node)
+            elif module and name_node.type == "object_pattern":
+                for item in name_node.named_children:
+                    if item.type == "shorthand_property_identifier_pattern":
+                        add_import(value(item, source), module, value(item, source), node)
+                    elif item.type == "pair_pattern" and field(item, "value").type == "identifier":
+                        add_import(value(field(item, "value"), source), module, value(field(item, "key"), source), node)
+            elif rhs is not None and rhs.type == "member_expression" and name_node.type == "identifier":
+                module = required(field(rhs, "object"))
+                if module:
+                    add_import(value(name_node, source), module, value(field(rhs, "property"), source), node)
+        for left in lefts:
+            member = EXPORT_MEMBER.fullmatch(left)
+            alias = ALIAS_MEMBER.fullmatch(left)
+            if left == "module.exports":
+                if rhs is not None and rhs.type == "object":
+                    for item in rhs.named_children:
+                        if item.type == "shorthand_property_identifier":
+                            export(value(item, source), target(item) or top.get(value(item, source)))
+                        elif item.type == "pair":
+                            export(value(field(item, "key"), source).strip("\"'"), target(field(item, "value")))
+                else:
+                    export("*", target(rhs))
+            elif member:
+                export(member.group(1), target(rhs))
+            elif alias and alias.group(1) in aliases:
+                export(alias.group(2), target(rhs))
+    for key, symbol_id in exports.items():
+        if symbol_id and key not in parsed.exports:
+            parsed.exports[key] = symbol_id
+
+
 def parse_file(path: str, source_text: str) -> ParsedFile:
     source = source_text.encode("utf-8")
     tree = Parser(LANGUAGE).parse(source)
@@ -87,6 +187,18 @@ def parse_file(path: str, source_text: str) -> ParsedFile:
                     name = f"callback@{node.start_point.row + 1}:{node.start_point.column}"
             elif container and container.type == "export_statement" and not name:
                 name = "default"
+            elif container and container.type == "assignment_expression" and not name:
+                # `exports.parse = function () {}`, `res.links = function () {}` -> "parse", "links";
+                # `var proto = module.exports = function () {}` -> "proto".
+                left = field(container, "left")
+                if value(left, source) == "module.exports":
+                    outer = container.parent
+                    while outer and outer.type == "assignment_expression":
+                        outer = outer.parent
+                    if outer and outer.type == "variable_declarator" and field(outer, "name").type == "identifier":
+                        name = value(field(outer, "name"), source)
+                elif left and left.type == "member_expression":
+                    name = value(field(left, "property"), source)
             if not name:
                 name = f"anonymous@{node.start_point.row + 1}:{node.start_point.column}"
             current = create(span, name, kind, parent, field(node, "parameters") or field(node, "parameter"))
@@ -135,6 +247,8 @@ def parse_file(path: str, source_text: str) -> ParsedFile:
                 alias = value(field(spec, "alias"), source) or original
                 if original in top and not field(node, "source"):
                     parsed.exports[alias] = top[original].symbol_id
+
+    commonjs(tree.root_node, source, parsed, top, span)
 
     callables = [s for s in parsed.symbols if s.kind in CALLABLE]
     if not callables and source.strip():

@@ -14,7 +14,9 @@ COPY backend backend
 COPY benchmark benchmark
 COPY scripts scripts
 COPY examples examples
-RUN python -m pip install --no-cache-dir -c requirements.lock.txt . && useradd --create-home astflow && chown -R astflow:astflow /app
+# Editable install: the app resolves ROOT from its own location, so it must stay under /app (a site-packages copy
+# would look for frontend/dist, examples/ and a writable .astflow/ inside site-packages).
+RUN python -m pip install --no-cache-dir -c requirements.lock.txt -e . && useradd --create-home astflow && chown -R astflow:astflow /app
 COPY --from=ui /app/frontend/dist frontend/dist
 USER astflow
 ENV ASTFLOW_SEMANTIC=off ASTFLOW_TS_ENRICH=false

@@ -16,6 +16,9 @@ from backend.app.indexing.service import IndexService
 from backend.app.indexing.discovery import read_snapshot, snapshot_hash
 from backend.app.versions.compare import compare_indexes
 
+# JSON bodies stay small and bounded: a full problem-statement query (MAX_QUERY_CHARS) plus escaping headroom.
+MAX_BODY_BYTES = 128 * 1024
+
 logger = logging.getLogger(__name__)
 
 
@@ -46,7 +49,7 @@ def create_app(settings: Settings | None = None):
             body = bytearray()
             async for chunk in request.stream():
                 body.extend(chunk)
-                if len(body) > 16384:
+                if len(body) > MAX_BODY_BYTES:
                     return JSONResponse({"detail": "Request body is too large"}, status_code=413)
             request._body = bytes(body)
         response = await call_next(request)
@@ -160,7 +163,17 @@ def create_app(settings: Settings | None = None):
         if file and file not in index.files:
             raise HTTPException(404, 'Source file is not in this indexed snapshot')
         if not file:
-            paths = sorted(index.files)[:150]
+            paths = sorted(index.files)
+            if len(paths) > 150:
+                # Too many files to show: keep the most connected ones (distinct cross-file caller/callee files),
+                # most connected first, so the overview shows the repository's hubs instead of the alphabet's start.
+                degree = {}
+                for a, b in {(index.graph.symbols[e.source_symbol_id].file_path, index.graph.symbols[e.target_symbol_id].file_path)
+                             for e in index.edges}:
+                    if a != b:
+                        degree[a] = degree.get(a, 0) + 1
+                        degree[b] = degree.get(b, 0) + 1
+                paths = sorted(paths, key=lambda p: (-degree.get(p, 0), p))[:150]
             nodes = [{"symbol_id": p, "qualified_name": p.split('/')[-1], "file": p,
                       "start_line": 1, "end_line": max(1, len(index.files[p].splitlines())), "kind": "file"} for p in paths]
             edges, seen = [], set()
@@ -173,7 +186,8 @@ def create_app(settings: Settings | None = None):
             return {"nodes": nodes, "edges": edges, "paths": [], "version_key": index.manifest["version_key"],
                     "unresolved": index.extra.get("unresolved", [])[:100],
                     "unresolved_count": len(index.extra.get("unresolved", [])),
-                    "message": f"{len(paths)} of {len(index.files)} source files · select a file to explore its symbols",
+                    "message": (f"{len(paths)} most connected of {len(index.files)} source files · select a file to explore its symbols"
+                                if len(index.files) > 150 else f"{len(paths)} of {len(index.files)} source files · select a file to explore its symbols"),
                     "status": "SEARCH_LIMIT_REACHED" if len(index.files) > 150 else "OK"}
         symbols = [s for s in index.symbols if s.symbol_id in index.graph.graph and (not file or s.file_path == file)]
         ids = {s.symbol_id for s in symbols[:150]}

@@ -25,21 +25,23 @@ MTEB_VERSION = '2.21.0'
 DATASET_REVISION = 'f22508f96b7a36c2415181ed8bb76f76e04ae2d5'
 
 class ASTFLOWSearch:
-    def __init__(self, mode='bm25', download_model=False):
+    def __init__(self, mode='bm25', download_model=False, model_name=None):
         from mteb.models.model_meta import ModelMeta
         self.mode = mode
-        self.settings = Settings(semantic='off' if mode == 'bm25' else 'auto', ts_enrich=False)
+        self.settings = Settings(model=model_name or Settings().model, semantic='off' if mode == 'bm25' else 'auto', ts_enrich=False)
         self.embedder = Embedder(self.settings)
         if mode != 'bm25' and self.embedder.load(download=download_model) is None:
             raise RuntimeError(self.embedder.reason + '; refusing to label lexical fallback as hybrid/dense')
-        source = Path(__file__).read_bytes() + (ROOT/'backend/app/retrieval/search.py').read_bytes()
+        source = (Path(__file__).read_bytes() + (ROOT/'backend/app/retrieval/search.py').read_bytes()
+                  + (ROOT/'backend/app/retrieval/embeddings.py').read_bytes() + self.settings.model.encode())
         revision = hashlib.sha256(source).hexdigest()[:16]
         self.mteb_model_meta = ModelMeta(name=f'ASTFLOW/{mode}', revision=revision, release_date=None,
             languages=['eng-Latn','python-Code'], loader=None, n_parameters=None, memory_usage_mb=None,
             max_tokens=None, embed_dim=None, license=None, open_weights=None, public_training_code=None,
             public_training_data=None, framework=[], similarity_fn_name=None, use_instructions=False,
             training_datasets=set(), model_type=['sparse'] if mode=='bm25' else ['dense'])
-        self.measurements = {'mode':mode,'model':self.embedder.status,'query_latencies_ms':[],
+        from backend.app.retrieval.embeddings import profile
+        self.measurements = {'mode':mode,'model':self.embedder.status,'model_profile':profile(self.settings.model),'query_latencies_ms':[],
                              'scope':'retrieval only; no graph, JS symbol boosts, or investigation agent'}
 
     def index(self, corpus, **kwargs):
@@ -96,6 +98,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--mode',choices=['bm25','dense','hybrid'],default='bm25')
     parser.add_argument('--download-model',action='store_true')
+    parser.add_argument('--model',default=None,help='Dense model (default: the product default, ASTFLOW_MODEL or MiniLM)')
     parser.add_argument('--output',type=Path,default=ROOT/'benchmark/results/mteb')
     args=parser.parse_args()
     if importlib.metadata.version('mteb') != MTEB_VERSION:
@@ -107,7 +110,7 @@ def main():
     args.output.mkdir(parents=True,exist_ok=True)
     git=lambda *a: subprocess.run(['git','-C',str(ROOT),*a],capture_output=True,text=True).stdout.strip()
     provenance={'git_commit':git('rev-parse','HEAD'),'git_dirty_files':git('status','--porcelain','--untracked-files=no').splitlines()}
-    model=ASTFLOWSearch(args.mode,args.download_model)
+    model=ASTFLOWSearch(args.mode,args.download_model,args.model)
     started=time.perf_counter()
     result=mteb.evaluate(model,[task],cache=None,overwrite_strategy='always',num_proc=1,
                          prediction_folder=args.output/'predictions',encode_kwargs={'batch_size':64})
