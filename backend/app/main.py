@@ -14,6 +14,7 @@ from backend.app.api.schemas import CompareRequest, IndexRequest, SearchRequest,
 from backend.app.config import ROOT, Settings
 from backend.app.indexing.service import IndexService
 from backend.app.indexing.discovery import read_snapshot, snapshot_hash
+from backend.app.retrieval.embeddings import ModelUnavailable
 from backend.app.versions.compare import compare_indexes
 
 # JSON bodies stay small and bounded: a full problem-statement query (MAX_QUERY_CHARS) plus escaping headroom.
@@ -68,9 +69,22 @@ def create_app(settings: Settings | None = None):
     async def missing_file(request, exc):
         return JSONResponse({"detail": "Repository or index file does not exist"}, status_code=404)
 
+    @app.exception_handler(ModelUnavailable)
+    async def model_unavailable(request, exc):
+        return JSONResponse({"detail": str(exc)}, status_code=503)
+
     @app.get("/api/health")
     def health():
-        return {"status": "ok", "service": "ASTFLOW", "version": "0.1.0", "semantic": service.embedder.status}
+        indexed = {}
+        if service.repo_path:
+            for alias, key in service.registry.items():
+                repo, version = alias.rsplit("\n", 1)
+                if repo == service.repo_path and key in service.indexes:
+                    m = service.indexes[key].manifest
+                    indexed[version] = {"version_key": key, "resolved_revision": m.get("resolved_revision"),
+                                        "embedding_model": m.get("embedding_model"), "chunks": m.get("chunk_count")}
+        return {"status": "ok", "service": "ASTFLOW", "version": "0.1.0", "semantic": service.embedder.status,
+                "retrieval": service.retrieval_status(), "repository": service.repo_path, "indexed_versions": indexed}
 
     @app.get("/api/repository")
     def repository(version: str | None = None):

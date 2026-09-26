@@ -15,23 +15,44 @@ def output(value):
     typer.echo(json.dumps(value, indent=2, ensure_ascii=True))
 
 
+def build(service: IndexService, path: Path, version: str):
+    from backend.app.retrieval.embeddings import ModelUnavailable
+    try:
+        return service.index(str(path), version)
+    except ModelUnavailable as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        raise typer.Exit(2)
+
+
 @cli.command()
 def index(path: Path, version: str = "working-tree"):
-    output(IndexService().index(str(path), version).manifest)
+    output(build(IndexService(), path, version).manifest)
 
 
 @cli.command()
 def search(path: Path, query: str, version: str = "working-tree", top_k: int = 10, agentic: bool = True):
-    service = IndexService()
-    snapshot = service.index(str(path), version)
+    snapshot = build(IndexService(), path, version)
     output(investigate(snapshot, query, version, top_k, agentic))
 
 
 @cli.command()
 def compare(path: Path, query: str, version_a: str, version_b: str):
     service = IndexService()
-    a, b = service.index(str(path), version_a), service.index(str(path), version_b)
+    a, b = build(service, path, version_a), build(service, path, version_b)
     output(compare_indexes(a, b, query, version_a, version_b))
+
+
+def announce(service) -> None:
+    """Load the model before serving and print what will rank results; refuse to start in a configuration the
+    user did not choose (no silent lexical fallback)."""
+    typer.echo("Loading the search model on CPU…")
+    service.embedder.load()
+    status = service.retrieval_status()
+    if service.settings.semantic != "off" and not status["model_loaded"]:
+        typer.echo(f"Error: {status['message']}", err=True)
+        raise typer.Exit(2)
+    frozen = "frozen submission configuration" if status["frozen_submission_configuration"] else "NOT the frozen submission configuration"
+    typer.echo(f"Retrieval: {status['model'] or 'no embedding model'} · {status['mode']} · CPU ({frozen})")
 
 
 @cli.command()
@@ -39,6 +60,7 @@ def serve(path: Path | None = typer.Argument(None), port: int = 8000):
     import uvicorn
     from backend.app.main import create_app
     app = create_app()
+    announce(app.state.service)
     if path:
         app.state.service.index(str(path))
     uvicorn.run(app, host="127.0.0.1", port=port)
@@ -65,6 +87,7 @@ def demo(port: int = 8000):
     setup()
     app = create_app()
     service = app.state.service
+    announce(service)
     for version in ["v1", "v2", "working-tree"]:
         manifest = service.index(str(ROOT / "examples/demo-repo"), version).manifest
         typer.echo(f"{version}: {manifest['chunk_count']} snippets, {manifest['edge_count']} relationships")
@@ -76,10 +99,12 @@ def snippets(query: str = typer.Argument(None, help="Natural-language query; omi
              corpus: list[str] = typer.Option(["apps"], "--corpus", "-c",
                                               help="'apps' (CoIR Apps), 'name=file.jsonl' or 'file.jsonl'; repeat for versions"),
              query_file: Path | None = typer.Option(None, help="Read the query (e.g. a full problem statement) from a file"),
-             top_k: int = 10, mode: str = "hybrid", lines: int = 12, as_json: bool = typer.Option(False, "--json")):
+             top_k: int = 10, mode: str = typer.Option(None, help="dense (default, frozen), hybrid or bm25"),
+             lines: int = 12, as_json: bool = typer.Option(False, "--json")):
     """Rank code snippets from a snippet corpus (the AppsRetrieval setting). Several --corpus values = versions."""
     import sys
     from backend.app.corpus import SnippetIndex, read_corpus, resolve
+    from backend.app.retrieval.embeddings import ModelUnavailable
     text = query_file.read_text(encoding="utf-8") if query_file else query if query else sys.stdin.read()
     if not text.strip():
         raise typer.BadParameter("Provide a query, --query-file, or text on stdin")
@@ -88,7 +113,11 @@ def snippets(query: str = typer.Argument(None, help="Natural-language query; omi
         name, path = resolve(spec)
         versions[name] = read_corpus(path)
     index = SnippetIndex(versions)
-    found = index.search(text.strip(), top_k, mode)
+    try:
+        found = index.search(text.strip(), top_k, mode)
+    except ModelUnavailable as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        raise typer.Exit(2)
     if as_json:
         return output({"index": index.stats, **found})
     typer.echo(f"{index.stats['distinct_snippets']} distinct snippets · versions {index.stats['versions']} · "

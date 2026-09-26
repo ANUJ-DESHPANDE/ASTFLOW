@@ -17,7 +17,13 @@ run(windows ? 'npm.cmd' : 'npm', ['ci']);
 run(windows ? 'npm.cmd' : 'npm', ['run', 'build']);
 run(python, ['scripts/setup_demo.py']);
 if (process.env.ASTFLOW_SEMANTIC !== 'off') {
+  const name = process.env.ASTFLOW_MODEL || 'Alibaba-NLP/gte-modernbert-base';
+  console.log(`\nDownloading the search model ${name} (one time, about 0.6 GB; runs on CPU)…`);
   const model = spawnSync(python, ['-m', 'backend.app.cli', 'model-download'], { cwd: root, stdio: 'inherit' });
-  if (model.status !== 0) console.warn('Model download unavailable. Lexical search remains ready; retry astflow model-download later.');
+  if (model.status !== 0) {
+    console.error(`\nSetup incomplete: the search model ${name} could not be downloaded (see the error above).\n` +
+      'Check the internet connection and run npm run setup again. To use lexical-only search instead, set ASTFLOW_SEMANTIC=off.');
+    process.exit(1);
+  }
 }
 console.log('Setup complete. Start with npm run demo.');

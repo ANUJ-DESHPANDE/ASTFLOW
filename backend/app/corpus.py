@@ -20,7 +20,7 @@ import numpy as np
 
 from backend.app.config import ROOT, Settings
 from backend.app.models.entities import Chunk
-from backend.app.retrieval.embeddings import Embedder
+from backend.app.retrieval.embeddings import Embedder, ModelUnavailable
 from backend.app.retrieval.search import Retriever
 
 APPS_EXPORT = ROOT / ".astflow" / "datasets" / "apps"
@@ -113,10 +113,13 @@ class SnippetIndex:
                       "embedding_cache": self.embedding_cache, "semantic": self.embedder.status,
                       "index_seconds": round(time.perf_counter() - started, 2)}
 
-    def search(self, query: str, top_k: int = 10, mode: str = "hybrid"):
+    def search(self, query: str, top_k: int = 10, mode: str | None = None):
         started = time.perf_counter()
+        mode = mode or self.settings.retrieval  # frozen: dense, exactly as in the official AppsRetrieval run
         if mode != "bm25" and self.retriever.embeddings is None:
-            mode = "bm25"  # truthful fallback: reported below, never labelled hybrid
+            if self.settings.semantic != "off":
+                raise ModelUnavailable(self.embedder.reason)
+            mode = "bm25"  # explicit lexical-only mode: reported below, never labelled dense or hybrid
         rows, _ = self.retriever.rank(query, mode=mode, boosts=False, limit=top_k)
         results = []
         for rank, row in enumerate(rows[:top_k], 1):

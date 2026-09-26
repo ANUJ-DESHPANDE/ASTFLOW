@@ -49,8 +49,16 @@ def investigate(index, query: str, version: str, top_k: int = 10, agentic: bool 
     settings = retriever.settings
     query_plan = plan(query, graph)
     trace = [{"step": "PLAN", "details": f"{query_plan['intent'].title()} investigation; at most two retrieval passes", "data": query_plan}]
-    rows, diagnostics = retriever.rank(query, mode=mode if mode in {"bm25", "dense"} else "hybrid", boosts=mode == "full")
-    trace.append({"step": "SEARCH", "details": f"Retrieved {len(rows)} candidates", "data": {"pass": 1, **diagnostics}})
+    # First stage: an explicit ranking mode, else the configured one (frozen: GTE dense). Without embeddings (only
+    # possible with ASTFLOW_SEMANTIC=off) hybrid ranking reduces to BM25, and the trace says so.
+    first_stage = mode if mode in {"bm25", "dense", "hybrid"} else settings.retrieval
+    if retriever.embeddings is None and first_stage != "bm25":
+        first_stage = "hybrid"
+    rows, diagnostics = retriever.rank(query, mode=first_stage, boosts=mode == "full")
+    label = ("lexical only, no embedding model" if retriever.embeddings is None
+             else f"{settings.model} {first_stage}")
+    trace.append({"step": "SEARCH", "details": f"Retrieved {len(rows)} candidates ({label})",
+                  "data": {"pass": 1, "ranking": first_stage, **diagnostics}})
     paths = None
     if len(query_plan["symbols"]) >= 2 and query_plan["intent"] in {"PATH", "SEQUENCE"}:
         paths = graph.trace(query_plan["symbols"][0], query_plan["symbols"][-1])
@@ -76,7 +84,7 @@ def investigate(index, query: str, version: str, top_k: int = 10, agentic: bool 
         followup_query = query + " " + " ".join(discovered)
         action = "EXACT_SYMBOL_EXPANSION" if missing else "CALLER_EXPANSION" if query_plan["intent"] == "USAGE" else "GRAPH_NEIGHBOR_EXPANSION" if structural_intent else "PSEUDO_RELEVANCE_EXPANSION"
         trace.append({"step": "REFINE", "details": f"{action.replace('_', ' ').title()} around {', '.join(discovered)}", "data": {"action": action, "query": followup_query, "based_on": observation["seed_ids"]}})
-        refined, _ = retriever.rank(followup_query)
+        refined, _ = retriever.rank(followup_query, mode=first_stage)
         for rank, row in enumerate(refined, 1):
             cid = row["chunk"].chunk_id
             if cid not in candidates:
@@ -158,4 +166,7 @@ def investigate(index, query: str, version: str, top_k: int = 10, agentic: bool 
             # results rest on so a meaning-only list is not presented as "the relevant code".
             "match_basis": match_basis(results),
             "semantic": {**index.manifest["semantic"], "available": diagnostics["semantic_available"]}, "diagnostics": diagnostics,
+            "retrieval": {"model": settings.model if retriever.embeddings is not None else None, "ranking": first_stage,
+                          "index_model": index.manifest.get("embedding_model"), "version_key": index.manifest["version_key"],
+                          "resolved_revision": index.manifest.get("resolved_revision")},
             "latency_ms": round((time.perf_counter() - started) * 1000, 2)}

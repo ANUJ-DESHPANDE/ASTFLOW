@@ -13,7 +13,7 @@ from backend.app.config import ROOT, Settings
 from backend.app.indexing.discovery import list_versions, read_snapshot, snapshot_hash
 from backend.app.parsing.javascript import parse_file
 from backend.app.retrieval.embedding_cache import EmbeddingCache
-from backend.app.retrieval.embeddings import Embedder
+from backend.app.retrieval.embeddings import Embedder, ModelUnavailable
 from backend.app.retrieval.search import Retriever
 from backend.app.storage.store import load_index, save_index
 from backend.app.structure.graph import ProjectGraph
@@ -64,6 +64,8 @@ class IndexService:
         manifest, files, symbols, chunks, edges, extra, embeddings = data
         if embeddings is not None and manifest.get('embedding_model') != self.settings.model:
             raise ValueError('Indexed embedding model differs from the configured model; reindex this version')
+        if embeddings is None and chunks and self.settings.semantic != "off":
+            raise ValueError('This version was indexed without the embedding model; reindex it')
         return Index(manifest, files, symbols, chunks, edges, extra,
                      Retriever(chunks, embeddings, self.embedder, self.settings), ProjectGraph(symbols, edges))
 
@@ -78,6 +80,9 @@ class IndexService:
                     raise ValueError("No supported JavaScript source files were found")
                 self.status.update(stage="Loading CPU search model", progress=12)
                 self.embedder.load()
+                if self.embedder.model is None and self.settings.semantic != "off":
+                    # No silent lexical fallback: the product must run the configuration it reports.
+                    raise ModelUnavailable(self.embedder.reason)
                 digest = snapshot_hash(files)
                 identity = f"{repo}\n{revision}\n{digest}\n{self.settings.fingerprint()}\n{self.embedder.status}"
                 key = hashlib.sha256(identity.encode()).hexdigest()[:24]
@@ -115,7 +120,8 @@ class IndexService:
                                 "indexed_at": datetime.now(timezone.utc).isoformat(), "embedding_model": self.embedder.status["model"],
                                 "file_count": len(files), "symbol_count": len(symbols), "chunk_count": len(chunks),
                                 "edge_count": len(edges), "configuration_hash": self.settings.fingerprint(),
-                                "semantic": self.embedder.status, "enrichment": enrichment, "warnings": warnings,
+                                "semantic": self.embedder.status, "retrieval": self.retrieval_status(embeddings is not None),
+                                "enrichment": enrichment, "warnings": warnings,
                                 "embedding_cache": embed_stats,
                                 "index_latency_ms": round((time.perf_counter() - started) * 1000, 2)}
                     extra = {"unresolved": unresolved, "sequences": sequences,
@@ -161,17 +167,32 @@ class IndexService:
         hashes = [hashlib.sha256(c.search_text.encode()).hexdigest() for c in chunks]
         cached = self.embedding_cache.get_many(model_name, hashes)
         missing = [i for i, h in enumerate(hashes) if h not in cached]
-        if missing:
-            vectors = self.embedder.encode([chunks[i].search_text for i in missing])
+        step = 64  # report progress: a cold index of a mid-sized repository takes minutes on CPU
+        for start in range(0, len(missing), step):
+            batch = missing[start:start + step]
+            self.status.update(stage=f"Embedding code chunks with {model_name}: {start} of {len(missing)} new "
+                                     f"({len(chunks) - len(missing)} reused)",
+                               progress=78 + int(20 * start / len(missing)))
+            vectors = self.embedder.encode([chunks[i].search_text for i in batch])
             if vectors is None:
                 return None, stats
-            new_items = {hashes[i]: vectors[j] for j, i in enumerate(missing)}
+            new_items = {hashes[i]: vectors[j] for j, i in enumerate(batch)}
             self.embedding_cache.put_many(model_name, new_items)
             cached.update(new_items)
         stats["reused"] = len(chunks) - len(missing)
         stats["computed"] = len(missing)
         embeddings = np.stack([cached[h] for h in hashes]).astype(np.float32)
         return embeddings, stats
+
+    def retrieval_status(self, embedded: bool | None = None) -> dict:
+        """What ranks results, for the health endpoint, index manifests and startup logs. `embedded` describes one
+        index; without it, the running configuration (the model loads before the first index)."""
+        semantic = self.settings.semantic != "off" if embedded is None else embedded
+        return {"model": self.settings.model if semantic else None,
+                "mode": self.settings.retrieval if semantic else "bm25 (lexical-only: ASTFLOW_SEMANTIC=off)",
+                "model_loaded": self.embedder.model is not None, "device": "cpu",
+                "frozen_submission_configuration": bool(semantic and self.settings.frozen),
+                "message": self.embedder.reason}
 
     def get(self, version: str = "working-tree") -> Index:
         if not self.repo_path:

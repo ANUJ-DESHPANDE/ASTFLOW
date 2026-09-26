@@ -27,6 +27,9 @@ export type SearchResponse = {
 export type Manifest = {
   version: string; version_key: string; file_count: number; symbol_count: number; chunk_count: number; edge_count: number;
   index_latency_ms: number; indexed_at: string; semantic: { available: boolean; message: string };
+  /** What ranks this snapshot's results (absent on indexes built before it was recorded). */
+  retrieval?: { model: string | null; mode: string; device: string; frozen_submission_configuration: boolean };
+  embedding_model?: string | null;
   enrichment: { status: string; edges_added: number; edges_confirmed: number }; warnings: string[];
 };
 export type Repository = { path: string | null; name: string | null; files: string[]; indexes: Manifest[]; demo_path: string };
