@@ -1,6 +1,6 @@
 # ASTFLOW Retrieval — Session Handoff
 
-_Last updated 2026-09-25 (E001–E003 rejected; E004 pre-registered, then cancelled for now by the project owner (2026-09-25); engineering audit on `audit/master-remediation`, see `audit/FINAL-ASTFLOW-ENGINEERING-REPORT.md`). Contains only verified information._
+_Last updated 2026-09-26 (E005 rejected on CPU cost); previously 2026-09-25 (E001–E003 rejected; E004 pre-registered, then cancelled for now by the project owner (2026-09-25); engineering audit on `audit/master-remediation`, see `audit/FINAL-ASTFLOW-ENGINEERING-REPORT.md`). Contains only verified information._
 
 ## TRUST STATUS
 Measurement system: **VERIFIED** (4 evaluators agree on the frozen runs; MTEB 2.21.0 gives the same numbers for the current code; baseline-v1 re-generated from committed code with 0 per-query metric changes).
@@ -52,8 +52,11 @@ Reranker: NONE (E002 cross-encoder rejected and removed from the product)
 | E001-fusion | Offline RRF parameter optimization (315 configs) | 0.08840 | 0.08845 | Conf: -0.00022 ([-0.00331, +0.00286]) | **REJECT** |
 | E002-reranker | `ms-marco-MiniLM-L-6-v2` cross-encoder over Hybrid top-20 (dev winner of 20/50/100) | 0.08840 | 0.06972 | Conf: -0.01672 ([-0.02479, -0.00876]); All: -0.01869 ([-0.02467, -0.01271]) | **REJECT** |
 | E003-dense-windows | Sliding-window Dense vectors (256/64, max over windows) | 0.08840 | 0.08932 | Conf: +0.00091 ([-0.00231, +0.00441]); All: +0.00092 ([-0.00145, +0.00333]) | **REJECT** |
+| E005-code-embedder | gte-modernbert-base / granite-embedding-english-r2 / CodeRankEmbed as the dense model (train-split dev) | 0.08840 | — | not reached: ≤ 2.4 docs/s at 512 tokens on 4 CPUs (< 5 required); CodeRankEmbed fails to load | **REJECT (CPU) / INVALID** |
 
 ## NEXT ACTION
+2026-09-26: E005 rejected on CPU cost (see `benchmark/EXPERIMENTS.md` → E005 run log). Measured on 300 train queries: 59% of misses are outside both top-100 lists and 76% of missed queries are truncated at 254 pieces, which is what the (cancelled) E004 targets. Submission readiness: `audit/FINAL-SUBMISSION-READINESS.md`.
+
 No retrieval experiment is active. E004 (complete-query dense representation, pre-registered in
 `benchmark/EXPERIMENTS.md`) was cancelled for now by the project owner (2026-09-25); pre-registration kept in the ledger, not run. Engineering follow-ups are ordered in
 `audit/18-remediation-plan.md` (CommonJS edges F-029, test code in results F-038, graph overview F-030).

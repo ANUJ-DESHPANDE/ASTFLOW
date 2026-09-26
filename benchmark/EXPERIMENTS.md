@@ -296,6 +296,34 @@ product's JS indexing time with the winner is measured separately before any def
 | Cheaper alternative | 100 queries × 600 documents, 512-token cap, per-slice throughput printed, in-script encode budget (30 min) |
 | Decision | run the proxy once; the 1,024-token configuration is rejected on CPU cost regardless of its accuracy |
 
+**Run 3 (2026-09-26, run 36232451630) — proxy: 100 train queries × 600 documents, 512 tokens.**
+- Control MiniLM: BM25 0.5341 · Dense 0.5563 · **Hybrid 0.6145** NDCG@10 (MRR@10 0.5784); 29 docs/s on the runner.
+- `gte-modernbert-base`, `granite-embedding-english-r2`: still encoding after 20+ minutes (a job that should take ~4 minutes
+  at the measured rate below); no metrics readable before the report was written.
+
+**Profiling (this container, 4 CPU threads, same architecture with random weights; speed does not depend on weights):**
+ModernBERT-base = 10.1 seq/s at 150 tokens, 2.4 seq/s at 512 (MiniLM-L6 shape: 80.9 seq/s at 150); 75% of time in
+`aten::mm` (compute-bound, no pathology); ragged batches cost the same as padded ones; sentence-transformers 5.7 honours
+the 512 cap. Why the CI runners are several times slower still is **not established** (their in-progress logs cannot be
+read from the development container).
+
+| Kill-rule record | |
+|---|---|
+| Task | E005 proxy (run 3) |
+| Why it was slow | ModernBERT-base is ~35× MiniLM's compute per token; CI additionally slower than the local profile, cause unknown |
+| What we need to know | accuracy gain and CPU cost |
+| Result | CPU cost measured: at the *best* rate (2.4 docs/s at 512 tokens, 4 threads) the 8,765-document corpus takes ≈ 1 h and the 3,765 long test queries ≈ 26 min |
+| Decision | **REJECT on CPU feasibility** — fails the pre-registered ≥ 5 docs/s threshold at 512 tokens, before any accuracy result. The accuracy question for this model class stays open. |
+
+**E005 decision: REJECT (CPU cost) for the 149M ModernBERT class; CodeRankEmbed INVALID.** The product and the submitted
+MTEB result keep MiniLM hybrid (0.0884).
+
+**What the evidence points to next (not run):** 76.4% of the control's misses have queries truncated at 254 pieces and
+59% of misses are absent from both top-100 lists. The cheapest experiment aimed at exactly that is **E004**
+(whole-query mean pooling with the existing MiniLM: ≈ +2 min of query encoding, no re-indexing) — currently cancelled by
+the owner; the new measurement is a reason to reconsider. A second option is a *small* (≤ 35M) retrieval-trained
+long-context encoder, screened with the same harness (`--max-seq`, `--encode-budget-min`).
+
 ---
 
 ## Pre-registered queue (evaluated against baseline-v1 evidence)
@@ -309,7 +337,7 @@ Which experiment runs first is decided by `BOTTLENECK_RULES_V1` in
 | **E002-reranker** | Next in queue (RRF cannot fix ranking or recover candidates cleanly) | **EVALUATED — REJECT** | A cross-encoder reading query and code together can score relevance directly over the top 50–100 candidates | Rerank Hybrid top-k (k ∈ {20, 50, 100}) with a real cross-encoder over frozen candidates; candidate retrieval unchanged | NDCG@10, MRR@10 (bounded above by Oracle@k = 0.2977) | Hours of CPU on benchmark machine | **Yes** |
 | **E003-dense-windows** | Candidate expansion for the 65% of queries missed by both engines | **EVALUATED — REJECT** | 23.5% of documents are cut at 256 word-pieces; incomplete embeddings lose documents in candidate generation | Whole-document vector → id-aligned sliding windows (256/64, max over windows) | Dense and Hybrid Hit@100, then NDCG@10 | ~3× embedding time | **Yes** |
 | **E004-long-query** | Post-E003 audit: 89% of queries exceed Dense's 256 word-piece limit | **CANCELLED FOR NOW (owner decision, 2026-09-25) — not run** | Dense sees only the first 254 query word-pieces; representing the complete query improves Dense recall and carries into Hybrid | Query vector = token-weighted mean over non-overlapping 254-piece query chunks (one condition, `longquery-mean254`); documents, BM25, RRF unchanged | Hybrid NDCG@10 (decides); Dense Recall@100/NDCG@10 (diagnostic) | ≈ +2 min query encoding; no re-embedding | **Yes** (model already cached) |
-| **E005-code-embedder** | Stage-A failure evidence: truncation + domain mismatch of the dense model | **PRE-REGISTERED (2026-09-26)** | A code-retrieval embedder with a ≥ 1,024-token window raises first-stage recall and NDCG@10 | Dense model swap (3 candidates) with model-card prefixes; everything else fixed | Hybrid/Dense NDCG@10 vs control, train-split dev | Minutes per model (micro) on GitHub runners | **Yes** (runs in CI) |
+| **E005-code-embedder** | Stage-A failure evidence: truncation + domain mismatch of the dense model | **REJECT (CPU cost) · CodeRankEmbed INVALID (2026-09-26)** | A code-retrieval embedder with a ≥ 1,024-token window raises first-stage recall and NDCG@10 | Dense model swap (3 candidates) with model-card prefixes; everything else fixed | Hybrid/Dense NDCG@10 vs control, train-split dev | Minutes per model (micro) on GitHub runners | **Yes** (runs in CI) |
 
 ---
 

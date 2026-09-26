@@ -15,12 +15,12 @@ confirmation half was consulted at least three times during BM25 tuning — reco
 | E002-reranker | A cross-encoder reading query+code ranks better than RRF | Relevant item in top 100 but ranked low | — | −0.02070 | −0.01672 | 0.06972 | hours (GPU) | **REJECT** | Web-passage cross-encoder is off-domain for problem→solution |
 | E003-dense-windows | Embedding every part of long documents | 23.5% of documents truncated at 256 pieces | — | Hybrid +0.00093 (CI incl. 0) | +0.00091 (CI incl. 0) | 0.08932 | ~3× embedding | **REJECT** | Dense improved; max-pooling favoured long documents, Hybrid flat |
 | E004-long-query | Represent the whole query, not the first 254 pieces | 89% of queries truncated | — | — | — | — | — | **CANCELLED** (owner) | Not run |
-| E005-code-embedder | A code-retrieval embedder with a ≥1,024-token window | Truncation + NL↔code domain mismatch of MiniLM (measured, see below) | see ledger | — | — | — | per model: see ledger | see ledger | — |
+| E005-code-embedder | A code-retrieval embedder with a ≥1,024-token window | Truncation + NL↔code domain mismatch (measured below) | control only: MiniLM hybrid 0.6145 (100 q × 600 docs); candidates did not finish | — | — | — | 45-min cap hit at 1,024 tokens; ≥ 20 min for 700 texts at 512 | **REJECT** (CPU) · CodeRankEmbed **INVALID** · run 1 **STOPPED-TIME-LIMIT** | 149M ModernBERT encoders: best measured 2.4 docs/s at 512 tokens on 4 CPUs (< 5 docs/s threshold; ≈ 1 h to index the corpus) |
 
 ## E005 failure analysis (control model, train split, full corpus)
 
 300 train-split queries × 8,765 documents, MiniLM hybrid exactly as in the product (CI job `failure-analysis`,
-run 36230017131). Measured, not estimated:
+runs 36230017131 and 36232451630, identical numbers). Measured, not estimated:
 
 | Mode | NDCG@10 | MRR@10 | R@10 | R@50 | R@100 |
 |---|---:|---:|---:|---:|---:|
@@ -29,14 +29,22 @@ run 36230017131). Measured, not estimated:
 | Hybrid | 0.4684 | 0.4339 | 0.5767 | 0.6733 | 0.7233 |
 
 The same system scores 0.0884 on the test split. BM25, which has no training, shows the same gap (0.379 vs 0.063), so
-the train split is intrinsically easier, not only possibly memorised by pretrained models. The failure dump shows why:
-many train problems are LeetCode-style with starter code whose method name mirrors the statement
-(`class Solution: def subarrayBitwiseORs`), while 13 of the 14 printed misses are stdin programs with terse identifiers
-(`n,k=map(int,input().split())`) solving story-framed statements ("Zookeeper … carrots … rabbits"), where
-neither word overlap nor a general sentence model connects narrative to algorithm. Consequence: absolute train
-numbers do not predict test numbers, E005 results are also reported per stratum (`starter` vs `stdin`), and the
-official test run decides.
+the train split is intrinsically easier, not only possibly memorised by pretrained models. **Why is not established.**
+A first guess — LeetCode-style starter code whose method names mirror the statement (`class Solution: def
+subarrayBitwiseORs`) — is measured and does not explain it: those are 45 of 300 train queries (Hybrid 0.655); the other
+255 stdin programs still score Hybrid 0.436, five times the test figure. Consequence: absolute train numbers do not
+predict test numbers; E005 compares models *paired on the same train queries*, and only the official test run decides.
 
-Of the 14 misses printed in full, 8 had the answer outside both retrievers' top 100, 4 ranked it 11–100 and 2 lost it in
-fusion — first-stage representation, not ranking, dominates, which is why E005 changes the representation and why the
-reranker (E002 family) stays deferred.
+Measured failure distribution (run 36232451630, 127 of 300 queries with the answer outside the top 10):
+
+| Failure category | Count | Share | Likely intervention |
+|---|---:|---:|---|
+| Answer absent from both retrievers' top 100 | 75 | 59.1% | better first-stage representation (E005) |
+| In top 100, ranked 11–100 | 44 | 34.6% | better representation; a *code-trained* reranker only after recall improves |
+| One retriever had it in top 100, lost by fusion | 8 | 6.3% | fusion (E001 showed no safe gain) |
+| (overlapping) query truncated at MiniLM's 254 pieces | 97 | 76.4% of misses | long-context model (E005) or E004 |
+
+Vocabulary: median 5.1% of a missed query's terms occur in its answer (p90 8.9%); median query 394 word-pieces, answer
+149. Story-framed statements ("Zookeeper … carrots … rabbits") against terse stdin code
+(`n,k=map(int,input().split())`) are the typical miss. First-stage representation, not ranking, dominates, which is why
+E005 changes the representation and the reranker family stays deferred.

@@ -49,7 +49,29 @@ Official MTEB 2.21.0 AppsRetrieval test, all 3,765 queries, 8,765 documents, pin
 | Dense (MiniLM-L6-v2) | 0.06596 | 0.05581 | 0.09907 | 0.19389 | 0.25259 |
 | **Hybrid (submitted system)** | **0.08840** | **0.07257** | 0.13971 | 0.23400 | 0.29774 |
 
-E005 (code-retrieval embedder): **PENDING — see `benchmark/experiments/EXPERIMENTS.md`.**
+**No retrieval change is accepted today; the submitted system stays Hybrid 0.0884 / MRR@10 0.0726.**
+
+E005 (code-retrieval embedder, pre-registered before any run; dev on the CoIR **train** split, test untouched):
+
+| Candidate | Outcome | Evidence |
+|---|---|---|
+| `nomic-ai/CodeRankEmbed` | **INVALID** | remote code fails under the pinned transformers 5.17 |
+| `Alibaba-NLP/gte-modernbert-base` | **REJECT (CPU cost)** | 45-min cap hit at 1,024 tokens; best measured 2.4 docs/s at 512 tokens on 4 CPUs (threshold ≥ 5) ⇒ ≈ 1 h to index the corpus |
+| `ibm-granite/granite-embedding-english-r2` | **REJECT (CPU cost)** | same architecture and cost |
+
+Measured failure analysis (control, 300 train queries, full corpus): of 127 misses, **59.1%** have the answer outside
+both top-100 lists, 34.6% rank it 11–100, 6.3% lose it in fusion; **76.4%** of missed queries are truncated at MiniLM's
+254 word-pieces; a missed query shares a median 5.1% of its terms with its answer. Diagnostic recall on the test split
+(frozen baseline): R@10 0.1397, R@50 0.2340, R@100 0.2977.
+
+Protocol notes: train-split scores are ~5× test scores for the *same* system, including BM25 (no training), and the gap
+is not explained by LeetCode-style starter code (stdin programs alone: 0.436). Train numbers therefore rank candidates
+but do not predict test numbers. Earlier test-split tuning (confirmation half used ≥ 3 times) is recorded as historical
+contamination.
+
+Next retrieval step supported by the evidence: E004 (whole-query pooling with the existing MiniLM, ≈ +2 min query
+encoding, no re-index) directly targets the 76% truncated misses; it is pre-registered and currently cancelled by the
+owner.
 
 ## P1 — retrieval across versions
 
@@ -99,8 +121,9 @@ UI question → rendered answer 90 ms. AppsRetrieval MiniLM on a 4-vCPU runner: 
 | Suite | Result |
 |---|---|
 | Python (backend + benchmark), this container, no model | **103 passed, 2 skipped** (skips need the embedding model) |
-| Python in CI with the model | green (run 7) |
-| Browser (Playwright) in CI with the model | green (run 7) |
+| Python in CI with the model | green (runs 7–12) |
+| Browser (Playwright) in CI with the model | **28/28** (run 12, after fixing a fragile edge click that failed runs 8–10) |
+| Docker (CI: build, start, query) | **green** (run 12, after fixing the startup crash) |
 | Browser here, no model | 26/28: the 2 failures assert semantic-only behaviour ("Closest matches by meaning"), which needs the model this container cannot download |
 | Accessibility gate (axe, desktop + mobile) | pass (after today's focusable-code-block fix) |
 | New tests today | `test_corpus.py` (4), `test_commonjs.py` (3), dataset-length query regression (1) |
@@ -137,11 +160,11 @@ matrix above plays the same role using the official weights.
 | GitHub Release with the JSON | **missing — needs owner authorisation** |
 | Demo video ≤ 5 min | not recorded; script in `docs/DEMO-SCRIPT.md` |
 | PPT | not produced; evidence pack in this report |
-| Docker | image verified in CI |
+| Docker | image builds, starts and answers a query in CI (run 12) |
 
 ## Recommended final actions
 
 1. Owner: create the GitHub Release and attach the final `appsretrieval_results.json`.
-2. Decide on E005 (see the Retrieval section once it is filled in) before recording the demo's results slide.
+2. Decide whether to reinstate E004 (the cheapest experiment aimed at the measured dominant failure); otherwise submit Hybrid 0.0884.
 3. Record the demo following `docs/DEMO-SCRIPT.md` on a machine with the MiniLM model.
 4. Merge `claude/vibrant-goodall-tof53x` into `main` after CI is green.
