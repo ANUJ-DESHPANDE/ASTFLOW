@@ -61,6 +61,24 @@ Click the repository name, enter an absolute local path, and choose `working-tre
 
 `serve` opens the last indexed workspace. `serve PATH` indexes that path's working tree first. The UI's repository dialog also accepts arbitrary Git revision expressions; only committed source blobs are read, without checkout changes.
 
+## Search a snippet corpus (dataset-style queries)
+
+The screening task ranks standalone code snippets for a natural-language problem statement (CoIR Apps). The same
+retriever serves that setting directly, with any length of query (a full problem statement is fine):
+
+```sh
+astflow snippets --query-file problem.txt                 # CoIR Apps corpus (downloaded once from Hugging Face)
+astflow snippets "longest increasing subsequence" --top-k 5
+astflow snippets "binary search on the answer" -c v1=lib-v1.jsonl -c v2=lib-v2.jsonl   # two versions at once
+```
+
+A corpus is BEIR/CoIR JSONL (`_id`, `text`, optional `title`). Every result prints its id, version(s), rank evidence and
+the snippet; the header reports index time and how many vectors were reused. Each `-c` is one **version**: vectors are
+cached per model by snippet content hash, so a new version embeds only the snippets whose text changed. Searching
+several versions ranks each distinct snippet once and folds byte-identical copies into one result that lists every
+version holding it, so an unchanged snippet does not fill the top 10 with duplicates; changed variants stay separate
+and labelled. `--json` gives machine-readable output.
+
 ## Architecture
 
 ```mermaid
@@ -132,7 +150,7 @@ Version intent uses the explicitly selected snapshot. **Changes** runs the quest
 
 ## Structural evidence and its limits
 
-The resolver completes discovery before resolving any edge. Verified relationships cover supported local calls, same-class normal methods, and direct unconditional constructor-held instances. Relative ES6 named imports must be unaliased, with direct `.js` paths or a missing-`.js` fallback. Default/namespace imports, aliases, directory indexes, re-exports, packages and CommonJS `require` remain unresolved. Plain identifier calls inside nested functions and callbacks resolve through the enclosing scopes (parameters, local declarations and reassignments are honoured at every level); member calls from nested scopes, class-field methods, accessors and static methods do not create verified edges. On real code this matters: with nested-scope identifier calls, expressjs/express (141 files) goes from 14 to 286 edges and lodash from 24 to 1,572, and every added edge was independently confirmed by the TypeScript language service (`audit/evidence/resolver-nested-measure.json`). Most calls in such repositories are still member or CommonJS calls and stay unresolved.
+The resolver completes discovery before resolving any edge. Verified relationships cover supported local calls, same-class normal methods, and direct unconditional constructor-held instances. Relative ES6 named imports must be unaliased, with direct `.js` paths or a missing-`.js` fallback. Top-level CommonJS `require('./x')` bindings (plain, destructured, or `require('./x').name`) resolve against `module.exports`, `exports.name` and members of an export-object alias (`var app = module.exports = {}`), and `require('./dir')` resolves to `dir/index.js`; an export key assigned two different values, nested `require` calls and packages stay unresolved. On express 4.21.2 this turns 0 cross-file edges into 11, each checked against its call site (`backend/tests/test_commonjs.py`). Default/namespace ES imports, aliases and re-exports remain unresolved. Functions assigned to members are named by their key (`exports.parse = function () {}` is `parse`). Plain identifier calls inside nested functions and callbacks resolve through the enclosing scopes (parameters, local declarations and reassignments are honoured at every level); member calls from nested scopes, class-field methods, accessors and static methods do not create verified edges. On real code this matters: with nested-scope identifier calls, expressjs/express (141 files) goes from 14 to 286 edges and lodash from 24 to 1,572, and every added edge was independently confirmed by the TypeScript language service (`audit/evidence/resolver-nested-measure.json`). Most calls in such repositories are still member or CommonJS calls and stay unresolved.
 
 TypeScript can corroborate an already supported edge, but cannot create an edge the conservative resolver rejected. Parse-error files do not contribute verified relationships. Shadowing, reassignment, duplicate names and unsupported instance assignments cause abstention. Supporting spans preserve the import declaration, constructor assignment and call site where applicable.
 
@@ -187,7 +205,7 @@ OpenAPI JSON contract: **http://127.0.0.1:8000/openapi.json**. The strict conten
 | `GET /api/repository?version=…` | Active repository, indexed versions, snapshot files |
 | `POST /api/index` | `{repo_path, version, background: true}`; background jobs return 202 |
 | `GET /api/index/status` | Actual stage, progress, error, and completed manifest |
-| `POST /api/search` | `{query, version, top_k: 10, agentic: true}` |
+| `POST /api/search` | `{query, version, top_k: 10, agentic: true}`; queries up to 32,000 characters (full problem statements) |
 | `POST /api/trace` | `{source_symbol_id, target_symbol_id, version, max_depth: 5}` |
 | `GET /api/source` | `path`, `version`, `start_line`, `end_line` |
 | `GET /api/versions` | Working tree, HEAD, tags, recent commits, index status |
