@@ -25,9 +25,11 @@ MTEB_VERSION = '2.21.0'
 DATASET_REVISION = 'f22508f96b7a36c2415181ed8bb76f76e04ae2d5'
 
 class ASTFLOWSearch:
-    def __init__(self, mode='bm25', download_model=False, model_name=None):
+    def __init__(self, mode='bm25', download_model=False, model_name=None, precomputed=None):
         from mteb.models.model_meta import ModelMeta
         self.mode = mode
+        # Vectors computed ahead of time by `final_retrieval.py embed` shards (same model, same text); verified below.
+        self.precomputed = Path(precomputed) if precomputed else None
         self.settings = Settings(model=model_name or Settings().model, semantic='off' if mode == 'bm25' else 'auto', ts_enrich=False)
         self.embedder = Embedder(self.settings)
         if mode != 'bm25' and self.embedder.load(download=download_model) is None:
@@ -54,7 +56,9 @@ class ASTFLOWSearch:
         if len({c.chunk_id for c in chunks}) != len(chunks):
             raise ValueError('Duplicate corpus IDs')
         vectors = None
-        if self.mode != 'bm25':
+        if self.mode != 'bm25' and self.precomputed:
+            vectors = self._precomputed_documents(chunks)
+        elif self.mode != 'bm25':
             model_dir = self.settings.cache/'models'/self.settings.model.replace('/','--')
             weights = model_dir/'model.safetensors'
             model_hash = hashlib.sha256(weights.read_bytes()).hexdigest() if weights.exists() else self.settings.model
@@ -73,7 +77,48 @@ class ASTFLOWSearch:
         self.measurements.update(corpus_count=len(chunks),index_seconds=time.perf_counter()-started,
             corpus_sha256=hashlib.sha256('\n'.join(c.chunk_id+':'+c.content_hash for c in chunks).encode()).hexdigest())
 
+    def _load(self, what):
+        from benchmark.final_retrieval import load_shards
+        ids, keys, matrix, per_item_ms, encode_s, shards = load_shards(self.precomputed, what)
+        if matrix is None:
+            raise ValueError(f'No precomputed {what} shards in {self.precomputed}')
+        self.measurements[f'precomputed_{what}'] = {'items': len(ids), 'shards': shards, 'runner_seconds': encode_s,
+            'per_item_ms_p50': float(np.median(per_item_ms)), 'per_item_ms_p95': float(np.percentile(per_item_ms, 95))}
+        return ids, keys, matrix
+
+    def _precomputed_documents(self, chunks):
+        ids, keys, matrix = self._load('docs')
+        by_id = {i: (k, v) for i, k, v in zip(ids, keys, matrix)}
+        if len(by_id) != len(ids) or set(by_id) != {c.chunk_id for c in chunks}:
+            raise ValueError('Precomputed documents do not cover the MTEB corpus exactly')
+        if any(by_id[c.chunk_id][0] != c.content_hash for c in chunks):
+            raise ValueError('Precomputed document text differs from the MTEB corpus text')
+        vectors = np.stack([by_id[c.chunk_id][1] for c in chunks])
+        probe = chunks[::max(1, len(chunks) // 4)][:4]  # live re-encode must reproduce the shard vectors
+        live = self.embedder.encode([c.text for c in probe])
+        cos = [float(a @ vectors[chunks.index(c)]) for a, c in zip(live, probe)]
+        self.measurements['precomputed_probe_min_cos_docs'] = min(cos)
+        if min(cos) < 0.999:
+            raise ValueError(f'Precomputed document vectors do not match live encoding (min cos {min(cos):.4f})')
+        _, qkeys, qmatrix = self._load('test')
+        self.query_vectors = dict(zip(qkeys, qmatrix))
+        return vectors
+
     def search(self, queries, *, top_k, top_ranked=None, **kwargs):
+        if self.precomputed:
+            from benchmark.final_retrieval import text_key
+            from benchmark.e005_screen import QueryVectors
+            texts = [(row['instruction'] + '\n' + row['text']) if row.get('instruction') else row['text'] for row in queries]
+            missing = [t for t in texts if text_key(t) not in self.query_vectors]
+            if missing:
+                raise ValueError(f'{len(missing)} test queries have no precomputed vector')
+            live = self.embedder.encode(texts[:3], kind='query')
+            cos = [float(a @ self.query_vectors[text_key(t)]) for a, t in zip(live, texts[:3])]
+            self.measurements['precomputed_probe_min_cos_queries'] = min(cos)
+            if min(cos) < 0.999:
+                raise ValueError(f'Precomputed query vectors do not match live encoding (min cos {min(cos):.4f})')
+            self.retriever.embedder = QueryVectors({t: self.query_vectors[text_key(t)] for t in texts})
+            self.measurements['query_latency_note'] = 'query_latencies_ms exclude query encoding (precomputed); see precomputed_test'
         if top_ranked is not None:
             raise ValueError('This adapter supports retrieval, not a prefiltered reranking task')
         results={}
@@ -98,6 +143,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--mode',choices=['bm25','dense','hybrid'],default='bm25')
     parser.add_argument('--download-model',action='store_true')
+    parser.add_argument('--precomputed',default=None,help='Directory of final_retrieval.py embed shards (docs-*, test-*)')
     parser.add_argument('--model',default=None,help='Dense model (default: the product default, ASTFLOW_MODEL or MiniLM)')
     parser.add_argument('--output',type=Path,default=ROOT/'benchmark/results/mteb')
     args=parser.parse_args()
@@ -110,7 +156,7 @@ def main():
     args.output.mkdir(parents=True,exist_ok=True)
     git=lambda *a: subprocess.run(['git','-C',str(ROOT),*a],capture_output=True,text=True).stdout.strip()
     provenance={'git_commit':git('rev-parse','HEAD'),'git_dirty_files':git('status','--porcelain','--untracked-files=no').splitlines()}
-    model=ASTFLOWSearch(args.mode,args.download_model,args.model)
+    model=ASTFLOWSearch(args.mode,args.download_model,args.model,args.precomputed)
     started=time.perf_counter()
     result=mteb.evaluate(model,[task],cache=None,overwrite_strategy='always',num_proc=1,
                          prediction_folder=args.output/'predictions',encode_kwargs={'batch_size':64})

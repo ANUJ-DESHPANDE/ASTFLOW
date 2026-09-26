@@ -10,7 +10,7 @@ from backend.app.config import Settings
 # their own sequence limit. `max_seq` bounds CPU cost; it never exceeds what the model was trained for.
 PROFILES = {
     "sentence-transformers/all-MiniLM-L6-v2": {"query_prefix": "", "document_prefix": "", "max_seq": None},
-    "Alibaba-NLP/gte-modernbert-base": {"query_prefix": "", "document_prefix": "", "max_seq": 1024},
+    "Alibaba-NLP/gte-modernbert-base": {"query_prefix": "", "document_prefix": "", "max_seq": 512},
     "ibm-granite/granite-embedding-english-r2": {"query_prefix": "", "document_prefix": "", "max_seq": 1024},
 }
 
