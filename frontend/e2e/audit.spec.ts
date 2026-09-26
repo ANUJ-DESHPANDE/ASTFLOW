@@ -70,8 +70,10 @@ test('filter, clipboard, fullscreen, refinement setting and sequence evidence',a
  const request=page.waitForRequest(r=>r.url().endsWith('/api/search'));
  await page.getByLabel('Ask about your code').fill('checkBluetoothPermission before openBluetoothSettings');
  await page.getByLabel('Send question').click();expect((await request).postDataJSON().agentic).toBe(false);
- // The demo's second call is inside return, outside the supported direct-statement pair.
- await expect(page.locator('.sequence-evidence')).toContainText('No supported lexical ordering');
+ // BluetoothAgent.execute: `checkBluetoothPermission(); return openBluetoothSettings();`. A final return cannot skip
+ // the statement before it, so the pair is supported (early exits in between are still rejected: test_regressions.py).
+ await expect(page.locator('.sequence-evidence')).toContainText('checkBluetoothPermission → openBluetoothSettings');
+ await expect(page.locator('.sequence-evidence')).toContainText('bluetooth/BluetoothAgent.js:7–8');
 });
 test('startup selects the indexed commit when working tree is not indexed',async({page})=>{
  await page.route('**/api/repository?version=working-tree',async route=>{

@@ -6,6 +6,13 @@ Updated to the supplied editor-video visual reference. See [changes and limits](
 
 **Engineering audit (25 September):** [final report and dashboard](audit/FINAL-ASTFLOW-ENGINEERING-REPORT.md), [findings database](audit/findings.json), [remediation plan](audit/18-remediation-plan.md); earlier audit (20 September): [report](docs/audit/REPORT.md), [official requirements matrix](docs/audit/REQUIREMENTS.md), [defect ledger](docs/audit/BUGS.md), [UI inventory](docs/audit/UI-INVENTORY.md) and [remaining checklist](docs/audit/CHECKLIST.md). Full AppsRetrieval scores are substantially lower than the small demo benchmark; use the official figures for screening claims.
 
+> **Submission (Samsung Theme 01, Agentic Code Intelligence).** Official MTEB AppsRetrieval, all 3,765 test queries ×
+> 8,765 documents: **NDCG@10 0.5511, MRR@10 0.5053** with the frozen retriever (`Alibaba-NLP/gte-modernbert-base`,
+> dense, CPU). Result file: [`benchmark/results/mteb-final-gte/appsretrieval_results.json`](benchmark/results/mteb-final-gte/appsretrieval_results.json),
+> also attached to release [`v1.0-submission`](https://github.com/ANUJ-DESHPANDE/ASTFLOW/releases/tag/v1.0-submission).
+> The product runs this same configuration by default. Evidence: [technical story](submission/TECHNICAL-STORY.md),
+> [judge walkthrough](audit/JUDGE-WALKTHROUGH.md), [final dashboard](submission/FINAL-DASHBOARD.md).
+
 ASTFLOW is a local repository investigation engine for JavaScript. Ask a question, get ranked source snippets, follow supported call relationships, and compare the answer across Git snapshots. The snippet list is the canonical answer; graphs and explanations supplement it.
 
 It runs on a CPU, needs no paid API, and never executes an indexed repository. The included source fixture has voice routing, Bluetooth settings, authentication, test cases, dynamic dispatch, and two real Git commits showing a session-management refactor.
@@ -19,9 +26,15 @@ npm run setup
 npm run demo
 ```
 
-Open **http://127.0.0.1:8000**. Setup creates `.venv`, installs Python and Node dependencies, builds the frontend, prepares the demo Git history, and attempts to download the free MiniLM embedding model. The download happens only during setup or the explicit `model-download` command. If unavailable, source search and all structural/version features remain usable with a clearly reported lexical fallback.
+Open **http://127.0.0.1:8000**. Setup creates `.venv`, installs Python and Node dependencies, builds the frontend, prepares the demo Git history, and downloads the search model **`Alibaba-NLP/gte-modernbert-base`** (149M parameters, Apache-2.0, about 0.6 GB, one time; it runs on CPU). The download happens only during setup or the explicit `model-download` command; after that ASTFLOW works offline. If the download fails, setup stops and says so. ASTFLOW never quietly falls back to a weaker search.
 
-`npm run demo` indexes `v1`, `v2`, and the working tree with one shared model instance, then starts FastAPI serving the built React UI. First startup includes model loading; subsequent indexes reuse saved vectors. Stop with Ctrl+C.
+`npm run demo` loads the model, prints what will rank results, indexes the demo's `v1`, `v2` and working tree, then starts FastAPI serving the built React UI. Stop with Ctrl+C. The first line to look for:
+
+```text
+Retrieval: Alibaba-NLP/gte-modernbert-base · dense · CPU (frozen submission configuration)
+```
+
+The same information is at `GET /api/health` (`retrieval`, `indexed_versions`) and in the UI under **How this works**. On a clean clone on a 4-vCPU GitHub runner, setup took about 2 minutes and the demo was ready 26 seconds later (`audit/walkthrough/hardware.txt`).
 
 On Windows the setup script uses `py -3.12`; on macOS/Linux it uses `python3`. The Python environment can also be prepared manually:
 
@@ -50,7 +63,7 @@ The demo is source code, not a lookup table. Its query strings are only UI examp
 
 ## Use another repository
 
-Click the repository name, enter an absolute local path, and choose `working-tree`, `HEAD`, a tag, or a commit. Index each version you want to investigate. Use the sidebar selector to switch snapshots. A passive notice detects working-tree edits. Select **Update snapshot** to create a fresh snapshot when ready; the current evidence stays stable while you read.
+Click the repository name, enter an absolute local path, and choose `working-tree`, `HEAD`, a tag, or a commit. Index each version you want to investigate. **The first index of a repository is the expensive step:** every callable chunk is embedded by a 149M-parameter model on CPU, with progress shown while it runs. Later versions embed only chunks whose text changed. Timings for express (152 files) are in [`audit/JUDGE-WALKTHROUGH.md`](audit/JUDGE-WALKTHROUGH.md). Use the sidebar selector to switch snapshots. A passive notice detects working-tree edits. Select **Update snapshot** to create a fresh snapshot when ready; the current evidence stays stable while you read.
 
 ```powershell
 .\.venv\Scripts\python.exe -m backend.app.cli index C:\projects\my-app --version HEAD
@@ -71,6 +84,8 @@ astflow snippets --query-file problem.txt                 # CoIR Apps corpus (do
 astflow snippets "longest increasing subsequence" --top-k 5
 astflow snippets "binary search on the answer" -c v1=lib-v1.jsonl -c v2=lib-v2.jsonl   # two versions at once
 ```
+
+Ranking is the frozen configuration: GTE dense, exactly as in the official run. The first `apps` search downloads the official run's 8,765 document vectors (a `.npz` asset of release `v1.0-submission`) instead of spending about 4 CPU-hours re-embedding the corpus. Before using them, it re-encodes 8 of them live and requires cosine ≥ 0.995; otherwise it embeds on CPU and says so. Encoding a full problem statement takes about 4 s on 4 vCPUs.
 
 A corpus is BEIR/CoIR JSONL (`_id`, `text`, optional `title`). Every result prints its id, version(s), rank evidence and
 the snippet; the header reports index time and how many vectors were reused. Each `-c` is one **version**: vectors are
@@ -93,7 +108,7 @@ flowchart TD
     C --> E[CPU embeddings / persisted NumPy arrays]
     G --> S
     Q[Natural-language question] --> I[Deterministic intent planner]
-    I --> H[BM25 + semantic ranks + exact symbols]
+    I --> H[GTE dense ranking + exact symbols; BM25 kept as evidence]
     S --> H
     E --> H
     H --> O[Observe candidates, agreement, targets, paths]
@@ -132,9 +147,9 @@ Discovery reads `.js`, `.mjs`, `.cjs`, and `.jsx`, excludes dependency/generated
 
 Tree-sitter extracts functions, named arrow functions, classes, methods, class-field arrows, imports/exports, parameters, bindings, and call expressions. Retrieval chunks follow callable boundaries. Search context includes the qualified name, path, nearby comments, imports used by the callable, and its body. Files without callable units get module chunks of at most 80 lines. Whole-file chunks are not added on top of callable chunks.
 
-Code tokenization splits camelCase, PascalCase, snake_case, and kebab-case while retaining complete identifiers. BM25 uses a positive-IDF formulation so tiny and single-document indexes remain searchable. The configurable default dense model is `sentence-transformers/all-MiniLM-L6-v2`, with normalized CPU embeddings and exact NumPy dot-product ranking.
+The first-stage ranking is the frozen configuration: **`Alibaba-NLP/gte-modernbert-base` embeddings (512-token cap, normalized, CPU) ranked by exact cosine similarity**, the same scoring as the official AppsRetrieval run. BM25 (code-aware tokens: camelCase, PascalCase, snake_case and kebab-case are split while complete identifiers are kept) is still computed. It is shown as keyword evidence and drives the "shares a word or symbol" label, but in dense mode it does not add to the score. `ASTFLOW_RETRIEVAL=hybrid` restores BM25 + dense reciprocal rank fusion (`k=60`), and `bm25` gives lexical only.
 
-Lexical and dense rankings are fused with reciprocal rank fusion (`k=60`). Scores are ranking signals, **not probabilities**. Exact symbols, symbol-token overlap, bounded graph proximity, and observed test references contribute small, inspectable boosts. Tests receive a modest downweight in ordinary production-code queries. The candidate pool is at least 50 where available; smaller repositories return the available matching chunks. Normal responses contain ten snippets.
+Scores are ranking signals, **not probabilities**. Exact symbols, symbol-token overlap, bounded graph proximity, and observed test references contribute small, inspectable boosts. Tests receive a modest downweight in ordinary production-code queries. The candidate pool is at least 50 where available; smaller repositories return the available matching chunks. Normal responses contain ten snippets.
 
 The index stores vectors once, including their chunk-row mapping. There is no vector database and no remote embedding request during search.
 
@@ -144,7 +159,7 @@ The planner recognizes locate, usage, path, sequence, version, and general inten
 
 For a structural query, missing target, or weak lexical/dense agreement, a second query incorporates symbols actually found or missed in the first pass. Its ranking contributes a bounded reciprocal-rank term. Graph expansion also uses the observed seeds and resolved query targets. It traverses at most two hops with distance decay. The agent stops after at most two retrieval passes.
 
-The API exposes `PLAN → SEARCH → OBSERVE → REFINE → SEARCH → RANK → STOP` when refinement is warranted; straightforward searches can stop after one pass. This is an operational activity log, with actual queries and counts. Disabling investigation mode disables the second pass while preserving ordinary hybrid/structural retrieval.
+The API exposes `PLAN → SEARCH → OBSERVE → REFINE → SEARCH → RANK → STOP` when refinement is warranted; straightforward searches can stop after one pass. This is an operational activity log, with actual queries and counts. Disabling investigation mode disables the second pass while preserving the first-stage ranking and structural expansion.
 
 Version intent uses the explicitly selected snapshot. **Changes** runs the question against both selected versions; the engine does not guess an unspecified historical commit.
 
@@ -179,17 +194,20 @@ See [`.env.example`](.env.example). Variables are read from the process environm
 
 | Setting | Default | Purpose |
 | --- | --- | --- |
-| `ASTFLOW_MODEL` | `sentence-transformers/all-MiniLM-L6-v2` | CPU embedding model name or local path |
-| `ASTFLOW_SEMANTIC` | `auto` | Use a cached model; `off` forces lexical retrieval |
+| `ASTFLOW_MODEL` | `Alibaba-NLP/gte-modernbert-base` | CPU embedding model (the frozen submission model) |
+| `ASTFLOW_SEMANTIC` | `on` | `on`: the model is required; indexing stops with an actionable error if it is missing. `off`: explicit lexical-only mode, labelled as such everywhere |
+| `ASTFLOW_RETRIEVAL` | `dense` | First-stage ranking: `dense` (frozen), `hybrid` (BM25 + dense RRF) or `bm25` |
 | `ASTFLOW_CACHE` | `.astflow` in this project | Index/model/state storage |
 | `ASTFLOW_TS_ENRICH` | `true` | Enable best-effort compiler enrichment |
 
 Download a changed model explicitly, then reindex:
 
 ```powershell
-$env:ASTFLOW_MODEL = 'sentence-transformers/all-MiniLM-L6-v2'
+$env:ASTFLOW_MODEL = 'sentence-transformers/all-MiniLM-L6-v2'   # e.g. the previous, smaller model
 .\.venv\Scripts\python.exe -m backend.app.cli model-download
 ```
+
+Any configuration other than the defaults is reported as "NOT the frozen submission configuration" at startup and in `/api/health`.
 
 No cloud LLM, API key, runtime execution, or external explanation service is configured.
 
@@ -236,7 +254,7 @@ Backend coverage includes parser spans/Unicode, named exports, arrows/JSX, deter
 
 The local benchmark computes **NDCG@10, MRR, Recall@10**, median and p95 query latency for BM25-only, dense-only, hybrid, hybrid plus structure, and the full engine. It validates every relevance label against actual indexed symbols. Full per-query rankings and metrics are saved in [`benchmark/results/local.json`](benchmark/results/local.json), with a readable table in [`benchmark/results/local.md`](benchmark/results/local.md). Live API verification measurements are in [`benchmark/results/verification.json`](benchmark/results/verification.json).
 
-The included 16-query/21-chunk benchmark is a small handcrafted regression fixture. It does **not** establish performance on large repositories or an official PRISM/MTEB evaluation. The committed table was regenerated on 2026-09-25 with the MiniLM model available (an earlier committed version had been produced without it, so its dense row was empty and its "hybrid" row was lexical-only). On these 16 queries dense-only (NDCG@10 0.931) scores above hybrid (0.905) and the full agent pipeline (0.866, best MRR 0.969); with 16 queries none of these differences is statistically meaningful. No benchmark numbers are hardcoded into the application. Index time includes CPU model loading on a cold process; query measurements warm the model first.
+The included 16-query/21-chunk benchmark is a small handcrafted regression fixture (its committed numbers were measured with the previous MiniLM default and are not part of the submission). It does **not** establish performance on large repositories or an official PRISM/MTEB evaluation. The committed table was regenerated on 2026-09-25 with the MiniLM model available (an earlier committed version had been produced without it, so its dense row was empty and its "hybrid" row was lexical-only). On these 16 queries dense-only (NDCG@10 0.931) scores above hybrid (0.905) and the full agent pipeline (0.866, best MRR 0.969); with 16 queries none of these differences is statistically meaningful. No benchmark numbers are hardcoded into the application. Index time includes CPU model loading on a cold process; query measurements warm the model first.
 
 ### Official full AppsRetrieval evaluation
 
@@ -270,7 +288,7 @@ python benchmark/run_mteb.py --mode dense --model Alibaba-NLP/gte-modernbert-bas
 or in about 25 minutes of wall-clock time with `.github/workflows/final-retrieval.yml` (document shards) and
 `official-final.yml` (test-query shards + one MTEB run with `--precomputed`, which re-verifies the shard vectors live).
 Selection history and the freeze record: `benchmark/EXPERIMENTS.md`, `benchmark/experiments/EXPERIMENTS.md`. The
-interactive repository search keeps MiniLM Hybrid by default for latency; set `ASTFLOW_MODEL` to use the frozen model.
+product uses this configuration by default (repository search, `astflow snippets`, UI and API).
 
 ### Development/validation split and BM25 tuning
 
@@ -342,11 +360,11 @@ Source search, map, trace and comparison remain available. To enable dense retri
 
 Map starts at files; choose a file to inspect its callables. Select a node to highlight callers/callees, use depth/direction controls, then **Explore calls** for a cross-file neighborhood. **Open source** is separate. Fit/reset return to context. Counts disclose the backend 150-node and frontend 60-node/250-edge bounds; node search searches the loaded view. Arrows mean supported static calls, not observed runtime execution.
 
-### Docker files (execution not yet verified)
+### Docker (lexical-only image)
 
 ```sh
 docker build -t astflow .
 docker run --rm -p 127.0.0.1:8000:8000 astflow
 ```
 
-The image builds the frontend and runs as a non-root user with the bundled demo, lexical retrieval and TS corroboration disabled. It needs no host repository mount for that demo. Its container process listens internally on all interfaces; publish only to host loopback as shown. The audit machine's Docker daemon was unavailable, so image build/start is **UNVERIFIED**. Do not claim a tested container submission until these commands and the main journeys pass.
+The image builds the frontend and runs as a non-root user with the bundled demo and TS corroboration disabled. It is **lexical-only** (`ASTFLOW_SEMANTIC=off`, no model in the image), so it is *not* the frozen submission configuration, and it says so at startup and in `/api/health`. Use `npm run setup` for the frozen configuration. It needs no host repository mount for the demo. Its container process listens internally on all interfaces; publish only to host loopback as shown. CI builds the image, starts it and answers a real query on every push (`docker` job in `.github/workflows/ci.yml`).
