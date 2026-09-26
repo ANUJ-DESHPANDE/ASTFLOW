@@ -78,6 +78,11 @@ def select(corpus, qrels, stage, n_queries, n_distractors, seed):
     return qids, sorted(positives | set(others[:n_distractors]))
 
 
+def stratum(code: str) -> str:
+    """LeetCode-style starter code (named method mirrors the problem) vs stdin programs (terse, no names)."""
+    return "starter" if "class Solution" in code else "stdin"
+
+
 def rank_of(ranking, relevant):
     return next((i + 1 for i, d in enumerate(ranking) if d in relevant), None)
 
@@ -109,7 +114,7 @@ class QueryVectors:
         return np.stack([self.vectors[t] for t in texts])
 
 
-def run_model(name, corpus, queries, qrels, qids, doc_ids, cache_dir: Path, threads: int):
+def run_model(name, corpus, queries, qrels, qids, doc_ids, cache_dir: Path, threads: int, budget_s: float = 1e9):
     import torch
     from sentence_transformers import SentenceTransformer
     torch.set_num_threads(threads)
@@ -128,8 +133,18 @@ def run_model(name, corpus, queries, qrels, qids, doc_ids, cache_dir: Path, thre
         docs = np.load(doc_file)
         doc_s, doc_cached = time.perf_counter() - started, True
     else:
-        docs = model.encode([profile["doc_prefix"] + t for t in texts], batch_size=16, normalize_embeddings=True,
-                            convert_to_numpy=True, show_progress_bar=False).astype(np.float32)
+        # Encode in slices with progress; stop early (kill rule) when the projected time exceeds the budget.
+        parts, step = [], 256
+        for start in range(0, len(texts), step):
+            parts.append(model.encode([profile["doc_prefix"] + t for t in texts[start:start + step]], batch_size=16,
+                                      normalize_embeddings=True, convert_to_numpy=True, show_progress_bar=False).astype(np.float32))
+            done, elapsed = min(start + step, len(texts)), time.perf_counter() - started
+            projected = elapsed / done * len(texts)
+            print(f"   {name}: {done}/{len(texts)} docs · {done / elapsed:.1f} docs/s · projected {projected / 60:.1f} min", flush=True)
+            if projected > budget_s and done < len(texts):
+                raise TimeoutError(f"STOPPED-TIME-LIMIT: {done / elapsed:.2f} docs/s projects {projected / 60:.1f} min for "
+                                   f"{len(texts)} documents (budget {budget_s / 60:.0f} min)")
+        docs = np.vstack(parts)
         doc_s, doc_cached = time.perf_counter() - started, False
         cache_dir.mkdir(parents=True, exist_ok=True)
         np.save(doc_file, docs)
@@ -188,6 +203,10 @@ def failure_dump(result, model, corpus, queries, qrels, qids, doc_ids, limit):
     n = len(rows)
     if not n:
         return {"count": 0, "categories": {}, "rows": []}
+    for r in rows[:limit]:
+        print(f"\n### {r['qid']} → {r['rel']} (hybrid rank {r['hybrid']}, bm25 {r['bm25']}, dense {r['dense']}; {r['category']})")
+        print("QUERY: " + " ".join(queries[r["qid"]].split())[:700])
+        print("RELEVANT DOC:\n" + corpus[r["rel"]][:500])
     print(f"\n## Control failure analysis ({n} of {len(qids)} queries miss the top 10)\n")
     cats = {}
     for r in rows:
@@ -199,16 +218,12 @@ def failure_dump(result, model, corpus, queries, qrels, qids, doc_ids, limit):
     for key in ("query_terms_in_doc", "doc_terms_in_query", "query_wordpieces", "doc_wordpieces"):
         vals = [r[key] for r in rows]
         print(f"- {key}: median {statistics.median(vals)}, p90 {sorted(vals)[int(.9 * (len(vals) - 1))]}")
-    for r in rows[:limit]:
-        print(f"\n### {r['qid']} → {r['rel']} (hybrid rank {r['hybrid']}, bm25 {r['bm25']}, dense {r['dense']}; {r['category']})")
-        print("QUERY: " + " ".join(queries[r["qid"]].split())[:700])
-        print("RELEVANT DOC:\n" + corpus[r["rel"]][:500])
     return {"count": n, "categories": cats, "rows": rows}
 
 
 def combine(directory: Path):
     """Paired comparison of every screened model against the control on identical queries (separate CI jobs)."""
-    results, meta = {}, None
+    results, meta, meta_strata = {}, None, None
     for path in sorted(directory.rglob("e005-*.json")):
         report = json.loads(path.read_text(encoding="utf-8"))
         key = (report["stage"], report["seed"], report["documents"], tuple(report["queries"]))
@@ -216,12 +231,14 @@ def combine(directory: Path):
             meta = key
         elif key != meta:
             raise SystemExit(f"{path} was run on a different query/document selection; refusing to pair it")
+        meta_strata = report.get("strata")
         results.update({n: r for n, r in report["results"].items() if "error" not in r})
     if CONTROL not in results:
         raise SystemExit("control model result missing")
     lines = [f"# E005 {meta[0]} paired vs {CONTROL} ({len(meta[3])} queries × {meta[2]} docs)", "",
              "| Model | Mode | NDCG@10 | Δ vs control hybrid | 95% CI | MRR@10 | R@100 | docs/s |", "|---|---|---:|---:|---|---:|---:|---:|"]
     base = per_query_ndcg(results[CONTROL]["ranks"]["hybrid"])
+    strata = np.array(meta_strata) if meta_strata else None
     for name, res in results.items():
         for mode in ("dense", "hybrid"):
             q = per_query_ndcg(res["ranks"][mode])
@@ -229,6 +246,11 @@ def combine(directory: Path):
             m = res["metrics"][mode]
             lines.append(f"| {name} | {mode} | {m['ndcg@10']:.4f} | {q.mean() - base.mean():+.4f} | [{low:+.4f}, {high:+.4f}] | "
                          f"{m['mrr@10']:.4f} | {m['r@100']:.4f} | {res['cost']['docs_per_s']} |")
+            for group in (sorted(set(meta_strata)) if meta_strata else []):
+                mask = strata == group
+                low, high = bootstrap(q[mask] - base[mask])
+                lines.append(f"| ↳ {group} ({int(mask.sum())}) | {mode} | {q[mask].mean():.4f} | {q[mask].mean() - base[mask].mean():+.4f} | "
+                             f"[{low:+.4f}, {high:+.4f}] | | | |")
     text = "\n".join(lines) + "\n"
     print(text)
     if os.getenv("GITHUB_STEP_SUMMARY"):
@@ -246,6 +268,7 @@ def main():
     parser.add_argument("--distractors", type=int, default=2700)
     parser.add_argument("--seed", type=int, default=20260926)
     parser.add_argument("--threads", type=int, default=os.cpu_count() or 4)
+    parser.add_argument("--encode-budget-min", type=float, default=30, help="stop a model whose document encoding projects longer")
     parser.add_argument("--failure-dump", type=int, default=0, help="print N control-model misses (control only)")
     parser.add_argument("--output", type=Path, default=ROOT / "out" / "e005")
     args = parser.parse_args()
@@ -255,11 +278,14 @@ def main():
     qids, doc_ids = select(corpus, qrels, args.stage, args.queries, args.distractors, args.seed)
     print(f"stage {args.stage}: {len(qids)} {args.split} queries × {len(doc_ids)} documents", flush=True)
     args.output.mkdir(parents=True, exist_ok=True)
+    strata = [stratum(corpus[next(iter(qrels[q]))]) for q in qids]
+    print(f"strata: {dict((k, strata.count(k)) for k in sorted(set(strata)))}", flush=True)
     report = {"stage": args.stage, "split": args.split, "seed": args.seed, "queries": qids, "documents": len(doc_ids),
-              "dataset_revision": REVISION, "results": {}}
+              "dataset_revision": REVISION, "strata": strata, "results": {}}
     for name in args.models.split(","):
         try:
-            result, model = run_model(name, corpus, queries, qrels, qids, doc_ids, ROOT / ".astflow" / "e005-cache", args.threads)
+            result, model = run_model(name, corpus, queries, qrels, qids, doc_ids, ROOT / ".astflow" / "e005-cache", args.threads,
+                                      args.encode_budget_min * 60)
         except Exception as exc:  # a model that cannot load is recorded, not fatal to the others
             print(f"!! {name}: {type(exc).__name__}: {exc}", flush=True)
             report["results"][name] = {"error": f"{type(exc).__name__}: {exc}"}
@@ -282,6 +308,10 @@ def main():
             m = res["metrics"][mode]
             lines.append(f"| {name} | {mode} | {m['ndcg@10']:.4f} | {m['mrr@10']:.4f} | {m['r@10']:.4f} | {m['r@50']:.4f} | "
                          f"{m['r@100']:.4f} | {res['cost']['docs_per_s']} | {res['cost']['queries_per_s']} |")
+            for group in sorted(set(strata)):
+                sub = summarize([r for r, g in zip(res["ranks"][mode], strata) if g == group])
+                lines.append(f"| ↳ {group} ({strata.count(group)}) | {mode} | {sub['ndcg@10']:.4f} | {sub['mrr@10']:.4f} | "
+                             f"{sub['r@10']:.4f} | {sub['r@50']:.4f} | {sub['r@100']:.4f} | | |")
     text = "\n".join(lines) + "\n"
     print("\n" + text)
     if os.getenv("GITHUB_STEP_SUMMARY"):
