@@ -167,6 +167,8 @@ class IndexService:
         hashes = [hashlib.sha256(c.search_text.encode()).hexdigest() for c in chunks]
         cached = self.embedding_cache.get_many(model_name, hashes)
         missing = [i for i, h in enumerate(hashes) if h not in cached]
+        # Length-sorted, like sentence-transformers sorts one call, so progress batches do not add padding work.
+        missing.sort(key=lambda i: len(chunks[i].search_text))
         step = 64  # report progress: a cold index of a mid-sized repository takes minutes on CPU
         for start in range(0, len(missing), step):
             batch = missing[start:start + step]
