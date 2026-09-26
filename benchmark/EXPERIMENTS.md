@@ -337,6 +337,74 @@ MTEB result keep MiniLM hybrid (0.0884).
 the owner; the new measurement is a reason to reconsider. A second option is a *small* (≤ 35M) retrieval-trained
 long-context encoder, screened with the same harness (`--max-seq`, `--encode-budget-min`).
 
+### Final retrieval decision — pre-registration (written 2026-09-26 11:10 UTC, before any run below)
+
+Tooling: `benchmark/final_retrieval.py`, `.github/workflows/final-retrieval.yml`. Train split only; query sets = all train
+qids shuffled with seed 20260926: **dev** = first 300 (the failure-analysis set), **confirmation** = next 300 (disjoint).
+Full 8,765-document corpus throughout.
+
+**E004 (executed as pre-registered on 2026-09-25, one documented change).** Condition `longquery-mean254`, primary metric
+Hybrid NDCG@10, KEEP = positive delta with 95% CI excluding 0 on dev **and** confirmation, plus integrity (fitting queries
+equal the baseline vector, cos ≥ 0.99999; the baseline equals the first chunk, cos ≥ 0.999 on 25 truncated queries).
+*Change:* dev/confirmation come from the train split instead of the two test-split halves, because the 2026-09-26 protocol
+retires test-split tuning; the condition, metric and rule are unchanged. Baseline = MiniLM run in the same job on the
+same queries (dev must reproduce the failure-analysis Hybrid 0.4684). Hard cap 15 minutes.
+
+**GTE gate.** `gte-modernbert-base`, 512-token cap (the proxy configuration), Dense mode (no fusion), embedded in 20
+parallel CPU runners (4 vCPU each; ≈ 440 documents + 30 queries per runner). PASS = dev ΔNDCG@10 vs current MiniLM Hybrid
+**≥ +0.05** with CI lower bound > 0, **and** confirmation Δ > 0 with CI lower bound > 0, **and** live re-encoding of probe
+documents/queries matches the shard vectors (cos ≥ 0.999). Costs recorded: per-runner docs/s, per-item P50/P95, runner-minutes.
+
+**Selection (mechanical):** GTE Dense if its gate passes; otherwise E004 if ACCEPT; otherwise the current Hybrid. The winner
+gets exactly one official MTEB AppsRetrieval test run. No variant of either candidate is tuned after these results.
+
+### Final retrieval decision — results
+
+**E004 `longquery-mean254` — ACCEPT** (run 36237821741, job `e004`; E004 step 7 min 12 s including 4 min 51 s to embed
+the corpus with MiniLM). Integrity: 229 fitting queries equal the baseline vector (max 1−cos 1.2e-7); on 25 truncated
+queries the baseline equals the first chunk (min cos 1.000000). The dev baseline reproduces the failure analysis exactly
+(Hybrid 0.4684).
+
+| Set | System | NDCG@10 | MRR@10 | R@10 | R@50 | R@100 |
+|---|---|---:|---:|---:|---:|---:|
+| dev (300; 194 truncated) | baseline Hybrid | 0.4684 | 0.4339 | 0.5767 | 0.6733 | 0.7233 |
+| | **E004 Hybrid** | **0.4868** | 0.4563 | 0.5833 | 0.6800 | 0.7400 |
+| | baseline Dense | 0.4349 | 0.4067 | 0.5233 | 0.6367 | 0.6833 |
+| | E004 Dense | 0.4560 | 0.4268 | 0.5467 | 0.6533 | 0.7000 |
+| confirmation (300; 177 truncated) | baseline Hybrid | 0.4897 | 0.4543 | 0.6033 | 0.6900 | 0.7167 |
+| | **E004 Hybrid** | **0.5041** | 0.4698 | 0.6133 | 0.7067 | 0.7367 |
+| | baseline Dense | 0.4339 | 0.4022 | 0.5333 | 0.6167 | 0.6633 |
+| | E004 Dense | 0.4436 | 0.4089 | 0.5533 | 0.6333 | 0.6867 |
+
+Hybrid ΔNDCG@10: dev **+0.0184 [+0.0038, +0.0331]**, confirmation **+0.0144 [+0.0020, +0.0276]** — both CIs exclude 0 →
+the pre-registered KEEP rule is met. Dense Δ: dev +0.0211 [+0.0004, +0.0433], confirmation +0.0097 [−0.0083, +0.0283].
+Query encoding P50/P95: 56/58 ms → 73/187 ms (dev), 69/198 ms (confirmation). No re-indexing.
+
+**GTE gate — PASS** (run 36237821741, job `gte-gate`). Full corpus (8,765 documents) embedded on 20 CPU runners.
+
+| Set | System | NDCG@10 | MRR@10 | R@10 | R@50 | R@100 |
+|---|---|---:|---:|---:|---:|---:|
+| dev (300) | current MiniLM Hybrid | 0.4684 | 0.4339 | 0.5767 | 0.6733 | 0.7233 |
+| | **GTE Dense** | **0.6977** | 0.6633 | 0.8067 | 0.9133 | 0.9333 |
+| confirmation (300) | current MiniLM Hybrid | 0.4897 | 0.4543 | 0.6033 | 0.6900 | 0.7167 |
+| | **GTE Dense** | **0.7080** | 0.6710 | 0.8233 | 0.8967 | 0.9133 |
+
+ΔNDCG@10: dev **+0.2293 [+0.1852, +0.2743]**, confirmation **+0.2183 [+0.1720, +0.2647]** (threshold: dev ≥ +0.05 with CI
+lower bound > 0; confirmation CI lower bound > 0). Live re-encode vs shard vectors: min cos 0.999299. Cost: 242
+runner-minutes for the corpus (0.60 docs/s per 4-vCPU runner; per-document P50 1.26 s, P95 4.48 s); query encoding P50
+3.23 s, P95 4.49 s on the runner; dense ranking P50 1.0 ms, P95 1.3 ms; document matrix 26.9 MB.
+DEV performance is not assumed to predict the official test score: the existing system shows a large train/test gap.
+
+**Selection (mechanical, as pre-registered): GTE Dense.** E004 (ACCEPT) is not selected because the GTE gate passed.
+
+**Before the one official run** — FINAL CANDIDATE: `Alibaba-NLP/gte-modernbert-base`, Dense, 512-token cap, no fusion.
+WHY: passed its full-corpus gate by 4.5× the required margin on both sets. EXPECTED RUNTIME: ≈ 25 min (test-query
+encoding on 20 runners ≈ 10 min; MTEB scoring ≈ 10 min). INDEXING COST: none new — document vectors reused from the
+gated run and re-verified live. QUERY COST: ≈ 3.2 s encoding + ≈ 1 ms ranking per query on a runner. ARTIFACTS:
+`appsretrieval_results.json`, `run_metadata.json` (incl. R@10/50/100 from the scored rankings). Integrity note: the
+precomputed-vector alignment probe uses cos ≥ 0.995 (the gate observed 7e-4 batch-padding noise; a misaligned vector
+scores far lower). Workflow: `.github/workflows/official-final.yml`, which also runs the P1 check with this model.
+
 ---
 
 ## Pre-registered queue (evaluated against baseline-v1 evidence)
@@ -349,7 +417,7 @@ Which experiment runs first is decided by `BOTTLENECK_RULES_V1` in
 | **E001-fusion** | Verdict FUSION (gain ≥ 0.03) | **EVALUATED — REJECT** | RRF parameter tuning recovers lost candidates without harming precision | RRF k, weights, depth sweep offline | NDCG@10, Hit@100 | Minutes, CPU | **No** |
 | **E002-reranker** | Next in queue (RRF cannot fix ranking or recover candidates cleanly) | **EVALUATED — REJECT** | A cross-encoder reading query and code together can score relevance directly over the top 50–100 candidates | Rerank Hybrid top-k (k ∈ {20, 50, 100}) with a real cross-encoder over frozen candidates; candidate retrieval unchanged | NDCG@10, MRR@10 (bounded above by Oracle@k = 0.2977) | Hours of CPU on benchmark machine | **Yes** |
 | **E003-dense-windows** | Candidate expansion for the 65% of queries missed by both engines | **EVALUATED — REJECT** | 23.5% of documents are cut at 256 word-pieces; incomplete embeddings lose documents in candidate generation | Whole-document vector → id-aligned sliding windows (256/64, max over windows) | Dense and Hybrid Hit@100, then NDCG@10 | ~3× embedding time | **Yes** |
-| **E004-long-query** | Post-E003 audit: 89% of queries exceed Dense's 256 word-piece limit | **CANCELLED FOR NOW (owner decision, 2026-09-25) — not run** | Dense sees only the first 254 query word-pieces; representing the complete query improves Dense recall and carries into Hybrid | Query vector = token-weighted mean over non-overlapping 254-piece query chunks (one condition, `longquery-mean254`); documents, BM25, RRF unchanged | Hybrid NDCG@10 (decides); Dense Recall@100/NDCG@10 (diagnostic) | ≈ +2 min query encoding; no re-embedding | **Yes** (model already cached) |
+| **E004-long-query** | Post-E003 audit: 89% of queries exceed Dense's 256 word-piece limit | **ACCEPT (2026-09-26, train-split dev + confirmation; reinstated by the owner)** | Dense sees only the first 254 query word-pieces; representing the complete query improves Dense recall and carries into Hybrid | Query vector = token-weighted mean over non-overlapping 254-piece query chunks (one condition, `longquery-mean254`); documents, BM25, RRF unchanged | Hybrid NDCG@10 (decides); Dense Recall@100/NDCG@10 (diagnostic) | ≈ +2 min query encoding; no re-embedding | **Yes** (model already cached) |
 | **E005-code-embedder** | Stage-A failure evidence: truncation + domain mismatch of the dense model | **REJECT (CPU cost) · CodeRankEmbed INVALID (2026-09-26)** | A code-retrieval embedder with a ≥ 1,024-token window raises first-stage recall and NDCG@10 | Dense model swap (3 candidates) with model-card prefixes; everything else fixed | Hybrid/Dense NDCG@10 vs control, train-split dev | Minutes per model (micro) on GitHub runners | **Yes** (runs in CI) |
 
 ---

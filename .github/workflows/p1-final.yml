@@ -1,0 +1,43 @@
+# Re-runs only the P1 check (fixed snippet-containment check) with the frozen model, and commits the official MTEB
+# result files of run 36239945962 plus the P1 report to this branch (the dev container cannot download artifacts).
+name: p1-final
+on:
+  push:
+    branches: ["claude/**"]
+    paths: [".github/workflows/p1-final.yml"]
+
+permissions:
+  contents: write
+  actions: read
+
+env:
+  PIP_EXTRA_INDEX_URL: https://download.pytorch.org/whl/cpu
+  MODEL: Alibaba-NLP/gte-modernbert-base
+
+jobs:
+  p1-and-record:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: "${{ github.ref_name }}" }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - run: python -m pip install -c requirements.lock.txt -e ".[semantic]"
+      - name: P1 with the frozen model
+        run: python benchmark/final_p1.py "$MODEL" benchmark/results/p1-final-gte
+      - uses: actions/download-artifact@v4
+        with: { name: mteb-final, path: benchmark/results/mteb-final-gte, run-id: 36239945962, github-token: "${{ github.token }}" }
+      - name: Commit official result files and P1 report
+        if: always()
+        run: |
+          git config user.name "AarushShetty346"
+          git config user.email "aarushshetty3@gmail.com"
+          git add benchmark/results/mteb-final-gte benchmark/results/p1-final-gte || true
+          git commit -m "benchmark: official AppsRetrieval result (gte-modernbert-base Dense) and P1 report [skip ci]
+
+          Files produced by workflow runs 36239945962 (official-final, MTEB 2.21.0, commit 036060e) and ${{ github.run_id }} (P1)." || exit 0
+          git pull --rebase origin "${{ github.ref_name }}"
+          git push origin "HEAD:${{ github.ref_name }}"
