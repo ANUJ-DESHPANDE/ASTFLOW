@@ -113,7 +113,8 @@ UI question → rendered answer 90 ms. AppsRetrieval MiniLM on a 4-vCPU runner: 
 | F-029 CommonJS edges | express 0 cross-file edges; lodash 0 | express 11 (11/11 checked), lodash 868 |
 | F-031 anonymous labels | express 36 `anonymous@` symbols | 12 |
 | F-030 large-repo overview | first 150 files alphabetically, illegible | most connected files, 24-hub compact layout |
-| F-041 Docker unverified | never built | CI job builds, runs and queries the image |
+| F-041 Docker unverified | never built | the first CI build **found a real defect**: the image crashed at start (non-editable install put `ROOT` in site-packages → `PermissionError` creating `.astflow/`). Fixed (editable install); the CI job builds, starts and queries the image |
+| (new) flaky e2e edge click | `studio.spec.ts:24` clicked a bent edge's bounding-box centre (missed the path in CI runs 8–10) | clicks the path's midpoint; 3/3 locally |
 | F-035 `/api/versions` | ~350 ms (*carried over*, Windows) | 13–39 ms on the demo here; not re-measured at scale |
 | (new) scrollable code blocks not focusable | axe serious in Compare | fixed |
 
