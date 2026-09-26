@@ -337,6 +337,27 @@ MTEB result keep MiniLM hybrid (0.0884).
 the owner; the new measurement is a reason to reconsider. A second option is a *small* (≤ 35M) retrieval-trained
 long-context encoder, screened with the same harness (`--max-seq`, `--encode-budget-min`).
 
+### Final retrieval decision — pre-registration (written 2026-09-26 11:10 UTC, before any run below)
+
+Tooling: `benchmark/final_retrieval.py`, `.github/workflows/final-retrieval.yml`. Train split only; query sets = all train
+qids shuffled with seed 20260926: **dev** = first 300 (the failure-analysis set), **confirmation** = next 300 (disjoint).
+Full 8,765-document corpus throughout.
+
+**E004 (executed as pre-registered on 2026-09-25, one documented change).** Condition `longquery-mean254`, primary metric
+Hybrid NDCG@10, KEEP = positive delta with 95% CI excluding 0 on dev **and** confirmation, plus integrity (fitting queries
+equal the baseline vector, cos ≥ 0.99999; the baseline equals the first chunk, cos ≥ 0.999 on 25 truncated queries).
+*Change:* dev/confirmation come from the train split instead of the two test-split halves, because the 2026-09-26 protocol
+retires test-split tuning; the condition, metric and rule are unchanged. Baseline = MiniLM run in the same job on the
+same queries (dev must reproduce the failure-analysis Hybrid 0.4684). Hard cap 15 minutes.
+
+**GTE gate.** `gte-modernbert-base`, 512-token cap (the proxy configuration), Dense mode (no fusion), embedded in 20
+parallel CPU runners (4 vCPU each; ≈ 440 documents + 30 queries per runner). PASS = dev ΔNDCG@10 vs current MiniLM Hybrid
+**≥ +0.05** with CI lower bound > 0, **and** confirmation Δ > 0 with CI lower bound > 0, **and** live re-encoding of probe
+documents/queries matches the shard vectors (cos ≥ 0.999). Costs recorded: per-runner docs/s, per-item P50/P95, runner-minutes.
+
+**Selection (mechanical):** GTE Dense if its gate passes; otherwise E004 if ACCEPT; otherwise the current Hybrid. The winner
+gets exactly one official MTEB AppsRetrieval test run. No variant of either candidate is tuned after these results.
+
 ---
 
 ## Pre-registered queue (evaluated against baseline-v1 evidence)

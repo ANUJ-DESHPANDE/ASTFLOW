@@ -1,0 +1,61 @@
+# Final retrieval decision (benchmark/EXPERIMENTS.md, "Final retrieval decision — pre-registration").
+# Train split only. E004 hard cap 15 min; each GTE shard runner embeds ~440 documents + ~30 queries (45-min cap).
+name: final-retrieval
+on:
+  push:
+    branches: ["claude/**"]
+    paths: ["benchmark/final_retrieval.py", ".github/workflows/final-retrieval.yml"]
+
+permissions:
+  contents: read
+
+env:
+  PIP_EXTRA_INDEX_URL: https://download.pytorch.org/whl/cpu
+  SHARDS: "20"
+
+jobs:
+  e004:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - run: python -m pip install -c requirements.lock.txt -e ".[semantic,benchmark]"
+      - name: E004 (hard cap 15 min)
+        timeout-minutes: 15
+        run: python benchmark/final_retrieval.py e004 --output out/e004
+      - uses: actions/upload-artifact@v4
+        with: { name: e004, path: out/e004 }
+
+  gte-embed:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - run: python -m pip install -c requirements.lock.txt -e ".[semantic,benchmark]"
+      - run: python benchmark/final_retrieval.py embed --what docs --shard ${{ matrix.shard }} --of $SHARDS --output out/gte
+      - run: python benchmark/final_retrieval.py embed --what queries --shard ${{ matrix.shard }} --of $SHARDS --output out/gte
+      - uses: actions/upload-artifact@v4
+        with: { name: "gte-${{ matrix.shard }}", path: out/gte }
+
+  gte-gate:
+    needs: gte-embed
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - run: python -m pip install -c requirements.lock.txt -e ".[semantic,benchmark]"
+      - uses: actions/download-artifact@v4
+        with: { pattern: "gte-*", path: out/shards }
+      - run: python benchmark/final_retrieval.py gate --shards out/shards --output out/gate
+      - uses: actions/upload-artifact@v4
+        with: { name: gte-gate, path: out/gate }
