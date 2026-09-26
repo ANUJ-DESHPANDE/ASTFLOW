@@ -63,22 +63,30 @@ def main():
             top = []
             for r in result["results"][:3]:
                 lines = git(repo, "show", f"{tag}:{r['file_path']}").splitlines()
-                exact = "\n".join(lines[r["start_line"] - 1:r["end_line"]]).strip() == r["snippet"].strip()
+                # A symbol may start mid-line (`res.location = function location(url) {`), so the snippet must lie
+                # within exactly those lines of *this* version's file.
+                exact = r["snippet"].strip() in "\n".join(lines[r["start_line"] - 1:r["end_line"]])
                 ok &= exact
                 top.append({"file": r["file_path"], "lines": [r["start_line"], r["end_line"]], "symbol": r["qualified_name"],
                             "matches_version_source": exact})
-            rows.append({"version": tag, "index_s": round(index_s, 1), "embedding_cache": snapshot.manifest.get("embedding_cache"),
+            previous = rows[-1]["top_snippet"] if rows else None
+            rows.append({"top_snippet": result["results"][0]["snippet"],
+                         "changed_since_previous_version": None if previous is None else previous != result["results"][0]["snippet"],
+                         "version": tag, "index_s": round(index_s, 1), "embedding_cache": snapshot.manifest.get("embedding_cache"),
                          "chunks": snapshot.manifest["chunk_count"], "semantic": snapshot.manifest.get("semantic"),
                          "query_ms": round(query_ms, 1), "top": top})
         report = {"model": model, "query": QUERY, "versions": rows, "all_snippets_match_their_version": ok}
+        for r in rows:
+            r.pop("top_snippet")
         (out / "p1.json").write_text(json.dumps(report, indent=1), encoding="utf-8")
         lines = [f"# P1 with {model}: {'PASS' if ok else 'FAIL'}", "", f"Query: {QUERY!r}", "",
-                 "| Version | Index s | Embeddings reused/computed | Query ms | Top result | Matches that version's source |",
-                 "|---|---:|---|---:|---|---|"]
+                 "| Version | Index s | Embeddings reused/computed | Query ms | Top result | Matches that version's source | Top snippet changed vs previous version |",
+                 "|---|---:|---|---:|---|---|---|"]
         for r in rows:
             c, t = r["embedding_cache"] or {}, r["top"][0]
             lines.append(f"| {r['version']} | {r['index_s']} | {c.get('reused')}/{c.get('computed')} | {r['query_ms']} | "
-                         f"{t['file']}:{t['lines'][0]}-{t['lines'][1]} {t['symbol']} | {all(x['matches_version_source'] for x in r['top'])} |")
+                         f"{t['file']}:{t['lines'][0]}-{t['lines'][1]} {t['symbol']} | {all(x['matches_version_source'] for x in r['top'])} | "
+                         f"{r['changed_since_previous_version']} |")
         text = "\n".join(lines) + "\n"
         print(text)
         import os
