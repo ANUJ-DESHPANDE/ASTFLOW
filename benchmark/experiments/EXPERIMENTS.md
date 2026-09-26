@@ -62,6 +62,7 @@ Frozen 2026-09-26 after the single official run (workflow `official-final`, run 
 | Fusion | none (the gate showed BM25 fusion lowers this model's score) |
 | Candidate depth | full corpus scored exactly; top 1,000 returned to MTEB |
 | Index configuration | 512-token cap for documents; vectors float32, content-hash keyed, 26.9 MB for 8,765 documents |
+| Inference precision | Evaluation: the checkpoint's float16, as transformers loads it. Product (from 2026-09-26): float32 on CPU. float16 ran 6× slower on CPUs without half-precision hardware (AMD EPYC 7763: 0.4 vs 2.3 chunks/s) and equally fast on Intel AMX. Vectors agree at min cosine 0.99955–0.99957 (workflow `index-diagnose`, 4 runners), the tolerance used to verify the official run's precomputed vectors. Model, weights, token cap and ranking are unchanged; the official result is not re-run. |
 
 **Official AppsRetrieval (MTEB 2.21.0, test, 3,765 queries × 8,765 documents):** NDCG@10 **0.5511** · MRR@10 **0.5053**.
 Diagnostics: R@10 0.6967 · R@50 0.8483 · R@100 0.8943. Result file: `benchmark/results/mteb-final-gte/appsretrieval_results.json`.

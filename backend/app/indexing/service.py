@@ -13,7 +13,7 @@ from backend.app.config import ROOT, Settings
 from backend.app.indexing.discovery import list_versions, read_snapshot, snapshot_hash
 from backend.app.parsing.javascript import parse_file
 from backend.app.retrieval.embedding_cache import EmbeddingCache
-from backend.app.retrieval.embeddings import Embedder, ModelUnavailable
+from backend.app.retrieval.embeddings import PRECISION, Embedder, ModelUnavailable
 from backend.app.retrieval.search import Retriever
 from backend.app.storage.store import load_index, save_index
 from backend.app.structure.graph import ProjectGraph
@@ -164,8 +164,9 @@ class IndexService:
         if not chunks or self.embedder.load() is None:
             return None, stats
         model_name = self.settings.model
+        cache_key = f"{model_name}#{PRECISION}"  # never mix vectors computed at different precisions
         hashes = [hashlib.sha256(c.search_text.encode()).hexdigest() for c in chunks]
-        cached = self.embedding_cache.get_many(model_name, hashes)
+        cached = self.embedding_cache.get_many(cache_key, hashes)
         missing = [i for i, h in enumerate(hashes) if h not in cached]
         # Length-sorted, like sentence-transformers sorts one call, so progress batches do not add padding work.
         missing.sort(key=lambda i: len(chunks[i].search_text))
@@ -179,7 +180,7 @@ class IndexService:
             if vectors is None:
                 return None, stats
             new_items = {hashes[i]: vectors[j] for j, i in enumerate(batch)}
-            self.embedding_cache.put_many(model_name, new_items)
+            self.embedding_cache.put_many(cache_key, new_items)
             cached.update(new_items)
         stats["reused"] = len(chunks) - len(missing)
         stats["computed"] = len(missing)
@@ -192,7 +193,7 @@ class IndexService:
         semantic = self.settings.semantic != "off" if embedded is None else embedded
         return {"model": self.settings.model if semantic else None,
                 "mode": self.settings.retrieval if semantic else "bm25 (lexical-only: ASTFLOW_SEMANTIC=off)",
-                "model_loaded": self.embedder.model is not None, "device": "cpu",
+                "model_loaded": self.embedder.model is not None, "device": "cpu", "precision": PRECISION if semantic else None,
                 "frozen_submission_configuration": bool(semantic and self.settings.frozen),
                 "message": self.embedder.reason}
 

@@ -19,6 +19,13 @@ class ModelUnavailable(RuntimeError):
     """The configured embedding model is required (ASTFLOW_SEMANTIC=on) but could not be loaded."""
 
 
+# CPU arithmetic precision. gte-modernbert-base's checkpoint is float16, which transformers loads as float16; on CPUs
+# without half-precision hardware (e.g. AMD EPYC 7763, most laptops) that ran 6x slower than float32 (0.4 vs 2.3
+# chunks/s), and on CPUs with it (Intel AMX) both ran at the same speed. Vectors agree with float16 at cosine >= 0.9995
+# (measured, workflow index-diagnose), the tolerance used to verify the official run's precomputed vectors.
+PRECISION = "float32"
+
+
 def profile(model: str) -> dict:
     return PROFILES.get(model, {"query_prefix": "", "document_prefix": "", "max_seq": None})
 
@@ -50,10 +57,11 @@ class Embedder:
                                                  cache_folder=str(self.settings.cache / "models" / "hub"))
                 if download:
                     self.model.save(str(model_path))
+                self.model.to(getattr(torch, PRECISION))
                 cap = profile(self.settings.model)["max_seq"]
                 if cap:
                     self.model.max_seq_length = min(cap, self.model.max_seq_length or cap)
-                self.reason = f"{self.settings.model} loaded on CPU"
+                self.reason = f"{self.settings.model} loaded on CPU ({PRECISION})"
             except Exception as exc:
                 self.model = None
                 self.reason = (f"{self.settings.model} is not available ({type(exc).__name__}). Run `npm run setup` or "

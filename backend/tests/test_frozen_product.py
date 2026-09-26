@@ -72,6 +72,7 @@ def test_search_ranks_with_the_configured_dense_first_stage_and_reports_it(tmp_p
     service.embedder = BagOfWordsEmbedder(settings)
     index = service.index(DEMO)
     assert index.manifest["retrieval"] == {"model": FROZEN_MODEL, "mode": "dense", "model_loaded": True, "device": "cpu",
+                                           "precision": "float32",
                                            "frozen_submission_configuration": True,
                                            "message": f"{FROZEN_MODEL} loaded on CPU"}
     index.retriever.embedder = service.embedder
