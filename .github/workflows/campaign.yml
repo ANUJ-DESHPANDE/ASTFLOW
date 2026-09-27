@@ -27,13 +27,11 @@ jobs:
         with: { pattern: "gte-[0-9]*", path: shards, run-id: 36237821741, github-token: "${{ github.token }}" }
       - uses: actions/download-artifact@v4
         with: { pattern: "test-*", path: test-shards, run-id: 36239945962, github-token: "${{ github.token }}" }
-      - name: Diagnostics, E004 tokenizer, E009 fusion (dev/confirmation; test = baseline reproduction only)
-        run: python benchmark/campaign.py --shards shards --test-shards test-shards --output out/campaign
-      - uses: actions/upload-artifact@v4
-        with: { name: campaign-candidates, path: out/campaign/candidates.json }
+      - name: Round 2 - E015 dense PRF, E005 BM25 k1/b in the kept fusion (dev/confirmation)
+        run: python benchmark/campaign.py --round 2 --shards shards --test-shards test-shards --output out/campaign
       - name: Commit results
         run: |
-          mkdir -p benchmark/results/campaign && cp out/campaign/campaign.json out/campaign/campaign.md benchmark/results/campaign/
+          mkdir -p benchmark/results/campaign && cp out/campaign/round2.json out/campaign/round2.md benchmark/results/campaign/
           git config user.name AarushShetty346 && git config user.email aarushshetty3@gmail.com
-          git add benchmark/results/campaign && git commit -q -m "benchmark: campaign diagnostics, E004, E009 (run ${{ github.run_id }}) [skip ci]" || exit 0
+          git add benchmark/results/campaign && git commit -q -m "benchmark: campaign round 2, E015 PRF + E005 k1/b (run ${{ github.run_id }}) [skip ci]" || exit 0
           for i in 1 2 3; do git pull -q --rebase -X theirs origin "$GITHUB_REF_NAME" && git push -q origin "HEAD:$GITHUB_REF_NAME" && break; sleep 5; done

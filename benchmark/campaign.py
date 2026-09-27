@@ -184,6 +184,62 @@ def run(args):
     summary(report, out)
 
 
+def run_round2(args):
+    """E015 dense pseudo-relevance feedback and E005 BM25 k1/b inside the kept fusion, each against the current best
+    (dense + 0.05 * max-normalised generic BM25, k1 1.6, b 0.75). DEV selects; CONFIRMATION must agree."""
+    data = Data(Path(args.shards), Path(args.test_shards))
+    out = Path(args.output); out.mkdir(parents=True, exist_ok=True)
+    report = {"current_best": "dense + 0.05 * bm25_generic(k1 1.6, b 0.75)", "sets": {}}
+    grids = [(k1, b) for k1 in (0.5, 0.9, 1.2, 1.6, 2.0) for b in (0.3, 0.5, 0.75, 0.9)]
+    bm_by = {}
+    for k1, b in grids:
+        tok = generic_tokenize
+        chunks = [Chunk(d, d, "", d, "dataset_document", 1, 1, data.corpus[d], data.corpus[d], "") for d in data.doc_ids]
+        bm_by[(k1, b)] = Retriever(chunks, None, None, Settings(semantic="off"), tokenizer=tok, k1=k1, b=b)
+    for name in ("dev", "confirmation"):
+        qids = data.sets[name]
+        rel = {q: data.rel(q) for q in qids}
+        dense = {q: data.dense(q) for q in qids}
+        norm = lambda v: v / max(v.max(), 1e-9)
+        bm = {kb: {q: norm(np.asarray(r.lexical_scores(generic_tokenize(data.queries[q])), dtype=np.float64)) for q in qids}
+              for kb, r in bm_by.items()}
+        R = lambda f: [ranks_from_scores(f(q), rel[q]) for q in qids]
+        best = R(lambda q: dense[q] + 0.05 * bm[(1.6, 0.75)][q])
+        systems = {"current_best": best}
+        for (k1, b) in grids:
+            for lam in (0.03, 0.05, 0.08):
+                systems[f"e005_k1{k1}_b{b}_l{lam}"] = R(lambda q, kb=(k1, b), lam=lam: dense[q] + lam * bm[kb][q])
+        for k in (1, 3, 5, 10):
+            for beta in (0.1, 0.2, 0.3, 0.5):
+                def prf(q, k=k, beta=beta):
+                    top = np.argsort(-dense[q], kind="stable")[:k]
+                    v = data.Q[q] + beta * data.D[top].mean(axis=0)
+                    return data.D @ (v / np.linalg.norm(v)) + 0.05 * bm[(1.6, 0.75)][q]
+                systems[f"e015_prf_k{k}_b{beta}"] = R(prf)
+        report["sets"][name] = {k: {**metrics(v), "vs_best": paired(v, best)} for k, v in systems.items()}
+        print(f"{name}: {len(systems)} systems", flush=True)
+    (out / "round2.json").write_text(json.dumps(report, indent=1), encoding="utf-8")
+    dev, conf = report["sets"]["dev"], report["sets"]["confirmation"]
+    lines = ["# Campaign round 2: E015 dense PRF, E005 BM25 k1/b in the kept fusion (vs current best)", ""]
+    for prefix in ("e005", "e015"):
+        top = sorted((k for k in dev if k.startswith(prefix)), key=lambda k: -dev[k]["ndcg@10"])[:5]
+        lines += [f"## {prefix}: top 5 by DEV NDCG@10", "", "| Variant | dev NDCG@10 | Δ vs best [CI] | conf NDCG@10 | Δ vs best [CI] |",
+                  "|---|---:|---|---:|---|"]
+        for k in top:
+            d, c = dev[k]["vs_best"], conf[k]["vs_best"]
+            lines.append(f"| {k} | {dev[k]['ndcg@10']:.4f} | {d['delta']:+.4f} [{d['ci'][0]:+.4f}, {d['ci'][1]:+.4f}] | "
+                         f"{conf[k]['ndcg@10']:.4f} | {c['delta']:+.4f} [{c['ci'][0]:+.4f}, {c['ci'][1]:+.4f}] |")
+        lines.append("")
+    lines.append(f"Current best: dev {dev['current_best']['ndcg@10']:.4f} / MRR {dev['current_best']['mrr@10']:.4f}; "
+                 f"confirmation {conf['current_best']['ndcg@10']:.4f} / MRR {conf['current_best']['mrr@10']:.4f}")
+    text = "\n".join(lines) + "\n"
+    (out / "round2.md").write_text(text, encoding="utf-8")
+    print(text)
+    import os
+    if os.getenv("GITHUB_STEP_SUMMARY"):
+        Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a", encoding="utf-8").write(text)
+
+
 def fmt(m):
     return " | ".join(f"{m[k]:.4f}" for k in ("ndcg@10", "mrr@10", "r@10", "r@50", "r@100", "r@200", "r@500", "r@1000"))
 
@@ -218,7 +274,9 @@ def main():
     p.add_argument("--shards", required=True, help="docs-*/queries-* shards (final-retrieval run)")
     p.add_argument("--test-shards", required=True, help="test-* shards (official-final run)")
     p.add_argument("--output", required=True)
-    run(p.parse_args())
+    p.add_argument("--round", type=int, default=1)
+    args = p.parse_args()
+    (run_round2 if args.round == 2 else run)(args)
 
 
 if __name__ == "__main__":
