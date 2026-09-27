@@ -240,6 +240,38 @@ def run_round2(args):
         Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a", encoding="utf-8").write(text)
 
 
+def run_final(args):
+    """The one TEST evaluation of the kept configuration (selected on DEV, agreed on CONFIRMATION), paired against the
+    frozen baseline. Run once; do not tune on its output."""
+    data = Data(Path(args.shards), Path(args.test_shards))
+    out = Path(args.output); out.mkdir(parents=True, exist_ok=True)
+    qids = data.sets["test"]
+    rel = {q: data.rel(q) for q in qids}
+    base, kept = [], []
+    for q in qids:
+        dense = data.dense(q)
+        bm = data.bm25(q, "generic")
+        base.append(ranks_from_scores(dense, rel[q]))
+        kept.append(ranks_from_scores(dense + 0.05 * bm / max(bm.max(), 1e-9), rel[q]))
+    report = {"split": "test", "queries": len(qids), "baseline": {"system": "GTE dense (official)", **metrics(base)},
+              "kept": {"system": "GTE dense + 0.05 * max-normalised BM25 (generic tokens, k1 1.6, b 0.75)", **metrics(kept),
+                       "vs_baseline": paired(kept, base)}}
+    (out / "final_test.json").write_text(json.dumps(report, indent=1), encoding="utf-8")
+    b, k, v = report["baseline"], report["kept"], report["kept"]["vs_baseline"]
+    lines = [f"# TEST confirmation (run once): {len(qids)} queries x {len(data.doc_ids)} documents", "",
+             "| System | NDCG@10 | MRR@10 | R@10 | R@50 | R@100 | R@500 | R@1000 |", "|---|---:|---:|---:|---:|---:|---:|---:|"]
+    for name, m in (("baseline: " + b["system"], b), ("kept: " + k["system"], k)):
+        lines.append(f"| {name} | {m['ndcg@10']:.4f} | {m['mrr@10']:.4f} | {m['r@10']:.4f} | {m['r@50']:.4f} | {m['r@100']:.4f} | "
+                     f"{m['r@500']:.4f} | {m['r@1000']:.4f} |")
+    lines += ["", f"ΔNDCG@10 {v['delta']:+.4f} [{v['ci'][0]:+.4f}, {v['ci'][1]:+.4f}] · wins/losses {v['wins']}/{v['losses']}"]
+    text = "\n".join(lines) + "\n"
+    (out / "final_test.md").write_text(text, encoding="utf-8")
+    print(text)
+    import os
+    if os.getenv("GITHUB_STEP_SUMMARY"):
+        Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a", encoding="utf-8").write(text)
+
+
 def fmt(m):
     return " | ".join(f"{m[k]:.4f}" for k in ("ndcg@10", "mrr@10", "r@10", "r@50", "r@100", "r@200", "r@500", "r@1000"))
 
@@ -276,7 +308,7 @@ def main():
     p.add_argument("--output", required=True)
     p.add_argument("--round", type=int, default=1)
     args = p.parse_args()
-    (run_round2 if args.round == 2 else run)(args)
+    {1: run, 2: run_round2, 3: run_final}[args.round](args)
 
 
 if __name__ == "__main__":
