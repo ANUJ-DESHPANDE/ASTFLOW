@@ -1,0 +1,52 @@
+# E016 (campaign): query encoding window 512 vs 1024 vs 2048 (documents: cached 512-token vectors), dev + confirmation.
+name: campaign-qlen
+on:
+  push:
+    branches: [claude/vibrant-goodall-tof53x]
+    paths: [".github/workflows/campaign-qlen.yml"]
+
+permissions:
+  contents: write
+  actions: read
+
+env:
+  PIP_EXTRA_INDEX_URL: https://download.pytorch.org/whl/cpu
+
+jobs:
+  embed:
+    strategy:
+      fail-fast: false
+      matrix: { shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19] }
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - run: python -m pip install -c requirements.lock.txt -e ".[dev,semantic,benchmark]" > /dev/null
+      - run: timeout 40m python benchmark/campaign_qlen.py embed --shard ${{ matrix.shard }} --of 20 --output out/qlen
+      - uses: actions/upload-artifact@v4
+        with: { name: "qlen-${{ matrix.shard }}", path: out/qlen }
+
+  evaluate:
+    needs: embed
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - run: python -m pip install -c requirements.lock.txt -e ".[dev,benchmark]" > /dev/null
+      - uses: actions/download-artifact@v4
+        with: { pattern: "gte-[0-9]*", path: shards, run-id: 36237821741, github-token: "${{ github.token }}" }
+      - uses: actions/download-artifact@v4
+        with: { pattern: "test-*", path: test-shards, run-id: 36239945962, github-token: "${{ github.token }}" }
+      - uses: actions/download-artifact@v4
+        with: { pattern: "qlen-*", path: qlen }
+      - run: python benchmark/campaign_qlen.py evaluate --shards shards --test-shards test-shards --vectors qlen --output out/e016
+      - name: Commit results
+        run: |
+          mkdir -p benchmark/results/campaign && cp out/e016/e016.json out/e016/e016.md benchmark/results/campaign/
+          git config user.name AarushShetty346 && git config user.email aarushshetty3@gmail.com
+          git add benchmark/results/campaign && git commit -q -m "benchmark: campaign E016 query window results (run ${{ github.run_id }}) [skip ci]" || exit 0
+          for i in 1 2 3; do git pull -q --rebase -X theirs origin "$GITHUB_REF_NAME" && git push -q origin "HEAD:$GITHUB_REF_NAME" && break; sleep 5; done
