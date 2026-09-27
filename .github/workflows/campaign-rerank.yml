@@ -27,6 +27,7 @@ jobs:
       - run: python -m pip install -c requirements.lock.txt -e ".[dev,semantic,benchmark]" > /dev/null
       - uses: actions/download-artifact@v4
         with: { name: campaign-candidates, path: cand, run-id: 36318134381, github-token: "${{ github.token }}" }
-      - run: lscpu | sed -n 's/^Model name: *//p'
+      - run: |
+          lscpu | sed -n 's/^Model name: *//p'
       - if: env.STAGE == 'preflight'
         run: python benchmark/campaign_rerank.py preflight --candidates cand/candidates.json
