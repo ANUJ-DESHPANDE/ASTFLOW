@@ -1,22 +1,24 @@
-# E017 pre-flight — blocked (2026-09-27)
+# E017 pre-flight — GO (2026-09-27)
 
-Base commit: `9a29b27`. Local branch: `codex/e017-preflight`.
+Base commit: `9a29b27`. Branch: `codex/e017-preflight`. Product code and its CPU `.venv` were not changed. The user clarified that the 45-minute cap applies to compute jobs, not network downloads.
 
-| Check | Observation |
+| Check | Measured result |
 |---|---|
-| GPU | NVIDIA GeForce GTX 1650 Ti, 4,096 MiB VRAM (about 3,838 MiB free at start) |
-| Driver | 581.83; `nvidia-smi` reports CUDA 13.0 as the maximum supported version |
-| Environment | Separate `.venv-gpu`, excluded through `.git/info/exclude`; product `.venv` unchanged |
-| CUDA PyTorch | Official `torch==2.14.0+cu126` Windows/Python 3.12 wheel exists, but is not installed |
-| Reranker checkpoint | Public model metadata and tokenizer cached; `model.safetensors` is not cached |
-| TRAIN data | Existing local train qrels Arrow file verified: 5,000 rows; no evaluation split was loaded |
-| Sequence length | Planned 512 tokens with fp16 autocast and gradient checkpointing; not tested |
-| Tiny training test | Not started: CUDA PyTorch and the checkpoint are unavailable |
+| GPU | NVIDIA GeForce GTX 1650 Ti, 4,096 MiB VRAM (3,643 MiB free before the rerun) |
+| Driver | 581.83; `nvidia-smi` reports maximum CUDA 13.0 |
+| Isolated stack | `.venv-gpu` (locally excluded from Git), Python 3.12.6, `torch 2.14.0+cu126`, pinned project libraries; `pip check` passes |
+| PyTorch CUDA | `torch.cuda.is_available() == True`; GPU name confirmed by PyTorch |
+| Reranker | `Alibaba-NLP/gte-reranker-modernbert-base` loads offline through `CrossEncoder` at 512 tokens |
+| Checkpoint integrity | 598,436,708-byte `model.safetensors`; SHA-256 `13c533d902d6a48fa97375c6856c3e60854f9228ea760e3fc18ebde057e0cf31` matches Hugging Face's LFS file hash |
+| TRAIN pool | 5,000 train qrels; excluded the frozen first 600 shuffled IDs (seed 20260926), leaving 4,400 eligible queries |
+| Micro run | 50 pairs from 25 eligible TRAIN queries; 20 optimizer steps, batch 2, 512 tokens, fp16 autocast, gradient checkpointing, Adafactor |
+| Peak allocated VRAM | 1.462 GiB training; 1.194 GiB inference |
+| Throughput | 0.8995 training pairs/s (steps 3–20); 3.5654 inference pairs/s (50 pairs) |
 
-## Download measurements and stop reason
+The 50-pair micro run used one positive and one document relevant to another eligible TRAIN query per query. Those negatives measured throughput only; they are not the hard GTE negatives required for E017 training. The micro-run weights were not saved.
 
-- The CUDA wheel is 2,602,771,598 bytes. A direct official download reached 1,889,468,416 bytes before transfer speed fell sharply. A fresh 10 MiB range request received 2,090,067 bytes in 20 seconds (about 0.10 MB/s). The remaining transfer would exceed the 45-minute job limit at that rate, so the download was stopped. The partial wheel remains in the ignored `.venv-gpu/wheels/` directory for a possible resume.
-- The public reranker checkpoint is 598,436,708 bytes. Hugging Face returned HTTP 200 without a token, but a 10 MiB range request received only 331,355 bytes in 20 seconds (about 0.017 MB/s). The single `snapshot_download` attempt was stopped. Small model configuration and tokenizer files were cached.
-- The required 20-step TRAIN-only memory and throughput check could not run. Peak VRAM, training pairs/s, inference pairs/s, and a defensible epoch runtime are therefore unknown.
+At the measured rate, one 4,400-query epoch with 1 positive + 4 hard negatives/query is about **6.79 GPU-hours**. Limit each training shard to roughly **350 queries / 1,750 pairs**, projected at **32.4 minutes** before startup and checkpoint overhead; measure each shard and keep it below 45 minutes. DEV and confirmation top-20 scoring are about **28.0 minutes each** at the measured inference rate, so they must be separate jobs. This is a plan from a small throughput sample, not a guarantee; remeasure on actual hard-negative lengths before launching a shard.
 
-**Decision: BLOCKED.** Resume only when the CUDA wheel and checkpoint can be obtained within the 45-minute per-job limit. Then verify CUDA, run the 20-step TRAIN-only test, and decide whether a 512-token training shard fits 4 GB VRAM and the time budget. No training code, reranker checkpoint, DEV/CONF/TEST evaluation, product code, or release artifact was created during this pre-flight.
+The project's `load_dataset_split('train')` returned only TRAIN qrels. The Hugging Face `datasets` builder also materialized a test cache while preparing its configuration; no test rows, labels, rankings, or metrics were read by E017 code. DEV and confirmation IDs were generated solely to exclude them from the micro-run. No DEV, confirmation, or TEST evaluation has run.
+
+**Decision: GO for a bounded E017 experiment.** This pre-flight establishes CUDA operation, model availability, and headroom within 4 GB VRAM. Training must use frozen GTE hard negatives from eligible TRAIN queries and honor the 45-minute per-compute-job limit.
