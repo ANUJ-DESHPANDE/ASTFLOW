@@ -1,0 +1,19 @@
+{
+  "model": "Alibaba-NLP/gte-reranker-modernbert-base",
+  "max_length": 512,
+  "queries": 300,
+  "pairs": 1500,
+  "negatives_per_query": 4,
+  "seed": 20260926,
+  "model_mini_batch_size": 2,
+  "optimizer": "Adafactor",
+  "lr": 1e-05,
+  "objective": "RankNetLoss",
+  "gradient_checkpointing": true,
+  "fp16_autocast": true,
+  "train_qids_sha256": "f46b7058eed59620ca15fd373c5f92e32df4981be92a3bda7b6ab105f97466df",
+  "steps": 300,
+  "train_seconds": 1606.6508944000234,
+  "peak_gib": 1.4634766578674316,
+  "last_20_loss": 0.6804837168267113
+}

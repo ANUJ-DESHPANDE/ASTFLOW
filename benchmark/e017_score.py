@@ -28,6 +28,7 @@ def score(args):
     output.mkdir(parents=True, exist_ok=True)
     path = output / f"{args.set}-{args.shard:02d}-of-{args.of:02d}.json"
     prior = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+    assert prior.get("batch", args.batch) == args.batch, "cannot resume with a different inference batch"
     scores = prior.get("scores", {})
     assert set(scores).issubset(set(qids))
     model = CrossEncoder(args.checkpoint, max_length=512, device="cuda", local_files_only=True)
@@ -40,13 +41,14 @@ def score(args):
         assert len(docs) == 20 and len(set(docs)) == 20
         pairs = [(queries[q], corpus[d]) for d in docs]
         with torch.amp.autocast("cuda", dtype=torch.float16):
-            prediction = model.predict(pairs, batch_size=2, show_progress_bar=False)
+            prediction = model.predict(pairs, batch_size=args.batch, show_progress_bar=False)
         values = [float(v) for v in np.asarray(prediction).reshape(-1)]
         assert len(values) == 20 and all(np.isfinite(values))
         scores[q] = values
         if (index + 1) % 20 == 0 or index + 1 == len(qids):
             path.write_text(json.dumps({"set": args.set, "shard": args.shard,
-                                        "of": args.of, "depth": 20, "scores": scores}), encoding="utf-8")
+                                        "of": args.of, "depth": 20, "batch": args.batch,
+                                        "scores": scores}), encoding="utf-8")
             elapsed = time.perf_counter() - start
             print(f"score {args.set} {args.shard}/{args.of} {len(scores)}/{len(qids)} "
                   f"elapsed={elapsed:.0f}s peak_gib={torch.cuda.max_memory_allocated()/1024**3:.2f}", flush=True)
@@ -60,11 +62,16 @@ def evaluate(args):
     expected = set(query_sets(qrels)[args.set])
     candidates = json.loads(Path(args.candidates).read_text(encoding="utf-8"))[args.set]["dense_top200"]
     all_scores = {}
+    batch_size = None
     for shard in range(args.of):
         path = Path(args.scores) / f"{args.set}-{shard:02d}-of-{args.of:02d}.json"
         data = json.loads(path.read_text(encoding="utf-8"))
         assert data["set"] == args.set and data["depth"] == 20
         assert data["shard"] == shard and data["of"] == args.of
+        if batch_size is None:
+            batch_size = data.get("batch")
+        else:
+            assert data.get("batch") == batch_size, "inference batches differ between shards"
         assert not set(all_scores).intersection(data["scores"])
         all_scores.update(data["scores"])
     assert set(all_scores) == expected and set(candidates) == expected
@@ -94,6 +101,7 @@ def main():
     p.add_argument("--set", choices=("dev", "confirmation"), required=True)
     p.add_argument("--shard", type=int, required=True)
     p.add_argument("--of", type=int, default=3)
+    p.add_argument("--batch", type=int, default=2)
     p.add_argument("--output", required=True)
     p = sub.add_parser("evaluate")
     p.add_argument("--candidates", required=True)
