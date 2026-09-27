@@ -7,6 +7,9 @@ on:
       stage: { description: "preflight | score", default: "preflight" }
       depth: { description: "dense top-N to rerank", default: "20" }
       max_length: { description: "pair max tokens", default: "1024" }
+  push:
+    branches: [claude/vibrant-goodall-tof53x]
+    paths: [".github/workflows/campaign-rerank.yml"]
 
 permissions:
   contents: write
@@ -18,7 +21,7 @@ env:
 
 jobs:
   preflight:
-    if: inputs.stage == 'preflight'
+    if: github.event_name == 'push' || inputs.stage == 'preflight'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -32,7 +35,7 @@ jobs:
       - run: python benchmark/campaign_rerank.py preflight --candidates cand/candidates.json
 
   score:
-    if: inputs.stage == 'score'
+    if: github.event_name == 'workflow_dispatch' && inputs.stage == 'score'
     strategy:
       fail-fast: false
       matrix: { shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19] }
