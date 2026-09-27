@@ -1,0 +1,54 @@
+# E011b (campaign, E011 at 512 tokens rejected): cross-encoder reranking at 1024 tokens of the frozen dense candidates, dev + confirmation, sharded (~5 min/shard).
+# Runs on push of this file. Candidates: campaign run artifact (dense top-200). Preflight (run 36318392923): 2.08 pairs/s
+# at 512 tokens on a 4-vCPU runner.
+name: campaign-rerank
+on:
+  push:
+    branches: [claude/vibrant-goodall-tof53x]
+    paths: [".github/workflows/campaign-rerank.yml"]
+
+permissions:
+  contents: write
+  actions: read
+
+env:
+  PIP_EXTRA_INDEX_URL: https://download.pytorch.org/whl/cpu
+
+jobs:
+  score:
+    strategy:
+      fail-fast: false
+      matrix: { shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19] }
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - run: python -m pip install -c requirements.lock.txt -e ".[dev,semantic,benchmark]" > /dev/null
+      - uses: actions/download-artifact@v4
+        with: { name: campaign-candidates, path: cand, run-id: 36318134381, github-token: "${{ github.token }}" }
+      - run: timeout 40m python benchmark/campaign_rerank.py score --candidates cand/candidates.json --shard ${{ matrix.shard }} --of 20 --depth 20 --max-length 1024 --output out/rr
+      - uses: actions/upload-artifact@v4
+        with: { name: "rr-${{ matrix.shard }}", path: out/rr }
+
+  evaluate:
+    needs: score
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - run: python -m pip install -c requirements.lock.txt -e ".[dev,benchmark]" > /dev/null
+      - uses: actions/download-artifact@v4
+        with: { name: campaign-candidates, path: cand, run-id: 36318134381, github-token: "${{ github.token }}" }
+      - uses: actions/download-artifact@v4
+        with: { pattern: "rr-*", path: rr }
+      - run: python benchmark/campaign_rerank.py evaluate --candidates cand/candidates.json --scores rr --output out/e011
+      - name: Commit results
+        run: |
+          mkdir -p benchmark/results/campaign && cp out/e011/e011.json benchmark/results/campaign/e011b.json && cp out/e011/e011.md benchmark/results/campaign/e011b.md
+          git config user.name AarushShetty346 && git config user.email aarushshetty3@gmail.com
+          git add benchmark/results/campaign && git commit -q -m "benchmark: campaign E011 reranker results (run ${{ github.run_id }}) [skip ci]" || exit 0
+          for i in 1 2 3; do git pull -q --rebase -X theirs origin "$GITHUB_REF_NAME" && git push -q origin "HEAD:$GITHUB_REF_NAME" && break; sleep 5; done
