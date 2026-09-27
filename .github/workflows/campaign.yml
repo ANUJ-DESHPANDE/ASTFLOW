@@ -1,0 +1,39 @@
+# Retrieval-metric campaign: offline experiments on the frozen run's cached GTE vectors (no re-embedding).
+# Results are committed to benchmark/results/campaign/; candidate lists are kept as an artifact for later stages.
+name: campaign
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/vibrant-goodall-tof53x]
+    paths: [".github/workflows/campaign.yml", "benchmark/campaign.py"]
+
+permissions:
+  contents: write
+  actions: read
+
+env:
+  PIP_EXTRA_INDEX_URL: https://download.pytorch.org/whl/cpu
+
+jobs:
+  offline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - run: python -m pip install -c requirements.lock.txt -e ".[dev,benchmark]" > /dev/null
+      - uses: actions/download-artifact@v4
+        with: { pattern: "gte-[0-9]*", path: shards, run-id: 36237821741, github-token: "${{ github.token }}" }
+      - uses: actions/download-artifact@v4
+        with: { pattern: "test-*", path: test-shards, run-id: 36239945962, github-token: "${{ github.token }}" }
+      - name: Diagnostics, E004 tokenizer, E009 fusion (dev/confirmation; test = baseline reproduction only)
+        run: python benchmark/campaign.py --shards shards --test-shards test-shards --output out/campaign
+      - uses: actions/upload-artifact@v4
+        with: { name: campaign-candidates, path: out/campaign/candidates.json }
+      - name: Commit results
+        run: |
+          mkdir -p benchmark/results/campaign && cp out/campaign/campaign.json out/campaign/campaign.md benchmark/results/campaign/
+          git config user.name AarushShetty346 && git config user.email aarushshetty3@gmail.com
+          git add benchmark/results/campaign && git commit -q -m "benchmark: campaign diagnostics, E004, E009 (run ${{ github.run_id }}) [skip ci]" || exit 0
+          for i in 1 2 3; do git pull -q --rebase -X theirs origin "$GITHUB_REF_NAME" && git push -q origin "HEAD:$GITHUB_REF_NAME" && break; sleep 5; done
