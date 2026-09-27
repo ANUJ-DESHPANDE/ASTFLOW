@@ -1,12 +1,7 @@
-# E011 (campaign): cross-encoder reranking of the frozen dense candidates. Preflight first; scoring is sharded so no
-# job approaches the 45-minute limit. Candidates: artifact of the campaign run.
+# E011 (campaign): cross-encoder reranking of the frozen dense candidates. Stage is set below and runs on push of this
+# file: preflight first; scoring is sharded so no job approaches the 45-minute limit. Candidates: campaign run artifact.
 name: campaign-rerank
 on:
-  workflow_dispatch:
-    inputs:
-      stage: { description: "preflight | score", default: "preflight" }
-      depth: { description: "dense top-N to rerank", default: "20" }
-      max_length: { description: "pair max tokens", default: "1024" }
   push:
     branches: [claude/vibrant-goodall-tof53x]
     paths: [".github/workflows/campaign-rerank.yml"]
@@ -17,11 +12,12 @@ permissions:
 
 env:
   PIP_EXTRA_INDEX_URL: https://download.pytorch.org/whl/cpu
-  CANDIDATES_RUN: "36318134381"
+  STAGE: preflight
+  DEPTH: "20"
+  MAX_LENGTH: "1024"
 
 jobs:
   preflight:
-    if: github.event_name == 'push' || inputs.stage == 'preflight'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -30,45 +26,7 @@ jobs:
         with: { python-version: "3.12", cache: pip }
       - run: python -m pip install -c requirements.lock.txt -e ".[dev,semantic,benchmark]" > /dev/null
       - uses: actions/download-artifact@v4
-        with: { name: campaign-candidates, path: cand, run-id: "${{ env.CANDIDATES_RUN }}", github-token: "${{ github.token }}" }
+        with: { name: campaign-candidates, path: cand, run-id: 36318134381, github-token: "${{ github.token }}" }
       - run: lscpu | sed -n 's/^Model name: *//p'
-      - run: python benchmark/campaign_rerank.py preflight --candidates cand/candidates.json
-
-  score:
-    if: github.event_name == 'workflow_dispatch' && inputs.stage == 'score'
-    strategy:
-      fail-fast: false
-      matrix: { shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19] }
-    runs-on: ubuntu-latest
-    timeout-minutes: 45
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: { python-version: "3.12", cache: pip }
-      - run: python -m pip install -c requirements.lock.txt -e ".[dev,semantic,benchmark]" > /dev/null
-      - uses: actions/download-artifact@v4
-        with: { name: campaign-candidates, path: cand, run-id: "${{ env.CANDIDATES_RUN }}", github-token: "${{ github.token }}" }
-      - run: timeout 40m python benchmark/campaign_rerank.py score --candidates cand/candidates.json --shard ${{ matrix.shard }} --of 20 --depth ${{ inputs.depth }} --max-length ${{ inputs.max_length }} --output out/rr
-      - uses: actions/upload-artifact@v4
-        with: { name: "rr-${{ matrix.shard }}", path: out/rr }
-
-  evaluate:
-    needs: score
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: { python-version: "3.12", cache: pip }
-      - run: python -m pip install -c requirements.lock.txt -e ".[dev,benchmark]" > /dev/null
-      - uses: actions/download-artifact@v4
-        with: { name: campaign-candidates, path: cand, run-id: "${{ env.CANDIDATES_RUN }}", github-token: "${{ github.token }}" }
-      - uses: actions/download-artifact@v4
-        with: { pattern: "rr-*", path: rr }
-      - run: python benchmark/campaign_rerank.py evaluate --candidates cand/candidates.json --scores rr --output out/e011
-      - name: Commit results
-        run: |
-          mkdir -p benchmark/results/campaign && cp out/e011/e011.json out/e011/e011.md benchmark/results/campaign/
-          git config user.name AarushShetty346 && git config user.email aarushshetty3@gmail.com
-          git add benchmark/results/campaign && git commit -q -m "benchmark: campaign E011 reranker results (run ${{ github.run_id }}) [skip ci]" || exit 0
-          for i in 1 2 3; do git pull -q --rebase -X theirs origin "$GITHUB_REF_NAME" && git push -q origin "HEAD:$GITHUB_REF_NAME" && break; sleep 5; done
+      - if: env.STAGE == 'preflight'
+        run: python benchmark/campaign_rerank.py preflight --candidates cand/candidates.json
