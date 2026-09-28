@@ -1,0 +1,36 @@
+{
+ "dataset": "CoIR-Retrieval/apps",
+ "revision": "f22508f96b7a36c2415181ed8bb76f76e04ae2d5",
+ "documents": 8765,
+ "documents_raw_rows": 8765,
+ "duplicate_document_ids": [],
+ "distinct_document_texts": 8754,
+ "queries_all_splits": 8765,
+ "queries_raw_rows": 8765,
+ "duplicate_query_ids": [],
+ "test_queries": 3765,
+ "test_qrels_pairs": 3765,
+ "test_relevant_per_query": {
+  "1": 3765
+ },
+ "test_relevant_docs_distinct": 3765,
+ "test_qrels_unresolvable": 0,
+ "train_queries": 5000,
+ "test_train_query_overlap": 0,
+ "test_train_relevant_doc_overlap": 0,
+ "dev_confirmation_in_test": 0,
+ "empty_query_texts": 0,
+ "empty_document_texts": 0,
+ "test_qid_sha256": "5eeca907022fecea0fa7afddee35b2185b02b45489c428bb33b70d010df12e1a",
+ "test_qrels_sha256": "742c8c8dbf4b95ad08d2eb3c0e0ca76f516bbff870e3aed9fd6a5f740d34a2ac",
+ "mteb_task_revision": "f22508f96b7a36c2415181ed8bb76f76e04ae2d5",
+ "mteb_eval_splits": [
+  "test"
+ ],
+ "mteb_documents": 8765,
+ "mteb_test_queries": 3765,
+ "mteb_test_qrels_pairs": 3765,
+ "mteb_matches_repo_loader": true,
+ "committed_apps_qrels_pairs": 3765,
+ "committed_apps_qrels_match": true
+}
