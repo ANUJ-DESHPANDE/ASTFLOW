@@ -1,0 +1,178 @@
+{
+ "prediction_file": "benchmark\\results\\final-validation-20260928\\mteb\\predictions\\AppsRetrieval_predictions.json.gz",
+ "prediction_subsets_splits": {
+  "default": [
+   "test"
+  ]
+ },
+ "mteb_model_meta": {
+  "model_name": "ASTFLOW/dense",
+  "revision": "18299cda97440eb2"
+ },
+ "duplicate_json_keys": 0,
+ "queries_predicted": 3765,
+ "test_queries_expected": 3765,
+ "missing_predictions": [],
+ "unexpected_query_ids": [],
+ "train_query_ids_in_run": 0,
+ "empty_rankings": 0,
+ "depth_min": 1000,
+ "depth_max": 1000,
+ "depth_below_1000": 0,
+ "invalid_document_ids": 0,
+ "non_finite_scores": 0,
+ "scores_strictly_decreasing": true,
+ "run_metadata_query_count": 3765,
+ "run_metadata_ranking_depth": 1000,
+ "run_metadata_corpus_count": 8765,
+ "run_metadata_mode": "dense",
+ "run_metadata_model": {
+  "available": true,
+  "model": "Alibaba-NLP/gte-modernbert-base",
+  "message": "Alibaba-NLP/gte-modernbert-base loaded on CPU (float32)"
+ },
+ "run_metadata_model_profile": {
+  "query_prefix": "",
+  "document_prefix": "",
+  "max_seq": 512
+ },
+ "run_metadata_precomputed": false,
+ "mteb_eval_splits_scored": [
+  "test"
+ ],
+ "mteb_dataset_revision": "f22508f96b7a36c2415181ed8bb76f76e04ae2d5",
+ "samples": [
+  {
+   "qid": "q5001",
+   "query_head": "An accordion is a string (yes, in the real world accordions are musical instruments, but let's forget about it for a while) which can be represented as a concat",
+   "relevant": "d5001",
+   "relevant_rank": 1,
+   "top5": [
+    [
+     "d5001",
+     1000.0,
+     "s = input() n = len(s) ind = -1 f = False for i in range(n):     if s["
+    ],
+    [
+     "d7980",
+     999.0,
+     "s = input() last = s.rfind('#') dif = s.count('(')-s.count(')')-s.coun"
+    ],
+    [
+     "d5430",
+     998.0,
+     "# You lost the game. s = str(input()) n = len(s) A = \"ABCDEFGHIJKLMNOP"
+    ],
+    [
+     "d4173",
+     997.0,
+     "def solve(s):     t = None     while t != s:         t, s = s, s.repla"
+    ],
+    [
+     "d506",
+     996.0,
+     "class Solution:     def minRemoveToMakeValid(self, s: str) -> str:    "
+    ]
+   ]
+  },
+  {
+   "qid": "q5942",
+   "query_head": "You are given an integer $n$ ($n \\ge 0$) represented with $k$ digits in base (radix) $b$. So,  $$n = a_1 \\cdot b^{k-1} + a_2 \\cdot b^{k-2} + \\ldots a_{k-1} \\cdo",
+   "relevant": "d5942",
+   "relevant_rank": 1,
+   "top5": [
+    [
+     "d5942",
+     1000.0,
+     "b,k = map(int, input().split()) a = list(map(int, input().split())) r "
+    ],
+    [
+     "d8734",
+     999.0,
+     "a, b = map(int, input().split()) if a*b %2 == 0:     print(\"Even\") els"
+    ],
+    [
+     "d6999",
+     998.0,
+     "def sum_zeroth(arr):     res = 0     for elem in arr:         res += e"
+    ],
+    [
+     "d7853",
+     997.0,
+     "def __starting_point(): \ta=[int(x) for x in input().split()] \tN=a[0] \t"
+    ],
+    [
+     "d6476",
+     996.0,
+     "p = 10 ** 9 + 7 n, b, k, x = [int(s) for s in input().split()] block ="
+    ]
+   ]
+  },
+  {
+   "qid": "q6883",
+   "query_head": "You are preparing for an exam on scheduling theory. The exam will last for exactly T milliseconds and will consist of n problems. You can either solve problem i",
+   "relevant": "d6883",
+   "relevant_rank": 1,
+   "top5": [
+    [
+     "d6883",
+     1000.0,
+     "# -*- coding: utf-8 -*- \"\"\" Created on Mon Jan  8 10:20:50 2018  @auth"
+    ],
+    [
+     "d5855",
+     999.0,
+     "n, t = list(map(int, input().split())) a = [int(x) for x in input().sp"
+    ],
+    [
+     "d2160",
+     998.0,
+     "from collections import defaultdict   def __starting_point():     n, T"
+    ],
+    [
+     "d920",
+     997.0,
+     "'''Author- Akshit Monga''' from sys import stdin, stdout input = stdin"
+    ],
+    [
+     "d97",
+     996.0,
+     "import sys from operator import itemgetter  def count(a, b, num_a, num"
+    ]
+   ]
+  },
+  {
+   "qid": "q7824",
+   "query_head": "In Arcady's garden there grows a peculiar apple-tree that fruits one time per year. Its peculiarity can be explained in following way: there are n inflorescence",
+   "relevant": "d7824",
+   "relevant_rank": 1,
+   "top5": [
+    [
+     "d7824",
+     1000.0,
+     "n = int(input()) p = [-1, 0] + [int(x) for x in input().split()] h = ["
+    ],
+    [
+     "d5375",
+     999.0,
+     "from collections import deque  n = int(input()) p = list(map(int,input"
+    ],
+    [
+     "d6646",
+     998.0,
+     "n=int(input()) a=list(int(i) for i in input().split()) p=[0]*(n+1) for"
+    ],
+    [
+     "d5729",
+     997.0,
+     "n=int(input()) a=list(map(int,input().split())) b=0 a[1:]=sorted(a[1:]"
+    ],
+    [
+     "d6239",
+     996.0,
+     "n = int(input()) a = sorted(list(map(int, input().split())))  ans = 0 "
+    ]
+   ]
+  }
+ ]
+}
