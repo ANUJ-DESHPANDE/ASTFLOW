@@ -1,7 +1,8 @@
 """Final validation run (2026-09-28), step 3: sanity-check the official runner's output and derive the reported metrics.
 
 Read-only with respect to the retrieval system. Inputs are the files `benchmark/run_mteb.py` wrote under ./mteb:
-  predictions/AppsRetrieval_predictions.json  the exact rankings MTEB scored (qid -> {doc_id: score})
+  predictions/AppsRetrieval_predictions.json  the exact rankings MTEB scored (qid -> {doc_id: score});
+                                              committed gzipped as AppsRetrieval_predictions.json.gz
   appsretrieval_results.json                  MTEB 2.21.0's own scores
   run_metadata.json                           runner provenance (model, depth, corpus hash, git commit)
 
@@ -25,6 +26,7 @@ NOT_FOUND = 10**9  # relevant document absent from the returned top-1000
 
 def load_pairs(path):
     """JSON load that also reports duplicate keys (json.load silently keeps the last one)."""
+    import gzip
     dups = []
 
     def hook(pairs):
@@ -35,12 +37,15 @@ def load_pairs(path):
             seen.add(k)
         return dict(pairs)
 
-    return json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=hook), dups
+    raw = gzip.decompress(path.read_bytes()) if path.suffix == ".gz" else path.read_bytes()
+    return json.loads(raw.decode("utf-8"), object_pairs_hook=hook), dups
 
 
 def main():
     out = HERE / "mteb"
     preds_file = out / "predictions" / "AppsRetrieval_predictions.json"
+    if not preds_file.exists():  # committed form: gzip of the file MTEB wrote (SHA-256 of both in provenance.json)
+        preds_file = preds_file.with_name(preds_file.name + ".gz")
     preds_all, dup_keys = load_pairs(preds_file)
     subsets = [k for k in preds_all if k != "mteb_model_meta"]
     run = preds_all["default"]["test"]

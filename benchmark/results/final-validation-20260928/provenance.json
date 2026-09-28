@@ -1,0 +1,88 @@
+{
+ "purpose": "Final clean validation run of the frozen ASTFLOW retrieval system on the full CoIR AppsRetrieval TEST split. Measurement only: no tuning, no code changes to retrieval or evaluation.",
+ "git": {
+  "commit_evaluated": "87335463f54099a5e40310eca63d32100eb6c225",
+  "base_branch": "origin/main",
+  "run_branch": "validation/final-test-run (worktree of origin/main, LFS smudge skipped: only the rejected E017 reranker checkpoint is in LFS)",
+  "dirty_tracked_files_at_run": [],
+  "frozen_retrieval_commit": "036060e (official run); only retrieval-path change since then: embeddings.py casts the model to float32 on CPU (db57806)"
+ },
+ "environment": {
+  "os": "Windows 11 Home Single Language 10.0.26200",
+  "cpu": "Intel Core i7-14650HX (16 cores / 24 threads); torch limited to 4 threads by backend/app/retrieval/embeddings.py",
+  "ram_gb": 15.7,
+  "gpu": "NVIDIA GeForce RTX 4060 Laptop 8 GB present (driver 592.82) but NOT used: the frozen embedder runs on CPU",
+  "cuda": "not used (torch 2.14.0 CPU build in the evaluation venv)",
+  "python": "3.12.4",
+  "packages": {
+   "mteb": "2.21.0",
+   "torch": "2.14.0 (CPU)",
+   "sentence-transformers": "5.7.0",
+   "transformers": "5.17.0",
+   "numpy": "2.5.3",
+   "datasets": "5.0.1",
+   "huggingface_hub": "1.32.0",
+   "pytrec-eval-terrier": "0.5.10",
+   "ir-measures": "0.4.3"
+  }
+ },
+ "system": {
+  "embedding_model": "Alibaba-NLP/gte-modernbert-base",
+  "model_hf_revision": "e7f32e3c00f91d699e8c43b53106206bcc72bb22 (HF main; last changed 2025-07-04, before the official run)",
+  "model_safetensors_sha256": "3e85899d5728cb7de79781c0c3acfb91ccef9f875f1f7e0b3c9f3dd4b6a724ba",
+  "precision": "float32 (fp16 checkpoint cast to float32 at load)",
+  "device": "cpu",
+  "max_seq_length": 512,
+  "query_prefix": "",
+  "document_prefix": "",
+  "document_encoding": "one vector per corpus document, text = title + newline + text (titles are empty), L2-normalised",
+  "query_encoding": "one vector per query, raw query text, L2-normalised, encoded live per query",
+  "similarity": "dot product of L2-normalised vectors (cosine), exact over all 8,765 documents",
+  "candidate_threshold": "documents with cosine <= 0.05 are dropped (search.py); no query was affected (every ranking has 1,000 documents)",
+  "ranking_depth": 1000,
+  "tie_break": "document id ascending on exactly equal scores",
+  "bm25": "DISABLED (dense mode; lexical scores are computed but not used for ranking)",
+  "mmr": "DISABLED (not implemented in the retrieval path)",
+  "reranker": "DISABLED (E002, E011, E011b, E017 rejected; not in the product path)",
+  "fusion": "none",
+  "precomputed_vectors": false
+ },
+ "dataset": {
+  "name": "CoIR-Retrieval/apps (MTEB AppsRetrieval)",
+  "revision": "f22508f96b7a36c2415181ed8bb76f76e04ae2d5",
+  "split": "test",
+  "documents": 8765,
+  "test_queries": 3765,
+  "test_qrels": 3765,
+  "relevant_per_query": 1,
+  "corpus_sha256_run_mteb_formula": "ce25930a1a449256589e9e064e5568de35e2397ce32d963739c22c126c115021",
+  "details": "data_check.json"
+ },
+ "command": "python -m benchmark.run_mteb --mode dense --model Alibaba-NLP/gte-modernbert-base --download-model --diagnostics --output benchmark/results/final-validation-20260928/mteb",
+ "validation_command": "python benchmark/results/final-validation-20260928/validate_run.py",
+ "timing": {
+  "start_utc": "2026-09-28T15:17:45Z",
+  "end_utc": "2026-09-28T18:10:03Z",
+  "wall_clock": "2 h 52 min 18 s (including one-time model download)",
+  "mteb_corpus_encoding_s": 6474.1,
+  "mteb_query_encoding_and_retrieval_s": 3643.9,
+  "mteb_scoring_s": 2.7,
+  "query_latency_ms": {"p50": 480, "p95": 3045, "mean": 967, "max": 3728, "note": "per query: live query encoding + exact dense ranking + unused BM25 scoring, 4 CPU threads"}
+ },
+ "artifacts": {
+  "mteb/appsretrieval_results.json": "MTEB 2.21.0 official scores (the TEST evaluation artifact)",
+  "mteb/run_metadata.json": "runner provenance, per-query latencies, diagnostic recall",
+  "mteb/predictions/AppsRetrieval_predictions.json.gz": {
+   "sha256_gz": "c76c4fad6dfe5807924829f9d98b437673279156f271374e60cb0fb8f9fab810",
+   "sha256_uncompressed_as_written_by_mteb": "a22da475c6d3446093e4787bbeea9d1a2c64e05039e1f0f0ae7422f77a745e6a"
+  },
+  "metrics.json": "final metrics (repo definitions) + agreement with MTEB and pytrec_eval",
+  "validation.json": "integrity checks + sample query outputs",
+  "data_check.json": "pre-run dataset verification",
+  "run.log": "full runner log"
+ },
+ "not_committed": {
+  ".astflow/datasets/mteb-apps-76ed2f12e8c7dfbb0d50a36794780354b5a2e22d23e48930c0668890f724a31e.npy": "corpus vector cache (26.9 MB, float32 8765x768), ignored by .gitignore",
+  ".astflow/models/Alibaba-NLP--gte-modernbert-base/": "downloaded model, ignored by .gitignore"
+ }
+}
