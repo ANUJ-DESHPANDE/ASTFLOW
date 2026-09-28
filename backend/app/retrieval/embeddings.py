@@ -1,4 +1,5 @@
 """Lazy CPU embeddings with a truthful lexical-only fallback."""
+import os
 import threading
 from pathlib import Path
 
@@ -25,6 +26,12 @@ class ModelUnavailable(RuntimeError):
 # (measured, workflow index-diagnose), the tolerance used to verify the official run's precomputed vectors.
 PRECISION = "float32"
 
+# CPU threads for inference, never more than torch's default (the physical core count). Measured on an i7-14650HX
+# (8 performance + 8 efficiency cores), gte-modernbert-base, 512 tokens: 4 threads 2.45 docs/s and 584 ms/query,
+# 8 threads 5.07 docs/s and 413 ms/query, 16 threads 1.78 docs/s (the efficiency cores slow every batch down).
+# Vectors differ by at most 4e-7 between thread counts. Kept out of Settings so cached indexes stay valid.
+THREADS = int(os.getenv("ASTFLOW_THREADS", "8"))
+
 
 def profile(model: str) -> dict:
     return PROFILES.get(model, {"query_prefix": "", "document_prefix": "", "max_seq": None})
@@ -49,7 +56,7 @@ class Embedder:
             try:
                 from sentence_transformers import SentenceTransformer
                 import torch
-                torch.set_num_threads(min(4, torch.get_num_threads()))
+                torch.set_num_threads(max(1, min(THREADS, torch.get_num_threads())))
                 model_path = self.settings.cache / "models" / self.settings.model.replace("/", "--").replace("\\", "--").replace(":", "_")
                 source = str(model_path) if (model_path / "modules.json").exists() else self.settings.model
                 self.model = SentenceTransformer(source, device="cpu", local_files_only=not download,
