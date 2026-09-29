@@ -1,0 +1,58 @@
+{
+  "model": "Alibaba-NLP/gte-reranker-modernbert-base",
+  "revision": "f7481e6055501a30fb19d090657df9ec1f79ab2c",
+  "weight_sha256": "13c533d902d6a48fa97375c6856c3e60854f9228ea760e3fc18ebde057e0cf31",
+  "tokenizer_sha256": "2aea6ff4701d063e7e029b6be695a1659f2caaa2ae4fb0e8b18285818271becd",
+  "source_path": "C:\\Users\\adita\\.cache\\huggingface\\hub\\models--Alibaba-NLP--gte-reranker-modernbert-base\\snapshots\\f7481e6055501a30fb19d090657df9ec1f79ab2c",
+  "parameters": 149605633,
+  "device": "cpu",
+  "precision": "float32",
+  "max_length": 512,
+  "joint_query_document_scoring": true,
+  "input_format": "CrossEncoder.predict([(query, document), ...])",
+  "batch_size": 8,
+  "cpu_threads": 8,
+  "sample_queries": 5,
+  "sample_ids_sha256": "c07ac0087f69ba0092d3a8f0f792edac485aef56ded69e4998fb16eba6c61fc9",
+  "load_s": 0.9848826000234112,
+  "peak_process_rss_bytes": 2358247424,
+  "dense_end_to_end_p50_ms": 546.3055000291206,
+  "dense_end_to_end_p95_ms": 672.1443000249565,
+  "reranker_only_p50_ms": 29563.97509999806,
+  "reranker_only_p95_ms": 30671.73393999692,
+  "e022_end_to_end_p50_ms": 30149.270599999,
+  "e022_end_to_end_p95_ms": 31247.54964002641,
+  "per_query": [
+    {
+      "query_id": "q1267",
+      "dense_end_to_end_ms": 693.8565000309609,
+      "reranker_only_ms": 30068.977699964307,
+      "e022_end_to_end_ms": 30762.834199995268
+    },
+    {
+      "query_id": "q1459",
+      "dense_end_to_end_ms": 234.5915999612771,
+      "reranker_only_ms": 22761.96760003222,
+      "e022_end_to_end_ms": 22996.5591999935
+    },
+    {
+      "query_id": "q1133",
+      "dense_end_to_end_ms": 585.2955000009388,
+      "reranker_only_ms": 29563.97509999806,
+      "e022_end_to_end_ms": 30149.270599999
+    },
+    {
+      "query_id": "q4595",
+      "dense_end_to_end_ms": 185.12850004481152,
+      "reranker_only_ms": 16362.773999979254,
+      "e022_end_to_end_ms": 16547.902500024065
+    },
+    {
+      "query_id": "q3717",
+      "dense_end_to_end_ms": 546.3055000291206,
+      "reranker_only_ms": 30822.423000005074,
+      "e022_end_to_end_ms": 31368.728500034194
+    }
+  ],
+  "note": "Fixed five-TRAIN-query CPU sample. Includes query encoding and dense matrix score; excludes model load."
+}
