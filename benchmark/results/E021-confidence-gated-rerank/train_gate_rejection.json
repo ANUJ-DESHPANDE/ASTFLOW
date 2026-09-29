@@ -1,0 +1,5 @@
+{
+  "reason": "No selected simple margin gate passed both 50/50 conditions on independent TRAIN-B",
+  "dev_consumed": false,
+  "candidates_tried": 15
+}
