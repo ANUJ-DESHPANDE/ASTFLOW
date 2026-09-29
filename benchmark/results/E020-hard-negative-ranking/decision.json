@@ -1,0 +1,6 @@
+{
+  "decision": "REJECT",
+  "reason": "Preregistered DEV quality and uncertainty gate failed",
+  "test_scored": false,
+  "confirmation_scored": false
+}
