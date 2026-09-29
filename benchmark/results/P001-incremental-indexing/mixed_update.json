@@ -1,0 +1,26 @@
+{
+  "changes": {
+    "files_added": 1,
+    "files_deleted": 1,
+    "files_eligible": 15,
+    "files_modified": 1,
+    "files_renamed": 1,
+    "files_scanned": 15,
+    "files_unchanged": 12
+  },
+  "documents": 25,
+  "embedding_cache": {
+    "computed": 3,
+    "reused": 22
+  },
+  "files": 15,
+  "operation": "incremental",
+  "timings_ms": {
+    "discovery": 59.6,
+    "embedding": 135.92,
+    "parsing_and_graph": 8.66,
+    "persistence": 43.55
+  },
+  "version_key": "fc7057f160cb42006a28378d",
+  "wall_ms": 250.6
+}

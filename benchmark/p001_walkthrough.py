@@ -56,7 +56,10 @@ def main():
         shutil.copytree(MODEL_DIR, local_model)
         settings = Settings(cache=cache, ts_enrich=False)
         service = IndexService(settings)
+        with (MODEL_DIR / "model.safetensors").open("rb") as weights:
+            weight_hash = hashlib.file_digest(weights, "sha256").hexdigest()
         write("baseline_state.json", {"model": FROZEN_MODEL, "revision": FROZEN_MODEL_REVISION,
+                                       "weight_sha256": weight_hash,
                                        "retrieval": settings.retrieval, "schema": settings.schema,
                                        "repository": "copied examples/demo-repo"})
         write("fixture_manifest.json", {p.relative_to(repo).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
@@ -158,7 +161,7 @@ def main():
                                             "restart": True, "controlled_failure": True, "overall": "PASS"})
 
     hashes = {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
-              for p in sorted(OUT.glob("*.json")) if p.name != "artifact_hashes.json"}
+              for p in sorted(OUT.iterdir()) if p.is_file() and p.name != "artifact_hashes.json"}
     write("artifact_hashes.json", hashes)
     print(json.dumps({"result": "PASS", "performance": json.loads((OUT / "performance.json").read_text())}, indent=2))
 
