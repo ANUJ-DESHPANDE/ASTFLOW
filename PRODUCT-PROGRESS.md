@@ -1,5 +1,45 @@
 # ASTFLOW product progress
 
+## P002 — search and source-citation API reliability
+
+**Decision:** PASS. Implementation commit `d292625`; evidence:
+[`benchmark/results/P002-search-api-reliability/`](benchmark/results/P002-search-api-reliability/README.md).
+Retrieval optimization remains closed and the GTE dense ranking contract is
+unchanged.
+
+**Goal and invariants:** every source result, line range, graph citation, and
+source fetch must resolve against the one immutable index selected for its
+search request. A promotion may make a newer version active but cannot mix
+old ranking with new source content.
+
+**Implementation:** `/api/search` resolves one index and logs its version key;
+the agent checks returned chunks and graph call sites against that index's
+stored source before publishing a response. A missing query embedding or an
+unexpected investigation error becomes a structured service error. Explicit
+immutable keys remain valid for citation lookup after repository selection
+changes. The existing frontend response fields are unchanged.
+
+**Tests and real walkthrough:** 8 focused P002 tests passed; 91 backend tests
+passed with one Node-dependent skip; 4 P001 tests, 2 E023 retrieval regression
+tests, and 26 available benchmark tests passed. An actual GTE run through the
+FastAPI routes passed initial search, add/modify/delete/rename/mixed promotion,
+failed promotion, concurrent promotion, and restart. Citations were resolved
+through `/api/source` by immutable key. MTEB and frozen TEST were not run.
+
+**Latency:** on twelve local actual-GTE API queries, p50 69.16 ms and p95
+102.87 ms. The same query before and immediately after promotion measured
+63.45 ms and 66.05 ms respectively. Full evidence is in the P002 directory.
+
+**Remaining limitations:** P001's schema-10 migration, full parse/graph
+rebuild, and process-local cache lock remain. No P002 citation invariant is
+left failing. The frontend build was blocked by absent local Node dependencies;
+its existing response fields were checked directly against the frontend type
+and consumers.
+
+**Next product milestone:** P003 — investigation-agent correctness and
+evidence grounding, focusing on whether claims and explanations accurately
+reflect the already verified source evidence.
+
 ## P001 — repository ingestion and incremental indexing
 
 **Decision:** PASS WITH DOCUMENTED LIMITATION. Implementation commit:

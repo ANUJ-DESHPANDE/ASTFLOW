@@ -1,0 +1,17 @@
+{
+  "citations_checked": 10,
+  "result_paths": [
+    "p002_feature.js",
+    "auth/AuthService.js",
+    "auth/AuthService.js",
+    "session/SessionManager.js",
+    "voice/VoiceHandler.js",
+    "settings/deeplinks.js",
+    "bluetooth/BluetoothAgent.js",
+    "voice/IntentRouter.js",
+    "auth/credentials.js",
+    "settings/deeplinks.js"
+  ],
+  "status": "OK",
+  "version_key": "464669666658d2a483bacd55"
+}

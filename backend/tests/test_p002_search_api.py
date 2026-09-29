@@ -112,6 +112,8 @@ def test_api_mutations_citations_restart_and_errors(tmp_path):
     assert search(restarted, "mixedAdded")["version_key"] == v6
     assert search(restarted, "legacyFlow", v1)["version_key"] == v1
     assert client.get("/api/source", params={"path": "../outside", "version": v6}).status_code == 400
+    assert client.get("/api/source", params={"path": "/etc/passwd", "version": v6}).status_code == 400
+    assert client.get("/api/source", params={"path": "C:\\private\\file.js", "version": v6}).status_code == 400
     assert client.get("/api/source", params={"path": "old.js", "version": v6}).status_code == 404
     assert client.post("/api/search", json={"query": ""}).status_code == 422
     assert client.post("/api/search", json={"query": "   "}).status_code == 422
@@ -215,6 +217,10 @@ def test_old_citation_survives_repository_switch(tmp_path):
     result = client.get("/api/source", params={"path": "old.js", "version": old_key})
     assert result.status_code == 200
     assert "OLD_REPOSITORY" in result.json()["content"]
+    restarted = TestClient(create_app(app.state.service.settings))
+    after_restart = restarted.get("/api/source", params={"path": "old.js", "version": old_key})
+    assert after_restart.status_code == 200
+    assert "OLD_REPOSITORY" in after_restart.json()["content"]
 
 
 def test_second_pass_and_parallel_requests_use_one_snapshot(tmp_path):
