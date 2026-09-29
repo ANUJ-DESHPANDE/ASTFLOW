@@ -1,0 +1,26 @@
+{
+  "deterministic_signals": {
+    "top_false_positive_more_exact_query_words": 29,
+    "positive_exceeds_512_model_tokens": 2,
+    "top1_exceeds_512_model_tokens": 1
+  },
+  "positive_document_token_lengths": {
+    "top10": {
+      "queries": 242,
+      "median": 111.5,
+      "exceeds_512": 8
+    },
+    "rank11to200": {
+      "queries": 45,
+      "median": 141,
+      "exceeds_512": 2
+    },
+    "outside200": {
+      "queries": 13,
+      "median": 162,
+      "exceeds_512": 2
+    }
+  },
+  "tokenizer": ".astflow/e017/train-300/final (ModernBERT tokenizer)",
+  "note": "Deterministic signals only; no semantic labels inferred."
+}

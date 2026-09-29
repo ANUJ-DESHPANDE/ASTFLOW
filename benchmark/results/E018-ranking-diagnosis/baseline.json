@@ -1,0 +1,17 @@
+{
+  "experiment": "E018",
+  "baseline_commit": "fec272f",
+  "dev_queries": 300,
+  "dev_query_ids_sha256": "5c61ce5eb1551e3897876ba5c34194bac0a54ed0f1a47149a349c9a3d0b78d53",
+  "qrels_sha256": "d68ad9deffc0eb2f11712f94d8cc0ae0234227c49528f5f4ac7732d0b66c8f5f",
+  "candidate_zip_sha256": "faf0c8d3c8fdd54bd6c66673f567dce19597aedaa08ff503594c1d669f0be3fa",
+  "frozen_campaign_sha256": "95b2bff572f87562ac6eaf7f382f3ad7782b3570f11dae1ba93aa9ecb2431c61",
+  "ndcg10": 0.6977336494947775,
+  "mrr10": 0.6633161375661375,
+  "recall10": 0.8066666666666666,
+  "recall50": 0.9133333333333333,
+  "recall100": 0.9333333333333333,
+  "recall500": 0.9766666666666667,
+  "recall1000": 0.99,
+  "recall20": 0.8533333333333334
+}
