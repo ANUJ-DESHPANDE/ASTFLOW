@@ -267,7 +267,8 @@ class IndexService:
     def get(self, version: str = "working-tree") -> Index:
         if not self.repo_path:
             raise ValueError("Index a repository first")
-        key = self.registry.get(self._alias(self.repo_path, version), version)
+        alias_key = self.registry.get(self._alias(self.repo_path, version))
+        key = alias_key or version
         # Never interpret an untrusted version string as a filesystem path.
         if not re_key(key):
             raise ValueError(f"Version {version!r} is not indexed; select it and index it first")
@@ -280,7 +281,9 @@ class IndexService:
                 raise ValueError("Index identity does not match its storage folder")
             self.indexes[key] = candidate
         index = self.indexes[key]
-        if index.manifest.get("repository_path") != self.repo_path:
+        # A raw immutable key is a citation capability. It remains valid even
+        # after the user selects another repository; aliases stay repo-scoped.
+        if alias_key is not None and index.manifest.get("repository_path") != self.repo_path:
             raise ValueError(f"Version {version!r} belongs to another repository")
         return index
 

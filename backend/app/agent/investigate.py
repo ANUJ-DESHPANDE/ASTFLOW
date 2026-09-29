@@ -1,7 +1,48 @@
 import re
 import time
+from pathlib import PurePosixPath
 
+from backend.app.retrieval.embeddings import ModelUnavailable
 from backend.app.retrieval.search import serialize_result
+
+
+class CitationIntegrityError(RuntimeError):
+    """An indexed result cannot be resolved against its pinned source snapshot."""
+
+
+def _safe_source_path(path: str) -> bool:
+    parsed = PurePosixPath(path)
+    return bool(path) and not parsed.is_absolute() and "\\" not in path and ".." not in parsed.parts
+
+
+def validate_citations(index, results: list[dict], graph: dict) -> None:
+    """Check only evidence exposed to users; never read the working tree."""
+    chunks = {c.chunk_id: c for c in index.chunks}
+    for result in results:
+        chunk = chunks.get(result["chunk_id"])
+        path = result["file_path"]
+        source = index.files.get(path)
+        if (not _safe_source_path(path) or chunk is None or source is None
+                or chunk.file_path != path or chunk.symbol_id != result["symbol_id"]):
+            raise CitationIntegrityError("Search result is not in the pinned index")
+        lines = source.splitlines(keepends=True)
+        start, end = result["start_line"], result["end_line"]
+        if (start != chunk.start_line or end != chunk.end_line or start < 1
+                or end < start or end > len(lines) or result["snippet"] != chunk.text
+                or result["snippet"] not in "".join(lines[start - 1:end])):
+            raise CitationIntegrityError("Search citation does not match indexed source")
+    for node in graph["nodes"]:
+        if (not _safe_source_path(node["file"]) or node["file"] not in index.files
+                or node["symbol_id"] not in index.graph.symbols):
+            raise CitationIntegrityError("Graph citation is not in the pinned index")
+    for edge in graph["edges"]:
+        source = index.files.get(edge["call_file"])
+        if not _safe_source_path(edge["call_file"]) or source is None:
+            raise CitationIntegrityError("Graph call site is not in the pinned index")
+        lines = source.splitlines(keepends=True)
+        start, end = edge["call_line"], edge["call_end_line"]
+        if start < 1 or end < start or end > len(lines) or edge["source_expression"] not in "".join(lines[start - 1:end]):
+            raise CitationIntegrityError("Graph call site does not match indexed source")
 
 
 def plan(query: str, graph):
@@ -55,6 +96,9 @@ def investigate(index, query: str, version: str, top_k: int = 10, agentic: bool 
     if retriever.embeddings is None and first_stage != "bm25":
         first_stage = "hybrid"
     rows, diagnostics = retriever.rank(query, mode=first_stage, boosts=mode == "full")
+    if (retriever.embeddings is not None and settings.semantic != "off"
+            and not diagnostics["semantic_available"]):
+        raise ModelUnavailable(retriever.embedder.reason)
     label = ("lexical only, no embedding model" if retriever.embeddings is None
              else f"{settings.model} {first_stage}")
     trace.append({"step": "SEARCH", "details": f"Retrieved {len(rows)} candidates ({label})",
@@ -145,6 +189,7 @@ def investigate(index, query: str, version: str, top_k: int = 10, agentic: bool 
     relevant_ids = {r["symbol_id"] for r in results[:6]}
     relevant_ids.update(sid for p in (paths or {}).get("paths", []) for sid in p)
     subgraph = graph.subgraph(relevant_ids, (paths or {}).get("paths", []))
+    validate_citations(index, results, subgraph)
     sequence = [s for s in index.extra.get("sequences", []) if s["caller"] in relevant_ids] if query_plan["intent"] == "SEQUENCE" else []
     if sequence:
         pair = query_plan["symbols"]
