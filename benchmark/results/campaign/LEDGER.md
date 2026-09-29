@@ -8,15 +8,17 @@
 | E019 | `20c8c3a` / `exp/E019-operator-evidence` | Fixed top-50 explicit operator boost +0.02, production off by default; preregistered in `5da664f` | Fresh float32 paired baseline 0.696715 → 0.699036, Δ +0.002321, 95% CI [0, +0.005615]; 310.1 s to encode 600 TRAIN queries; fixed-sample query p50 360.56 → 361.73 ms, p95 738.56 → 740.99 ms; extra index time 0, weights 0 | **REJECT**: below +0.005 gate; no confirmation or TEST | [`E019 artifacts`](../E019-operator-evidence/README.md) |
 | E020 | `d746b9a` / `exp/E020-hard-negative-ranking` | Query cleanup gate failed enrichment (13/55 versus 54/242, 1.059x). Fixed train-only pairwise logistic reranker on dense top 50; 3,000 TRAIN pairs, 809 diagnostic DEV hard-negative pairs; preregistered in `ec1925d` | NDCG@10 0.696715 → 0.654902, Δ -0.041813, 95% CI [-0.069786, -0.013075]; MRR@10 0.662038 → 0.611914; 10/32 target failures enter top 10; query p50 324.38 → 363.27 ms | **REJECT**: quality and MRR regress; no confirmation or TEST | [`E020 artifacts`](../E020-hard-negative-ranking/README.md) |
 | E021 | `2ee9eb1` / `exp/E021-confidence-gated-rerank` | E020 model behind a rank-1-to-10 dense-margin gate selected on 200 TRAIN-A queries; threshold 0.0528913856; independent 200-query TRAIN-B check | TRAIN-A avoided 37/57 harmful interventions and retained 17/29 useful improvements; TRAIN-B avoided 30/47 but retained only 15/33 (45.45%). TRAIN-B gated NDCG@10 0.668470 vs dense 0.679120. DEV not consumed. | **REJECT BEFORE DEV**: TRAIN-B recovery-retention gate failed; no confirmation or TEST | [`E021 artifacts`](../E021-confidence-gated-rerank/README.md) |
+| E022 | `c64cd10` / `exp/E022-strong-reranker` | One cached joint relevance model (`Alibaba-NLP/gte-reranker-modernbert-base`, pinned revision); 1,322 genuine TRAIN hard-negative pairs prepared, not trained | CPU top-50 rerank p50 29.56 s, p95 30.67 s; end-to-end p50 30.15 s versus dense 0.55 s; 2.36 GB peak process RSS. TRAIN-B quality not scored because feasibility failed. DEV not consumed. | **REJECT BEFORE DEV**: operationally infeasible on the accepted CPU path; no confirmation or TEST | [`E022 artifacts`](../E022-strong-reranker/README.md) |
 
 E018 used the established 300-query TRAIN DEV IDs (SHA-256
 `5c61ce5eb1551e3897876ba5c34194bac0a54ed0f1a47149a349c9a3d0b78d53`),
 the GTE model revision `e7f32e3c`, and the published document vectors.
-The E018–E021 artifact directories contain full parameter, metric,
-run-path, and SHA-256 records. E020 retired the long-query hypothesis, and
-E021's held-out TRAIN check rejected dense-margin gating of the weak E020
-ranker. Next hypothesis: a stronger pairwise relevance model trained on a
-broader set of genuine TRAIN hard negatives can separate candidates better.
+The E018–E022 artifact directories contain full parameter, metric,
+run-path, and SHA-256 records. E020 retired the long-query hypothesis, E021
+rejected dense-margin gating on held-out TRAIN, and E022 found the cached joint
+reranker operationally infeasible on CPU. E023 is the mandatory final campaign
+decision: close around the validated GTE dense system unless E022's evidence
+supports a concrete production change. No automatic E024 is scheduled.
 
 Generated from `benchmark/results/campaign/*.json` (no hand transcription). DEV/CONFIRMATION: frozen train-split sets (300 + 300, seed 20260926), full 8,765-document corpus, cached GTE vectors of the official run. TEST: 3,765 queries, used only for the baseline reproduction and one confirmation.
 

@@ -1,0 +1,12 @@
+﻿{
+    "decision.json":  "d011d3a3d8f296a4ede4b58a04301461936a6bfd3d26799f4e2ead918426b5d2",
+    "feasibility.json":  "7d8fad251f80070337b5014292162250048f1c9176926dd6a0b151a8b15f7ec0",
+    "latency_train.json":  "7d8fad251f80070337b5014292162250048f1c9176926dd6a0b151a8b15f7ec0",
+    "model_selection.json":  "2e9f86cb155a99a2e20966ea868a8bb740a58873f6cc533ecd5c384c8edd103b",
+    "preregister.json":  "df2a31e42344aa3304f92bdd67612f5cf7eaa7be6717556133af5086299b6173",
+    "README.md":  "73694be382fa2fc1c15d3beeb67e185cf66314b80f3ed57fdf4a1ea6e03cbcd4",
+    "train_config.json":  "6d5f19fdef7d269772c1960db817aae39ec23fedea2dd69fa702805cd7d05c17",
+    "train_hard_negatives.jsonl":  "2fe236741525e2fa98898db204e179a03ac30b615eb513f09c51eee4642e795f",
+    "train_metrics.json":  "aba28f08e7e64aeddaa5e2391a723e8766af421f30482fc0f45e4fe4b70fffef",
+    "train_target_bucket.json":  "aba28f08e7e64aeddaa5e2391a723e8766af421f30482fc0f45e4fe4b70fffef"
+}

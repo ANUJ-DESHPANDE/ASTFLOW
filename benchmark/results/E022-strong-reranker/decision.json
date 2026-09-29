@@ -1,0 +1,14 @@
+{
+  "experiment_id": "E022",
+  "decision": "REJECT BEFORE DEV",
+  "reason": "The one selected cached joint reranker is CPU-runnable but top-50 reranking takes 29.56 seconds p50 and 30.67 seconds p95 on a fixed TRAIN sample, versus 0.55 seconds end-to-end for dense retrieval. This fails operational feasibility; no E022 fine-tuning or held-out TRAIN-B quality gate was run.",
+  "model_selection_locked": true,
+  "alternate_model_tried": false,
+  "training_performed": false,
+  "train_b_scored": false,
+  "dev_consumed": false,
+  "confirmation_consumed": false,
+  "test_consumed": false,
+  "production_changed": false,
+  "e023_objective": "close the retrieval optimization campaign around the validated GTE dense system"
+}
