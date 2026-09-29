@@ -6,12 +6,12 @@ Updated to the supplied editor-video visual reference. See [changes and limits](
 
 **Engineering audit (25 September):** [final report and dashboard](audit/FINAL-ASTFLOW-ENGINEERING-REPORT.md), [findings database](audit/findings.json), [remediation plan](audit/18-remediation-plan.md); earlier audit (20 September): [report](docs/audit/REPORT.md), [official requirements matrix](docs/audit/REQUIREMENTS.md), [defect ledger](docs/audit/BUGS.md), [UI inventory](docs/audit/UI-INVENTORY.md) and [remaining checklist](docs/audit/CHECKLIST.md). Full AppsRetrieval scores are substantially lower than the small demo benchmark; use the official figures for screening claims.
 
-> **Submission (Samsung Theme 01, Agentic Code Intelligence).** Official MTEB AppsRetrieval, all 3,765 test queries ×
-> 8,765 documents: **NDCG@10 0.5511, MRR@10 0.5053** with the frozen retriever (`Alibaba-NLP/gte-modernbert-base`,
-> dense, CPU). Result file: [`benchmark/results/mteb-final-gte/appsretrieval_results.json`](benchmark/results/mteb-final-gte/appsretrieval_results.json),
-> also attached to release [`v1.0-submission`](https://github.com/ANUJ-DESHPANDE/ASTFLOW/releases/tag/v1.0-submission).
-> The product runs this same configuration by default. Evidence: [technical story](submission/TECHNICAL-STORY.md),
-> [judge walkthrough](audit/JUDGE-WALKTHROUGH.md), [final dashboard](submission/FINAL-DASHBOARD.md).
+> **Current accepted retrieval (E023 campaign closure).** Full MTEB AppsRetrieval TEST, 3,765 queries ×
+> 8,765 documents: **NDCG@10 0.5509, MRR@10 0.5050** with
+> `Alibaba-NLP/gte-modernbert-base` dense retrieval on CPU. The earlier
+> submission result, 0.5511/0.5053, is historical and differs only by accepted
+> numerical precision. See the [canonical retrieval baseline](benchmark/RETRIEVAL_BASELINE.md)
+> and [clean validation](benchmark/results/final-validation-20260928/README.md).
 
 ASTFLOW is a local repository investigation engine for JavaScript. Ask a question, get ranked source snippets, follow supported call relationships, and compare the answer across Git snapshots. The snippet list is the canonical answer; graphs and explanations supplement it.
 
@@ -236,7 +236,7 @@ The service binds to loopback and validates Host/Origin headers. Source requests
 
 ## Verification and benchmarks
 
-The demo fixture sources are committed in `examples/demo-repo`; its Git history (tags `v1`, `v2`) is created by `scripts/setup_demo.py` (run by `npm run setup` and `npm run demo`). On a fresh clone that has not run setup, run that script first or `test_indexed_revision_expression_remains_in_version_selector` fails because `examples/demo-repo` is not yet its own Git repository.
+The demo fixture sources are committed in `examples/demo-repo`; its Git history (tags `v1`, `v2`) is created by `scripts/setup_demo.py` (run by `npm run setup` and `npm run demo`). The revision-selector test creates its own temporary Git history and also runs in a fresh worktree.
 
 ```powershell
 .\.venv\Scripts\python.exe -m pytest backend/tests benchmark --ignore=benchmark/test_mteb_adapter.py
@@ -256,7 +256,18 @@ The local benchmark computes **NDCG@10, MRR, Recall@10**, median and p95 query l
 
 The included 16-query/21-chunk benchmark is a small handcrafted regression fixture (its committed numbers were measured with the previous MiniLM default and are not part of the submission). It does **not** establish performance on large repositories or an official PRISM/MTEB evaluation. The committed table was regenerated on 2026-09-25 with the MiniLM model available (an earlier committed version had been produced without it, so its dense row was empty and its "hybrid" row was lexical-only). On these 16 queries dense-only (NDCG@10 0.931) scores above hybrid (0.905) and the full agent pipeline (0.866, best MRR 0.969); with 16 queries none of these differences is statistically meaningful. No benchmark numbers are hardcoded into the application. Index time includes CPU model loading on a cold process; query measurements warm the model first.
 
-### Official full AppsRetrieval evaluation
+### Accepted full AppsRetrieval evaluation
+
+The validated current result is **GTE dense TEST NDCG@10 0.5509, MRR@10 0.5050**.
+See [`benchmark/RETRIEVAL_BASELINE.md`](benchmark/RETRIEVAL_BASELINE.md) for
+the exact model revision, scores, speed evidence, and reproduction procedure.
+The following command runs a fresh full evaluation and was not run for E023:
+
+```powershell
+.\.eval-venv\Scripts\python.exe -m benchmark.run_mteb --mode dense --model Alibaba-NLP/gte-modernbert-base --download-model --diagnostics --output benchmark/results/reproduction/mteb
+```
+
+### Historical MiniLM/BM25/hybrid evaluations
 
 Use a separate Python 3.12 environment for MTEB. From the project root:
 
@@ -271,13 +282,13 @@ py -3.12 -m venv .eval-venv
 
 On Linux use `.eval-venv/bin/python`. Each official run uses MTEB 2.21.0, all 3,765 test queries, all 8,765 documents and pinned dataset revision `f22508f96b7a36c2415181ed8bb76f76e04ae2d5`. `appsretrieval_results.json` is written using the framework serializer. `run_metadata.json` records corpus/model identity and raw timing; `predictions/` retains the ranked document IDs. Upload the generated MTEB JSON as the required release artifact after final review. Large predictions are ignored by Git and excluded from the source ZIP.
 
-Current code (`benchmark/results/mteb-current-*`, MTEB 2.21.0, all 3,765 queries): **BM25 NDCG@10 0.06312, MRR@10 0.054209; hybrid NDCG@10 0.0884, MRR@10 0.072573** (Recall@100 0.22603 / 0.29774). These equal the frozen trust-harness baseline (`benchmark/verification/manifest-baseline-v1.json`, four independent evaluators), which was re-generated from the committed code in the 2026-09-25 audit with 0 per-query metric changes. The runner emits rank-derived scores so MTEB scores ASTFLOW's actual order: hybrid RRF scores contain exact ties that MTEB would otherwise re-order by document id (that variant reported 0.089). The older folders `results/mteb`, `mteb-bm25` (.06104) and `mteb-hybrid` (.08815) came from earlier code states and are historical. These evaluate text retrieval on Python dataset documents; they do not evaluate ASTFLOW's JavaScript graph/agent. Do not substitute the much higher curated demo scores. The full hybrid run contains multi-hour timing outliers and is not a clean throughput benchmark; see the audit report.
+Historical MiniLM-era code (`benchmark/results/mteb-current-*`, MTEB 2.21.0, all 3,765 queries): **BM25 NDCG@10 0.06312, MRR@10 0.054209; hybrid NDCG@10 0.0884, MRR@10 0.072573** (Recall@100 0.22603 / 0.29774). These equal the frozen historical trust-harness baseline (`benchmark/verification/manifest-baseline-v1.json`, four independent evaluators), which was re-generated in the 2026-09-25 audit with 0 per-query metric changes. The runner emits rank-derived scores so MTEB scores ASTFLOW's actual order: hybrid RRF scores contain exact ties that MTEB would otherwise re-order by document id (that variant reported 0.089). The older folders `results/mteb`, `mteb-bm25` (.06104) and `mteb-hybrid` (.08815) came from earlier code states and are historical. These evaluate text retrieval on Python dataset documents; they do not evaluate ASTFLOW's JavaScript graph/agent. Do not substitute the much higher curated demo scores. The full hybrid run contains multi-hour timing outliers and is not a clean throughput benchmark; see the audit report.
 
 Keep the output metadata and evaluation environment's `pip freeze`. Dense/hybrid evaluation fails rather than claiming lexical fallback is semantic retrieval. If a cache was saved by an incompatible sentence-transformers major version, reload the official model with the pinned version.
 
-### Frozen submission configuration (2026-09-26)
+### Historical frozen submission configuration (2026-09-26)
 
-The submitted AppsRetrieval result is **`gte-modernbert-base`, Dense, 512 tokens: NDCG@10 0.5511, MRR@10 0.5053**
+The earlier submitted AppsRetrieval result was **`gte-modernbert-base`, Dense, 512 tokens: NDCG@10 0.5511, MRR@10 0.5053**
 (`benchmark/results/mteb-final-gte/`, MTEB 2.21.0, all 3,765 test queries). Reproduce on one CPU machine (hours: the
 corpus and the long test queries are encoded on CPU):
 

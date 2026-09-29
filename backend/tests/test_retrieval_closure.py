@@ -36,7 +36,9 @@ def test_dense_order_ignores_bm25_and_has_no_experimental_reranker():
     vectors = np.asarray([[1., 0.], [.6, .8]], dtype=np.float32)
     retriever = Retriever(chunks, vectors, QueryEmbedder(), Settings(ts_enrich=False))
     rows, evidence = retriever.rank("apple", mode="dense", boosts=False, limit=2)
+    default_rows, _ = retriever.rank("apple", boosts=False, limit=2)
     assert [r["chunk"].chunk_id for r in rows] == ["a", "b"]
+    assert [r["chunk"].chunk_id for r in default_rows] == ["a", "b"]
     assert evidence["semantic_available"] is True
     assert rows[1]["evidence"]["lexical_score"] > rows[0]["evidence"]["lexical_score"]
     assert all(r["evidence"]["contributions"]["lexical"] == 0 for r in rows)

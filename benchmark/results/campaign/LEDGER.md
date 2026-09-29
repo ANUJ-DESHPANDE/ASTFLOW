@@ -1,4 +1,17 @@
-# Retrieval campaign ledger (2026-09-27)
+# Retrieval campaign ledger — CLOSED at E023 (2026-09-29)
+
+The [accepted production baseline](../../RETRIEVAL_BASELINE.md) is the
+float32 GTE-ModernBERT dense system. Its full TEST result is NDCG@10 0.5509,
+MRR@10 0.5050. The older 0.5511 official run and the MiniLM records below are
+historical. No TEST benchmark was run during E023.
+
+## Baseline, performance, and closure
+
+| ID | Hypothesis / dataset | Result and decision | Commit | Artifact |
+|---|---|---|---|---|
+| VAL | Clean float32 GTE dense baseline; 3,765 TEST queries, 8,765 documents | **ACCEPT**: NDCG@10 0.5509, MRR@10 0.5050, Recall@100 0.8946; exact top 1,000. This is the accepted quality reference. | `db57806` (float32 product path) | [`final-validation-20260928`](../final-validation-20260928/README.md) |
+| CPU8 | Raise CPU cap from four to eight physical-core-aware threads; full TEST equivalence plus controlled 150-query A/B | **ACCEPT**: all 3,765 top-10 lists identical; full indexing 6,474 to 3,968 s; controlled query-encoding p50 343 to 230 ms, faster on 149/150. The TEST equivalence run preceded E023. | `1325390` | [`threads8-equivalence-20260929`](../threads8-equivalence-20260929/README.md) |
+| E023 | Freeze accepted production configuration, verify application wiring and preserve E018–E022 decisions; existing evidence and cheap repository tests only | **CLOSED**: GTE dense remains the default; rejected rerankers and BM25 fusion off; no new TEST run. Further product work: reliable incremental indexing. | `dc974ca` (production freeze); closure commit in this branch | [`RETRIEVAL_BASELINE.md`](../../RETRIEVAL_BASELINE.md), [`CURRENT_STATE.json`](../../CURRENT_STATE.json) |
 
 ## 2026-09-29 continuation
 
@@ -16,11 +29,12 @@ the GTE model revision `e7f32e3c`, and the published document vectors.
 The E018–E022 artifact directories contain full parameter, metric,
 run-path, and SHA-256 records. E020 retired the long-query hypothesis, E021
 rejected dense-margin gating on held-out TRAIN, and E022 found the cached joint
-reranker operationally infeasible on CPU. E023 is the mandatory final campaign
-decision: close around the validated GTE dense system unless E022's evidence
-supports a concrete production change. No automatic E024 is scheduled.
+reranker operationally infeasible on CPU. E023 closed the campaign around the
+validated GTE dense system. There is no active retrieval experiment.
 
-Generated from `benchmark/results/campaign/*.json` (no hand transcription). DEV/CONFIRMATION: frozen train-split sets (300 + 300, seed 20260926), full 8,765-document corpus, cached GTE vectors of the official run. TEST: 3,765 queries, used only for the baseline reproduction and one confirmation.
+## Historical E004–E016 campaign summary
+
+The table below was generated from `benchmark/results/campaign/*.json` (no hand transcription). DEV/CONFIRMATION: frozen train-split sets (300 + 300, seed 20260926), full 8,765-document corpus, cached GTE vectors of the official run. Its TEST table records an earlier native-precision baseline and E004 confirmation, not the accepted clean float32 baseline.
 
 | ID | Hypothesis | dev NDCG@10 | dev MRR@10 | dev R@100 | dev R@500 | dev Δ [95% CI] | conf Δ [95% CI] | Decision |
 |---|---|---:|---:|---:|---:|---|---|---|

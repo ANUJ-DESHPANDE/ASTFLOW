@@ -1,8 +1,14 @@
 {
   "schema": 2,
   "last_updated": "2026-09-29",
+  "status": "accepted",
+  "campaign": "retrieval",
+  "campaign_closed": true,
+  "accepted_production_commit": "dc974ca",
+  "canonical_document": "benchmark/RETRIEVAL_BASELINE.md",
   "accepted_system": {
     "model": "Alibaba-NLP/gte-modernbert-base",
+    "model_revision": "e7f32e3c00f91d699e8c43b53106206bcc72bb22",
     "mode": "dense",
     "similarity": "cosine over L2-normalized vectors",
     "precision": "float32",
@@ -14,15 +20,21 @@
     "mmr": false,
     "reranker": false,
     "default_cpu_threads": 8,
+    "thread_cap": "physical cores and PyTorch available threads; ASTFLOW_THREADS positive integer override",
+    "production_default_candidates": 1000,
+    "agent_note": "The validated benchmark and snippets path return exact dense order; repository investigation starts with dense ranking and may add existing graph/second-pass product evidence. BM25 does not enter the dense score.",
     "full_test": {
       "queries": 3765,
       "documents": 8765,
       "ndcg10": 0.5509,
       "mrr10": 0.505,
       "recall10": 0.6964,
+      "recall50": 0.8489,
       "recall100": 0.8946,
-      "recall1000_approx": 0.978,
-      "evidence": "benchmark/results/final-validation-20260928/"
+      "recall500": 0.9615,
+      "recall1000": 0.9782,
+      "evidence": "benchmark/results/final-validation-20260928/",
+      "thread_equivalence_evidence": "benchmark/results/threads8-equivalence-20260929/"
     }
   },
   "dev": {
@@ -34,10 +46,10 @@
   "active_experiment": {
     "id": null,
     "status": "NONE ACTIVE",
-    "last_experiment": "E019",
-    "last_decision": "REJECT",
-    "reason": "DEV delta NDCG@10 +0.002321 below +0.005 gate; 95% CI includes zero",
-    "evidence": "benchmark/results/E019-operator-evidence/"
+    "last_experiment": "E023",
+    "last_decision": "CAMPAIGN CLOSED",
+    "reason": "E019 and E020 rejected on DEV; E021 failed held-out TRAIN gate; E022 failed CPU feasibility before DEV. Accepted GTE dense remains production.",
+    "evidence": "benchmark/results/campaign/LEDGER.md"
   },
   "historical_minilm_state": {
     "schema": 1,
@@ -192,5 +204,6 @@
     },
     "next_action": "No retrieval experiment scheduled (E004 cancelled for now). Engineering follow-ups: audit/18-remediation-plan.md."
   },
-  "next_experiment": "E020: targeted representation of >512-token queries, subject to preregistered DEV and confirmation gates"
+  "next_experiment": null,
+  "next_product_objective": "Make repository ingestion and incremental indexing reliable end to end using the frozen GTE dense retrieval subsystem."
 }
