@@ -1,7 +1,10 @@
 {
-  "query_encoding_total_s_for_600": 310.05008950002957,
-  "dense_score_p50": 2.302549983141944,
-  "rerank_p50": 0.4787500074598938,
-  "rerank_p95": 3.113455002312549,
-  "extra_index_time_s": 0
+  "sample": "50 fixed DEV IDs, random seed 20260929, one warmup, CPU float32, 8-thread default",
+  "query_ids_sha256": "6925e20fc644fa4f87a18b58fb2a4605f2edbfe4a81b556dce8401d25847431e",
+  "baseline_query_p50_ms": 360.56464997818694,
+  "baseline_query_p95_ms": 738.5583449853584,
+  "experimental_query_p50_ms": 361.72875002375804,
+  "experimental_query_p95_ms": 740.9903849998955,
+  "extra_index_time_s": 0,
+  "extra_model_weights_bytes": 0
 }

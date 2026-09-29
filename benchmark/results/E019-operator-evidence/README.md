@@ -24,8 +24,11 @@ vectors on both sides.
 Paired NDCG@10 95% bootstrap interval: [0, +0.005615]. Five queries gained
 NDCG, one lost; four additional rank changes did not move NDCG@10. Dense
 score p50 was 2.30 ms and the operator rerank added 0.48 ms p50, 3.11 ms p95.
-No new index or model weights are needed. Query encoding is unchanged; the
-existing 8-thread measurement is about 230 ms p50.
+No new index or model weights are needed. A separate fixed 50-query DEV
+single-query timing (one warmup, same CPU/8-thread model for both paths)
+measured end-to-end p50/p95 **360.56/738.56 ms** for dense versus
+**361.73/740.99 ms** for E019. The speed gate passes, but the quality gate
+does not.
 
 **Decision: REJECT.** The DEV gain is below +0.005 and its interval includes
 zero. The experimental function remains available for reproduction but is

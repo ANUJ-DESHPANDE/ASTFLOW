@@ -5,7 +5,7 @@
 | ID | Starting commit / branch | Hypothesis and change | DEV result | Decision | Evidence |
 |---|---|---|---|---|---|
 | E018 | `fec272f` / `exp/E018-ranking-diagnosis` | Saved candidate/qrels diagnosis: 55/300 correct at dense ranks 11–1000, only 3 absent; BM25 has 4 unique top-10 recoveries and zero unique top-1000 recoveries | Baseline NDCG@10 0.697734, MRR@10 0.663316 | DIAGNOSIS → E019 operator evidence | [`E018 artifacts`](../E018-ranking-diagnosis/README.md); commit `20c8c3a` |
-| E019 | `20c8c3a` / `exp/E019-operator-evidence` | Fixed top-50 explicit operator boost +0.02, production off by default; preregistered in `5da664f` | Fresh float32 paired baseline 0.696715 → 0.699036, Δ +0.002321, 95% CI [0, +0.005615]; 310.1 s to encode 600 TRAIN queries, rerank p50 0.48 ms | **REJECT**: below +0.005 gate; no confirmation or TEST | [`E019 artifacts`](../E019-operator-evidence/README.md) |
+| E019 | `20c8c3a` / `exp/E019-operator-evidence` | Fixed top-50 explicit operator boost +0.02, production off by default; preregistered in `5da664f` | Fresh float32 paired baseline 0.696715 → 0.699036, Δ +0.002321, 95% CI [0, +0.005615]; 310.1 s to encode 600 TRAIN queries; fixed-sample query p50 360.56 → 361.73 ms, p95 738.56 → 740.99 ms; extra index time 0, weights 0 | **REJECT**: below +0.005 gate; no confirmation or TEST | [`E019 artifacts`](../E019-operator-evidence/README.md) |
 
 E018 used the established 300-query TRAIN DEV IDs (SHA-256
 `5c61ce5eb1551e3897876ba5c34194bac0a54ed0f1a47149a349c9a3d0b78d53`),
