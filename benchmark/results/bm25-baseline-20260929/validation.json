@@ -1,0 +1,178 @@
+{
+ "prediction_file": "benchmark\\results\\bm25-baseline-20260929\\mteb\\predictions\\AppsRetrieval_predictions.json.gz",
+ "prediction_subsets_splits": {
+  "default": [
+   "test"
+  ]
+ },
+ "mteb_model_meta": {
+  "model_name": "ASTFLOW/bm25",
+  "revision": "7e2b7da35edaffbc"
+ },
+ "duplicate_json_keys": 0,
+ "queries_predicted": 3765,
+ "test_queries_expected": 3765,
+ "missing_predictions": [],
+ "unexpected_query_ids": [],
+ "train_query_ids_in_run": 0,
+ "empty_rankings": 0,
+ "depth_min": 1000,
+ "depth_max": 1000,
+ "depth_below_1000": 0,
+ "invalid_document_ids": 0,
+ "non_finite_scores": 0,
+ "scores_strictly_decreasing": true,
+ "run_metadata_query_count": 3765,
+ "run_metadata_ranking_depth": 1000,
+ "run_metadata_corpus_count": 8765,
+ "run_metadata_mode": "bm25",
+ "run_metadata_model": {
+  "available": false,
+  "model": null,
+  "message": "Semantic search has not loaded"
+ },
+ "run_metadata_model_profile": {
+  "query_prefix": "",
+  "document_prefix": "",
+  "max_seq": 512
+ },
+ "run_metadata_precomputed": false,
+ "mteb_eval_splits_scored": [
+  "test"
+ ],
+ "mteb_dataset_revision": "f22508f96b7a36c2415181ed8bb76f76e04ae2d5",
+ "samples": [
+  {
+   "qid": "q5001",
+   "query_head": "An accordion is a string (yes, in the real world accordions are musical instruments, but let's forget about it for a while) which can be represented as a concat",
+   "relevant": "d5001",
+   "relevant_rank": 1000000000,
+   "top5": [
+    [
+     "d2972",
+     1000.0,
+     "def watch_pyramid_from_the_side(characters):     if not characters : r"
+    ],
+    [
+     "d3420",
+     999.0,
+     "#CHAR_TO_MORSE preloaded to convert characters into Morse code CODE = "
+    ],
+    [
+     "d2413",
+     998.0,
+     "from string import ascii_lowercase class Solution:     def removeDupli"
+    ],
+    [
+     "d1816",
+     997.0,
+     "class Solution:     def shiftingLetters(self, S: str, shifts: List[int"
+    ],
+    [
+     "d4156",
+     996.0,
+     "REV = {'6':'9', '9':'6'} BASE = set(\"01869\")  def isReversible(n):    "
+    ]
+   ]
+  },
+  {
+   "qid": "q5942",
+   "query_head": "You are given an integer $n$ ($n \\ge 0$) represented with $k$ digits in base (radix) $b$. So,  $$n = a_1 \\cdot b^{k-1} + a_2 \\cdot b^{k-2} + \\ldots a_{k-1} \\cdo",
+   "relevant": "d5942",
+   "relevant_rank": 21,
+   "top5": [
+    [
+     "d6128",
+     1000.0,
+     "for _ in range(int(input())):     n = int(input())     digits = list(m"
+    ],
+    [
+     "d6237",
+     999.0,
+     "def main():     n, k = list(map(int, input().split()))     even = 0   "
+    ],
+    [
+     "d7800",
+     998.0,
+     "from math import factorial MOD = 10**9+7  k = int(input()) bink = list"
+    ],
+    [
+     "d2051",
+     997.0,
+     "\"\"\" Codeforces Contest 260 Div 1 Problem B  Author  : chaotic_iak Lang"
+    ],
+    [
+     "d4331",
+     996.0,
+     "def shortest_arrang(n):     # For odd n, we can always construct n wit"
+    ]
+   ]
+  },
+  {
+   "qid": "q6883",
+   "query_head": "You are preparing for an exam on scheduling theory. The exam will last for exactly T milliseconds and will consist of n problems. You can either solve problem i",
+   "relevant": "d6883",
+   "relevant_rank": 106,
+   "top5": [
+    [
+     "d2864",
+     1000.0,
+     "OUTPUT = \"I don't think you {} today, I think you {} {} {}!\".format   "
+    ],
+    [
+     "d1101",
+     999.0,
+     "# cook your dish here \"\"\" Input: The first line of the input contains "
+    ],
+    [
+     "d5143",
+     998.0,
+     "3 # Copyright (C) 2017 Sayutin Dmitry. # # This program is free softwa"
+    ],
+    [
+     "d7924",
+     997.0,
+     "f0 = 'What are you doing at the end of the world? Are you busy? Will y"
+    ],
+    [
+     "d3609",
+     996.0,
+     "database = '''werewolf : Silver knife or bullet to the heart vampire :"
+    ]
+   ]
+  },
+  {
+   "qid": "q7824",
+   "query_head": "In Arcady's garden there grows a peculiar apple-tree that fruits one time per year. Its peculiarity can be explained in following way: there are n inflorescence",
+   "relevant": "d7824",
+   "relevant_rank": 1000000000,
+   "top5": [
+    [
+     "d2676",
+     1000.0,
+     "def bad_apples(apples):     lst, notFull = [], []     for a,b in apple"
+    ],
+    [
+     "d1101",
+     999.0,
+     "# cook your dish here \"\"\" Input: The first line of the input contains "
+    ],
+    [
+     "d7702",
+     998.0,
+     "def main():  N, K = list(map(int, input().split()))    Apples = [int(x"
+    ],
+    [
+     "d4574",
+     997.0,
+     "def over_the_road(address, n):     '''     Input: address (int, your h"
+    ],
+    [
+     "d8612",
+     996.0,
+     "n=int(input()) a=[int(i) for i in input().split()]   a.sort()  count=0"
+    ]
+   ]
+  }
+ ]
+}
