@@ -1,0 +1,1548 @@
+{
+  "dev": {
+    "baseline": {
+      "n": 300,
+      "ndcg@10": 0.6967147053015048,
+      "mrr@10": 0.6620383597883598,
+      "mrr": 0.6676002813046253,
+      "r@10": 0.8066666666666666,
+      "r@50": 0.9133333333333333,
+      "r@100": 0.9333333333333333,
+      "r@200": 0.9566666666666667,
+      "r@500": 0.9766666666666667,
+      "r@1000": 0.99,
+      "r@20": 0.8533333333333334
+    },
+    "experimental": {
+      "n": 300,
+      "ndcg@10": 0.6990360866242341,
+      "mrr@10": 0.6639325396825396,
+      "mrr": 0.6691858707822437,
+      "r@10": 0.81,
+      "r@50": 0.9133333333333333,
+      "r@100": 0.9333333333333333,
+      "r@200": 0.9566666666666667,
+      "r@500": 0.9766666666666667,
+      "r@1000": 0.99,
+      "r@20": 0.85
+    },
+    "paired_ndcg": {
+      "delta": 0.002321381322729197,
+      "ci": [
+        0.0,
+        0.005615447317274357
+      ],
+      "wins": 5,
+      "losses": 1
+    },
+    "latency_ms": {
+      "dense_score_p50": 2.302549983141944,
+      "rerank_p50": 0.4787500074598938,
+      "rerank_p95": 3.113455002312549
+    },
+    "per_query": [
+      {
+        "query_id": "q1",
+        "baseline_rank": 9,
+        "experimental_rank": 9
+      },
+      {
+        "query_id": "q1022",
+        "baseline_rank": 19,
+        "experimental_rank": 19
+      },
+      {
+        "query_id": "q1027",
+        "baseline_rank": 26,
+        "experimental_rank": 25
+      },
+      {
+        "query_id": "q1028",
+        "baseline_rank": 3,
+        "experimental_rank": 3
+      },
+      {
+        "query_id": "q103",
+        "baseline_rank": 51,
+        "experimental_rank": 51
+      },
+      {
+        "query_id": "q1089",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q1102",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q1103",
+        "baseline_rank": 27,
+        "experimental_rank": 24
+      },
+      {
+        "query_id": "q1109",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q1122",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q1134",
+        "baseline_rank": 581,
+        "experimental_rank": 581
+      },
+      {
+        "query_id": "q1142",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q1144",
+        "baseline_rank": 4,
+        "experimental_rank": 4
+      },
+      {
+        "query_id": "q116",
+        "baseline_rank": 2,
+        "experimental_rank": 2
+      },
+      {
+        "query_id": "q1199",
+        "baseline_rank": 27,
+        "experimental_rank": 27
+      },
+      {
+        "query_id": "q12",
+        "baseline_rank": 3,
+        "experimental_rank": 3
+      },
+      {
+        "query_id": "q1209",
+        "baseline_rank": 7,
+        "experimental_rank": 7
+      },
+      {
+        "query_id": "q1210",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q1233",
+        "baseline_rank": 9,
+        "experimental_rank": 9
+      },
+      {
+        "query_id": "q1250",
+        "baseline_rank": 2,
+        "experimental_rank": 2
+      },
+      {
+        "query_id": "q1259",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q1289",
+        "baseline_rank": 43,
+        "experimental_rank": 43
+      },
+      {
+        "query_id": "q1291",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q1296",
+        "baseline_rank": 45,
+        "experimental_rank": 45
+      },
+      {
+        "query_id": "q1307",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q1321",
+        "baseline_rank": 63,
+        "experimental_rank": 63
+      },
+      {
+        "query_id": "q1327",
+        "baseline_rank": 12,
+        "experimental_rank": 12
+      },
+      {
+        "query_id": "q1342",
+        "baseline_rank": 18,
+        "experimental_rank": 18
+      },
+      {
+        "query_id": "q135",
+        "baseline_rank": 3,
+        "experimental_rank": 3
+      },
+      {
+        "query_id": "q1352",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q1382",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q1399",
+        "baseline_rank": 8,
+        "experimental_rank": 8
+      },
+      {
+        "query_id": "q1427",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q1435",
+        "baseline_rank": 2,
+        "experimental_rank": 2
+      },
+      {
+        "query_id": "q1455",
+        "baseline_rank": 3116,
+        "experimental_rank": 3116
+      },
+      {
+        "query_id": "q1476",
+        "baseline_rank": 2,
+        "experimental_rank": 2
+      },
+      {
+        "query_id": "q1503",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q1508",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q1521",
+        "baseline_rank": 144,
+        "experimental_rank": 144
+      },
+      {
+        "query_id": "q1522",
+        "baseline_rank": 3,
+        "experimental_rank": 3
+      },
+      {
+        "query_id": "q1544",
+        "baseline_rank": 209,
+        "experimental_rank": 209
+      },
+      {
+        "query_id": "q1576",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q16",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q1605",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q1609",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q1614",
+        "baseline_rank": 2,
+        "experimental_rank": 2
+      },
+      {
+        "query_id": "q1615",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q1632",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q1650",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q1654",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q17",
+        "baseline_rank": 4,
+        "experimental_rank": 4
+      },
+      {
+        "query_id": "q1707",
+        "baseline_rank": 10,
+        "experimental_rank": 10
+      },
+      {
+        "query_id": "q1724",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q1725",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q1737",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q1764",
+        "baseline_rank": 2,
+        "experimental_rank": 2
+      },
+      {
+        "query_id": "q1765",
+        "baseline_rank": 2,
+        "experimental_rank": 2
+      },
+      {
+        "query_id": "q1781",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q1784",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q184",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q1869",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q188",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q1880",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q1881",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q1893",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q191",
+        "baseline_rank": 49,
+        "experimental_rank": 49
+      },
+      {
+        "query_id": "q1910",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q1917",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q1919",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q1942",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q1953",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q1958",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q1989",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q1992",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q1998",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q2036",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q2050",
+        "baseline_rank": 3,
+        "experimental_rank": 2
+      },
+      {
+        "query_id": "q2084",
+        "baseline_rank": 2,
+        "experimental_rank": 2
+      },
+      {
+        "query_id": "q2094",
+        "baseline_rank": 68,
+        "experimental_rank": 68
+      },
+      {
+        "query_id": "q2127",
+        "baseline_rank": 15,
+        "experimental_rank": 21
+      },
+      {
+        "query_id": "q2130",
+        "baseline_rank": 9,
+        "experimental_rank": 9
+      },
+      {
+        "query_id": "q2171",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q2177",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q218",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q2199",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q2214",
+        "baseline_rank": 2,
+        "experimental_rank": 2
+      },
+      {
+        "query_id": "q2227",
+        "baseline_rank": 25,
+        "experimental_rank": 25
+      },
+      {
+        "query_id": "q2236",
+        "baseline_rank": 35,
+        "experimental_rank": 35
+      },
+      {
+        "query_id": "q2247",
+        "baseline_rank": 2,
+        "experimental_rank": 2
+      },
+      {
+        "query_id": "q2249",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q2268",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q2271",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q2293",
+        "baseline_rank": 329,
+        "experimental_rank": 329
+      },
+      {
+        "query_id": "q2308",
+        "baseline_rank": 5,
+        "experimental_rank": 5
+      },
+      {
+        "query_id": "q2319",
+        "baseline_rank": 4,
+        "experimental_rank": 4
+      },
+      {
+        "query_id": "q2329",
+        "baseline_rank": 48,
+        "experimental_rank": 48
+      },
+      {
+        "query_id": "q2342",
+        "baseline_rank": 1246,
+        "experimental_rank": 1246
+      },
+      {
+        "query_id": "q2356",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q237",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q2379",
+        "baseline_rank": 5,
+        "experimental_rank": 5
+      },
+      {
+        "query_id": "q2381",
+        "baseline_rank": 6,
+        "experimental_rank": 6
+      },
+      {
+        "query_id": "q2413",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q2430",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q2445",
+        "baseline_rank": 2,
+        "experimental_rank": 2
+      },
+      {
+        "query_id": "q2464",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q2501",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q2513",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q2523",
+        "baseline_rank": 2,
+        "experimental_rank": 2
+      },
+      {
+        "query_id": "q2546",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q2552",
+        "baseline_rank": 7,
+        "experimental_rank": 7
+      },
+      {
+        "query_id": "q2606",
+        "baseline_rank": 5,
+        "experimental_rank": 5
+      },
+      {
+        "query_id": "q2614",
+        "baseline_rank": 3,
+        "experimental_rank": 3
+      },
+      {
+        "query_id": "q2654",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q2658",
+        "baseline_rank": 388,
+        "experimental_rank": 388
+      },
+      {
+        "query_id": "q2687",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q2703",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q2705",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q2713",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q2744",
+        "baseline_rank": 2,
+        "experimental_rank": 2
+      },
+      {
+        "query_id": "q2774",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q2779",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q2811",
+        "baseline_rank": 12,
+        "experimental_rank": 12
+      },
+      {
+        "query_id": "q283",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q2845",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q289",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q2900",
+        "baseline_rank": 30,
+        "experimental_rank": 30
+      },
+      {
+        "query_id": "q2913",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q2943",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q298",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q2990",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q2993",
+        "baseline_rank": 7,
+        "experimental_rank": 7
+      },
+      {
+        "query_id": "q3019",
+        "baseline_rank": 4,
+        "experimental_rank": 4
+      },
+      {
+        "query_id": "q3029",
+        "baseline_rank": 14,
+        "experimental_rank": 5
+      },
+      {
+        "query_id": "q3036",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3037",
+        "baseline_rank": 14,
+        "experimental_rank": 14
+      },
+      {
+        "query_id": "q3059",
+        "baseline_rank": 2,
+        "experimental_rank": 2
+      },
+      {
+        "query_id": "q3077",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3079",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q316",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3184",
+        "baseline_rank": 4,
+        "experimental_rank": 4
+      },
+      {
+        "query_id": "q3204",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3230",
+        "baseline_rank": 44,
+        "experimental_rank": 45
+      },
+      {
+        "query_id": "q3231",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3249",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3252",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3276",
+        "baseline_rank": 13,
+        "experimental_rank": 13
+      },
+      {
+        "query_id": "q3291",
+        "baseline_rank": 2,
+        "experimental_rank": 2
+      },
+      {
+        "query_id": "q33",
+        "baseline_rank": 463,
+        "experimental_rank": 463
+      },
+      {
+        "query_id": "q3315",
+        "baseline_rank": 27,
+        "experimental_rank": 27
+      },
+      {
+        "query_id": "q3335",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q334",
+        "baseline_rank": 3,
+        "experimental_rank": 3
+      },
+      {
+        "query_id": "q3344",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3367",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3373",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3391",
+        "baseline_rank": 3,
+        "experimental_rank": 3
+      },
+      {
+        "query_id": "q3393",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3404",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3406",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3409",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3430",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3465",
+        "baseline_rank": 2,
+        "experimental_rank": 2
+      },
+      {
+        "query_id": "q3523",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q354",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3564",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3570",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q358",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3595",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3615",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3629",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3636",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3642",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3662",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q367",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3696",
+        "baseline_rank": 295,
+        "experimental_rank": 295
+      },
+      {
+        "query_id": "q3709",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3714",
+        "baseline_rank": 2,
+        "experimental_rank": 2
+      },
+      {
+        "query_id": "q3729",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3744",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3754",
+        "baseline_rank": 3,
+        "experimental_rank": 3
+      },
+      {
+        "query_id": "q3767",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3775",
+        "baseline_rank": 59,
+        "experimental_rank": 59
+      },
+      {
+        "query_id": "q3799",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3802",
+        "baseline_rank": 134,
+        "experimental_rank": 134
+      },
+      {
+        "query_id": "q3814",
+        "baseline_rank": 3,
+        "experimental_rank": 3
+      },
+      {
+        "query_id": "q3821",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3839",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3843",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3849",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3857",
+        "baseline_rank": 7,
+        "experimental_rank": 3
+      },
+      {
+        "query_id": "q3863",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q387",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3873",
+        "baseline_rank": 2,
+        "experimental_rank": 2
+      },
+      {
+        "query_id": "q3895",
+        "baseline_rank": 19,
+        "experimental_rank": 19
+      },
+      {
+        "query_id": "q3898",
+        "baseline_rank": 10,
+        "experimental_rank": 10
+      },
+      {
+        "query_id": "q390",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3913",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3917",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3922",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3926",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3935",
+        "baseline_rank": 16,
+        "experimental_rank": 16
+      },
+      {
+        "query_id": "q3942",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q397",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q3972",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4002",
+        "baseline_rank": 6,
+        "experimental_rank": 6
+      },
+      {
+        "query_id": "q4021",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q407",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4141",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4142",
+        "baseline_rank": 17,
+        "experimental_rank": 17
+      },
+      {
+        "query_id": "q4149",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4169",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4203",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4216",
+        "baseline_rank": 2,
+        "experimental_rank": 2
+      },
+      {
+        "query_id": "q4223",
+        "baseline_rank": 2,
+        "experimental_rank": 2
+      },
+      {
+        "query_id": "q423",
+        "baseline_rank": 2,
+        "experimental_rank": 2
+      },
+      {
+        "query_id": "q4271",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4282",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4291",
+        "baseline_rank": 53,
+        "experimental_rank": 53
+      },
+      {
+        "query_id": "q4295",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4305",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q431",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4345",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4368",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4377",
+        "baseline_rank": 23,
+        "experimental_rank": 28
+      },
+      {
+        "query_id": "q4379",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4432",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4433",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4457",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4486",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4495",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4502",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4504",
+        "baseline_rank": 27,
+        "experimental_rank": 27
+      },
+      {
+        "query_id": "q4505",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4508",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4526",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4539",
+        "baseline_rank": 32,
+        "experimental_rank": 32
+      },
+      {
+        "query_id": "q4545",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4549",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4553",
+        "baseline_rank": 4,
+        "experimental_rank": 4
+      },
+      {
+        "query_id": "q4559",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4587",
+        "baseline_rank": 2,
+        "experimental_rank": 2
+      },
+      {
+        "query_id": "q4602",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4654",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4662",
+        "baseline_rank": 9,
+        "experimental_rank": 9
+      },
+      {
+        "query_id": "q4664",
+        "baseline_rank": 7,
+        "experimental_rank": 6
+      },
+      {
+        "query_id": "q4667",
+        "baseline_rank": 2,
+        "experimental_rank": 2
+      },
+      {
+        "query_id": "q4672",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4689",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4690",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4725",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4742",
+        "baseline_rank": 2,
+        "experimental_rank": 2
+      },
+      {
+        "query_id": "q4768",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4770",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q480",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4835",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4865",
+        "baseline_rank": 826,
+        "experimental_rank": 826
+      },
+      {
+        "query_id": "q487",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4881",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4903",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4907",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4912",
+        "baseline_rank": 5,
+        "experimental_rank": 5
+      },
+      {
+        "query_id": "q4914",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4938",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4947",
+        "baseline_rank": 38,
+        "experimental_rank": 38
+      },
+      {
+        "query_id": "q4948",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4958",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4961",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4966",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4967",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q4975",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q506",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q514",
+        "baseline_rank": 9,
+        "experimental_rank": 9
+      },
+      {
+        "query_id": "q534",
+        "baseline_rank": 168,
+        "experimental_rank": 168
+      },
+      {
+        "query_id": "q539",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q553",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q560",
+        "baseline_rank": 91,
+        "experimental_rank": 91
+      },
+      {
+        "query_id": "q589",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q608",
+        "baseline_rank": 10,
+        "experimental_rank": 7
+      },
+      {
+        "query_id": "q631",
+        "baseline_rank": 654,
+        "experimental_rank": 654
+      },
+      {
+        "query_id": "q644",
+        "baseline_rank": 48,
+        "experimental_rank": 48
+      },
+      {
+        "query_id": "q647",
+        "baseline_rank": 131,
+        "experimental_rank": 131
+      },
+      {
+        "query_id": "q657",
+        "baseline_rank": 5,
+        "experimental_rank": 5
+      },
+      {
+        "query_id": "q671",
+        "baseline_rank": 2199,
+        "experimental_rank": 2199
+      },
+      {
+        "query_id": "q681",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q716",
+        "baseline_rank": 16,
+        "experimental_rank": 16
+      },
+      {
+        "query_id": "q741",
+        "baseline_rank": 4,
+        "experimental_rank": 4
+      },
+      {
+        "query_id": "q743",
+        "baseline_rank": 12,
+        "experimental_rank": 12
+      },
+      {
+        "query_id": "q750",
+        "baseline_rank": 114,
+        "experimental_rank": 114
+      },
+      {
+        "query_id": "q800",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q819",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q834",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q894",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q898",
+        "baseline_rank": 1,
+        "experimental_rank": 1
+      },
+      {
+        "query_id": "q902",
+        "baseline_rank": 3,
+        "experimental_rank": 3
+      },
+      {
+        "query_id": "q906",
+        "baseline_rank": 747,
+        "experimental_rank": 747
+      },
+      {
+        "query_id": "q928",
+        "baseline_rank": 114,
+        "experimental_rank": 114
+      },
+      {
+        "query_id": "q929",
+        "baseline_rank": 16,
+        "experimental_rank": 16
+      },
+      {
+        "query_id": "q952",
+        "baseline_rank": 34,
+        "experimental_rank": 34
+      },
+      {
+        "query_id": "q989",
+        "baseline_rank": 6,
+        "experimental_rank": 9
+      },
+      {
+        "query_id": "q994",
+        "baseline_rank": 134,
+        "experimental_rank": 134
+      },
+      {
+        "query_id": "q997",
+        "baseline_rank": 414,
+        "experimental_rank": 414
+      }
+    ]
+  },
+  "query_encoding_s": 310.05008950002957,
+  "decision": "REJECT"
+}

@@ -1,7 +1,35 @@
 # ASTFLOW Retrieval Progress
 
-> **Read this file first.** It is the only document that describes the *current* state of
-> ASTFLOW's search quality. Older files under `docs/audit/` are historical records.
+## Current accepted system (2026-09-29)
+
+The frozen production and benchmark system is **GTE-ModernBERT dense retrieval**
+(`Alibaba-NLP/gte-modernbert-base`), cosine similarity over normalized vectors,
+float32 CPU inference, a 512-token cap, and top-1000 ranking. BM25 is still
+computed for product evidence but does not set the final ranking. MMR and a
+reranker are disabled. The default embedding cap is 8 CPU threads.
+
+The validated full TEST run on 3,765 questions and 8,765 documents scored
+**NDCG@10 0.5509, MRR@10 0.5050, Recall@10 0.6964, Recall@100 0.8946,
+Recall@1000 about 0.978**. See
+`benchmark/results/final-validation-20260928/` and
+`benchmark/results/threads8-equivalence-20260929/`.
+
+On the established 300-query TRAIN DEV split, the dense baseline scores
+NDCG@10 0.6977 and MRR@10 0.6633. E018 found 55 correct documents at ranks
+11–1000 and only 3 absent from the top 1000. E019 tested a fixed operator
+evidence boost on dense top-50 candidates and was **rejected** on DEV:
+NDCG@10 0.696715 → 0.699036 (+0.002321, paired 95% interval
+[0, +0.005615]), below its +0.005 gate. Confirmation and TEST were not run;
+the accepted production system remains GTE dense. See
+`benchmark/results/E019-operator-evidence/`.
+
+## Historical MiniLM-era record
+
+The remainder of this file records earlier systems and experiments. Its
+"current" wording and 0.0884 score refer to the superseded MiniLM-era
+baseline, not the accepted GTE system described above.
+
+> Historical note: the section below was last updated for the MiniLM-era baseline.
 > Last updated: 2026-09-25 (E001–E003 rejected; E004 pre-registered, then cancelled for now by the project owner (2026-09-25); engineering audit in `audit/` re-generated baseline-v1 from committed code and produced official MTEB artifacts for the current code — identical scores).
 
 ---

@@ -12,12 +12,22 @@ answer at ranks 11–1000 and only 3 miss the top 1000. The saved top-200 lists
 give exact per-query ranks for 45 of the 55; the remaining 10 are counted from
 the frozen campaign's aggregate Recall@500 and Recall@1000. Rank percentiles
 in `oracle_analysis.json` apply only to those 45 observed top-200 failures.
+`full_rank_reconstruction.json` adds all-query ranks and dense score margins
+using the published document vectors and freshly encoded CPU float32 DEV
+queries. It matches 281/287 exact saved top-200 answer ranks and reproduces
+the same 55 recoverable / 3 missing counts. Its NDCG@10 is 0.696715 versus
+the frozen historical campaign's 0.697734; its rank statistics are labeled
+as a current-precision reconstruction, not substituted for frozen metrics.
+Across the 55 recoverable queries, mean answer rank is 128.6, median 44,
+P75 132.5, and P90 403.6.
 
 Product BM25 adds 4 unique correct top-10 answers over dense, but none at
 depth 1000. Among 58 dense top-10 failures, BM25 puts the answer in its own
 top 10 for 4 queries, top 20 for 8, top 50 for 12, and top 100 for 15.
 The dense/BM25 top-1000 union is still 0.99. A broad BM25 fusion is therefore
 not the leading experiment; earlier fusion improved DEV but failed TEST.
+`hard_negatives.jsonl` includes the reconstructed dense scores and
+top-false-positive margins, alongside exact product BM25 scores.
 
 Document truncation is weakly associated with these errors: 8/242 top-10
 successes and 2/45 observed rank-11-to-200 failures have positive documents

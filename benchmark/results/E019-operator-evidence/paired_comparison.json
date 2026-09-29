@@ -1,0 +1,73 @@
+{
+  "paired_ndcg": {
+    "delta": 0.002321381322729197,
+    "ci": [
+      0.0,
+      0.005615447317274357
+    ],
+    "wins": 5,
+    "losses": 1
+  },
+  "rank_improved": 7,
+  "rank_unchanged": 289,
+  "rank_regressed": 4,
+  "largest_gains": [
+    {
+      "query_id": "q3029",
+      "baseline_rank": 14,
+      "experimental_rank": 5
+    },
+    {
+      "query_id": "q3857",
+      "baseline_rank": 7,
+      "experimental_rank": 3
+    },
+    {
+      "query_id": "q1103",
+      "baseline_rank": 27,
+      "experimental_rank": 24
+    },
+    {
+      "query_id": "q608",
+      "baseline_rank": 10,
+      "experimental_rank": 7
+    },
+    {
+      "query_id": "q1027",
+      "baseline_rank": 26,
+      "experimental_rank": 25
+    },
+    {
+      "query_id": "q2050",
+      "baseline_rank": 3,
+      "experimental_rank": 2
+    },
+    {
+      "query_id": "q4664",
+      "baseline_rank": 7,
+      "experimental_rank": 6
+    }
+  ],
+  "largest_regressions": [
+    {
+      "query_id": "q2127",
+      "baseline_rank": 15,
+      "experimental_rank": 21
+    },
+    {
+      "query_id": "q4377",
+      "baseline_rank": 23,
+      "experimental_rank": 28
+    },
+    {
+      "query_id": "q989",
+      "baseline_rank": 6,
+      "experimental_rank": 9
+    },
+    {
+      "query_id": "q3230",
+      "baseline_rank": 44,
+      "experimental_rank": 45
+    }
+  ]
+}

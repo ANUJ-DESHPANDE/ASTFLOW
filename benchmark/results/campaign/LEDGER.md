@@ -1,5 +1,19 @@
 # Retrieval campaign ledger (2026-09-27)
 
+## 2026-09-29 continuation
+
+| ID | Starting commit / branch | Hypothesis and change | DEV result | Decision | Evidence |
+|---|---|---|---|---|---|
+| E018 | `fec272f` / `exp/E018-ranking-diagnosis` | Saved candidate/qrels diagnosis: 55/300 correct at dense ranks 11–1000, only 3 absent; BM25 has 4 unique top-10 recoveries and zero unique top-1000 recoveries | Baseline NDCG@10 0.697734, MRR@10 0.663316 | DIAGNOSIS → E019 operator evidence | [`E018 artifacts`](../E018-ranking-diagnosis/README.md); commit `20c8c3a` |
+| E019 | `20c8c3a` / `exp/E019-operator-evidence` | Fixed top-50 explicit operator boost +0.02, production off by default; preregistered in `5da664f` | Fresh float32 paired baseline 0.696715 → 0.699036, Δ +0.002321, 95% CI [0, +0.005615]; 310.1 s to encode 600 TRAIN queries, rerank p50 0.48 ms | **REJECT**: below +0.005 gate; no confirmation or TEST | [`E019 artifacts`](../E019-operator-evidence/README.md) |
+
+E018 used the established 300-query TRAIN DEV IDs (SHA-256
+`5c61ce5eb1551e3897876ba5c34194bac0a54ed0f1a47149a349c9a3d0b78d53`),
+the GTE model revision `e7f32e3c`, and the published document vectors.
+The E018 and E019 artifact directories contain full parameter, metric,
+run-path, and SHA-256 records. Next: E020 should test targeted query
+representation for the measured >512-token queries, with the existing gates.
+
 Generated from `benchmark/results/campaign/*.json` (no hand transcription). DEV/CONFIRMATION: frozen train-split sets (300 + 300, seed 20260926), full 8,765-document corpus, cached GTE vectors of the official run. TEST: 3,765 queries, used only for the baseline reproduction and one confirmation.
 
 | ID | Hypothesis | dev NDCG@10 | dev MRR@10 | dev R@100 | dev R@500 | dev Δ [95% CI] | conf Δ [95% CI] | Decision |

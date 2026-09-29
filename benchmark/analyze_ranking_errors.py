@@ -34,6 +34,8 @@ def dump(path: Path, obj):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--candidates", default=".venv-gpu/campaign-candidates.zip")
+    parser.add_argument("--query-vectors", default=".astflow/e019/query-vectors.npz")
+    parser.add_argument("--doc-vectors", default=".venv-gpu/apps-corpus-vectors-gte-modernbert-base.npz")
     parser.add_argument("--output", default="benchmark/results/E018-ranking-diagnosis")
     args = parser.parse_args()
     out = Path(args.output)
@@ -177,6 +179,55 @@ def main():
                                                "exceeds_512": sum(x > 512 for x in v)} for k, v in lengths.items()},
                                        "tokenizer": ".astflow/e017/train-300/final (ModernBERT tokenizer)",
                                        "note": "Deterministic signals only; no semantic labels inferred."})
+
+    # Optional fresh float32 query reconstruction supplies full ranks and score
+    # margins. It is kept separate from the frozen historical DEV metrics.
+    if Path(args.query_vectors).exists() and Path(args.doc_vectors).exists():
+        from benchmark.e019_operator_rerank import load_docs
+        vector_ids, doc_vectors = load_docs(corpus, args.doc_vectors)
+        positions = {d: i for i, d in enumerate(vector_ids)}
+        with np.load(args.query_vectors, allow_pickle=False) as asset:
+            q_vector_ids = asset["ids"].tolist()
+            q_vectors = {q: v for q, v in zip(q_vector_ids, asset["vectors"])}
+            assert all(q in q_vectors for q in qids)
+        full = []
+        negative_by_query = {row["query_id"]: row for row in negative_rows}
+        for q in qids:
+            scores = doc_vectors @ q_vectors[q]
+            positive = next(iter(qrels[q]))
+            pos = positions[positive]
+            rank = ranks_from_scores(scores, pos)
+            top = np.argsort(-scores, kind="stable")[:10]
+            if q in negative_by_query:
+                record = negative_by_query[q]
+                record["positive_dense_score"] = float(scores[pos])
+                record["top1_minus_positive_dense_margin"] = float(scores[top[0]] - scores[pos])
+                for negative in record["higher_ranked_negatives"]:
+                    negative["dense_score"] = float(scores[positions[negative["doc_id"]]])
+            full.append({"query_id": q, "frozen_top200_rank": ranks[q],
+                         "float32_reconstructed_rank": rank,
+                         "positive_dense_score": float(scores[pos]),
+                         "top1_dense_score": float(scores[top[0]]),
+                         "top1_minus_positive_margin": float(scores[top[0]] - scores[pos])})
+        recovered = [r["float32_reconstructed_rank"] for r in full if 10 < r["float32_reconstructed_rank"] <= 1000]
+        exact_top200 = sum(r["float32_reconstructed_rank"] == r["frozen_top200_rank"]
+                           for r in full if r["frozen_top200_rank"] is not None)
+        reconstruction = {"source": "published document vectors + freshly encoded CPU float32 TRAIN DEV queries",
+                          "frozen_top200_exact_rank_matches": exact_top200,
+                          "frozen_top200_observed": sum(r is not None for r in ranks.values()),
+                          "metrics": {"ndcg10": float(np.mean([1 / np.log2(r["float32_reconstructed_rank"] + 1)
+                                                                if r["float32_reconstructed_rank"] <= 10 else 0 for r in full])),
+                                      "recall10": sum(r["float32_reconstructed_rank"] <= 10 for r in full) / len(full),
+                                      "recall1000": sum(r["float32_reconstructed_rank"] <= 1000 for r in full) / len(full)},
+                          "recoverable_rank_stats": {"queries": len(recovered), "mean": statistics.mean(recovered),
+                                                     "median": statistics.median(recovered),
+                                                     "p75": float(np.percentile(recovered, 75)),
+                                                     "p90": float(np.percentile(recovered, 90))},
+                          "per_query": full}
+        dump(out / "full_rank_reconstruction.json", reconstruction)
+        with (out / "hard_negatives.jsonl").open("w", encoding="utf-8") as handle:
+            for row in negative_rows:
+                handle.write(json.dumps(row, ensure_ascii=False) + "\n")
     hashes = {p.name: digest(p.read_bytes()) for p in out.iterdir() if p.is_file() and p.name != "artifact_hashes.json"}
     dump(out / "artifact_hashes.json", hashes)
     print(json.dumps({"baseline": baseline, "buckets": counts, "oracle": oracle,

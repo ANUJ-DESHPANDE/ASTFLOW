@@ -1,0 +1,7 @@
+{
+  "query_encoding_total_s_for_600": 310.05008950002957,
+  "dense_score_p50": 2.302549983141944,
+  "rerank_p50": 0.4787500074598938,
+  "rerank_p95": 3.113455002312549,
+  "extra_index_time_s": 0
+}
