@@ -38,7 +38,7 @@ class Settings:
     max_file_bytes: int = 1_000_000
     max_files: int = 20_000
     max_total_bytes: int = 50_000_000
-    schema: int = 10
+    schema: int = 11
 
     def __post_init__(self):
         if self.semantic not in {"on", "auto", "off"}:
@@ -54,4 +54,6 @@ class Settings:
     def fingerprint(self) -> str:
         values = asdict(self)
         values.pop("cache")
+        values["embedding_revision"] = FROZEN_MODEL_REVISION if self.model == FROZEN_MODEL else self.model
+        values["embedding_max_tokens"] = 512 if self.model == FROZEN_MODEL else None
         return hashlib.sha256(json.dumps(values, sort_keys=True).encode()).hexdigest()[:16]

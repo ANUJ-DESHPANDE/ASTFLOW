@@ -97,7 +97,15 @@ def create_app(settings: Settings | None = None):
 
         def build():
             try:
-                return service.index(body.repo_path, body.version).manifest
+                index = service.index(body.repo_path, body.version)
+                return {"manifest": index.manifest, "operation": service.status.get("operation", "full"),
+                        "changes": service.status.get("changes", {}),
+                        "elapsed_ms": service.status.get("elapsed_ms")}
+            except (ValueError, ModelUnavailable, FileNotFoundError):
+                raise
+            except Exception as exc:
+                logger.exception("Index update failed; previous index remains active")
+                raise HTTPException(500, "Index update failed; previous index remains active. Check server logs.") from exc
             finally:
                 app.state.index_lock.release()
 
@@ -112,7 +120,7 @@ def create_app(settings: Settings | None = None):
 
             threading.Thread(target=background_build, daemon=True).start()
             return JSONResponse({"status": "indexing"}, status_code=202)
-        return {"status": "ready", "manifest": build()}
+        return {"status": "ready", **build()}
 
     @app.get("/api/index/status")
     def index_status():
