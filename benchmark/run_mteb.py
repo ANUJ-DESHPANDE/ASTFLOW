@@ -25,7 +25,7 @@ MTEB_VERSION = '2.21.0'
 DATASET_REVISION = 'f22508f96b7a36c2415181ed8bb76f76e04ae2d5'
 
 class ASTFLOWSearch:
-    def __init__(self, mode='bm25', download_model=False, model_name=None, precomputed=None):
+    def __init__(self, mode='dense', download_model=False, model_name=None, precomputed=None):
         from mteb.models.model_meta import ModelMeta
         self.mode = mode
         # Vectors computed ahead of time by `final_retrieval.py embed` shards (same model, same text); verified below.
@@ -142,11 +142,11 @@ class ASTFLOWSearch:
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--mode',choices=['bm25','dense','hybrid'],default='bm25')
+    parser.add_argument('--mode',choices=['bm25','dense','hybrid'],default='dense')
     parser.add_argument('--download-model',action='store_true')
     parser.add_argument('--diagnostics',action='store_true',help='Also record R@10/50/100 from the scored rankings')
     parser.add_argument('--precomputed',default=None,help='Directory of final_retrieval.py embed shards (docs-*, test-*)')
-    parser.add_argument('--model',default=None,help='Dense model (default: the product default, ASTFLOW_MODEL or MiniLM)')
+    parser.add_argument('--model',default=None,help='Dense model (default: ASTFLOW_MODEL or the accepted GTE model)')
     parser.add_argument('--output',type=Path,default=ROOT/'benchmark/results/mteb')
     args=parser.parse_args()
     if importlib.metadata.version('mteb') != MTEB_VERSION:

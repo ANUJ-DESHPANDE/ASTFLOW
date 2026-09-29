@@ -7,9 +7,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 
-# The frozen submission configuration (benchmark/experiments/EXPERIMENTS.md, "RETRIEVAL FREEZE"): official MTEB
-# AppsRetrieval NDCG@10 0.5511 with this model, ranking by dense cosine similarity only (no BM25 fusion).
+# Accepted production configuration; the clean float32 full TEST validation is
+# NDCG@10 0.5509 (benchmark/results/final-validation-20260928/).
 FROZEN_MODEL = "Alibaba-NLP/gte-modernbert-base"
+FROZEN_MODEL_REVISION = "e7f32e3c00f91d699e8c43b53106206bcc72bb22"
 FROZEN_RETRIEVAL = "dense"
 
 
@@ -32,7 +33,7 @@ class Settings:
     graph_decay: float = 0.45
     refinement_weight: float = 0.12
     test_weight: float = 0.82
-    candidates: int = 500
+    candidates: int = 1000
     max_depth: int = 5
     max_file_bytes: int = 1_000_000
     max_files: int = 20_000

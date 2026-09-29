@@ -1,11 +1,12 @@
 """Lazy CPU embeddings with a truthful lexical-only fallback."""
 import os
+import sys
 import threading
 from pathlib import Path
 
 import numpy as np
 
-from backend.app.config import Settings
+from backend.app.config import FROZEN_MODEL, FROZEN_MODEL_REVISION, Settings
 
 # How each supported model expects to be called (model cards). Unlisted models are used as-is: no prefixes and
 # their own sequence limit. `max_seq` bounds CPU cost; it never exceeds what the model was trained for.
@@ -30,7 +31,43 @@ PRECISION = "float32"
 # (8 performance + 8 efficiency cores), gte-modernbert-base, 512 tokens: 4 threads 2.45 docs/s and 584 ms/query,
 # 8 threads 5.07 docs/s and 413 ms/query, 16 threads 1.78 docs/s (the efficiency cores slow every batch down).
 # Vectors differ by at most 4e-7 between thread counts. Kept out of Settings so cached indexes stay valid.
-THREADS = int(os.getenv("ASTFLOW_THREADS", "8"))
+def physical_cores() -> int:
+    """Best available physical-core cap; never assume a small machine has 8 cores."""
+    logical = os.cpu_count() or 1
+    if sys.platform == "win32":
+        try:
+            import ctypes
+            kernel = ctypes.windll.kernel32
+            kernel.GetLogicalProcessorInformationEx.argtypes = (ctypes.c_int, ctypes.c_void_p,
+                                                                 ctypes.POINTER(ctypes.c_ulong))
+            size = ctypes.c_ulong()
+            kernel.GetLogicalProcessorInformationEx(0, None, ctypes.byref(size))
+            data = ctypes.create_string_buffer(size.value)
+            if kernel.GetLogicalProcessorInformationEx(0, data, ctypes.byref(size)):
+                count, offset = 0, 0
+                while offset < size.value:
+                    relation = int.from_bytes(data.raw[offset:offset + 4], "little")
+                    length = int.from_bytes(data.raw[offset + 4:offset + 8], "little")
+                    if length < 8:
+                        break
+                    count += relation == 0  # RelationProcessorCore
+                    offset += length
+                if count:
+                    return min(count, logical)
+        except (AttributeError, OSError, ValueError):
+            pass
+    return logical
+
+
+def thread_limit() -> int:
+    try:
+        requested = int(os.getenv("ASTFLOW_THREADS", "8"))
+    except ValueError:
+        requested = 8
+    return max(1, min(requested if requested > 0 else 8, physical_cores()))
+
+
+THREADS = thread_limit()
 
 
 def profile(model: str) -> dict:
@@ -61,6 +98,7 @@ class Embedder:
                 source = str(model_path) if (model_path / "modules.json").exists() else self.settings.model
                 self.model = SentenceTransformer(source, device="cpu", local_files_only=not download,
                                                  trust_remote_code=False,
+                                                 revision=FROZEN_MODEL_REVISION if source == FROZEN_MODEL else None,
                                                  cache_folder=str(self.settings.cache / "models" / "hub"))
                 if download:
                     self.model.save(str(model_path))

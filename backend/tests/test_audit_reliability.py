@@ -44,8 +44,17 @@ def test_missing_database_read_does_not_create_file(tmp_path):
 
 
 def test_indexed_revision_expression_remains_in_version_selector(tmp_path):
+    # The committed demo fixture is not necessarily a Git repository in a fresh
+    # checkout or worktree; this test needs only a local revision to index.
+    repo = tmp_path / 'repo'
+    repo.mkdir()
+    (repo / 'code.js').write_text('export function work(){ return 1; }', encoding='utf-8')
+    for args in (['init', '-q'], ['add', 'code.js'],
+                 ['-c', 'user.name=ASTFLOW Test', '-c', 'user.email=test@example.invalid',
+                  'commit', '-q', '-m', 'initial']):
+        subprocess.run(['git', *args], cwd=repo, check=True, capture_output=True)
     service=IndexService(Settings(cache=tmp_path/'cache',semantic='off',ts_enrich=False))
-    index=service.index(str(ROOT/'examples/demo-repo'),'HEAD~0')
+    index=service.index(str(repo),'HEAD~0')
     found=next(v for v in service.versions() if v['name']=='HEAD~0')
     assert found['indexed'] and found['version_key']==index.manifest['version_key']
 
