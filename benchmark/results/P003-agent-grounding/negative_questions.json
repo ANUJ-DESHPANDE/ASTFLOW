@@ -1,0 +1,66 @@
+[
+  {
+    "graph_edges": 4,
+    "graph_nodes": 6,
+    "grounding": {
+      "call_edges": [],
+      "definitions": [],
+      "requested_symbols": [
+        "Kafka"
+      ],
+      "status": "NO_VERIFIED_SYMBOL"
+    },
+    "latency_ms": 131.66,
+    "passes": 2,
+    "paths": [],
+    "question": "Where is the Kafka consumer implemented?",
+    "result_count": 9,
+    "top_files": [
+      "entry.js",
+      "controller.js",
+      "service.js",
+      "repository.js",
+      "helper.js"
+    ],
+    "version_key": "513cd91358ab78cf52da9e89"
+  },
+  {
+    "graph_edges": 4,
+    "graph_nodes": 6,
+    "grounding": {
+      "call_edges": [],
+      "definitions": [
+        {
+          "end_line": 6,
+          "file": "service.js",
+          "start_line": 4,
+          "symbol_id": "service.js::placeOrder"
+        },
+        {
+          "end_line": 4,
+          "file": "unrelated.js",
+          "start_line": 2,
+          "symbol_id": "unrelated.js::renderOrderReport"
+        }
+      ],
+      "requested_symbols": [
+        "placeOrder",
+        "renderOrderReport"
+      ],
+      "status": "CALL_NOT_ESTABLISHED"
+    },
+    "latency_ms": 64.56,
+    "passes": 1,
+    "paths": [],
+    "question": "Why does placeOrder call renderOrderReport?",
+    "result_count": 9,
+    "top_files": [
+      "service.js",
+      "unrelated.js",
+      "controller.js",
+      "entry.js",
+      "repository.js"
+    ],
+    "version_key": "513cd91358ab78cf52da9e89"
+  }
+]

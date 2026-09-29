@@ -1,5 +1,46 @@
 # ASTFLOW product progress
 
+## P003 — Investigation agent, evidence grounding, and code-map correctness
+
+**Decision:** PASS WITH DOCUMENTED LIMITATION. Implementation commit `6df2deb`. Validation artifacts:
+[`benchmark/results/P003-agent-grounding/`](benchmark/results/P003-agent-grounding/README.md).
+The P003 branch starts at `46324ca`; production GTE dense retrieval and the
+closed retrieval campaign remain unchanged.
+
+**Pipeline:** `/api/search` pins one immutable index, `investigate()` classifies
+intent and symbols, ranks source chunks, optionally refines around observed
+symbols, expands supported static calls, validates cited source, and returns
+structured evidence. There is no LLM, query decomposition into independent
+questions, or prose answer generator. `/api/map` renders indexed files and
+supported static call relationships.
+
+**Defects and fixes:** nearest-neighbor snippets were presented as relevant
+code even when a named symbol or call premise was unsupported. Additive
+grounding metadata now distinguishes verified definitions and calls, ambiguous
+symbols, missing named symbols, and unsupported call premises. The frontend
+labels all ranked snippets as candidates and links source-backed definitions
+and call sites. Graph citation validation now checks exact indexed node
+locations, edge identity, and displayed endpoints, preventing a real call-site
+snippet from laundering a false edge.
+
+**Validation:** ten manually specified golden fixture questions produced nine
+structured factual claims, all source-backed, with zero unsupported or
+contradicted claims. Ninety source citations resolved. Six expected file nodes
+and four returned cross-file call edges were valid. Add, modify, rename, and
+delete promotion left no stale nodes, edges, or citations. The old immutable
+snapshot retained its original call, while the new snapshot rejected it after
+modification. Actual local GTE `/api/search` runs passed on the fixture and
+nine manually checked questions from the committed demo repository. Golden
+investigation latency was p50 81.06 ms and p95 132.73 ms on that run. Focused
+P003, P002, P001, retrieval regression, backend, and available benchmark tests
+passed; MTEB and frozen TEST were not run.
+
+**Limitations:** the product still offers source and graph navigation for broad
+feature and dependency questions instead of a generated explanation. The map
+models static calls, not import or containment edges; dynamic calls remain
+unresolved. The frontend build was not run because local Node dependencies
+are absent. P004 owns whole-product UI and demo hardening before code lock.
+
 ## P002 — search and source-citation API reliability
 
 **Decision:** PASS. Implementation commit `d292625`; evidence:

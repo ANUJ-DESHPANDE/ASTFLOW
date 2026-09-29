@@ -1,0 +1,48 @@
+{
+  "absent": [
+    "Kafka consumer",
+    "placeOrder -> renderOrderReport"
+  ],
+  "calls": [
+    [
+      "startOrder",
+      "handleOrder"
+    ],
+    [
+      "handleOrder",
+      "placeOrder"
+    ],
+    [
+      "placeOrder",
+      "saveOrder"
+    ],
+    [
+      "placeOrder",
+      "normalizeOrder"
+    ]
+  ],
+  "definitions": {
+    "config": [
+      "repository.js",
+      "helper.js"
+    ],
+    "normalizeOrder": "helper.js",
+    "placeOrder": "service.js"
+  },
+  "imports": [
+    [
+      "controller.js",
+      "service.js"
+    ],
+    [
+      "service.js",
+      "repository.js"
+    ],
+    [
+      "service.js",
+      "helper.js"
+    ]
+  ],
+  "injected_comment_is_data": "helper.js:1",
+  "unrelated_file": "unrelated.js"
+}

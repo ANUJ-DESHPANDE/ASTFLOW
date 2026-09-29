@@ -1,0 +1,12 @@
+[
+  "Where is placeOrder defined?",
+  "Where is normalizeOrder used?",
+  "What is the flow from startOrder to saveOrder?",
+  "What does controller.js depend on?",
+  "What depends on repository.js?",
+  "How does placeOrder work?",
+  "Which files should I inspect for order submission?",
+  "Where is the Kafka consumer implemented?",
+  "Why does placeOrder call renderOrderReport?",
+  "Where is config defined?"
+]

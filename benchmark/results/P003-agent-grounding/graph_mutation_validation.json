@@ -1,0 +1,9 @@
+{
+  "source": "backend/tests/test_p003_grounding.py::test_graph_mutations_and_snapshot_pin",
+  "add": "PASS: new.js node and supported saveOrder call appeared",
+  "modify": "PASS: placeOrder to saveOrder edge disappeared; new placeOrder to renderOrderReport edge appeared",
+  "rename": "PASS: renamed.js replaced new.js without old path node",
+  "delete": "PASS: renamed.js node, incident call, and citations disappeared",
+  "ghost_nodes": 0,
+  "ghost_edges": 0
+}
