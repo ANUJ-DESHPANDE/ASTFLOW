@@ -20,6 +20,9 @@ export type SearchResponse = {
   query: string; version: string; version_key: string; results: Result[]; intent: string; latency_ms: number;
   /** What the result list rests on; SEMANTIC_ONLY means no result shares a word or symbol with the question. */
   match_basis?: 'KEYWORD_MATCH' | 'SEMANTIC_ONLY' | 'NONE';
+  grounding?: { status: 'SOURCE_CANDIDATES' | 'NO_VERIFIED_IMPLEMENTATION' | 'NO_VERIFIED_SYMBOL' | 'AMBIGUOUS_SYMBOL' | 'VERIFIED_CALL' | 'CALL_NOT_ESTABLISHED';
+    requested_symbols: string[]; definitions: { symbol_id: string; file: string; start_line: number; end_line: number }[];
+    call_edges: GraphEdge[] };
   agent_trace: { step: string; details: string; data?: Record<string, unknown> }[];
   graph: GraphData; semantic: { available: boolean; message: string; model: string | null };
   sequences: { caller: string; before: string; after: string; file_path: string; before_line: number; after_line: number; explanation: string }[];
