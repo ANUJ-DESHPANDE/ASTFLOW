@@ -1,5 +1,47 @@
 # ASTFLOW product progress
 
+## P004 — Whole-product hardening and code lock
+
+**Decision:** PASS. Product fix and browser coverage commit `6447aa1`.
+Code lock follows the clean, pushed release candidate on
+`release/P004-product-hardening`. Evidence:
+[`benchmark/results/P004-product-hardening/`](benchmark/results/P004-product-hardening/README.md).
+The branch starts from P003 commit `42579f8`. Retrieval, model provenance,
+agent architecture, and graph relationship scope remain frozen.
+
+**Frontend and product:** `npm ci` installed the existing lockfile without
+changing it; `npm run build` passed TypeScript checking and the Vite production
+build. The actual GTE backend and built React frontend passed 30 Playwright
+tests, including desktop and phone accessibility, source/citation navigation,
+negative and ambiguous states, map interaction, add/modify/rename/delete UI
+updates, indexing failure recovery, network failures, and response races.
+The canonical `npm run demo` launcher was checked with the existing Python
+environment, and persisted demo indexes remained usable after restart.
+
+**Defects fixed:** a capitalized feature word such as “Bluetooth” was wrongly
+classified as a missing code symbol. The grounding classifier now reserves
+that status for identifier-shaped names and explicit definition requests; the
+original failing browser question and focused backend regression pass. The UI
+now reports a no-op index update as “Repository already up to date” using the
+backend operation field. No retrieval or agent architecture was changed.
+
+**Regression and measurements:** backend 96 passed, 0 skipped; P001 4, P002 8,
+P003 4, retrieval configuration 2, and available benchmark subset 26 passed.
+The 12-query HTTP search p50 was 107.40 ms and p95 was 157.07 ms. With the
+local model/vector cache warm, a full index of a temporary demo copy took
+687.65 ms, no-op 58.51 ms, a one-file incremental update 699.38 ms, and a
+code-map API response 5.28 ms. These are local product timings, not fresh
+install or cold embedding timings. MTEB and frozen TEST were not run.
+
+**Release state:** [DEMO.md](DEMO.md) gives the canonical workflow and
+[RELEASE-STATE.md](RELEASE-STATE.md) describes setup, model, and capability
+limits. Accepted limitations remain source navigation without generated prose,
+static-call-only map edges, unresolved dynamic calls, one-time schema-10
+reindexing, full parse/graph rebuild on changed snapshots, and one-process
+cache writes. The lazy-loaded Monaco chunk has a non-blocking Vite size
+warning. No demonstrated release blocker remains. P005 is the release gate;
+feature and architecture development are closed after this code lock.
+
 ## P003 — Investigation agent, evidence grounding, and code-map correctness
 
 **Decision:** PASS WITH DOCUMENTED LIMITATION. Implementation commit `6df2deb`. Validation artifacts:

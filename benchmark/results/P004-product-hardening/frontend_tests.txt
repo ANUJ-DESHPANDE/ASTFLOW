@@ -1,0 +1,6 @@
+Command: npm run test:ui
+Result: PASS; 30 Playwright tests, 0 failed, on the actual GTE backend and Microsoft Edge.
+Includes desktop/mobile axe checks, citations, map, source navigation, negative/ambiguous grounding,
+add/modify/rename/delete UI update, indexing failure and recovery, network failure, and request race.
+Separate frontend unit-test script: NOT CONFIGURED.
+Separate typecheck script: NOT CONFIGURED (tsc -b is part of npm run build).

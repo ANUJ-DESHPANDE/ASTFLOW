@@ -1,0 +1,4 @@
+Command: npm run build
+Result: PASS. The frontend build runs tsc -b followed by Vite 7.3.6 production build.
+2944 modules transformed; production dist/index.html emitted.
+Non-blocking Vite warning: the lazy-loaded Monaco SourceViewer chunk is 3689.25 kB minified.

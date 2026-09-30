@@ -1,0 +1,11 @@
+{
+  "actual_gte": true,
+  "built_frontend": true,
+  "demo_repository": "examples/demo-repo",
+  "health": "PASS",
+  "http_api": "http://127.0.0.1:8000",
+  "launcher": "npm run demo using an existing Python environment at the ignored .venv path",
+  "restart": "PASS: persisted demo indexes restored and browser journey passed",
+  "model": "Alibaba-NLP/gte-modernbert-base",
+  "revision": "e7f32e3c00f91d699e8c43b53106206bcc72bb22"
+}

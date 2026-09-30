@@ -1,0 +1,2 @@
+Command: pytest backend/tests/test_p002_search_api.py
+Result: 8 passed, 0 failed.

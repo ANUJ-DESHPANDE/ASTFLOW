@@ -13,7 +13,9 @@ Updated to the supplied editor-video visual reference. See [changes and limits](
 > numerical precision. See the [canonical retrieval baseline](benchmark/RETRIEVAL_BASELINE.md)
 > and [clean validation](benchmark/results/final-validation-20260928/README.md).
 
-ASTFLOW is a local repository investigation engine for JavaScript. Ask a question, get ranked source snippets, follow supported call relationships, and compare the answer across Git snapshots. The snippet list is the canonical answer; graphs and explanations supplement it.
+ASTFLOW is a local repository investigation engine for JavaScript. Ask a question, inspect ranked source candidates and verified symbol or call evidence, follow supported static call relationships, and compare indexed Git snapshots. It does not generate prose explanations; source links and graph relationships are its answer surface.
+
+For a short, repeatable product walkthrough, use [DEMO.md](DEMO.md). The current release candidate scope and limits are in [RELEASE-STATE.md](RELEASE-STATE.md).
 
 It runs on a CPU, needs no paid API, and never executes an indexed repository. The included source fixture has voice routing, Bluetooth settings, authentication, test cases, dynamic dispatch, and two real Git commits showing a session-management refactor.
 

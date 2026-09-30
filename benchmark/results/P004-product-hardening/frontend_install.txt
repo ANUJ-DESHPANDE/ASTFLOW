@@ -1,0 +1,4 @@
+Node v24.14.0; npm 11.9.0.
+Command: npm ci
+Result: PASS; 103 packages added; 105 audited; 0 vulnerabilities.
+package-lock.json changed: NO.

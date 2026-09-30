@@ -1,0 +1,2 @@
+Command: pytest backend/tests/test_p003_grounding.py
+Result: 4 passed, 0 failed. Includes the capitalized-feature grounding regression.

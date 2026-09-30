@@ -1,0 +1,12 @@
+{
+  "actual_frontend_backend_gte": true,
+  "add_modify_rename_delete_ui": "PASS",
+  "browser_tests": 30,
+  "call": "PASS",
+  "citation": "PASS",
+  "definition": "PASS",
+  "map": "PASS",
+  "negative": "PASS",
+  "overall": "PASS",
+  "restart": "PASS: npm run demo restarted with persisted demo indexes; browser search and map passed"
+}

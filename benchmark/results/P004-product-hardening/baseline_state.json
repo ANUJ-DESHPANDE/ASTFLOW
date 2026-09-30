@@ -1,0 +1,10 @@
+{
+  "branch": "release/P004-product-hardening",
+  "starting_commit": "42579f8",
+  "p003_decision": "PASS WITH DOCUMENTED LIMITATION",
+  "model": "Alibaba-NLP/gte-modernbert-base",
+  "revision": "e7f32e3c00f91d699e8c43b53106206bcc72bb22",
+  "retrieval": "exact dense",
+  "mteb_run": false,
+  "frozen_test_run": false
+}

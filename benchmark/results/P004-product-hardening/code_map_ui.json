@@ -1,0 +1,11 @@
+{
+  "demo_overview_nodes": 11,
+  "demo_overview_edges": 8,
+  "node_rendering": "PASS (Playwright)",
+  "edge_rendering": "PASS (Playwright)",
+  "source_navigation": "PASS (Playwright)",
+  "add_modify_rename_delete_refresh": "PASS (Playwright)",
+  "empty_map": "Component has an explicit empty state; browser path not exercised",
+  "desktop_and_phone": "PASS (Playwright)",
+  "relationship_scope": "supported static calls"
+}
