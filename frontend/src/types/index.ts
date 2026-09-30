@@ -38,7 +38,7 @@ export type Manifest = {
 export type Repository = { path: string | null; name: string | null; files: string[]; indexes: Manifest[]; demo_path: string };
 export type Version = { name: string; label: string; indexed: boolean; commit: string | null; version_key: string | null };
 export type Source = { path: string; version: string; version_key: string; content: string; full_content: string; start_line: number; end_line: number; total_lines: number };
-export type IndexStatus = { state: string; stage: string; progress: number; manifest?: Manifest };
+export type IndexStatus = { state: string; stage: string; progress: number; operation?: 'full' | 'incremental' | 'noop'; manifest?: Manifest };
 export type Changes = { added_symbols: string[]; removed_symbols: string[]; modified_symbols: string[]; added_edges: GraphEdge[]; removed_edges: GraphEdge[] };
 export type Comparison = {
   query: string; version_a: string; version_b: string; version_key_a: string; version_key_b: string;

@@ -53,7 +53,8 @@ def test_grounding_and_map(product):
     assert definition["grounding"]["status"] == "SOURCE_CANDIDATES"
     assert any(d["file"] == "service.js" for d in definition["grounding"]["definitions"])
     assert all(r["file_path"] in {p.name for p in FIXTURE.iterdir()} for r in definition["results"])
-    assert ask(client, "Where is the Kafka consumer implemented?")["grounding"]["status"] == "NO_VERIFIED_SYMBOL"
+    assert ask(client, "Where is the Kafka consumer implemented?")["grounding"]["status"] == "NO_VERIFIED_IMPLEMENTATION"
+    assert ask(client, "Where is Order report used?")["grounding"]["status"] == "SOURCE_CANDIDATES"
     assert ask(client, "Why does placeOrder call renderOrderReport?")["grounding"]["status"] == "CALL_NOT_ESTABLISHED"
     assert ask(client, "Where is config defined?")["grounding"]["status"] == "AMBIGUOUS_SYMBOL"
     call = ask(client, "Why does placeOrder call saveOrder?")

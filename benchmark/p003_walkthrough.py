@@ -80,7 +80,7 @@ def main():
     fixture_rows = [brief(data) for data in fixture_responses]
     write("golden_results.json", fixture_rows)
     assert fixture_rows[0]["grounding"]["definitions"][0]["file"] == "service.js"
-    assert fixture_rows[7]["grounding"]["status"] == "NO_VERIFIED_SYMBOL"
+    assert fixture_rows[7]["grounding"]["status"] == "NO_VERIFIED_IMPLEMENTATION"
     assert fixture_rows[8]["grounding"]["status"] == "CALL_NOT_ESTABLISHED"
     assert fixture_rows[9]["grounding"]["status"] == "AMBIGUOUS_SYMBOL"
     assert any(len(path) == 4 and path[0].endswith("::startOrder") and path[-1].endswith("::saveOrder")

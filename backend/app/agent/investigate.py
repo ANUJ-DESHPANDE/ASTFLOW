@@ -54,8 +54,12 @@ def validate_citations(index, results: list[dict], graph: dict) -> None:
 def ground_question(query: str, graph) -> dict:
     """Classify only explicit symbol/relationship premises; retrieved neighbors are candidates, not answers."""
     names = {s.name for s in graph.symbols.values()}
-    explicit = [token for token in re.findall(r"\b(?:[a-z][A-Za-z0-9_$]*[A-Z][A-Za-z0-9_$]*|[A-Z][A-Za-z0-9_$]*[a-z][A-Za-z0-9_$]*)\b", query)
-                if token not in {"Where", "What", "Which", "How", "Why"}]
+    # A capitalized feature word ("Bluetooth settings") is not a requested symbol.
+    # Only identifier-shaped names and an explicit "X defined" request establish that premise.
+    explicit = re.findall(r"\b(?:[a-z][A-Za-z0-9_$]*[A-Z][A-Za-z0-9_$]*|[A-Z][a-z0-9_$]+(?:[A-Z][A-Za-z0-9_$]+)+)\b", query)
+    definition = re.search(r"\bwhere is ([A-Za-z_$][\w$]*) defined\??$", query, re.I)
+    if definition:
+        explicit.append(definition.group(1))
     requested = list(dict.fromkeys([*explicit, *plan(query, graph)["symbols"]]))
     candidates = []
     for name in requested:
