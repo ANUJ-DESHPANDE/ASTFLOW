@@ -39,7 +39,9 @@ def test_pinned_model_schema_and_reproducible_inference():
     payload = (root / "model.json").read_bytes()
     prereg = json.loads((root / "preregister.json").read_text())
     model = json.loads(payload)
-    assert hashlib.sha256(payload).hexdigest() == prereg["model_sha256"]
+    # The preregistered artifact used CRLF; Git checks it out with LF on Linux.
+    canonical_payload = payload.replace(b"\r\n", b"\n").replace(b"\n", b"\r\n")
+    assert hashlib.sha256(canonical_payload).hexdigest() == prereg["model_sha256"]
     assert tuple(model["features"]) == FEATURES
     arrays = [np.asarray(model[k], dtype=float) for k in ("mean", "scale", "coef")]
     assert all(np.isfinite(a).all() and len(a) == len(FEATURES) for a in arrays)
