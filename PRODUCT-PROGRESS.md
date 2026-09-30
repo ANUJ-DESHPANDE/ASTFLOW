@@ -43,6 +43,14 @@ cache writes. The lazy-loaded Monaco chunk has a non-blocking Vite size
 warning. No demonstrated release blocker remains. P005 is the release gate;
 feature and architecture development are closed after this code lock.
 
+**Release hygiene:** 42 personal home-directory prefixes were anonymized in
+15 historical audit and benchmark files without changing their numeric
+results. The E022 artifact hash test now resolves its pinned local checkpoint
+from the recorded model and revision; the 26-test benchmark subset passed
+after sanitization. No personal home prefix or common credential pattern
+remains in tracked text files. Runtime dependencies, built frontend files,
+and local indexes remain ignored.
+
 ## P003 — Investigation agent, evidence grounding, and code-map correctness
 
 **Decision:** PASS WITH DOCUMENTED LIMITATION. Implementation commit `6df2deb`. Validation artifacts:

@@ -4,7 +4,7 @@
 
 | ID | Source | Notes |
 |---|---|---|
-| **S1** | `C:\Users\aarus\Downloads\Samsung_PRISM_Theme1_Agentic_Code_Intelligence.pdf` (3 pages) | "Clean reference copy compiled from the official Theme 1 guideline PDF and hackathon brief". The original `theme1_guidelines.pdf` and hackathon brochure cited by `docs/audit/REQUIREMENTS.md` are **not present on this machine**; S1 is the primary source used. |
+| **S1** | `C:\Users\<user>\Downloads\Samsung_PRISM_Theme1_Agentic_Code_Intelligence.pdf` (3 pages) | "Clean reference copy compiled from the official Theme 1 guideline PDF and hackathon brief". The original `theme1_guidelines.pdf` and hackathon brochure cited by `docs/audit/REQUIREMENTS.md` are **not present on this machine**; S1 is the primary source used. |
 | S2 | `README.md` | Product claims (treated as claims to verify, not requirements). |
 | S3 | `docs/audit/REQUIREMENTS.md` (20 Sep audit) | Earlier matrix; cites G (guideline, 4 pp) and B (brochure, 15 pp) and records conflicts between them (CSV vs JSON; JS vs Python dataset). Used only where S1 is silent. |
 | S4 | `benchmark/EXPERIMENTS.md`, `RETRIEVAL-PROGRESS.md` | Engineering/experiment protocol requirements. |

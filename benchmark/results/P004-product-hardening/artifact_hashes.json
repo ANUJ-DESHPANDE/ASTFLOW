@@ -1,5 +1,5 @@
 {
-  "README.md": "dd99208e631f40471c3a32a6389581398e5f90c66b5555fdca7255f2768237e2",
+  "README.md": "35e14953c2bc6edc0567cc98bc7d8b68af2a29da4a26609f07789665eaddd6a3",
   "api_ui_contract.json": "8574971ad219b7c0ed6456651c3ab3ab84a955a74d32d39aada0405f9978fcc6",
   "backend_tests.txt": "ed425b8595ba277c43ca2b89e843d9f4d62894e0c1259d12af5691432aaf326a",
   "baseline_state.json": "a80b37fd8e1c9b5500d24eedd64931a2bcca08bdd6cc83b233a7e655060d94b3",
@@ -18,6 +18,7 @@
   "p002_regression.txt": "4b6674f38b881a0092fab2eb46918a959c36d54eaaa396d09526fc51a5d3cf6a",
   "p003_regression.txt": "fbbfb4d65baf1830fc8ddf9aa7b04704834c77371a1aaf7616217408a7718cfd",
   "performance.json": "a32951b9ddff97403470ab845b60576b7aa9c951ff8edddb5cc4635fd8e899cc",
+  "release_hygiene.json": "f288c811dac149e0dc7c4cf75d670edaa34acff2390478d9f7dd54fe05a50d69",
   "release_limitations.json": "d2d20707cd6ec7e66b1dd9b5c5c6799b69441abd6ddb4c46a1f7fd790c2625c8",
   "retrieval_regression.txt": "49c3e6223428dd9dbb2cb53bb2ff24564cc4d67dce802bde4a2eb17c9648846d",
   "screenshots/p004-citation.png": "bf6b2720d689209b2d5f3d99585da9494f9d9bb7a099cf33b3fbb5321c1635a4",

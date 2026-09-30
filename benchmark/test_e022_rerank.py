@@ -50,5 +50,11 @@ def test_disabled_is_exact_dense_and_nonfinite_rejected():
 def test_model_artifact_pinned():
     root = Path(__file__).parent / "results" / "E022-strong-reranker"
     record = json.loads((root / "feasibility.json").read_text())
-    weight = Path(record["source_path"]) / "model.safetensors"
+    # The recorded source path is anonymized for publication. Locate the same
+    # revision in this machine's Hugging Face cache when the historical model is available.
+    weight = (Path.home() / ".cache" / "huggingface" / "hub"
+              / ("models--" + record["model"].replace("/", "--"))
+              / "snapshots" / record["revision"] / "model.safetensors")
+    if not weight.is_file():
+        pytest.skip("Historical E022 model is not installed on this machine")
     assert hashlib.sha256(weight.read_bytes()).hexdigest() == record["weight_sha256"]

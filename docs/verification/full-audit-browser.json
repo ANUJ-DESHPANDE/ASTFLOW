@@ -2,12 +2,12 @@
   "config": {
     "argv": [
       "C:\\Program Files\\nodejs\\node.exe",
-      "C:\\Users\\ranja\\OneDrive\\Documents\\ChatGPT\\New project\\ASTFLOW-main\\node_modules\\@playwright\\test\\cli.js",
+      "C:\\Users\\<user>\\OneDrive\\Documents\\ChatGPT\\New project\\ASTFLOW-main\\node_modules\\@playwright\\test\\cli.js",
       "test",
       "--reporter=json"
     ],
-    "configFile": "C:\\Users\\ranja\\OneDrive\\Documents\\ChatGPT\\New project\\ASTFLOW-main\\playwright.config.ts",
-    "rootDir": "C:/Users/ranja/OneDrive/Documents/ChatGPT/New project/ASTFLOW-main/frontend/e2e",
+    "configFile": "C:\\Users\\<user>\\OneDrive\\Documents\\ChatGPT\\New project\\ASTFLOW-main\\playwright.config.ts",
+    "rootDir": "C:/Users/<user>/OneDrive/Documents/ChatGPT/New project/ASTFLOW-main/frontend/e2e",
     "failOnFlakyTests": false,
     "forbidOnly": false,
     "fullyParallel": false,
@@ -23,7 +23,7 @@
     "preserveOutput": "always",
     "projects": [
       {
-        "outputDir": "C:/Users/ranja/OneDrive/Documents/ChatGPT/New project/ASTFLOW-main/test-results",
+        "outputDir": "C:/Users/<user>/OneDrive/Documents/ChatGPT/New project/ASTFLOW-main/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
@@ -31,7 +31,7 @@
         },
         "id": "",
         "name": "",
-        "testDir": "C:/Users/ranja/OneDrive/Documents/ChatGPT/New project/ASTFLOW-main/frontend/e2e",
+        "testDir": "C:/Users/<user>/OneDrive/Documents/ChatGPT/New project/ASTFLOW-main/frontend/e2e",
         "testIgnore": [],
         "testMatch": [
           "**/*.@(spec|test).?(c|m)[jt]s?(x)"
@@ -575,11 +575,11 @@
                     },
                     {
                       "location": {
-                        "file": "C:\\Users\\ranja\\OneDrive\\Documents\\ChatGPT\\New project\\ASTFLOW-main\\frontend\\e2e\\studio.spec.ts",
+                        "file": "C:\\Users\\<user>\\OneDrive\\Documents\\ChatGPT\\New project\\ASTFLOW-main\\frontend\\e2e\\studio.spec.ts",
                         "column": 50,
                         "line": 28
                       },
-                      "message": "Error: locator.click: Test timeout of 60000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.react-flow__edge').first()\u001b[22m\n\n\n  26 |  await page.getByLabel('Map file focus').selectOption('voice/VoiceHandler.js');await page.locator('.react-flow__node').filter({hasText:'VoiceHandler.handleRequest'}).click();await page.getByRole('button',{name:'Open source',exact:true}).click();await expect(page.locator('.source-status')).toContainText('voice/VoiceHandler.js');\n  27 |  await page.getByRole('button',{name:'Map',exact:true}).click();await page.getByRole('button',{name:'Trace a path'}).click();await page.getByRole('button',{name:'Trace',exact:true}).click();await expect(page.locator('.canvas-caption')).toContainText('supported path');\n> 28 |  await page.locator('.react-flow__edge').first().click({force:true});await expect(page.locator('.edge-evidence')).toContainText('A supported connection');await expect(page.locator('.source-panel')).toBeVisible();\n     |                                                  ^\n  29 | });\n  30 | test('comparison displays actual before and after source',async({page})=>{\n  31 |  await opened(page);await page.getByRole('navigation',{name:'Workspace views'}).getByRole('button',{name:'Compare',exact:true}).click();await page.getByLabel('Version A',{exact:true}).selectOption('v1');await page.getByLabel('Version B',{exact:true}).selectOption('v2');await page.getByRole('main').getByRole('button',{name:'Compare',exact:true}).click();\n    at C:\\Users\\ranja\\OneDrive\\Documents\\ChatGPT\\New project\\ASTFLOW-main\\frontend\\e2e\\studio.spec.ts:28:50"
+                      "message": "Error: locator.click: Test timeout of 60000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.react-flow__edge').first()\u001b[22m\n\n\n  26 |  await page.getByLabel('Map file focus').selectOption('voice/VoiceHandler.js');await page.locator('.react-flow__node').filter({hasText:'VoiceHandler.handleRequest'}).click();await page.getByRole('button',{name:'Open source',exact:true}).click();await expect(page.locator('.source-status')).toContainText('voice/VoiceHandler.js');\n  27 |  await page.getByRole('button',{name:'Map',exact:true}).click();await page.getByRole('button',{name:'Trace a path'}).click();await page.getByRole('button',{name:'Trace',exact:true}).click();await expect(page.locator('.canvas-caption')).toContainText('supported path');\n> 28 |  await page.locator('.react-flow__edge').first().click({force:true});await expect(page.locator('.edge-evidence')).toContainText('A supported connection');await expect(page.locator('.source-panel')).toBeVisible();\n     |                                                  ^\n  29 | });\n  30 | test('comparison displays actual before and after source',async({page})=>{\n  31 |  await opened(page);await page.getByRole('navigation',{name:'Workspace views'}).getByRole('button',{name:'Compare',exact:true}).click();await page.getByLabel('Version A',{exact:true}).selectOption('v1');await page.getByLabel('Version B',{exact:true}).selectOption('v2');await page.getByRole('main').getByRole('button',{name:'Compare',exact:true}).click();\n    at C:\\Users\\<user>\\OneDrive\\Documents\\ChatGPT\\New project\\ASTFLOW-main\\frontend\\e2e\\studio.spec.ts:28:50"
                     }
                   ],
                   "stdout": [],
@@ -591,17 +591,17 @@
                     {
                       "name": "screenshot",
                       "contentType": "image/png",
-                      "path": "C:\\Users\\ranja\\OneDrive\\Documents\\ChatGPT\\New project\\ASTFLOW-main\\test-results\\studio-map-file-focus-and-trace-evidence-navigate-to-code\\test-failed-1.png"
+                      "path": "C:\\Users\\<user>\\OneDrive\\Documents\\ChatGPT\\New project\\ASTFLOW-main\\test-results\\studio-map-file-focus-and-trace-evidence-navigate-to-code\\test-failed-1.png"
                     },
                     {
                       "name": "error-context",
                       "contentType": "text/markdown",
-                      "path": "C:\\Users\\ranja\\OneDrive\\Documents\\ChatGPT\\New project\\ASTFLOW-main\\test-results\\studio-map-file-focus-and-trace-evidence-navigate-to-code\\error-context.md"
+                      "path": "C:\\Users\\<user>\\OneDrive\\Documents\\ChatGPT\\New project\\ASTFLOW-main\\test-results\\studio-map-file-focus-and-trace-evidence-navigate-to-code\\error-context.md"
                     },
                     {
                       "name": "trace",
                       "contentType": "application/zip",
-                      "path": "C:\\Users\\ranja\\OneDrive\\Documents\\ChatGPT\\New project\\ASTFLOW-main\\test-results\\studio-map-file-focus-and-trace-evidence-navigate-to-code\\trace.zip"
+                      "path": "C:\\Users\\<user>\\OneDrive\\Documents\\ChatGPT\\New project\\ASTFLOW-main\\test-results\\studio-map-file-focus-and-trace-evidence-navigate-to-code\\trace.zip"
                     }
                   ]
                 }

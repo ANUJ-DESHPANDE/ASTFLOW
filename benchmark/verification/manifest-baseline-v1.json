@@ -90,7 +90,7 @@
     "nan": 0,
     "inf": 0,
     "zero_vectors": 0,
-    "cache_file": "C:\\Users\\ranja\\.gemini\\antigravity-ide\\scratch\\ASTFLOW\\.astflow\\datasets\\trust-apps-cc3d1f5b729fa376dc5f9aed.npy",
+    "cache_file": "C:\\Users\\<user>\\.gemini\\antigravity-ide\\scratch\\ASTFLOW\\.astflow\\datasets\\trust-apps-cc3d1f5b729fa376dc5f9aed.npy",
     "cache_status": "computed",
     "seconds": 392.14,
     "alignment_probe": {

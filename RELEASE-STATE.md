@@ -21,6 +21,8 @@ Use **Repository settings** to choose a JavaScript repository and index its work
 
 P004 passed the production frontend build, 30 live browser tests, 96 backend tests, the focused P001–P003 and retrieval regressions, and the canonical demo restart. Feature and architecture changes are closed. P005 is the remaining release-style installation and demo gate; only a concrete release-blocking failure may reopen code.
 
+Historical audit and benchmark records were anonymized to remove personal home-directory prefixes while retaining metrics and valid JSON. The available benchmark subset passed after this release hygiene change.
+
 ## Validated scope and limits
 
 P001 validated ingestion and promotion; P002 validated immutable API citations; P003 validated structured grounding and map semantics. P004 validates the built frontend with the actual GTE backend and committed demo repository. The validated product implementation is commit `6447aa1` on `release/P004-product-hardening`; the branch's final pushed HEAD is the release candidate commit reported in the P004 decision dashboard. Code lock follows only when the P004 criteria pass.

@@ -3,7 +3,7 @@
   "revision": "f7481e6055501a30fb19d090657df9ec1f79ab2c",
   "weight_sha256": "13c533d902d6a48fa97375c6856c3e60854f9228ea760e3fc18ebde057e0cf31",
   "tokenizer_sha256": "2aea6ff4701d063e7e029b6be695a1659f2caaa2ae4fb0e8b18285818271becd",
-  "source_path": "C:\\Users\\adita\\.cache\\huggingface\\hub\\models--Alibaba-NLP--gte-reranker-modernbert-base\\snapshots\\f7481e6055501a30fb19d090657df9ec1f79ab2c",
+  "source_path": "C:\\Users\\<user>\\.cache\\huggingface\\hub\\models--Alibaba-NLP--gte-reranker-modernbert-base\\snapshots\\f7481e6055501a30fb19d090657df9ec1f79ab2c",
   "parameters": 149605633,
   "device": "cpu",
   "precision": "float32",

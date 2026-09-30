@@ -102,7 +102,7 @@ curl: (56) CONNECT tunnel failed, response 403
 $ find / -iname "*all-MiniLM-L6-v2*" ...     -> no results
 $ find / -path "*datasets/apps*" ...          -> only this session's own test fixtures under /tmp
 $ find / -iname "*coir*" ...                  -> only the mteb library's own COIRCodeSearchNet task file (unrelated task)
-$ du -sh /home/user/ASTFLOW/.astflow          -> 20K (demo-repo git index + empty app embedding_cache.sqlite; no benchmark assets)
+$ du -sh /home/<user>/ASTFLOW/.astflow          -> 20K (demo-repo git index + empty app embedding_cache.sqlite; no benchmark assets)
 ```
 
 **Conclusion:** no real MiniLM weights and no real CoIR-Retrieval/apps corpus exist anywhere accessible to this session. This is a hard, confirmed stop condition, identical to the prior session's finding (same 403, same host). **Steps §10, §22, §25, §29 of the task (regenerate the real 8,765-doc cache; diagnostic subset on the real corpus; full 3,765-query run; official MTEB run) are BLOCKED and were not attempted beyond the reproduction above.** Steps that do not require the real assets were completed in full (§§6-21 below).
@@ -253,13 +253,13 @@ If network access to `huggingface.co` cannot be granted to this session, the rea
 
 **1. Model** — `sentence-transformers/all-MiniLM-L6-v2`, expected at:
 ```
-/home/user/ASTFLOW/.astflow/models/sentence-transformers--all-MiniLM-L6-v2/
+/home/<user>/ASTFLOW/.astflow/models/sentence-transformers--all-MiniLM-L6-v2/
 ```
 containing a standard `sentence-transformers` saved-model directory (`config.json`, `modules.json`, `tokenizer.json`/`vocab.txt`, `sentence_bert_config.json`, `1_Pooling/config.json`, and the weight file — `model.safetensors` or `pytorch_model.bin`). `backend/app/retrieval/embeddings.py::Embedder.load()` checks for `modules.json` at exactly this path and loads locally (`local_files_only=True`) without any network call if found — **no code change needed**.
 
 **2. Direct-adapter dataset** (`benchmark/mteb_appretrieval.py`) — `CoIR-Retrieval/apps`, expected at:
 ```
-/home/user/ASTFLOW/.astflow/datasets/apps/
+/home/<user>/ASTFLOW/.astflow/datasets/apps/
   corpus.jsonl      # one JSON object per line: {"_id": "...", "title": "...", "text": "..."}
   queries.jsonl      # {"_id": "...", "text": "..."}
   qrels/test.tsv      # TSV, header "query-id\tcorpus-id\tscore"
