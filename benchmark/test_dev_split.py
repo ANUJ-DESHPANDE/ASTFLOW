@@ -42,7 +42,6 @@ def test_query_ids_and_qrels_converts_hf_dataset_style_qrels():
 
 def test_split_is_deterministic_disjoint_and_excludes_queries_without_positives(tmp_path, monkeypatch):
     import json
-    from backend.app.config import ROOT
     import benchmark.build_dev_split as mod
 
     query_ids = [f'q{i}' for i in range(400)]

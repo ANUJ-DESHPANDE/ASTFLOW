@@ -10,14 +10,12 @@ import argparse
 import json
 import logging
 import math
-import sys
 import time
-from pathlib import Path
 import numpy as np
 
 from backend.app.config import ROOT
-from benchmark.analyze_baseline import load_ranks, pack, unpack
-from benchmark.trust import evaluation, forensics
+from benchmark.analyze_baseline import load_ranks
+from benchmark.trust import evaluation
 from benchmark.trust.forensics import paired_bootstrap
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")

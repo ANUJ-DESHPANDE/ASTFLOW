@@ -16,7 +16,7 @@ import numpy as np
 
 from backend.app.config import Settings
 from backend.app.retrieval.embeddings import Embedder
-from backend.app.retrieval.operator_evidence import rerank_operator_evidence
+from benchmark.operator_evidence import rerank_operator_evidence
 from benchmark.campaign import metrics, paired, ranks_from_scores
 from benchmark.e005_screen import load_dataset_split
 from benchmark.final_retrieval import query_sets, text_key

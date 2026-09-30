@@ -1,5 +1,4 @@
 import numpy as np
-from pathlib import Path
 from backend.app.config import Settings
 from backend.app.retrieval.embeddings import Embedder
 from backend.app.models.entities import Chunk

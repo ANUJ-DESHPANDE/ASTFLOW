@@ -1,7 +1,6 @@
 import argparse
 import statistics
 from pathlib import Path
-import numpy as np
 from backend.app.config import ROOT, Settings
 from backend.app.models.entities import Chunk
 from backend.app.retrieval.embeddings import Embedder

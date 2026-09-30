@@ -20,7 +20,6 @@ if __package__ in {None, ""}:
 
 from benchmark.campaign import metrics, paired
 from benchmark.e005_screen import load_dataset_split
-from benchmark.final_retrieval import query_sets
 
 RERANKER = "Alibaba-NLP/gte-reranker-modernbert-base"
 

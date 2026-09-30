@@ -1,6 +1,6 @@
 import numpy as np
 
-from backend.app.retrieval.operator_evidence import rerank_operator_evidence
+from benchmark.operator_evidence import rerank_operator_evidence
 
 
 def test_operator_evidence_only_changes_matching_dense_candidates():

@@ -1,4 +1,3 @@
-from pathlib import Path
 import subprocess
 
 from fastapi.testclient import TestClient

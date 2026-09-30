@@ -17,7 +17,6 @@ from benchmark.campaign import ranks_from_scores
 from benchmark.e017_train import load_mined, train_data
 from benchmark.e019_operator_rerank import load_docs
 from benchmark.e020_ranker import FEATURES, features, terms
-from benchmark.e005_screen import load_dataset_split
 from benchmark.final_retrieval import query_sets
 
 OUT = Path("benchmark/results/E020-hard-negative-ranking")

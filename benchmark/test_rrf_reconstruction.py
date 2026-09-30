@@ -1,6 +1,5 @@
 """Deterministic tests proving RRF implementation and reconstruction from frozen runs."""
 import pytest
-from pathlib import Path
 from backend.app.config import ROOT
 from benchmark.analyze_baseline import load_ranks, rrf
 

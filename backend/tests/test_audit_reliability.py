@@ -1,13 +1,10 @@
-import json
 import subprocess
-from pathlib import Path
 import numpy as np
 import pytest
 from fastapi.testclient import TestClient
 from backend.app.config import ROOT,Settings
 from backend.app.main import create_app
 from backend.app.indexing.service import IndexService
-from backend.app.retrieval.embeddings import Embedder
 from backend.app.storage.store import load_index
 
 

@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from backend.app.agent.investigate import investigate
-from backend.app.config import ROOT, Settings
+from backend.app.config import ROOT
 from backend.app.indexing.service import IndexService
 from benchmark.metrics import metrics
 

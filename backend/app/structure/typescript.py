@@ -2,7 +2,6 @@ import json
 import subprocess
 
 from backend.app.config import ROOT
-from backend.app.models.entities import Edge
 from backend.app.parsing.javascript import CALLABLE
 
 

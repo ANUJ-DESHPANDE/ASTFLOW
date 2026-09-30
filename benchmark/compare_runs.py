@@ -1,4 +1,3 @@
-import json
 from benchmark.run_fusion_sweep import load_data, rrf_for_queries, evaluate_rankings, analyze_candidates
 
 bm25, dense, hybrid, dev_qids, conf_qids, qrels = load_data()

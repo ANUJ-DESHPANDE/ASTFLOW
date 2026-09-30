@@ -147,7 +147,6 @@ def main():
 
     if args.stopwords_file:
         extra = set(json.loads(args.stopwords_file.read_text(encoding='utf-8')))
-        from backend.app.retrieval.search import STOP as BASE_STOP
 
         def code_stopword_tokenizer(text):
             return [t for t in tokenize(text) if t not in extra]

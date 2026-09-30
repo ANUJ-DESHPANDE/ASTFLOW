@@ -1,10 +1,7 @@
 """Comprehensive controlled RRF fusion sweep over dev queries from frozen baseline-v1 runs."""
-import gzip
 import json
 import math
-import sys
 import time
-from pathlib import Path
 from backend.app.config import ROOT
 from benchmark.analyze_baseline import load_ranks
 from benchmark.trust.forensics import paired_bootstrap

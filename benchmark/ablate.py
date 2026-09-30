@@ -1,6 +1,5 @@
 """Controlled local ablations. The demo labels are not a held-out test set."""
-import copy,json,re,statistics,time
-from pathlib import Path
+import copy,json,re,statistics
 from backend.app.agent.investigate import investigate
 from backend.app.config import ROOT,Settings
 from backend.app.indexing.service import IndexService

@@ -4,7 +4,6 @@ import threading
 from concurrent.futures import ThreadPoolExecutor
 
 import numpy as np
-import pytest
 from fastapi.testclient import TestClient
 
 from backend.app.config import Settings

@@ -1,8 +1,4 @@
-"""Small, opt-in code-operator evidence for dense candidate reranking.
-
-E019 evaluates this on the frozen DEV split. The production retriever does not
-enable it unless the experiment clears the benchmark gates.
-"""
+"""Rejected E019 operator-evidence reranker, retained for benchmark reproduction."""
 
 import re
 

@@ -2,7 +2,6 @@
 import os
 import sys
 import threading
-from pathlib import Path
 
 import numpy as np
 
