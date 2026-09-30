@@ -1,4 +1,4 @@
-C:\Users\aarus\Downloads\ASTFLOW-main\ASTFLOW-repo\.eval-venv\Lib\site-packages\torch\jit\_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+{USER_HOME}\Downloads\ASTFLOW-main\ASTFLOW-repo\.eval-venv\Lib\site-packages\torch\jit\_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
   warnings.warn(
 Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
 Loading weights:   0%|          | 0/134 [00:00<?, ?it/s]Loading weights:  16%|█▋        | 22/134 [00:00<00:00, 170.01it/s]Loading weights:  30%|██▉       | 40/134 [00:00<00:00, 129.17it/s]Loading weights:  40%|████      | 54/134 [00:00<00:00, 102.72it/s]Loading weights: 100%|██████████| 134/134 [00:00<00:00, 272.20it/s]

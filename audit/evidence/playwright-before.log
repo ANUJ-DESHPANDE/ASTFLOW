@@ -46,7 +46,7 @@ Running 26 tests using 1 worker
       39 |  await page.getByLabel('Version A',{exact:true}).selectOption('v2');
       40 |  await page.getByLabel('Version B',{exact:true}).selectOption('v1');
       41 |  await page.getByRole('button',{name:'Inspect change',exact:true}).click();
-        at C:\Users\aarus\Downloads\ASTFLOW-main\ASTFLOW-repo\frontend\e2e\audit.spec.ts:38:66
+        at {USER_HOME}\Downloads\ASTFLOW-main\ASTFLOW-repo\frontend\e2e\audit.spec.ts:38:66
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results\audit-history-restores-com-c60e8-shortcuts-remain-functional\test-failed-1.png
@@ -83,7 +83,7 @@ Running 26 tests using 1 worker
     > 88 | test('API network failure, malformed reply, empty search and recovery',async({page})=>{await page.goto('/');await expect(page.locator('.monaco-editor')).toBeVisible();await page.route('**/api/search',route=>route.abort('failed'));await page.getByLabel('Ask about your code').fill('Bluetooth');await page.getByLabel('Send question').click();await expect(page.locator('.error-notice[role=alert]')).toContainText('Cannot reach ASTFLOW');await page.unroute('**/api/search');await page.getByLabel('Dismiss error').click();await page.route('**/api/search',route=>route.fulfill({status:502,contentType:'text/html',body:'<h1>Bad Gateway</h1>'}));await page.getByLabel('Ask about your code').fill('Bluetooth');await page.getByLabel('Send question').click();await expect(page.locator('.error-notice[role=alert]')).toContainText('invalid response');await page.unroute('**/api/search');await page.getByLabel('Ask about your code').fill('qxzjvnonexistentidentifier');await page.getByLabel('Send question').click();await expect(page.locator('.conversation-turn').last()).toContainText('No matching source');});
          |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ^
       89 |
-        at C:\Users\aarus\Downloads\ASTFLOW-main\ASTFLOW-repo\frontend\e2e\audit.spec.ts:88:1058
+        at {USER_HOME}\Downloads\ASTFLOW-main\ASTFLOW-repo\frontend\e2e\audit.spec.ts:88:1058
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results\audit-API-network-failure--d43ed-y-empty-search-and-recovery\test-failed-1.png
@@ -120,7 +120,7 @@ Running 26 tests using 1 worker
        9 |   await expect(page.locator('.result-card').first()).toContainText('Bluetooth');
       10 |   fs.mkdirSync('.astflow/screenshots', { recursive: true });
       11 |   await page.screenshot({ path: '.astflow/screenshots/search.png', fullPage: true });
-        at C:\Users\aarus\Downloads\ASTFLOW-main\ASTFLOW-repo\frontend\e2e\investigation.spec.ts:8:54
+        at {USER_HOME}\Downloads\ASTFLOW-main\ASTFLOW-repo\frontend\e2e\investigation.spec.ts:8:54
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results\investigation-live-search--29a5f-ce-in-a-local-Monaco-editor\test-failed-1.png
@@ -157,7 +157,7 @@ Running 26 tests using 1 worker
       26 |   await page.getByRole('navigation').getByRole('button', { name: 'Trace', exact: true }).click();
       27 |   await page.getByRole('button', { name: 'Trace path', exact: true }).click();
       28 |   await expect(page.locator('.graph-message')).toContainText('supported path');
-        at C:\Users\aarus\Downloads\ASTFLOW-main\ASTFLOW-repo\frontend\e2e\investigation.spec.ts:25:54
+        at {USER_HOME}\Downloads\ASTFLOW-main\ASTFLOW-repo\frontend\e2e\investigation.spec.ts:25:54
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results\investigation-trace-graph-edge-opens-its-actual-call-site\test-failed-1.png
@@ -194,7 +194,7 @@ Running 26 tests using 1 worker
       40 |   await page.getByLabel('Search repository').fill('Where is session restoration handled?');
       41 |   await page.getByRole('navigation').getByRole('button', { name: 'Changes' }).click();
       42 |   await page.getByLabel('Version A').selectOption('v1');
-        at C:\Users\aarus\Downloads\ASTFLOW-main\ASTFLOW-repo\frontend\e2e\investigation.spec.ts:39:54
+        at {USER_HOME}\Downloads\ASTFLOW-main\ASTFLOW-repo\frontend\e2e\investigation.spec.ts:39:54
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results\investigation-version-comp-dc520-session-refactor-and-source\test-failed-1.png
@@ -231,7 +231,7 @@ Running 26 tests using 1 worker
       55 |   await page.getByLabel('Search repository').fill('How does VoiceHandler reach BluetoothAgent?');
       56 |   await page.getByRole('button', { name: 'Search', exact: true }).last().click();
       57 |   await expect(page.locator('.panel-heading')).toContainText('2 passes');
-        at C:\Users\aarus\Downloads\ASTFLOW-main\ASTFLOW-repo\frontend\e2e\investigation.spec.ts:54:54
+        at {USER_HOME}\Downloads\ASTFLOW-main\ASTFLOW-repo\frontend\e2e\investigation.spec.ts:54:54
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results\investigation-structural-q-88580-vable-second-retrieval-pass\test-failed-1.png
@@ -268,7 +268,7 @@ Running 26 tests using 1 worker
       65 |   await page.getByRole('button', { name: 'Reindex repository' }).click();
       66 |   await expect(page.locator('.index-progress')).toBeVisible();
       67 |   await expect(page.locator('.index-progress')).not.toBeVisible();
-        at C:\Users\aarus\Downloads\ASTFLOW-main\ASTFLOW-repo\frontend\e2e\investigation.spec.ts:64:54
+        at {USER_HOME}\Downloads\ASTFLOW-main\ASTFLOW-repo\frontend\e2e\investigation.spec.ts:64:54
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results\investigation-reindexing-f-cd14f-ss-and-returns-live-results\test-failed-1.png
@@ -305,7 +305,7 @@ Running 26 tests using 1 worker
       76 |   const nav = page.getByRole('navigation', { name: 'Mobile investigation views' });
       77 |   await expect(nav).toBeVisible();
       78 |   await nav.getByRole('button', { name: 'trace', exact: true }).click();
-        at C:\Users\aarus\Downloads\ASTFLOW-main\ASTFLOW-repo\frontend\e2e\investigation.spec.ts:75:54
+        at {USER_HOME}\Downloads\ASTFLOW-main\ASTFLOW-repo\frontend\e2e\investigation.spec.ts:75:54
 
     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
     test-results\investigation-mobile-layou-a28f0-without-horizontal-overflow\test-failed-1.png

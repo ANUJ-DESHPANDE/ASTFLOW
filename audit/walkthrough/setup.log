@@ -23,7 +23,7 @@ computing gzip size...
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
 [32m✓ built in 11.29s[39m
 {
-  "repository": "/home/runner/work/ASTFLOW/ASTFLOW/fresh/examples/demo-repo",
+  "repository": "{USER_HOME}/work/ASTFLOW/ASTFLOW/fresh/examples/demo-repo",
   "v1": "7826d38cae72db7ba0e53a0bcc5aa339783e09f0",
   "v2": "31b94fc77db2be533d72aeaefba3e0360312663c"
 }
