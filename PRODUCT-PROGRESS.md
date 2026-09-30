@@ -2,8 +2,9 @@
 
 ## P004 — Whole-product hardening and code lock
 
-**Decision:** PASS. Product fix and browser coverage commit `6447aa1`.
-Code lock follows the clean, pushed release candidate on
+**Decision:** PASS. **Code lock: LOCKED** after the clean, pushed release candidate.
+Product fix and browser coverage commit `6447aa1`; validation commit `41fc748`.
+The release candidate is on
 `release/P004-product-hardening`. Evidence:
 [`benchmark/results/P004-product-hardening/`](benchmark/results/P004-product-hardening/README.md).
 The branch starts from P003 commit `42579f8`. Retrieval, model provenance,

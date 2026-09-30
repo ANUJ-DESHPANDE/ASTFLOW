@@ -17,6 +17,10 @@ Open <http://127.0.0.1:8000>. `npm run setup` uses `requirements.lock.txt` for P
 
 Use **Repository settings** to choose a JavaScript repository and index its working tree or a Git revision. Ask a question in the companion panel; select a definition, call site, or ranked snippet to open its repository-relative file and lines. Map arrows show supported static calls. Choose **Reindex repository** after edits. See [DEMO.md](DEMO.md) for the canonical walkthrough and [README.md](README.md) for CLI and setup details.
 
+## Code lock
+
+P004 passed the production frontend build, 30 live browser tests, 96 backend tests, the focused P001–P003 and retrieval regressions, and the canonical demo restart. Feature and architecture changes are closed. P005 is the remaining release-style installation and demo gate; only a concrete release-blocking failure may reopen code.
+
 ## Validated scope and limits
 
 P001 validated ingestion and promotion; P002 validated immutable API citations; P003 validated structured grounding and map semantics. P004 validates the built frontend with the actual GTE backend and committed demo repository. The validated product implementation is commit `6447aa1` on `release/P004-product-hardening`; the branch's final pushed HEAD is the release candidate commit reported in the P004 decision dashboard. Code lock follows only when the P004 criteria pass.
