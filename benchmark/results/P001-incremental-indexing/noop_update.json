@@ -1,0 +1,21 @@
+{
+  "changes": {
+    "files_added": 0,
+    "files_deleted": 0,
+    "files_eligible": 11,
+    "files_modified": 0,
+    "files_renamed": 0,
+    "files_scanned": 11,
+    "files_unchanged": 11
+  },
+  "documents": 21,
+  "embedding_cache": {
+    "computed": 0,
+    "reused": 21
+  },
+  "files": 11,
+  "operation": "noop",
+  "timings_ms": {},
+  "version_key": "7352a811ed9d025f6a0bbb24",
+  "wall_ms": 57.39
+}

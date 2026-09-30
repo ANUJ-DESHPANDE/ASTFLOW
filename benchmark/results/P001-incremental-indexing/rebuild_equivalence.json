@@ -1,0 +1,7 @@
+{
+  "documents": 25,
+  "files": 15,
+  "note": "Logical documents and graph compared; vector equivalence uses deterministic automated fixture.",
+  "passed": true,
+  "vectors_compared": false
+}

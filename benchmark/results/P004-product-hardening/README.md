@@ -1,0 +1,13 @@
+# P004 whole-product validation
+
+Decision: **PASS / code locked**, subject to the final clean, pushed release-candidate commit recorded in the dashboard. This folder captures the actual local GTE + production frontend walkthrough, backend and browser regressions, and measured product timings. The walkthrough used `examples/demo-repo`, a temporary copy for API indexing and browser mutations, and the unchanged pinned GTE dense configuration. `npm ci` and `npm run build` passed; the browser suite ran against the real backend with Microsoft Edge.
+
+The browser journey opens a repository through the UI, follows exact definitions and call sites, shows absent and ambiguous states, renders the map, then adds, modifies, renames, and deletes a file with reindexing after each change. Other live tests cover source/trace navigation, version switching, request races, accessibility, backend failure, malformed responses, and recovery. Five screenshots show indexed source, citation, map, negative state, and updated search. No mocked search or graph response was used in the canonical journey.
+
+One high-severity defect was reproduced: the grounding classifier treated a capitalized feature word such as “Bluetooth” as an absent code symbol. `ground_question()` now reserves missing-symbol certainty for identifier-shaped names and explicit definition requests; a generic feature question stays a source-candidate investigation. The failing browser test and a focused backend regression now pass. One small UX defect was fixed: a no-op index update now shows “Repository already up to date” using the backend's `operation: noop` status.
+
+Performance measurements in `performance.json` use the actual HTTP product and a warm local model/vector cache. They are not cold-install measurements. The local Node environment installed from the existing lockfile and did not change it. The frontend has no separate lint, unit-test, or typecheck script; the production build runs TypeScript checking, and Playwright is the configured frontend test suite.
+
+The final hygiene scan anonymized personal home-directory prefixes in 15 historical audit and benchmark files while preserving numeric evidence and valid JSON. A historical E022 hash test now locates its pinned checkpoint by model and revision in the local cache. The benchmark subset passed again after this correction. No runtime dependency directory, frontend build output, or local index is tracked.
+
+`artifact_hashes.json` covers the other 28 tracked files in this directory and excludes itself. Each SHA-256 value hashes the canonical Git blob bytes, independent of checkout line endings. Run `python scripts/verify_release_evidence.py` from the repository root to check the manifest and tracked personal-home paths.

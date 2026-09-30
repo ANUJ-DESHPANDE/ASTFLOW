@@ -1,0 +1,8 @@
+{
+  "model": "model.json",
+  "idf": "idf.json",
+  "depth": 50,
+  "production_enabled": false,
+  "dev_scoring_runs_planned": 1,
+  "test_scoring_planned": "only after DEV and confirmation gates"
+}

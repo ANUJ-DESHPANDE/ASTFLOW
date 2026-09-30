@@ -1,0 +1,12 @@
+{
+  "accepted": [
+    "Broad questions return grounded navigation, not generated prose explanations",
+    "Code map models static calls, not import or containment edges",
+    "Dynamic calls remain unresolved",
+    "Schema-10 indexes require a one-time reindex",
+    "Changed snapshots still parse and rebuild graph state",
+    "Cache write lock is process-local to one server",
+    "The lazy-loaded Monaco bundle raises a non-blocking Vite size warning"
+  ],
+  "release_blockers": []
+}

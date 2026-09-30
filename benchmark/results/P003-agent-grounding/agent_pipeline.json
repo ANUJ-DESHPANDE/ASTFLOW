@@ -1,0 +1,11 @@
+{
+  "citations": "validate_citations",
+  "code_map": "backend/app/main.py:map_repository and ProjectGraph.subgraph",
+  "entrypoint": "backend/app/main.py:search",
+  "first_pass": "retriever.rank",
+  "graph": "ProjectGraph.subgraph and trace",
+  "investigation": "backend/app/agent/investigate.py:investigate",
+  "planning": "plan (intent and symbol extraction)",
+  "reasoning": "deterministic heuristics; no LLM or prose generator",
+  "second_pass": "optional retriever.rank on observed symbols"
+}

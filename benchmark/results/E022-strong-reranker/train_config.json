@@ -1,0 +1,15 @@
+{
+  "status": "prepared, not trained: CPU feasibility gate failed",
+  "train_a_queries": 1000,
+  "train_a_ids_sha256": "f03aa9e72bc6248366936fc98d611f2f5714d0105f4dabb72b12ea2e8eac586d",
+  "train_b_queries": 200,
+  "train_b_ids_sha256": "b6d19cd59941b817930c7cd1f509048c0cfd06bc99b73c5e6790ffb2bb6e45e1",
+  "train_a_queries_with_higher_ranked_negatives": 431,
+  "hard_negative_pairs": 1322,
+  "negative_source": "E017 frozen GTE TRAIN top-20 mining; only documents ranked above the positive",
+  "model": "Alibaba-NLP/gte-reranker-modernbert-base",
+  "model_revision": "f7481e6055501a30fb19d090657df9ec1f79ab2c",
+  "training_performed": false,
+  "dev_used": false,
+  "test_used": false
+}

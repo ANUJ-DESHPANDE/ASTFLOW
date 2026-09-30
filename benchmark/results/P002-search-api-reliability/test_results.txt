@@ -1,0 +1,14 @@
+P002 validation, 2026-09-30
+
+P002 focused: 8 passed, 0 failed
+P001 focused: 4 passed, 0 failed (included in backend suite)
+Backend: 91 passed, 1 skipped, 0 failed
+  skipped: Node dependencies needed for language-service integration
+E023 retrieval configuration regression: 2 passed, 0 failed (included in backend suite)
+Available benchmark subset: 26 passed, 0 failed
+  excluded: test_mteb_adapter.py, test_analyze_baseline.py,
+            test_trust_evaluation.py, test_verify_retrieval.py
+Actual GTE HTTP walkthrough: PASS
+Frontend build: BLOCKED (frontend/node_modules absent; local tsc command unavailable)
+MTEB run: NO
+Frozen TEST run: NO

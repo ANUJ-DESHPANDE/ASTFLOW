@@ -1,0 +1,13 @@
+{
+  "experiment_id": "E021",
+  "decision": "REJECT BEFORE DEV",
+  "reason": "The gate selected on TRAIN-A retained only 15/33 (45.45%) of broad reranking's useful improvements on held-out TRAIN-B, below the preregistered 50% minimum. It avoided 30/47 (63.83%) harmful interventions.",
+  "train_a_condition_a": true,
+  "train_a_condition_b": true,
+  "train_b_condition_a": true,
+  "train_b_condition_b": false,
+  "dev_consumed": false,
+  "confirmation_consumed": false,
+  "test_consumed": false,
+  "production_changed": false
+}

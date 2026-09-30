@@ -1,0 +1,4 @@
+Command: pytest backend/tests/test_retrieval_closure.py
+Result: 2 passed, 0 failed.
+Frozen model, revision, dense order, no reranker/MMR/BM25 final fusion: unchanged.
+MTEB and frozen TEST: not run.

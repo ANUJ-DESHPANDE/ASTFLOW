@@ -1,0 +1,8 @@
+{
+  "source": "backend/tests/test_p003_grounding.py::test_graph_mutations_and_snapshot_pin",
+  "old_request_version": "explicit immutable key captured before modification",
+  "old_request_call": "VERIFIED_CALL",
+  "new_request_call": "CALL_NOT_ESTABLISHED",
+  "old_snapshot_retained": true,
+  "mixed_version_evidence": false
+}

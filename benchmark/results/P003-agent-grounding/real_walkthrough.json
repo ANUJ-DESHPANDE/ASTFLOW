@@ -1,0 +1,9 @@
+{
+  "actual_gte": true,
+  "fixture_queries": 10,
+  "http_api": true,
+  "overall": "PASS",
+  "real_questions": 9,
+  "real_repository": "examples/demo-repo",
+  "verified_source_citations": 180
+}

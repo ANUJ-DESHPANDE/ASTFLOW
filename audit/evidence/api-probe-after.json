@@ -17,7 +17,7 @@
   "status": 200,
   "pass": true,
   "latency_ms": 16.4,
-  "body": "{\"path\":\"C:\\\\Users\\\\aarus\\\\Downloads\\\\ASTFLOW-main\\\\ASTFLOW-repo\\\\examples\\\\demo-repo\",\"name\":\"demo-repo\",\"files\":[\"auth/AuthService.js\",\"auth/credentials.js\",\"bluetooth/BluetoothAgent.js\",\"bluetooth/permissions.js\",\"session/SessionManager.js\",\"settings/deeplinks.js\",\"tests/session.test.js\",\"voice/I"
+  "body": "{\"path\":\"C:\\\\Users\\\\<user>\\\\Downloads\\\\ASTFLOW-main\\\\ASTFLOW-repo\\\\examples\\\\demo-repo\",\"name\":\"demo-repo\",\"files\":[\"auth/AuthService.js\",\"auth/credentials.js\",\"bluetooth/BluetoothAgent.js\",\"bluetooth/permissions.js\",\"session/SessionManager.js\",\"settings/deeplinks.js\",\"tests/session.test.js\",\"voice/I"
  },
  {
   "case": "repository unknown version",
@@ -27,7 +27,7 @@
   "status": 200,
   "pass": true,
   "latency_ms": 15.7,
-  "body": "{\"path\":\"C:\\\\Users\\\\aarus\\\\Downloads\\\\ASTFLOW-main\\\\ASTFLOW-repo\\\\examples\\\\demo-repo\",\"name\":\"demo-repo\",\"files\":[],\"indexes\":[{\"version_key\":\"5d129997b9ce476b07ea9ba5\",\"repository_path\":\"C:\\\\Users\\\\aarus\\\\Downloads\\\\ASTFLOW-main\\\\ASTFLOW-repo\\\\examples\\\\demo-repo\",\"repository_name\":\"demo-repo\",\"ve"
+  "body": "{\"path\":\"C:\\\\Users\\\\<user>\\\\Downloads\\\\ASTFLOW-main\\\\ASTFLOW-repo\\\\examples\\\\demo-repo\",\"name\":\"demo-repo\",\"files\":[],\"indexes\":[{\"version_key\":\"5d129997b9ce476b07ea9ba5\",\"repository_path\":\"C:\\\\Users\\\\<user>\\\\Downloads\\\\ASTFLOW-main\\\\ASTFLOW-repo\\\\examples\\\\demo-repo\",\"repository_name\":\"demo-repo\",\"ve"
  },
  {
   "case": "versions",
@@ -47,7 +47,7 @@
   "status": 200,
   "pass": true,
   "latency_ms": 14.8,
-  "body": "{\"state\":\"ready\",\"stage\":\"Index ready\",\"progress\":100,\"version\":\"working-tree\",\"manifest\":{\"version_key\":\"64d9450a1a3108bc9b1af783\",\"repository_path\":\"C:\\\\Users\\\\aarus\\\\Downloads\\\\ASTFLOW-main\\\\ASTFLOW-repo\\\\examples\\\\demo-repo\",\"repository_name\":\"demo-repo\",\"version\":\"working-tree\",\"resolved_revisi"
+  "body": "{\"state\":\"ready\",\"stage\":\"Index ready\",\"progress\":100,\"version\":\"working-tree\",\"manifest\":{\"version_key\":\"64d9450a1a3108bc9b1af783\",\"repository_path\":\"C:\\\\Users\\\\<user>\\\\Downloads\\\\ASTFLOW-main\\\\ASTFLOW-repo\\\\examples\\\\demo-repo\",\"repository_name\":\"demo-repo\",\"version\":\"working-tree\",\"resolved_revisi"
  },
  {
   "case": "checkpoint",

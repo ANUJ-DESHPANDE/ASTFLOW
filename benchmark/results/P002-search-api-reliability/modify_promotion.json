@@ -1,0 +1,17 @@
+{
+  "citations_checked": 10,
+  "result_paths": [
+    "p002_feature.js",
+    "settings/deeplinks.js",
+    "settings/deeplinks.js",
+    "bluetooth/permissions.js",
+    "voice/IntentRouter.js",
+    "bluetooth/BluetoothAgent.js",
+    "settings/deeplinks.js",
+    "voice/VoiceHandler.js",
+    "session/SessionManager.js",
+    "voice/IntentRouter.js"
+  ],
+  "status": "OK",
+  "version_key": "2bd2f0f6acda659dd2fd15ec"
+}

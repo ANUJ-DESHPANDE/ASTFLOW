@@ -1,0 +1,13 @@
+{
+  "agent_p50_ms": 60.19,
+  "api_p50_ms": 69.16,
+  "api_p95_ms": 102.87,
+  "first_after_promotion_delta_ms": 2.6,
+  "first_same_query_after_promotion_ms": 66.05,
+  "http_serialization_residual_p50_ms": 9.5,
+  "note": "API wall includes TestClient overhead; residual is not pure JSON serialization.",
+  "queries": 12,
+  "resolution_p50_ms": 0.02,
+  "retrieval_pass_p50_ms": 59.49,
+  "same_query_before_promotion_ms": 63.45
+}

@@ -17,7 +17,7 @@
    "frozen_submission_configuration": true,
    "message": "Alibaba-NLP/gte-modernbert-base loaded on CPU (float32)"
   },
-  "repository": "/home/runner/work/ASTFLOW/ASTFLOW/fresh/examples/demo-repo",
+  "repository": "/home/<user>/work/ASTFLOW/ASTFLOW/fresh/examples/demo-repo",
   "indexed_versions": {
    "v1": {
     "version_key": "176ecda183f1915eb2a0bf90",
@@ -1185,7 +1185,7 @@
    "frozen_submission_configuration": true,
    "message": "Alibaba-NLP/gte-modernbert-base loaded on CPU (float32)"
   },
-  "repository": "/home/runner/work/ASTFLOW/ASTFLOW/express",
+  "repository": "/home/<user>/work/ASTFLOW/ASTFLOW/express",
   "indexed_versions": {
    "4.18.2": {
     "version_key": "662b180bbb6dc78447bffbdb",

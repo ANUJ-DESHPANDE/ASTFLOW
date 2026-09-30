@@ -1,4 +1,4 @@
-C:\Users\aarus\Downloads\ASTFLOW-main\ASTFLOW-repo\.eval-venv\Lib\site-packages\torch\jit\_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+{USER_HOME}\Downloads\ASTFLOW-main\ASTFLOW-repo\.eval-venv\Lib\site-packages\torch\jit\_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
   warnings.warn(
 Evaluating tasks:   0%|          | 0/1 [00:00<?, ?it/s]Evaluating task AppsRetrieval:   0%|          | 0/1 [00:00<?, ?it/s]Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
 Retrieved 100 queries

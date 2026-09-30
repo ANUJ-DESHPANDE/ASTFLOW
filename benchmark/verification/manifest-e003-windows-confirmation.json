@@ -88,7 +88,7 @@
       "nan": 0,
       "inf": 0,
       "zero_vectors": 0,
-      "cache_file": "C:\\Users\\aarus\\Downloads\\ASTFLOW-main\\ASTFLOW-repo\\.astflow\\datasets\\trust-apps-cc3d1f5b729fa376dc5f9aed.npy",
+      "cache_file": "C:\\Users\\<user>\\Downloads\\ASTFLOW-main\\ASTFLOW-repo\\.astflow\\datasets\\trust-apps-cc3d1f5b729fa376dc5f9aed.npy",
       "cache_status": "reused (ids verified identical)",
       "seconds": 0.67,
       "alignment_probe": {
@@ -135,7 +135,7 @@
       "max_windows": 316,
       "window": 256,
       "overlap": 64,
-      "cache_file": "C:\\Users\\aarus\\Downloads\\ASTFLOW-main\\ASTFLOW-repo\\.astflow\\datasets\\trust-apps-windows-8cb93be4ec1ada61977a4138.npz",
+      "cache_file": "C:\\Users\\<user>\\Downloads\\ASTFLOW-main\\ASTFLOW-repo\\.astflow\\datasets\\trust-apps-windows-8cb93be4ec1ada61977a4138.npz",
       "cache_status": "reused (ids verified identical)",
       "seconds": 4.23,
       "alignment_single_window": {

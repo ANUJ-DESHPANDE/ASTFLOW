@@ -1,0 +1,28 @@
+{
+  "endpoint": "POST /api/search",
+  "request": [
+    "query",
+    "version",
+    "top_k",
+    "agentic"
+  ],
+  "response": [
+    "version_key",
+    "results",
+    "graph",
+    "retrieval",
+    "agent_trace",
+    "status",
+    "latency_ms"
+  ],
+  "result": [
+    "chunk_id",
+    "symbol_id",
+    "file_path",
+    "start_line",
+    "end_line",
+    "snippet",
+    "evidence"
+  ],
+  "source_endpoint": "GET /api/source?path=<relative>&version=<version_key>"
+}

@@ -1,0 +1,13 @@
+{
+  "auth/AuthService.js": "2cbc8d8051a8a51a677ac39a6f3b69b5aa8f516de63cdcf8d4c9a12b2a08b803",
+  "auth/credentials.js": "01bc4bece0e53fcff169098a00032c417329128349cfe0118c093fb4f7ac4f3f",
+  "bluetooth/BluetoothAgent.js": "b4bd97452a4b4a01544b300f78719cfef79fffade451da6a1886ba6cc80d15d4",
+  "bluetooth/permissions.js": "77f5af5d7770b5d54579f0d1e555c80a208ac6ca59ea85af8f6e89fbefaf4c77",
+  "session/SessionManager.js": "9315c5168fccb2f8a9d8d155d4c6869dbe402c1c46e83ed38f348dc846ecbdea",
+  "settings/deeplinks.js": "e26110eca4fe51a49d836c475043343c782c271b32c6c33d6b5fe4f8b4e88d4f",
+  "tests/session.test.js": "fd7ed346b12e114cbc1d62488aeeacb181b90cd5ef935d9cc7e29627929768c5",
+  "voice/IntentRouter.js": "0fbdb8b236e0cf142c80176de82db63f96239873415bcdf2ee0bfe891cc01f7b",
+  "voice/VoiceHandler.js": "b4ef59a845af3c1e3b83e134a33f683f8c3736124c35afc05d9a6e559884d013",
+  "voice/dynamicDispatch.js": "c6e1a9d354d7f3d8af6521e0856a4c8609f51dbbffcc9ee4d4cbd0fea33eac63",
+  "voice/normalizeInput.js": "d6c1d9afc565bc124b3f66d7e600ef39edb810ce4f880547240bec9d76c4b79a"
+}

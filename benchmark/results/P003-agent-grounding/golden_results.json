@@ -1,0 +1,315 @@
+[
+  {
+    "graph_edges": 4,
+    "graph_nodes": 6,
+    "grounding": {
+      "call_edges": [],
+      "definitions": [
+        {
+          "end_line": 6,
+          "file": "service.js",
+          "start_line": 4,
+          "symbol_id": "service.js::placeOrder"
+        }
+      ],
+      "requested_symbols": [
+        "placeOrder"
+      ],
+      "status": "SOURCE_CANDIDATES"
+    },
+    "latency_ms": 97.57,
+    "passes": 1,
+    "paths": [],
+    "question": "Where is placeOrder defined?",
+    "result_count": 9,
+    "top_files": [
+      "service.js",
+      "controller.js",
+      "entry.js",
+      "repository.js",
+      "helper.js"
+    ],
+    "version_key": "513cd91358ab78cf52da9e89"
+  },
+  {
+    "graph_edges": 4,
+    "graph_nodes": 6,
+    "grounding": {
+      "call_edges": [],
+      "definitions": [
+        {
+          "end_line": 4,
+          "file": "helper.js",
+          "start_line": 2,
+          "symbol_id": "helper.js::normalizeOrder"
+        }
+      ],
+      "requested_symbols": [
+        "normalizeOrder"
+      ],
+      "status": "SOURCE_CANDIDATES"
+    },
+    "latency_ms": 121.0,
+    "passes": 2,
+    "paths": [],
+    "question": "Where is normalizeOrder used?",
+    "result_count": 9,
+    "top_files": [
+      "helper.js",
+      "service.js",
+      "controller.js",
+      "entry.js",
+      "unrelated.js"
+    ],
+    "version_key": "513cd91358ab78cf52da9e89"
+  },
+  {
+    "graph_edges": 4,
+    "graph_nodes": 6,
+    "grounding": {
+      "call_edges": [],
+      "definitions": [
+        {
+          "end_line": 5,
+          "file": "entry.js",
+          "start_line": 3,
+          "symbol_id": "entry.js::startOrder"
+        },
+        {
+          "end_line": 3,
+          "file": "repository.js",
+          "start_line": 1,
+          "symbol_id": "repository.js::saveOrder"
+        }
+      ],
+      "requested_symbols": [
+        "startOrder",
+        "saveOrder"
+      ],
+      "status": "SOURCE_CANDIDATES"
+    },
+    "latency_ms": 132.73,
+    "passes": 2,
+    "paths": [
+      [
+        "entry.js::startOrder",
+        "controller.js::handleOrder",
+        "service.js::placeOrder",
+        "repository.js::saveOrder"
+      ]
+    ],
+    "question": "What is the flow from startOrder to saveOrder?",
+    "result_count": 9,
+    "top_files": [
+      "repository.js",
+      "entry.js",
+      "service.js",
+      "controller.js",
+      "helper.js"
+    ],
+    "version_key": "513cd91358ab78cf52da9e89"
+  },
+  {
+    "graph_edges": 4,
+    "graph_nodes": 6,
+    "grounding": {
+      "call_edges": [],
+      "definitions": [],
+      "requested_symbols": [],
+      "status": "SOURCE_CANDIDATES"
+    },
+    "latency_ms": 54.65,
+    "passes": 1,
+    "paths": [],
+    "question": "What does controller.js depend on?",
+    "result_count": 9,
+    "top_files": [
+      "controller.js",
+      "entry.js",
+      "service.js",
+      "repository.js",
+      "helper.js"
+    ],
+    "version_key": "513cd91358ab78cf52da9e89"
+  },
+  {
+    "graph_edges": 3,
+    "graph_nodes": 6,
+    "grounding": {
+      "call_edges": [],
+      "definitions": [],
+      "requested_symbols": [],
+      "status": "SOURCE_CANDIDATES"
+    },
+    "latency_ms": 57.6,
+    "passes": 1,
+    "paths": [],
+    "question": "What depends on repository.js?",
+    "result_count": 9,
+    "top_files": [
+      "service.js",
+      "controller.js",
+      "helper.js",
+      "repository.js",
+      "repository.js"
+    ],
+    "version_key": "513cd91358ab78cf52da9e89"
+  },
+  {
+    "graph_edges": 4,
+    "graph_nodes": 6,
+    "grounding": {
+      "call_edges": [],
+      "definitions": [
+        {
+          "end_line": 6,
+          "file": "service.js",
+          "start_line": 4,
+          "symbol_id": "service.js::placeOrder"
+        }
+      ],
+      "requested_symbols": [
+        "placeOrder"
+      ],
+      "status": "SOURCE_CANDIDATES"
+    },
+    "latency_ms": 109.74,
+    "passes": 2,
+    "paths": [],
+    "question": "How does placeOrder work?",
+    "result_count": 9,
+    "top_files": [
+      "service.js",
+      "controller.js",
+      "entry.js",
+      "repository.js",
+      "helper.js"
+    ],
+    "version_key": "513cd91358ab78cf52da9e89"
+  },
+  {
+    "graph_edges": 4,
+    "graph_nodes": 6,
+    "grounding": {
+      "call_edges": [],
+      "definitions": [],
+      "requested_symbols": [],
+      "status": "SOURCE_CANDIDATES"
+    },
+    "latency_ms": 57.91,
+    "passes": 1,
+    "paths": [],
+    "question": "Which files should I inspect for order submission?",
+    "result_count": 9,
+    "top_files": [
+      "entry.js",
+      "controller.js",
+      "service.js",
+      "repository.js",
+      "helper.js"
+    ],
+    "version_key": "513cd91358ab78cf52da9e89"
+  },
+  {
+    "graph_edges": 4,
+    "graph_nodes": 6,
+    "grounding": {
+      "call_edges": [],
+      "definitions": [],
+      "requested_symbols": [
+        "Kafka"
+      ],
+      "status": "NO_VERIFIED_SYMBOL"
+    },
+    "latency_ms": 131.66,
+    "passes": 2,
+    "paths": [],
+    "question": "Where is the Kafka consumer implemented?",
+    "result_count": 9,
+    "top_files": [
+      "entry.js",
+      "controller.js",
+      "service.js",
+      "repository.js",
+      "helper.js"
+    ],
+    "version_key": "513cd91358ab78cf52da9e89"
+  },
+  {
+    "graph_edges": 4,
+    "graph_nodes": 6,
+    "grounding": {
+      "call_edges": [],
+      "definitions": [
+        {
+          "end_line": 6,
+          "file": "service.js",
+          "start_line": 4,
+          "symbol_id": "service.js::placeOrder"
+        },
+        {
+          "end_line": 4,
+          "file": "unrelated.js",
+          "start_line": 2,
+          "symbol_id": "unrelated.js::renderOrderReport"
+        }
+      ],
+      "requested_symbols": [
+        "placeOrder",
+        "renderOrderReport"
+      ],
+      "status": "CALL_NOT_ESTABLISHED"
+    },
+    "latency_ms": 64.56,
+    "passes": 1,
+    "paths": [],
+    "question": "Why does placeOrder call renderOrderReport?",
+    "result_count": 9,
+    "top_files": [
+      "service.js",
+      "unrelated.js",
+      "controller.js",
+      "entry.js",
+      "repository.js"
+    ],
+    "version_key": "513cd91358ab78cf52da9e89"
+  },
+  {
+    "graph_edges": 1,
+    "graph_nodes": 6,
+    "grounding": {
+      "call_edges": [],
+      "definitions": [
+        {
+          "end_line": 8,
+          "file": "helper.js",
+          "start_line": 6,
+          "symbol_id": "helper.js::config"
+        },
+        {
+          "end_line": 7,
+          "file": "repository.js",
+          "start_line": 5,
+          "symbol_id": "repository.js::config"
+        }
+      ],
+      "requested_symbols": [
+        "config"
+      ],
+      "status": "AMBIGUOUS_SYMBOL"
+    },
+    "latency_ms": 57.06,
+    "passes": 1,
+    "paths": [],
+    "question": "Where is config defined?",
+    "result_count": 9,
+    "top_files": [
+      "helper.js",
+      "repository.js",
+      "service.js",
+      "entry.js",
+      "unrelated.js"
+    ],
+    "version_key": "513cd91358ab78cf52da9e89"
+  }
+]

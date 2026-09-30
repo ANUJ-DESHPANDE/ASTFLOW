@@ -1,0 +1,13 @@
+{
+  "add": true,
+  "controlled_failure": true,
+  "delete": true,
+  "fresh": true,
+  "mixed": true,
+  "modify": true,
+  "noop": true,
+  "overall": "PASS",
+  "rename": true,
+  "repository": "isolated copy of examples/demo-repo",
+  "restart": true
+}

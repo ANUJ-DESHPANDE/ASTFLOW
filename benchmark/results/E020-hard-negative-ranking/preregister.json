@@ -1,0 +1,17 @@
+{
+  "experiment_id": "E020",
+  "starting_commit": "d746b9a",
+  "hypothesis": "A train-only linear ranker using dense similarity plus cheap lexical and code evidence can separate correct documents from dense top-50 hard negatives.",
+  "chosen_path": "hard-negative-ranking",
+  "algorithm": "LogisticRegression C=1.0, no intercept, symmetric pair differences, fixed seed 20260929; score and stably rerank dense top 50 only",
+  "features": ["dense", "word_overlap", "rare_overlap", "identifier_overlap", "number_overlap", "operator_overlap", "document_log_tokens"],
+  "training_source": "First 300 TRAIN-only IDs selected by E017 seed/order, previously mined E017 dense top-20 negatives; no DEV or confirmation IDs",
+  "rerank_depth": 50,
+  "primary_metric": "DEV NDCG@10",
+  "secondary_metrics": ["MRR@10", "Recall@10", "Recall@20", "Recall@50", "Recall@100", "Recall@500", "Recall@1000"],
+  "acceptance_rule": "DEV delta NDCG@10 >= +0.005 and paired 95% bootstrap lower bound > 0; MRR@10 regression less than 0.005; Recall@1000 unchanged. Then confirmation delta NDCG@10 > 0 with paired 95% lower bound > 0 before TEST.",
+  "latency_budget": "Report same E019 fixed-sample p50 and p95; meaningful cost is a tradeoff unless established threshold is violated",
+  "dev_ids_sha256": "5c61ce5eb1551e3897876ba5c34194bac0a54ed0f1a47149a349c9a3d0b78d53",
+  "model_sha256": "17b6b58bd1e53b1f4a179750beb975437ef599288eacfe6a0b3a79387acc842b",
+  "query_length_gate": "13/55 recoverable >512; 54/242 top-10 >512; enrichment 1.059 < 2, so query cleanup rejected before implementation"
+}

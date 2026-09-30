@@ -1,0 +1,38 @@
+{
+  "graph_edges": 1,
+  "graph_nodes": 6,
+  "grounding": {
+    "call_edges": [],
+    "definitions": [
+      {
+        "end_line": 8,
+        "file": "helper.js",
+        "start_line": 6,
+        "symbol_id": "helper.js::config"
+      },
+      {
+        "end_line": 7,
+        "file": "repository.js",
+        "start_line": 5,
+        "symbol_id": "repository.js::config"
+      }
+    ],
+    "requested_symbols": [
+      "config"
+    ],
+    "status": "AMBIGUOUS_SYMBOL"
+  },
+  "latency_ms": 57.06,
+  "passes": 1,
+  "paths": [],
+  "question": "Where is config defined?",
+  "result_count": 9,
+  "top_files": [
+    "helper.js",
+    "repository.js",
+    "service.js",
+    "entry.js",
+    "unrelated.js"
+  ],
+  "version_key": "513cd91358ab78cf52da9e89"
+}

@@ -1,0 +1,20 @@
+{
+  "README.md": "bbebcc5e0f45f75e3d5b6417242472f99ff5ed1d608828973e23392ce38574c9",
+  "add_promotion.json": "8eff56ead68b9370c0b6e2eb0d7788c0458ab61611f8c54938a72a1dabdc8476",
+  "api_contract.json": "9977549aa2c6390b9e4ccb24ec4316cb561589286652171919150be43a449bb1",
+  "baseline_state.json": "ddee1f4c9500acdce0971fb1cc421fbc52b7d9ce46d6d67d77df67c224059dcc",
+  "basic_search.json": "130a60f874543f52dfa0b0fbe0aeb6729c1596c7d7a6e49fe4517d055675f233",
+  "citation_validation.json": "be074b4669dda4e129713534f2fc1924bf7f78a51ee1115985a43acf3598b8bf",
+  "concurrent_promotion.json": "490a6130e177420325134845ab299a73d79d05ff0da296e63d46d0423fea228c",
+  "delete_promotion.json": "f480d01da64757c872a3eeda892c67f7231dff9178b3b3e30bc9c7cecc321946",
+  "error_behavior.json": "1203113a1f5229df25bb846c5331b8c8eb133001860e1f29b79a80e2f5b25367",
+  "failed_promotion.json": "b9ca4517ebf599957e56111fc23f6c152d8245cfff5cb8312e05383ceb48b8c2",
+  "latency.json": "90362652cabdbac8f1cd4074b454def617e66755350c406afb5e1a08f52345c8",
+  "mixed_promotion.json": "d2e0f9234f7229c3565a1b8c94c09674d7beebcccd6d5def5b0904c5adc0cd53",
+  "modify_promotion.json": "e7c642c5314f07d5fb7cf1f9bc352f15b309d653eb1af07c9b7be0c7de1fb556",
+  "real_api_walkthrough.json": "e626d7512f96dfb0a81b51f674e60b9b6ba3e26d1bbd1b8537430ad34a8f775d",
+  "rename_promotion.json": "0499cb4734292007ed8979759dcacf6f3d61f2218fb69831bfbcb41a6867188e",
+  "restart_validation.json": "6ee3547b57852189c931b8af0226f99e945bdede764829a2b9e6cf06546a9740",
+  "test_results.txt": "07c2eb4b9b660575b99d33a6fef0239c39c23e2d0f8c8ec933954e704c93cff5",
+  "version_pinning.json": "6ab4cd898f0202b0ea9852cac796f58836d884b2bcae370b0f508419a88d56e1"
+}

@@ -7,9 +7,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 
-# The frozen submission configuration (benchmark/experiments/EXPERIMENTS.md, "RETRIEVAL FREEZE"): official MTEB
-# AppsRetrieval NDCG@10 0.5511 with this model, ranking by dense cosine similarity only (no BM25 fusion).
+# Accepted production configuration; the clean float32 full TEST validation is
+# NDCG@10 0.5509 (benchmark/results/final-validation-20260928/).
 FROZEN_MODEL = "Alibaba-NLP/gte-modernbert-base"
+FROZEN_MODEL_REVISION = "e7f32e3c00f91d699e8c43b53106206bcc72bb22"
 FROZEN_RETRIEVAL = "dense"
 
 
@@ -32,12 +33,12 @@ class Settings:
     graph_decay: float = 0.45
     refinement_weight: float = 0.12
     test_weight: float = 0.82
-    candidates: int = 500
+    candidates: int = 1000
     max_depth: int = 5
     max_file_bytes: int = 1_000_000
     max_files: int = 20_000
     max_total_bytes: int = 50_000_000
-    schema: int = 10
+    schema: int = 11
 
     def __post_init__(self):
         if self.semantic not in {"on", "auto", "off"}:
@@ -53,4 +54,6 @@ class Settings:
     def fingerprint(self) -> str:
         values = asdict(self)
         values.pop("cache")
+        values["embedding_revision"] = FROZEN_MODEL_REVISION if self.model == FROZEN_MODEL else self.model
+        values["embedding_max_tokens"] = 512 if self.model == FROZEN_MODEL else None
         return hashlib.sha256(json.dumps(values, sort_keys=True).encode()).hexdigest()[:16]

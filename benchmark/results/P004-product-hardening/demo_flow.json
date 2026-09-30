@@ -1,0 +1,10 @@
+{
+  "repository": "examples/demo-repo",
+  "startup": "npm run demo",
+  "definition_question": "Where is validateCredentials defined?",
+  "call_question": "Why does openBluetoothSettings call openSettingsUri?",
+  "path_question": "How does VoiceHandler reach BluetoothAgent?",
+  "negative_question": "Where is the Kafka consumer implemented?",
+  "mutation": "add demoUpdate.js in a temporary copy, reindex, then search and inspect map",
+  "document": "DEMO.md"
+}

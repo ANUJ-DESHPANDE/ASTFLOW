@@ -1,0 +1,17 @@
+{
+  "citations_checked": 10,
+  "result_paths": [
+    "p002_renamed.js",
+    "settings/deeplinks.js",
+    "settings/deeplinks.js",
+    "bluetooth/permissions.js",
+    "voice/IntentRouter.js",
+    "bluetooth/BluetoothAgent.js",
+    "settings/deeplinks.js",
+    "voice/VoiceHandler.js",
+    "session/SessionManager.js",
+    "voice/IntentRouter.js"
+  ],
+  "status": "OK",
+  "version_key": "30ca08e6dfcf9695cf37765e"
+}

@@ -1,0 +1,11 @@
+{
+  "baseline.json": "7ddab274ba9548c607d206510199ce7dfe62a56f22497941bb687259f9d5527b",
+  "bm25_complementarity.json": "e1c00950bb1a266c4d76b78203be1c3836cc4d4d006d3e21a915c09cde928802",
+  "error_taxonomy.json": "f8e43e83baa22cc18fa1d84af4453889b24b640af15e08fe3531a5669fb4122d",
+  "full_rank_reconstruction.json": "6af1774eefb8a1740fb39b13696858040f60b0e87e81dcc417d884a79f93f53c",
+  "hard_negatives.jsonl": "3f98acf34c87711618c5d156b2013a3ad3aab749fca4ed6509b96ef195193bcc",
+  "oracle_analysis.json": "de56481a6e7d81a6ef9176212962e128eec2a48c972ef6e8f8982b2a6109a300",
+  "ranking_errors.jsonl": "18d35add0646718870eb931e465c1a89b3581a9f80150f15a75551c5b86186fa",
+  "rank_buckets.json": "cd2a243f19007a7b192c78d3653ba2ac2ca9d303d28642ca95fc83b1e11ad4e8",
+  "README.md": "25d7d498da53dcd17fb05ce9d4e277dc981a329be2617837ded95d043b5fce85"
+}

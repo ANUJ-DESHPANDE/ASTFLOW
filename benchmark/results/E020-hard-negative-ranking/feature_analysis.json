@@ -1,0 +1,31 @@
+{
+  "target_queries": 32,
+  "pairs": 809,
+  "positive_gt_negative_fraction": {
+    "dense": 0.0,
+    "word_overlap": 0.3819530284301607,
+    "rare_overlap": 0.48825710754017304,
+    "identifier_overlap": 0.11248454882571075,
+    "number_overlap": 0.13226205191594562,
+    "operator_overlap": 0.012360939431396786,
+    "document_log_tokens": 0.3856613102595797
+  },
+  "mean_positive_minus_negative": {
+    "dense": -0.019493771350870027,
+    "word_overlap": -0.0087543220066859,
+    "rare_overlap": -0.003307778766105096,
+    "identifier_overlap": 0.0012990575861274488,
+    "number_overlap": 0.012041678530521164,
+    "operator_overlap": -0.07416563658838071,
+    "document_log_tokens": -0.27635978688328094
+  },
+  "model_coefficients": {
+    "dense": 0.6980833491816735,
+    "word_overlap": -0.5625189343783574,
+    "rare_overlap": 1.2666424246146277,
+    "identifier_overlap": 0.002376775508521451,
+    "number_overlap": 0.12491956234647732,
+    "operator_overlap": -0.1451775052100249,
+    "document_log_tokens": -0.4772060777698266
+  }
+}

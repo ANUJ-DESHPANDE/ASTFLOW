@@ -1,0 +1,319 @@
+[
+  {
+    "graph_edges": 4,
+    "graph_nodes": 6,
+    "grounding": {
+      "call_edges": [],
+      "definitions": [
+        {
+          "end_line": 5,
+          "file": "auth/credentials.js",
+          "start_line": 2,
+          "symbol_id": "auth/credentials.js::validateCredentials"
+        }
+      ],
+      "requested_symbols": [
+        "validateCredentials"
+      ],
+      "status": "SOURCE_CANDIDATES"
+    },
+    "latency_ms": 57.94,
+    "passes": 1,
+    "paths": [],
+    "question": "Where is validateCredentials defined?",
+    "result_count": 10,
+    "top_files": [
+      "auth/credentials.js",
+      "auth/AuthService.js",
+      "bluetooth/BluetoothAgent.js",
+      "session/SessionManager.js",
+      "settings/deeplinks.js"
+    ],
+    "version_key": "c3e24eb03235178a0805fcc8"
+  },
+  {
+    "graph_edges": 5,
+    "graph_nodes": 6,
+    "grounding": {
+      "call_edges": [],
+      "definitions": [
+        {
+          "end_line": 2,
+          "file": "voice/normalizeInput.js",
+          "start_line": 2,
+          "symbol_id": "voice/normalizeInput.js::normalizeInput"
+        }
+      ],
+      "requested_symbols": [
+        "normalizeInput"
+      ],
+      "status": "SOURCE_CANDIDATES"
+    },
+    "latency_ms": 63.89,
+    "passes": 1,
+    "paths": [],
+    "question": "Where is normalizeInput defined?",
+    "result_count": 10,
+    "top_files": [
+      "voice/normalizeInput.js",
+      "voice/VoiceHandler.js",
+      "voice/VoiceHandler.js",
+      "voice/IntentRouter.js",
+      "bluetooth/BluetoothAgent.js"
+    ],
+    "version_key": "c3e24eb03235178a0805fcc8"
+  },
+  {
+    "graph_edges": 0,
+    "graph_nodes": 6,
+    "grounding": {
+      "call_edges": [],
+      "definitions": [
+        {
+          "end_line": 2,
+          "file": "voice/dynamicDispatch.js",
+          "start_line": 2,
+          "symbol_id": "voice/dynamicDispatch.js::dispatchPlugin"
+        }
+      ],
+      "requested_symbols": [
+        "dispatchPlugin"
+      ],
+      "status": "SOURCE_CANDIDATES"
+    },
+    "latency_ms": 58.88,
+    "passes": 1,
+    "paths": [],
+    "question": "Where is dispatchPlugin defined?",
+    "result_count": 10,
+    "top_files": [
+      "voice/dynamicDispatch.js",
+      "voice/IntentRouter.js",
+      "voice/VoiceHandler.js",
+      "settings/deeplinks.js",
+      "auth/AuthService.js"
+    ],
+    "version_key": "c3e24eb03235178a0805fcc8"
+  },
+  {
+    "graph_edges": 6,
+    "graph_nodes": 6,
+    "grounding": {
+      "call_edges": [],
+      "definitions": [
+        {
+          "end_line": 2,
+          "file": "settings/deeplinks.js",
+          "start_line": 2,
+          "symbol_id": "settings/deeplinks.js::openBluetoothSettings"
+        }
+      ],
+      "requested_symbols": [
+        "openBluetoothSettings"
+      ],
+      "status": "SOURCE_CANDIDATES"
+    },
+    "latency_ms": 59.11,
+    "passes": 1,
+    "paths": [],
+    "question": "Where is openBluetoothSettings defined?",
+    "result_count": 10,
+    "top_files": [
+      "settings/deeplinks.js",
+      "bluetooth/BluetoothAgent.js",
+      "settings/deeplinks.js",
+      "bluetooth/permissions.js",
+      "voice/IntentRouter.js"
+    ],
+    "version_key": "c3e24eb03235178a0805fcc8"
+  },
+  {
+    "graph_edges": 6,
+    "graph_nodes": 6,
+    "grounding": {
+      "call_edges": [],
+      "definitions": [
+        {
+          "end_line": 2,
+          "file": "bluetooth/permissions.js",
+          "start_line": 2,
+          "symbol_id": "bluetooth/permissions.js::checkBluetoothPermission"
+        }
+      ],
+      "requested_symbols": [
+        "checkBluetoothPermission"
+      ],
+      "status": "SOURCE_CANDIDATES"
+    },
+    "latency_ms": 61.64,
+    "passes": 1,
+    "paths": [],
+    "question": "Where is checkBluetoothPermission defined?",
+    "result_count": 10,
+    "top_files": [
+      "bluetooth/permissions.js",
+      "bluetooth/BluetoothAgent.js",
+      "settings/deeplinks.js",
+      "voice/IntentRouter.js",
+      "settings/deeplinks.js"
+    ],
+    "version_key": "c3e24eb03235178a0805fcc8"
+  },
+  {
+    "graph_edges": 2,
+    "graph_nodes": 6,
+    "grounding": {
+      "call_edges": [],
+      "definitions": [
+        {
+          "end_line": 14,
+          "file": "session/SessionManager.js",
+          "start_line": 2,
+          "symbol_id": "session/SessionManager.js::SessionManager"
+        }
+      ],
+      "requested_symbols": [
+        "SessionManager"
+      ],
+      "status": "SOURCE_CANDIDATES"
+    },
+    "latency_ms": 57.04,
+    "passes": 1,
+    "paths": [],
+    "question": "Where is SessionManager defined?",
+    "result_count": 10,
+    "top_files": [
+      "auth/AuthService.js",
+      "auth/AuthService.js",
+      "session/SessionManager.js",
+      "session/SessionManager.js",
+      "session/SessionManager.js"
+    ],
+    "version_key": "c3e24eb03235178a0805fcc8"
+  },
+  {
+    "graph_edges": 3,
+    "graph_nodes": 6,
+    "grounding": {
+      "call_edges": [],
+      "definitions": [
+        {
+          "end_line": 13,
+          "file": "auth/AuthService.js",
+          "start_line": 4,
+          "symbol_id": "auth/AuthService.js::AuthService"
+        }
+      ],
+      "requested_symbols": [
+        "AuthService"
+      ],
+      "status": "SOURCE_CANDIDATES"
+    },
+    "latency_ms": 60.9,
+    "passes": 1,
+    "paths": [],
+    "question": "Where is AuthService defined?",
+    "result_count": 10,
+    "top_files": [
+      "auth/credentials.js",
+      "session/SessionManager.js",
+      "auth/AuthService.js",
+      "auth/AuthService.js",
+      "auth/AuthService.js"
+    ],
+    "version_key": "c3e24eb03235178a0805fcc8"
+  },
+  {
+    "graph_edges": 6,
+    "graph_nodes": 6,
+    "grounding": {
+      "call_edges": [
+        {
+          "call_end_byte": 170,
+          "call_end_line": 2,
+          "call_file": "settings/deeplinks.js",
+          "call_line": 2,
+          "call_start_byte": 131,
+          "edge_type": "CALLS",
+          "evidence_sources": [
+            "TREE_SITTER_STATIC"
+          ],
+          "evidence_type": "STATIC_VERIFIED",
+          "resolution_method": "lexical_scope",
+          "source": "settings/deeplinks.js::openBluetoothSettings",
+          "source_expression": "openSettingsUri('settings://bluetooth')",
+          "source_symbol_id": "settings/deeplinks.js::openBluetoothSettings",
+          "supporting_spans": [
+            {
+              "end_byte": 170,
+              "end_line": 2,
+              "file_path": "settings/deeplinks.js",
+              "kind": "call_site",
+              "start_byte": 131,
+              "start_line": 2
+            }
+          ],
+          "target": "settings/deeplinks.js::openSettingsUri",
+          "target_symbol_id": "settings/deeplinks.js::openSettingsUri"
+        }
+      ],
+      "definitions": [
+        {
+          "end_line": 2,
+          "file": "settings/deeplinks.js",
+          "start_line": 2,
+          "symbol_id": "settings/deeplinks.js::openBluetoothSettings"
+        },
+        {
+          "end_line": 6,
+          "file": "settings/deeplinks.js",
+          "start_line": 6,
+          "symbol_id": "settings/deeplinks.js::openSettingsUri"
+        }
+      ],
+      "requested_symbols": [
+        "openBluetoothSettings",
+        "openSettingsUri"
+      ],
+      "status": "VERIFIED_CALL"
+    },
+    "latency_ms": 74.98,
+    "passes": 1,
+    "paths": [],
+    "question": "Why does openBluetoothSettings call openSettingsUri?",
+    "result_count": 10,
+    "top_files": [
+      "settings/deeplinks.js",
+      "settings/deeplinks.js",
+      "bluetooth/BluetoothAgent.js",
+      "settings/deeplinks.js",
+      "bluetooth/permissions.js"
+    ],
+    "version_key": "c3e24eb03235178a0805fcc8"
+  },
+  {
+    "graph_edges": 3,
+    "graph_nodes": 6,
+    "grounding": {
+      "call_edges": [],
+      "definitions": [],
+      "requested_symbols": [
+        "Kafka"
+      ],
+      "status": "NO_VERIFIED_SYMBOL"
+    },
+    "latency_ms": 123.31,
+    "passes": 2,
+    "paths": [],
+    "question": "Where is the Kafka consumer implemented?",
+    "result_count": 10,
+    "top_files": [
+      "voice/VoiceHandler.js",
+      "voice/normalizeInput.js",
+      "voice/VoiceHandler.js",
+      "auth/AuthService.js",
+      "voice/IntentRouter.js"
+    ],
+    "version_key": "c3e24eb03235178a0805fcc8"
+  }
+]

@@ -1,140 +1,209 @@
 {
-  "schema": 1,
-  "last_updated": "2026-09-24 (E003-dense-windows evaluated and rejected)",
-  "trust_status": "VERIFIED",
-  "trust_detail": "Baseline-v1 verified by 4 evaluators and re-generated from committed code on 2026-09-25 (0 per-query metric changes); official MTEB artifacts for the current code match (benchmark/results/mteb-current-*). E001-fusion, E002-reranker and E003-dense-windows evaluated on frozen runs with pre-registered dev/conf protocol.",
-  "current_branch": "exp/E003-dense-windows",
-  "current_commit": "see `git log -1` on exp/E003-dense-windows",
-  "trusted_baseline_tag": "baseline-v1",
-  "trusted_ndcg10": 0.08840,
-  "target_ndcg10": 0.2,
-  "dataset": {
-    "name": "CoIR-Retrieval/apps (MTEB AppsRetrieval)",
-    "expected_revision": "f22508f96b7a36c2415181ed8bb76f76e04ae2d5",
-    "expected_documents": 8765,
-    "expected_judged_queries": 3765,
-    "available_in_last_environment": true,
-    "mteb_published_stats": {
-      "documents": 8765,
+  "schema": 2,
+  "last_updated": "2026-09-29",
+  "status": "accepted",
+  "campaign": "retrieval",
+  "campaign_closed": true,
+  "accepted_production_commit": "dc974ca",
+  "canonical_document": "benchmark/RETRIEVAL_BASELINE.md",
+  "accepted_system": {
+    "model": "Alibaba-NLP/gte-modernbert-base",
+    "model_revision": "e7f32e3c00f91d699e8c43b53106206bcc72bb22",
+    "mode": "dense",
+    "similarity": "cosine over L2-normalized vectors",
+    "precision": "float32",
+    "device": "CPU",
+    "max_tokens": 512,
+    "rank_depth": 1000,
+    "bm25_product_evidence": true,
+    "bm25_final_ranking": false,
+    "mmr": false,
+    "reranker": false,
+    "default_cpu_threads": 8,
+    "thread_cap": "physical cores and PyTorch available threads; ASTFLOW_THREADS positive integer override",
+    "production_default_candidates": 1000,
+    "agent_note": "The validated benchmark and snippets path return exact dense order; repository investigation starts with dense ranking and may add existing graph/second-pass product evidence. BM25 does not enter the dense score.",
+    "full_test": {
       "queries": 3765,
-      "relevant_pairs": 3765,
-      "relevant_per_query": 1
+      "documents": 8765,
+      "ndcg10": 0.5509,
+      "mrr10": 0.505,
+      "recall10": 0.6964,
+      "recall50": 0.8489,
+      "recall100": 0.8946,
+      "recall500": 0.9615,
+      "recall1000": 0.9782,
+      "evidence": "benchmark/results/final-validation-20260928/",
+      "thread_equivalence_evidence": "benchmark/results/threads8-equivalence-20260929/"
     }
   },
-  "dataset_fingerprint": "8a6a221fc665929a0e918789ebf96f7d8ccb81818a11df698706d5902e2ddcdb",
-  "qrels_fingerprint": "apps.qrels verified",
-  "historical_corpus_sha256_run_mteb_formula": "ce25930a1a449256589e9e064e5568de35e2397ce32d963739c22c126c115021",
-  "retrieval_config": {
-    "bm25": "rank_bm25 BM25Okapi k1=1.6 b=0.75, positive IDF, camel/snake splitting, English+code stopwords, title field weight 2.0 (title = doc id on Apps)",
-    "dense": "sentence-transformers/all-MiniLM-L6-v2, 384-d, normalized, dot product, threshold 0.05, max 256 word-pieces",
-    "official_representation": "one vector per document (benchmark/run_mteb.py); windows only in the direct adapter via apps_fixed.npy",
-    "hybrid": "RRF k=60, lexical_weight=1.0, semantic_weight=1.0, union of both lists",
-    "reranker": "NONE. E002 cross-encoder evaluated and rejected; removed from the product path on 2026-09-25 (aa14805)",
-    "candidates": 500,
-    "benchmark_depth": 1000,
-    "tie_break": "ASTFLOW: doc id ascending; frozen runs eliminate tie ambiguity",
-    "depth_note": "Benchmark ranks with limit=1000 so size=max(500,1000)=1000 per list",
-    "hybrid_offline_reconstructible": true
+  "dev": {
+    "queries": 300,
+    "ndcg10": 0.6977336494947775,
+    "mrr10": 0.6633161375661375,
+    "e018": "benchmark/results/E018-ranking-diagnosis/"
   },
-  "metrics": {
-    "bm25": {
-      "ndcg@10": 0.06312,
-      "mrr@10": 0.05421,
-      "mrr@1000": 0.05955,
-      "recall@10": 0.09216,
-      "recall@20": 0.11766,
-      "recall@50": 0.16866,
-      "recall@100": 0.22603,
-      "recall@500": 0.45525,
-      "recall@1000": 0.59947
-    },
-    "dense": {
-      "ndcg@10": 0.06596,
-      "mrr@10": 0.05581,
-      "mrr@1000": 0.06194,
-      "recall@10": 0.09907,
-      "recall@20": 0.13094,
-      "recall@50": 0.19389,
-      "recall@100": 0.25259,
-      "recall@500": 0.46029,
-      "recall@1000": 0.57902
-    },
-    "hybrid": {
-      "ndcg@10": 0.08840,
-      "mrr@10": 0.07257,
-      "mrr@1000": 0.07903,
-      "recall@10": 0.13971,
-      "recall@20": 0.17610,
-      "recall@50": 0.23400,
-      "recall@100": 0.29774,
-      "recall@500": 0.52537,
-      "recall@1000": 0.64754
-    }
-  },
-  "oracle_ceilings": {
-    "hybrid": {
-      "oracle@10": 0.13971,
-      "oracle@20": 0.17610,
-      "oracle@50": 0.23400,
-      "oracle@100": 0.29774,
-      "oracle@500": 0.52537,
-      "oracle@1000": 0.64754
-    }
-  },
-  "bottleneck": "RANKING",
-  "bottleneck_detail": "E001-fusion proved that RRF parameter shifts cannot recover candidates without diluting top-10 precision. E002 showed a general-domain cross-encoder (ms-marco-MiniLM-L-6-v2) reorders the top-k worse than RRF at every depth (20/50/100). E003 showed sliding-window dense vectors make Dense significantly better (all: +0.00469 NDCG@10, CI excludes 0) but RRF absorbs the gain (Hybrid +0.00092, CI includes 0). Ranking/fusion remains the bottleneck.",
-  "bottleneck_rule": "benchmark/analyze_baseline.py::BOTTLENECK_RULES_V1",
-  "experiments": [
-    {
-      "id": "BASE",
-      "tag": "baseline-v1",
-      "bm25_ndcg10": 0.06312,
-      "dense_ndcg10": 0.06596,
-      "hybrid_ndcg10": 0.08840,
-      "status": "VERIFIED"
-    },
-    {
-      "id": "E001-fusion",
-      "description": "Controlled 315-config RRF sweep on dev queries",
-      "dev_winner_ndcg10": 0.09383,
-      "conf_winner_ndcg10": 0.08321,
-      "full_test_ndcg10": 0.08845,
-      "status": "REJECT",
-      "reason": "Delta on confirmation was negative (-0.00022); 95% bootstrap CI did not exclude zero on either dev or conf."
-    },
-    {
-      "id": "E002-reranker",
-      "description": "Cross-encoder (cross-encoder/ms-marco-MiniLM-L-6-v2 @ 233902d) reranking frozen Hybrid top-k, k in {20, 50, 100}",
-      "dev_sweep_ndcg10": {"d20": 0.07281, "d50": 0.05805, "d100": 0.05146},
-      "dev_winner_ndcg10": 0.07281,
-      "conf_winner_ndcg10": 0.06670,
-      "full_test_ndcg10": 0.06972,
-      "full_test_delta_ci95": [-0.02467, -0.01271],
-      "tag": "e002-reranked-d20",
-      "record": "benchmark/experiments/E002.json",
-      "status": "REJECT",
-      "reason": "Significantly worse than Hybrid at every depth; confirmation delta -0.01672 with 95% CI [-0.02479, -0.00876] entirely below zero."
-    },
-    {
-      "id": "E003-dense-windows",
-      "description": "Dense document vector -> id-aligned sliding windows (256/64, max over windows); one pre-registered configuration",
-      "dev_hybrid_ndcg10": 0.09444,
-      "conf_hybrid_ndcg10": 0.08433,
-      "full_test_hybrid_ndcg10": 0.08932,
-      "full_test_hybrid_delta_ci95": [-0.00145, 0.00333],
-      "full_test_dense_ndcg10": 0.07065,
-      "full_test_dense_delta_ci95": [0.00202, 0.00744],
-      "tag": "e003-windows",
-      "record": "benchmark/experiments/E003.json",
-      "status": "REJECT",
-      "reason": "Hybrid NDCG@10 delta positive but its 95% CI includes 0 on dev (+0.00093 [-0.00232, +0.00426]) and confirmation (+0.00091 [-0.00231, +0.00441]). Dense alone improves significantly."
-    }
-  ],
   "active_experiment": {
     "id": null,
-    "description": "E004-long-query was pre-registered (benchmark/EXPERIMENTS.md) and then cancelled for now by the project owner on 2026-09-25; not run",
     "status": "NONE ACTIVE",
-    "needs_hugging_face": null
+    "last_experiment": "E023",
+    "last_decision": "CAMPAIGN CLOSED",
+    "reason": "E019 and E020 rejected on DEV; E021 failed held-out TRAIN gate; E022 failed CPU feasibility before DEV. Accepted GTE dense remains production.",
+    "evidence": "benchmark/results/campaign/LEDGER.md"
   },
-  "next_action": "No retrieval experiment scheduled (E004 cancelled for now). Engineering follow-ups: audit/18-remediation-plan.md."
+  "historical_minilm_state": {
+    "schema": 1,
+    "last_updated": "2026-09-24 (E003-dense-windows evaluated and rejected)",
+    "trust_status": "VERIFIED",
+    "trust_detail": "Baseline-v1 verified by 4 evaluators and re-generated from committed code on 2026-09-25 (0 per-query metric changes); official MTEB artifacts for the current code match (benchmark/results/mteb-current-*). E001-fusion, E002-reranker and E003-dense-windows evaluated on frozen runs with pre-registered dev/conf protocol.",
+    "current_branch": "exp/E003-dense-windows",
+    "current_commit": "see `git log -1` on exp/E003-dense-windows",
+    "trusted_baseline_tag": "baseline-v1",
+    "trusted_ndcg10": 0.0884,
+    "target_ndcg10": 0.2,
+    "dataset": {
+      "name": "CoIR-Retrieval/apps (MTEB AppsRetrieval)",
+      "expected_revision": "f22508f96b7a36c2415181ed8bb76f76e04ae2d5",
+      "expected_documents": 8765,
+      "expected_judged_queries": 3765,
+      "available_in_last_environment": true,
+      "mteb_published_stats": {
+        "documents": 8765,
+        "queries": 3765,
+        "relevant_pairs": 3765,
+        "relevant_per_query": 1
+      }
+    },
+    "dataset_fingerprint": "8a6a221fc665929a0e918789ebf96f7d8ccb81818a11df698706d5902e2ddcdb",
+    "qrels_fingerprint": "apps.qrels verified",
+    "historical_corpus_sha256_run_mteb_formula": "ce25930a1a449256589e9e064e5568de35e2397ce32d963739c22c126c115021",
+    "retrieval_config": {
+      "bm25": "rank_bm25 BM25Okapi k1=1.6 b=0.75, positive IDF, camel/snake splitting, English+code stopwords, title field weight 2.0 (title = doc id on Apps)",
+      "dense": "sentence-transformers/all-MiniLM-L6-v2, 384-d, normalized, dot product, threshold 0.05, max 256 word-pieces",
+      "official_representation": "one vector per document (benchmark/run_mteb.py); windows only in the direct adapter via apps_fixed.npy",
+      "hybrid": "RRF k=60, lexical_weight=1.0, semantic_weight=1.0, union of both lists",
+      "reranker": "NONE. E002 cross-encoder evaluated and rejected; removed from the product path on 2026-09-25 (aa14805)",
+      "candidates": 500,
+      "benchmark_depth": 1000,
+      "tie_break": "ASTFLOW: doc id ascending; frozen runs eliminate tie ambiguity",
+      "depth_note": "Benchmark ranks with limit=1000 so size=max(500,1000)=1000 per list",
+      "hybrid_offline_reconstructible": true
+    },
+    "metrics": {
+      "bm25": {
+        "ndcg@10": 0.06312,
+        "mrr@10": 0.05421,
+        "mrr@1000": 0.05955,
+        "recall@10": 0.09216,
+        "recall@20": 0.11766,
+        "recall@50": 0.16866,
+        "recall@100": 0.22603,
+        "recall@500": 0.45525,
+        "recall@1000": 0.59947
+      },
+      "dense": {
+        "ndcg@10": 0.06596,
+        "mrr@10": 0.05581,
+        "mrr@1000": 0.06194,
+        "recall@10": 0.09907,
+        "recall@20": 0.13094,
+        "recall@50": 0.19389,
+        "recall@100": 0.25259,
+        "recall@500": 0.46029,
+        "recall@1000": 0.57902
+      },
+      "hybrid": {
+        "ndcg@10": 0.0884,
+        "mrr@10": 0.07257,
+        "mrr@1000": 0.07903,
+        "recall@10": 0.13971,
+        "recall@20": 0.1761,
+        "recall@50": 0.234,
+        "recall@100": 0.29774,
+        "recall@500": 0.52537,
+        "recall@1000": 0.64754
+      }
+    },
+    "oracle_ceilings": {
+      "hybrid": {
+        "oracle@10": 0.13971,
+        "oracle@20": 0.1761,
+        "oracle@50": 0.234,
+        "oracle@100": 0.29774,
+        "oracle@500": 0.52537,
+        "oracle@1000": 0.64754
+      }
+    },
+    "bottleneck": "RANKING",
+    "bottleneck_detail": "E001-fusion proved that RRF parameter shifts cannot recover candidates without diluting top-10 precision. E002 showed a general-domain cross-encoder (ms-marco-MiniLM-L-6-v2) reorders the top-k worse than RRF at every depth (20/50/100). E003 showed sliding-window dense vectors make Dense significantly better (all: +0.00469 NDCG@10, CI excludes 0) but RRF absorbs the gain (Hybrid +0.00092, CI includes 0). Ranking/fusion remains the bottleneck.",
+    "bottleneck_rule": "benchmark/analyze_baseline.py::BOTTLENECK_RULES_V1",
+    "experiments": [
+      {
+        "id": "BASE",
+        "tag": "baseline-v1",
+        "bm25_ndcg10": 0.06312,
+        "dense_ndcg10": 0.06596,
+        "hybrid_ndcg10": 0.0884,
+        "status": "VERIFIED"
+      },
+      {
+        "id": "E001-fusion",
+        "description": "Controlled 315-config RRF sweep on dev queries",
+        "dev_winner_ndcg10": 0.09383,
+        "conf_winner_ndcg10": 0.08321,
+        "full_test_ndcg10": 0.08845,
+        "status": "REJECT",
+        "reason": "Delta on confirmation was negative (-0.00022); 95% bootstrap CI did not exclude zero on either dev or conf."
+      },
+      {
+        "id": "E002-reranker",
+        "description": "Cross-encoder (cross-encoder/ms-marco-MiniLM-L-6-v2 @ 233902d) reranking frozen Hybrid top-k, k in {20, 50, 100}",
+        "dev_sweep_ndcg10": {
+          "d20": 0.07281,
+          "d50": 0.05805,
+          "d100": 0.05146
+        },
+        "dev_winner_ndcg10": 0.07281,
+        "conf_winner_ndcg10": 0.0667,
+        "full_test_ndcg10": 0.06972,
+        "full_test_delta_ci95": [
+          -0.02467,
+          -0.01271
+        ],
+        "tag": "e002-reranked-d20",
+        "record": "benchmark/experiments/E002.json",
+        "status": "REJECT",
+        "reason": "Significantly worse than Hybrid at every depth; confirmation delta -0.01672 with 95% CI [-0.02479, -0.00876] entirely below zero."
+      },
+      {
+        "id": "E003-dense-windows",
+        "description": "Dense document vector -> id-aligned sliding windows (256/64, max over windows); one pre-registered configuration",
+        "dev_hybrid_ndcg10": 0.09444,
+        "conf_hybrid_ndcg10": 0.08433,
+        "full_test_hybrid_ndcg10": 0.08932,
+        "full_test_hybrid_delta_ci95": [
+          -0.00145,
+          0.00333
+        ],
+        "full_test_dense_ndcg10": 0.07065,
+        "full_test_dense_delta_ci95": [
+          0.00202,
+          0.00744
+        ],
+        "tag": "e003-windows",
+        "record": "benchmark/experiments/E003.json",
+        "status": "REJECT",
+        "reason": "Hybrid NDCG@10 delta positive but its 95% CI includes 0 on dev (+0.00093 [-0.00232, +0.00426]) and confirmation (+0.00091 [-0.00231, +0.00441]). Dense alone improves significantly."
+      }
+    ],
+    "active_experiment": {
+      "id": null,
+      "description": "E004-long-query was pre-registered (benchmark/EXPERIMENTS.md) and then cancelled for now by the project owner on 2026-09-25; not run",
+      "status": "NONE ACTIVE",
+      "needs_hugging_face": null
+    },
+    "next_action": "No retrieval experiment scheduled (E004 cancelled for now). Engineering follow-ups: audit/18-remediation-plan.md."
+  },
+  "next_experiment": null,
+  "next_product_objective": "Make repository ingestion and incremental indexing reliable end to end using the frozen GTE dense retrieval subsystem."
 }

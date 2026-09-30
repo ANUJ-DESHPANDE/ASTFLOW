@@ -1,0 +1,2 @@
+Command: pytest benchmark --ignore=benchmark/test_mteb_adapter.py --ignore=benchmark/test_analyze_baseline.py --ignore=benchmark/test_trust_evaluation.py --ignore=benchmark/test_verify_retrieval.py
+Result: 26 passed, 0 failed.

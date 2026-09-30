@@ -1,0 +1,12 @@
+{
+  "python": "3.12.6",
+  "node": "24.14.0",
+  "package_manager": "npm",
+  "package_manager_version": "11.9.0",
+  "node_install_command": "npm ci",
+  "python_test_environment": ".venv-gpu (existing local environment)",
+  "canonical_launcher_checked": "npm run demo using existing Python environment through a local ignored .venv junction",
+  "frontend_port": 8000,
+  "dev_frontend_port": 5173,
+  "frontend_proxy": "127.0.0.1:8000"
+}

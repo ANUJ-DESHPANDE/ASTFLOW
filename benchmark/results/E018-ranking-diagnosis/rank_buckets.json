@@ -1,0 +1,62 @@
+[
+  {
+    "bucket": "rank 1",
+    "queries": 178,
+    "percentage": 0.5933333333333334,
+    "cumulative_recall": 0.5933333333333334
+  },
+  {
+    "bucket": "rank 2-5",
+    "queries": 47,
+    "percentage": 0.15666666666666668,
+    "cumulative_recall": 0.75
+  },
+  {
+    "bucket": "rank 6-10",
+    "queries": 17,
+    "percentage": 0.056666666666666664,
+    "cumulative_recall": 0.8066666666666666
+  },
+  {
+    "bucket": "rank 11-20",
+    "queries": 14,
+    "percentage": 0.04666666666666667,
+    "cumulative_recall": 0.8533333333333334
+  },
+  {
+    "bucket": "rank 21-50",
+    "queries": 18,
+    "percentage": 0.06,
+    "cumulative_recall": 0.9133333333333333
+  },
+  {
+    "bucket": "rank 51-100",
+    "queries": 6,
+    "percentage": 0.02,
+    "cumulative_recall": 0.9333333333333333
+  },
+  {
+    "bucket": "rank 101-200",
+    "queries": 7,
+    "percentage": 0.023333333333333334,
+    "cumulative_recall": 0.9566666666666667
+  },
+  {
+    "bucket": "rank 201-500",
+    "queries": 6,
+    "percentage": 0.02,
+    "cumulative_recall": 0.9766666666666667
+  },
+  {
+    "bucket": "rank 501-1000",
+    "queries": 4,
+    "percentage": 0.013333333333333334,
+    "cumulative_recall": 0.99
+  },
+  {
+    "bucket": "not retrieved",
+    "queries": 3,
+    "percentage": 0.01,
+    "cumulative_recall": 0.99
+  }
+]

@@ -1,0 +1,19 @@
+{
+  "experiment": "E019",
+  "hypothesis": "Explicit algorithm/operator words in problem statements help distinguish dense near-neighbor code solutions.",
+  "depth": 50,
+  "boost": 0.02,
+  "features": [
+    "xor",
+    "gcd",
+    "lcm",
+    "modulo",
+    "sort",
+    "binary_search",
+    "factorial",
+    "prime",
+    "palindrome"
+  ],
+  "rule": "KEEP only if DEV delta NDCG@10 >= 0.005 and paired 95% bootstrap CI lower bound > 0, then confirmation delta > 0 with lower bound > 0; no material latency regression (>10% of 230ms query p50).",
+  "dev_ids_sha256": "5c61ce5eb1551e3897876ba5c34194bac0a54ed0f1a47149a349c9a3d0b78d53"
+}

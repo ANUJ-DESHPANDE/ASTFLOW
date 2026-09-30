@@ -1,0 +1,7 @@
+{
+  "correct_expected_nodes": 6,
+  "expected_nodes": 6,
+  "returned_edges": 4,
+  "supported_returned_edges": 4,
+  "unsupported_returned_edges": 0
+}

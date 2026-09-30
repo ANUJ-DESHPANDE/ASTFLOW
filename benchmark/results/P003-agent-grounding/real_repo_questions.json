@@ -1,0 +1,38 @@
+[
+  {
+    "manually_verified_file": "auth/credentials.js",
+    "question": "Where is validateCredentials defined?"
+  },
+  {
+    "manually_verified_file": "voice/normalizeInput.js",
+    "question": "Where is normalizeInput defined?"
+  },
+  {
+    "manually_verified_file": "voice/dynamicDispatch.js",
+    "question": "Where is dispatchPlugin defined?"
+  },
+  {
+    "manually_verified_file": "settings/deeplinks.js",
+    "question": "Where is openBluetoothSettings defined?"
+  },
+  {
+    "manually_verified_file": "bluetooth/permissions.js",
+    "question": "Where is checkBluetoothPermission defined?"
+  },
+  {
+    "manually_verified_file": "session/SessionManager.js",
+    "question": "Where is SessionManager defined?"
+  },
+  {
+    "manually_verified_file": "auth/AuthService.js",
+    "question": "Where is AuthService defined?"
+  },
+  {
+    "manually_verified_file": "settings/deeplinks.js",
+    "question": "Why does openBluetoothSettings call openSettingsUri?"
+  },
+  {
+    "manually_verified_file": null,
+    "question": "Where is the Kafka consumer implemented?"
+  }
+]

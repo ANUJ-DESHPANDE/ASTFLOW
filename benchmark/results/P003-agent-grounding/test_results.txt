@@ -1,0 +1,13 @@
+P003 focused: 4 passed, 0 failed
+P002 focused: 8 passed, 0 failed
+P001 focused: 4 passed, 0 failed
+E023 retrieval configuration regression: 2 passed, 0 failed
+Backend suite: 95 passed, 1 skipped, 0 failed
+  skipped: Node dependencies needed for language-service integration
+Available benchmark subset: 26 passed, 0 failed
+  excluded: test_mteb_adapter.py, test_analyze_baseline.py,
+            test_trust_evaluation.py, test_verify_retrieval.py
+Actual GTE HTTP walkthrough: PASS (10 golden + 9 committed demo questions)
+Frontend build: BLOCKED (frontend/node_modules absent; full check belongs to P004)
+MTEB run: NO
+Frozen TEST run: NO

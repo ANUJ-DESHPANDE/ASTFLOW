@@ -1,0 +1,10 @@
+{
+  "historical_audit_and_benchmark_files_anonymized": 15,
+  "personal_home_path_prefixes_anonymized": 42,
+  "tracked_text_files_with_personal_home_prefixes_remaining": 0,
+  "tracked_text_files_matching_common_credential_patterns": 0,
+  "runtime_node_modules_dist_and_venv_files_tracked": 0,
+  "historical_e017_lfs_pointer_files_retained": 6,
+  "e022_artifact_manifest_rehashed": ["feasibility.json", "latency_train.json"],
+  "benchmark_subset_after_anonymization": "26 passed"
+}

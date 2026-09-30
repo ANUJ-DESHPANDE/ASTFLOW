@@ -1,0 +1,16 @@
+{
+  "add_ms": 180.74,
+  "delete_ms": 72.01,
+  "full_cold_ms": 18570.1,
+  "full_warm_ms": 1944.33,
+  "initial_documents": 21,
+  "initial_files": 11,
+  "mixed_ms": 250.6,
+  "modify_documents_computed": 1,
+  "modify_ms": 183.54,
+  "modify_total_documents": 22,
+  "modify_warm_full_ratio": 0.0944,
+  "noop_ms": 57.39,
+  "rename_ms": 186.91,
+  "repository": "copied examples/demo-repo"
+}

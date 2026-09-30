@@ -9,7 +9,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
-from backend.app.agent.investigate import investigate
+from backend.app.agent.investigate import CitationIntegrityError, investigate
 from backend.app.api.schemas import CompareRequest, IndexRequest, SearchRequest, TraceRequest
 from backend.app.config import ROOT, Settings
 from backend.app.indexing.service import IndexService
@@ -97,7 +97,15 @@ def create_app(settings: Settings | None = None):
 
         def build():
             try:
-                return service.index(body.repo_path, body.version).manifest
+                index = service.index(body.repo_path, body.version)
+                return {"manifest": index.manifest, "operation": service.status.get("operation", "full"),
+                        "changes": service.status.get("changes", {}),
+                        "elapsed_ms": service.status.get("elapsed_ms")}
+            except (ValueError, ModelUnavailable, FileNotFoundError):
+                raise
+            except Exception as exc:
+                logger.exception("Index update failed; previous index remains active")
+                raise HTTPException(500, "Index update failed; previous index remains active. Check server logs.") from exc
             finally:
                 app.state.index_lock.release()
 
@@ -112,7 +120,7 @@ def create_app(settings: Settings | None = None):
 
             threading.Thread(target=background_build, daemon=True).start()
             return JSONResponse({"status": "indexing"}, status_code=202)
-        return {"status": "ready", "manifest": build()}
+        return {"status": "ready", **build()}
 
     @app.get("/api/index/status")
     def index_status():
@@ -122,7 +130,24 @@ def create_app(settings: Settings | None = None):
     def search(body: SearchRequest):
         if body.runtime_trace_id:
             raise HTTPException(400, "Runtime tracing is not enabled in this build")
-        return investigate(service.get(body.version), body.query, body.version, body.top_k, body.agentic)
+        index = service.get(body.version)  # one immutable snapshot for retrieval, graph and citations
+        started = time.perf_counter()
+        try:
+            result = investigate(index, body.query, body.version, body.top_k, body.agentic)
+        except ModelUnavailable:
+            logger.warning("Search model unavailable version_key=%s", index.manifest["version_key"])
+            raise
+        except CitationIntegrityError as exc:
+            logger.exception("Search citation integrity failed version_key=%s", index.manifest["version_key"])
+            raise HTTPException(503, "Indexed source evidence is inconsistent; reindex this version.") from exc
+        except Exception as exc:
+            logger.exception("Search failed version_key=%s stage=investigation", index.manifest["version_key"])
+            raise HTTPException(503, "Search failed for this indexed snapshot; retry. The index remains available.") from exc
+        logger.info("Search complete repository=%s version_key=%s duration_ms=%.2f results=%d intent=%s passes=%d",
+                    index.manifest.get("repository_name"), index.manifest["version_key"],
+                    (time.perf_counter() - started) * 1000, len(result["results"]), result["intent"],
+                    sum(step["step"] == "SEARCH" for step in result["agent_trace"]))
+        return result
 
     @app.post("/api/trace")
     def trace(body: TraceRequest):

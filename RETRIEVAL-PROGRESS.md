@@ -1,12 +1,47 @@
 # ASTFLOW Retrieval Progress
 
-> **Read this file first.** It is the only document that describes the *current* state of
-> ASTFLOW's search quality. Older files under `docs/audit/` are historical records.
+## CURRENT ACCEPTED RETRIEVAL SYSTEM — campaign closed at E023 (2026-09-29)
+
+The frozen production and benchmark system is **GTE-ModernBERT dense retrieval**
+(`Alibaba-NLP/gte-modernbert-base`), cosine similarity over normalized vectors,
+float32 CPU inference, a 512-token cap, and top-1000 ranking. The model
+revision is `e7f32e3c`. BM25 is still computed for product evidence but does
+not set the dense ranking. MMR and a reranker are disabled. The embedding
+default is up to 8 CPU threads, capped by available physical cores.
+
+The validated full TEST run on 3,765 questions and 8,765 documents scored
+**NDCG@10 0.5509, MRR@10 0.5050, Recall@10 0.6964, Recall@50 0.8489,
+Recall@100 0.8946, Recall@500 0.9615, Recall@1000 about 0.978**. See
+`benchmark/results/final-validation-20260928/` and
+`benchmark/results/threads8-equivalence-20260929/`.
+
+On the established 300-query TRAIN DEV split, the dense baseline scores
+NDCG@10 0.6977 and MRR@10 0.6633. E018 found 55 correct documents at ranks
+11–1000 and only 3 absent from the top 1000. E019 tested a fixed operator
+evidence boost on dense top-50 candidates and was **rejected** on DEV:
+NDCG@10 0.696715 → 0.699036 (+0.002321, paired 95% interval
+[0, +0.005615]), below its +0.005 gate. Confirmation and TEST were not run;
+the accepted production system remains GTE dense. E020's learned feature
+reranker lost 0.041813 DEV NDCG@10; E021 failed its independent TRAIN gate;
+E022's selected joint reranker took about 29.56 seconds per top-50 query on
+CPU and stopped before DEV. The retrieval optimization campaign is **CLOSED**.
+See [`benchmark/RETRIEVAL_BASELINE.md`](benchmark/RETRIEVAL_BASELINE.md) for
+the canonical state and reproduction path, and
+[`benchmark/results/campaign/LEDGER.md`](benchmark/results/campaign/LEDGER.md)
+for the preserved experiment history.
+
+## Historical MiniLM-era record
+
+The remainder of this file is a preserved historical record. Any "current"
+wording and the 0.0884 score below refer to the superseded MiniLM-era baseline,
+not the accepted GTE system above.
+
+> Historical note: the section below was last updated for the MiniLM-era baseline.
 > Last updated: 2026-09-25 (E001–E003 rejected; E004 pre-registered, then cancelled for now by the project owner (2026-09-25); engineering audit in `audit/` re-generated baseline-v1 from committed code and produced official MTEB artifacts for the current code — identical scores).
 
 ---
 
-## WHAT IS ACTUALLY WRONG RIGHT NOW?
+## Historical MiniLM-era diagnosis (superseded)
 
 *A plain-English explanation for anyone, no search jargon required.*
 
@@ -55,7 +90,7 @@ Even if we look through 1,000 returned files, ASTFLOW misses the correct documen
 
 ---
 
-## 1. Current Status
+## 1. Historical MiniLM-era status
 
 | Metric / Dimension | Verified Baseline (baseline-v1) | Target |
 |---|:---:|:---:|

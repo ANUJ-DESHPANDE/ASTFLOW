@@ -1,0 +1,56 @@
+{
+  "queries": {
+    "addedMixed": {
+      "citations_checked": 10,
+      "result_paths": [
+        "mixed-add.js",
+        "mixed-renamed.js",
+        "mixed-modify.js",
+        "bluetooth/permissions.js",
+        "session/SessionManager.js",
+        "bluetooth/BluetoothAgent.js",
+        "session/SessionManager.js",
+        "voice/normalizeInput.js",
+        "voice/IntentRouter.js",
+        "settings/deeplinks.js"
+      ],
+      "status": "OK",
+      "version_key": "b32d85d6dd23b7286148f417"
+    },
+    "movedMixed": {
+      "citations_checked": 10,
+      "result_paths": [
+        "mixed-renamed.js",
+        "mixed-modify.js",
+        "mixed-add.js",
+        "voice/normalizeInput.js",
+        "voice/VoiceHandler.js",
+        "voice/VoiceHandler.js",
+        "session/SessionManager.js",
+        "session/SessionManager.js",
+        "voice/VoiceHandler.js",
+        "voice/IntentRouter.js"
+      ],
+      "status": "OK",
+      "version_key": "b32d85d6dd23b7286148f417"
+    },
+    "newMixed": {
+      "citations_checked": 10,
+      "result_paths": [
+        "mixed-modify.js",
+        "mixed-add.js",
+        "mixed-renamed.js",
+        "voice/VoiceHandler.js",
+        "session/SessionManager.js",
+        "voice/VoiceHandler.js",
+        "voice/normalizeInput.js",
+        "bluetooth/BluetoothAgent.js",
+        "session/SessionManager.js",
+        "session/SessionManager.js"
+      ],
+      "status": "OK",
+      "version_key": "b32d85d6dd23b7286148f417"
+    }
+  },
+  "version_key": "b32d85d6dd23b7286148f417"
+}

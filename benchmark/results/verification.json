@@ -2,7 +2,7 @@
   "checks": {
     "index_v1": {
       "version_key": "caa0bf0df6b6d348567f68e8",
-      "repository_path": "C:\\Users\\ranja\\OneDrive\\Documents\\ChatGPT\\New project\\ASTFLOW-main\\examples\\demo-repo",
+      "repository_path": "C:\\Users\\<user>\\OneDrive\\Documents\\ChatGPT\\New project\\ASTFLOW-main\\examples\\demo-repo",
       "repository_name": "demo-repo",
       "version": "v1",
       "resolved_revision": "7826d38cae72db7ba0e53a0bcc5aa339783e09f0",
@@ -29,7 +29,7 @@
     },
     "index_v2": {
       "version_key": "521fc31de67f2f1bad777799",
-      "repository_path": "C:\\Users\\ranja\\OneDrive\\Documents\\ChatGPT\\New project\\ASTFLOW-main\\examples\\demo-repo",
+      "repository_path": "C:\\Users\\<user>\\OneDrive\\Documents\\ChatGPT\\New project\\ASTFLOW-main\\examples\\demo-repo",
       "repository_name": "demo-repo",
       "version": "v2",
       "resolved_revision": "31b94fc77db2be533d72aeaefba3e0360312663c",
@@ -56,7 +56,7 @@
     },
     "index_working-tree": {
       "version_key": "1e6bf2797d1c46bfedf21423",
-      "repository_path": "C:\\Users\\ranja\\OneDrive\\Documents\\ChatGPT\\New project\\ASTFLOW-main\\examples\\demo-repo",
+      "repository_path": "C:\\Users\\<user>\\OneDrive\\Documents\\ChatGPT\\New project\\ASTFLOW-main\\examples\\demo-repo",
       "repository_name": "demo-repo",
       "version": "working-tree",
       "resolved_revision": "working-tree",

@@ -1,0 +1,3 @@
+Command: ./.venv-gpu/Scripts/python.exe -m pytest backend/tests -q --disable-warnings -o addopts=''
+Result: 96 passed, 0 failed, 0 skipped, 2 warnings.
+The formerly skipped Node-dependent language-service test ran after npm ci.

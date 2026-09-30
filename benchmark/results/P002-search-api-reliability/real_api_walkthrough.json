@@ -1,0 +1,14 @@
+{
+  "actual_gte": true,
+  "add": true,
+  "concurrent_promotion": true,
+  "delete": true,
+  "failed_update": true,
+  "http_api": true,
+  "initial": true,
+  "mixed": true,
+  "modify": true,
+  "overall": "PASS",
+  "rename": true,
+  "restart": true
+}

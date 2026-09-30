@@ -1,0 +1,9 @@
+{
+  "experiment": "E019",
+  "decision": "REJECT",
+  "reason": "DEV delta NDCG@10 +0.002321 is below the preregistered +0.005 threshold and the paired 95% bootstrap interval includes zero.",
+  "confirmation_scored": false,
+  "test_scored": false,
+  "production_enabled": false,
+  "next_experiment": "E020: test a targeted query representation for queries exceeding the 512-token cap, using frozen DEV and confirmation gates."
+}

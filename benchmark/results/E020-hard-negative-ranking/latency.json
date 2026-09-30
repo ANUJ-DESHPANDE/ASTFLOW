@@ -1,0 +1,8 @@
+{
+  "sample": "same 50 fixed DEV IDs as E019, seed 20260929, one warmup, CPU float32",
+  "query_ids_sha256": "6925e20fc644fa4f87a18b58fb2a4605f2edbfe4a81b556dce8401d25847431e",
+  "baseline_p50_ms": 324.37950000166893,
+  "baseline_p95_ms": 645.5804800178157,
+  "e020_p50_ms": 363.27020000317134,
+  "e020_p95_ms": 700.0427250168286
+}

@@ -1,7 +1,96 @@
 import re
 import time
+from pathlib import PurePosixPath
 
+from backend.app.retrieval.embeddings import ModelUnavailable
 from backend.app.retrieval.search import serialize_result
+
+
+class CitationIntegrityError(RuntimeError):
+    """An indexed result cannot be resolved against its pinned source snapshot."""
+
+
+def _safe_source_path(path: str) -> bool:
+    parsed = PurePosixPath(path)
+    return bool(path) and not parsed.is_absolute() and "\\" not in path and ".." not in parsed.parts
+
+
+def validate_citations(index, results: list[dict], graph: dict) -> None:
+    """Check only evidence exposed to users; never read the working tree."""
+    chunks = {c.chunk_id: c for c in index.chunks}
+    for result in results:
+        chunk = chunks.get(result["chunk_id"])
+        path = result["file_path"]
+        source = index.files.get(path)
+        if (not _safe_source_path(path) or chunk is None or source is None
+                or chunk.file_path != path or chunk.symbol_id != result["symbol_id"]):
+            raise CitationIntegrityError("Search result is not in the pinned index")
+        lines = source.splitlines(keepends=True)
+        start, end = result["start_line"], result["end_line"]
+        if (start != chunk.start_line or end != chunk.end_line or start < 1
+                or end < start or end > len(lines) or result["snippet"] != chunk.text
+                or result["snippet"] not in "".join(lines[start - 1:end])):
+            raise CitationIntegrityError("Search citation does not match indexed source")
+    for node in graph["nodes"]:
+        symbol = index.graph.symbols.get(node["symbol_id"])
+        if (not _safe_source_path(node["file"]) or node["file"] not in index.files
+                or symbol is None or symbol.file_path != node["file"]
+                or symbol.start_line != node["start_line"] or symbol.end_line != node["end_line"]):
+            raise CitationIntegrityError("Graph citation is not in the pinned index")
+    indexed_edges = [stored.to_dict() for stored in index.graph.edges]
+    node_ids = {node["symbol_id"] for node in graph["nodes"]}
+    for edge in graph["edges"]:
+        if edge not in indexed_edges or edge["source"] not in node_ids or edge["target"] not in node_ids:
+            raise CitationIntegrityError("Graph relationship is not in the pinned index")
+        source = index.files.get(edge["call_file"])
+        if not _safe_source_path(edge["call_file"]) or source is None:
+            raise CitationIntegrityError("Graph call site is not in the pinned index")
+        lines = source.splitlines(keepends=True)
+        start, end = edge["call_line"], edge["call_end_line"]
+        if start < 1 or end < start or end > len(lines) or edge["source_expression"] not in "".join(lines[start - 1:end]):
+            raise CitationIntegrityError("Graph call site does not match indexed source")
+
+
+def ground_question(query: str, graph) -> dict:
+    """Classify only explicit symbol/relationship premises; retrieved neighbors are candidates, not answers."""
+    names = {s.name for s in graph.symbols.values()}
+    # A capitalized feature word ("Bluetooth settings") is not a requested symbol.
+    # Only identifier-shaped names and an explicit "X defined" request establish that premise.
+    explicit = re.findall(r"\b(?:[a-z][A-Za-z0-9_$]*[A-Z][A-Za-z0-9_$]*|[A-Z][a-z0-9_$]+(?:[A-Z][A-Za-z0-9_$]+)+)\b", query)
+    definition = re.search(r"\bwhere is ([A-Za-z_$][\w$]*) defined\??$", query, re.I)
+    if definition:
+        explicit.append(definition.group(1))
+    requested = list(dict.fromkeys([*explicit, *plan(query, graph)["symbols"]]))
+    candidates = []
+    for name in requested:
+        candidates.extend(s for s in graph.symbols.values() if s.name == name)
+    candidates = sorted({s.symbol_id: s for s in candidates}.values(), key=lambda s: s.symbol_id)
+    definitions = [{"symbol_id": s.symbol_id, "file": s.file_path, "start_line": s.start_line,
+                    "end_line": s.end_line} for s in candidates]
+    call = re.search(r"\b(?:why\s+)?does\s+([\w$]+)\s+call\s+([\w$]+)\b", query, re.I)
+    if call:
+        source_name, target_name = call.groups()
+        sources = set(graph.resolve(source_name))
+        targets = set(graph.resolve(target_name))
+        edges = [e.to_dict() for e in graph.edges if e.source_symbol_id in sources and e.target_symbol_id in targets]
+        source_matches = [s for s in graph.symbols.values() if s.name == source_name]
+        target_matches = [s for s in graph.symbols.values() if s.name == target_name]
+        status = ("AMBIGUOUS_SYMBOL" if len(source_matches) > 1 or len(target_matches) > 1
+                  else "VERIFIED_CALL" if edges else "CALL_NOT_ESTABLISHED")
+        return {"status": status, "requested_symbols": [source_name, target_name],
+                "definitions": definitions, "call_edges": edges if status == "VERIFIED_CALL" else []}
+    ambiguous = [name for name in requested if sum(s.name == name
+                                              for s in graph.symbols.values()) > 1]
+    if ambiguous:
+        status = "AMBIGUOUS_SYMBOL"
+    elif requested and any(name not in names for name in requested):
+        status = "NO_VERIFIED_SYMBOL"
+    else:
+        feature = re.search(r"\bwhere is (?:the )?(.+?) implemented\??$", query, re.I)
+        words = re.findall(r"[A-Za-z]{4,}", feature.group(1).lower()) if feature else []
+        known_names = " ".join(names).lower()
+        status = "NO_VERIFIED_IMPLEMENTATION" if words and not any(w in known_names for w in words) else "SOURCE_CANDIDATES"
+    return {"status": status, "requested_symbols": requested, "definitions": definitions, "call_edges": []}
 
 
 def plan(query: str, graph):
@@ -55,6 +144,9 @@ def investigate(index, query: str, version: str, top_k: int = 10, agentic: bool 
     if retriever.embeddings is None and first_stage != "bm25":
         first_stage = "hybrid"
     rows, diagnostics = retriever.rank(query, mode=first_stage, boosts=mode == "full")
+    if (retriever.embeddings is not None and settings.semantic != "off"
+            and not diagnostics["semantic_available"]):
+        raise ModelUnavailable(retriever.embedder.reason)
     label = ("lexical only, no embedding model" if retriever.embeddings is None
              else f"{settings.model} {first_stage}")
     trace.append({"step": "SEARCH", "details": f"Retrieved {len(rows)} candidates ({label})",
@@ -145,6 +237,8 @@ def investigate(index, query: str, version: str, top_k: int = 10, agentic: bool 
     relevant_ids = {r["symbol_id"] for r in results[:6]}
     relevant_ids.update(sid for p in (paths or {}).get("paths", []) for sid in p)
     subgraph = graph.subgraph(relevant_ids, (paths or {}).get("paths", []))
+    validate_citations(index, results, subgraph)
+    grounding = ground_question(query, graph)
     sequence = [s for s in index.extra.get("sequences", []) if s["caller"] in relevant_ids] if query_plan["intent"] == "SEQUENCE" else []
     if sequence:
         pair = query_plan["symbols"]
@@ -161,6 +255,7 @@ def investigate(index, query: str, version: str, top_k: int = 10, agentic: bool 
     return {"query": query, "version": version, "version_key": index.manifest["version_key"],
             "results": results, "intent": query_plan["intent"], "agent_trace": trace,
             "graph": {**subgraph, "version_key": index.manifest["version_key"]}, "sequences": sequence, "path_status": (paths or {}).get("status"),
+            "grounding": grounding,
             "status": "OK" if results else "NO_RESULTS",
             # Dense retrieval always returns its nearest neighbours, even for nonsense input. Say what the
             # results rest on so a meaning-only list is not presented as "the relevant code".

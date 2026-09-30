@@ -1,0 +1,2 @@
+Command: pytest backend/tests/test_p001_indexing.py
+Result: 4 passed, 0 failed.

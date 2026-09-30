@@ -82,7 +82,8 @@ class Retriever:
 
         return (self.w_text * text_scores) + (self.w_title * title_scores)
 
-    def rank(self, query: str, mode: str = "hybrid", boosts: bool = True, limit: int | None = None):
+    def rank(self, query: str, mode: str | None = None, boosts: bool = True, limit: int | None = None):
+        mode = self.settings.retrieval if mode is None else mode
         if mode not in MODES:
             raise ValueError(f"Unknown ranking mode {mode!r}; expected one of {sorted(MODES)}")
         if not self.chunks:

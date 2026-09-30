@@ -1,0 +1,11 @@
+{
+  "recoverable_top1000": 55,
+  "observed_top200": 45,
+  "observed_top200_mean_rank": 48.022222222222226,
+  "observed_top200_median_rank": 32,
+  "observed_top200_p75_rank": 53.0,
+  "observed_top200_p90_rank": 124.20000000000002,
+  "candidate_set_oracle_ndcg10": 0.99,
+  "candidate_set_oracle_mrr10": 0.99,
+  "note": "Oracle is a ceiling, not an achievable model score. Rank statistics only use saved top-200 lists."
+}

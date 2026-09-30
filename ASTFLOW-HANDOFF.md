@@ -1,8 +1,14 @@
 # ASTFLOW Retrieval — Session Handoff
 
+> **HISTORICAL MINILM-ERA HANDOFF.** This document preserves the E001–E005
+> state and its 0.0884 hybrid score. It does not describe the accepted system.
+> The current production baseline is GTE-ModernBERT dense: validated full TEST
+> NDCG@10 **0.5509**, MRR@10 **0.5050**. Retrieval optimization closed at E023;
+> see [`benchmark/RETRIEVAL_BASELINE.md`](benchmark/RETRIEVAL_BASELINE.md).
+
 _Last updated 2026-09-26 (E005 rejected on CPU cost); previously 2026-09-25 (E001–E003 rejected; E004 pre-registered, then cancelled for now by the project owner (2026-09-25); engineering audit on `audit/master-remediation`, see `audit/FINAL-ASTFLOW-ENGINEERING-REPORT.md`). Contains only verified information._
 
-## TRUST STATUS
+## HISTORICAL MINILM-ERA TRUST STATUS (SUPERSEDED)
 Measurement system: **VERIFIED** (4 evaluators agree on the frozen runs; MTEB 2.21.0 gives the same numbers for the current code; baseline-v1 re-generated from committed code with 0 per-query metric changes).
 Current trusted baseline: **VERIFIED BASELINE V1 (baseline-v1)**
 - **Hybrid NDCG@10:** `0.08840` (MRR@10 `0.07257`, Recall@10 `0.13971`, Recall@100 `0.29774`)
@@ -31,7 +37,7 @@ BM25: BM25Okapi k1 1.6, b 0.75, positive IDF, identifier splitting, English+code
 Hybrid: RRF k=60, weights 1/1, depth 1,000 — 100% reconstructible offline from BM25 and Dense runs
 Reranker: NONE (E002 cross-encoder rejected and removed from the product)
 
-## CURRENT BOTTLENECK
+## HISTORICAL MINILM-ERA BOTTLENECK (SUPERSEDED)
 **RANKING** — the answer is in the Hybrid top 100 for 29.8% of queries but in the top 10 for only 14.0%.
 - Baseline rule 3 of `BOTTLENECK_RULES_V1` first flagged FUSION (union − Hybrid Recall@100 = +0.0523, 209 answers lost by RRF k=60).
 - E001-fusion showed RRF parameter changes cannot recover them without hurting top-10 precision.

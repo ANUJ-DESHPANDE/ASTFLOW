@@ -1,0 +1,2 @@
+Separate lint script: NOT CONFIGURED in root or frontend package.json.
+Production TypeScript checking: PASS through npm run build.

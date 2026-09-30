@@ -15,9 +15,9 @@ Running 1 test using 1 worker
       16 |   await page.locator('.monaco-editor').first().waitFor({ timeout: 30_000 });
       17 |   await page.waitForLoadState('networkidle', { timeout: 5_000 }).catch(() => {});
       18 | }
-        at ready (C:\Users\aarus\Downloads\ASTFLOW-main\ASTFLOW-repo\audit\tools\ui-crawl.audit.ts:15:14)
-        at Object.code (initial) (C:\Users\aarus\Downloads\ASTFLOW-main\ASTFLOW-repo\audit\tools\ui-crawl.audit.ts:25:43)
-        at C:\Users\aarus\Downloads\ASTFLOW-main\ASTFLOW-repo\audit\tools\ui-crawl.audit.ts:120:28
+        at ready ({USER_HOME}\Downloads\ASTFLOW-main\ASTFLOW-repo\audit\tools\ui-crawl.audit.ts:15:14)
+        at Object.code (initial) ({USER_HOME}\Downloads\ASTFLOW-main\ASTFLOW-repo\audit\tools\ui-crawl.audit.ts:25:43)
+        at {USER_HOME}\Downloads\ASTFLOW-main\ASTFLOW-repo\audit\tools\ui-crawl.audit.ts:120:28
 
     Error Context: test-results\ui-crawl.audit.ts-exhaustive-control-crawl\error-context.md
 

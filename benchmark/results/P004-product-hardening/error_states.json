@@ -1,0 +1,7 @@
+{
+  "browser_malformed_response": "PASS (audit.spec.ts)",
+  "browser_index_failure_and_recovery": "PASS (journeys.spec.ts)",
+  "browser_network_failure": "PASS (audit.spec.ts)",
+  "invalid_repository_http": 404,
+  "server_survived": true
+}
