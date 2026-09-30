@@ -1,5 +1,16 @@
 # ASTFLOW
 
+## Samsung PRISM 2026 submission
+
+**Team:** ByteCoders · **Institution:** VIT Vellore · **Members:** Aarush Shetty, Harsh Jha, Anuj Deshpande.
+
+- [Final presentation (PPTX)](submission/VIT_Vellore_ByteCoders_ASTFLOW_Final_With_Video_Link.pptx)
+- [Demo video (unlisted YouTube)](https://www.youtube.com/watch?v=zBjj9Nmn_7I)
+- [AI usage disclosure](AI_DISCLOSURE.md) and [signed form (DOCX)](submission/VIT_Vellore_ByteCoders_ASTFLOW_Final_AI_Disclosure.docx)
+- [Reproducible setup](#quick-start) and [Docker instructions](#docker-lexical-only-image)
+
+The presentation and disclosure are the team's supplied final submission documents. The current product scope and verified retrieval configuration are described below and in [RELEASE-STATE.md](RELEASE-STATE.md).
+
 ASTFLOW is a local, CPU-based code retrieval and repository investigation system for Samsung Theme 01 (Agentic Code Intelligence). It ranks source snippets for natural-language questions and keeps citations tied to indexed Git snapshots.
 
 For the five-minute product walkthrough, use [DEMO.md](DEMO.md). The [release state](RELEASE-STATE.md) records the validated product scope and limits; [audit evidence](audit/FINAL-ASTFLOW-ENGINEERING-REPORT.md) and [historical experiments](benchmark/experiments/EXPERIMENTS.md) remain available separately.
