@@ -1,5 +1,7 @@
 # ASTFLOW — technical story
 
+> Historical submission evidence: this document records the earlier `v1.0-submission` run (NDCG@10 0.5511, MRR@10 0.5053). The current accepted CPU float32 validation is NDCG@10 0.5509, MRR@10 0.5050; use the root README and `benchmark/RETRIEVAL_BASELINE.md` for release claims.
+
 Every number here is from a committed file. Paths are given so each claim can be checked.
 
 ## Problem

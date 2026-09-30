@@ -1,5 +1,7 @@
 # ASTFLOW — SUBMISSION READY
 
+> Historical submission evidence: this document records the earlier `v1.0-submission` run (NDCG@10 0.5511, MRR@10 0.5053). The current accepted CPU float32 validation is NDCG@10 0.5509, MRR@10 0.5050; use the root README and `benchmark/RETRIEVAL_BASELINE.md` for release claims.
+
 - **Commit:** product code frozen at `db57806` (float32 inference); documentation at `db97770` and this dashboard;
   merged into `main` by merge commit.
 - **Release:** [`v1.0-submission`](https://github.com/ANUJ-DESHPANDE/ASTFLOW/releases/tag/v1.0-submission). It

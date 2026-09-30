@@ -1,5 +1,7 @@
 # Presentation evidence pack
 
+> Historical submission evidence: this document records the earlier `v1.0-submission` run (NDCG@10 0.5511, MRR@10 0.5053). The current accepted CPU float32 validation is NDCG@10 0.5509, MRR@10 0.5050; use the root README and `benchmark/RETRIEVAL_BASELINE.md` for release claims.
+
 One section per slide-worthy topic. Every claim names the file (and commit or run) it comes from. The deck itself
 was not requested and is not produced here.
 

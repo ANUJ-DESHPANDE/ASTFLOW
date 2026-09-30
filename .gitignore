@@ -1,4 +1,4 @@
-.venv/
+.venv*/
 .eval-venv/
 .astflow/
 __pycache__/
@@ -8,6 +8,8 @@ __pycache__/
 node_modules/
 frontend/dist/
 .env
+.env.*
+!.env.example
 examples/demo-repo/.git/
 test-results/
 playwright-report/
@@ -21,3 +23,4 @@ benchmark/results/apps.json
 # Frozen TREC runs are large (~150 MB/mode); manifests record their SHA-256.
 benchmark/verification/runs/
 .coverage
+.ruff_cache/

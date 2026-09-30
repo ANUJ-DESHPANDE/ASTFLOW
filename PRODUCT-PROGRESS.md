@@ -1,5 +1,7 @@
 # ASTFLOW product progress
 
+**Current state:** P005 passed after a clean installation, full product validation, and evidence-only hygiene correction. The corrected release was merged into `main` at `b0b016e`; the accepted retrieval configuration and product behavior remain unchanged. The phase records below describe the earlier validation sequence.
+
 ## P004 — Whole-product hardening and code lock
 
 **Decision:** PASS. **Code lock: LOCKED** after the clean, pushed release candidate.
@@ -40,8 +42,7 @@ limits. Accepted limitations remain source navigation without generated prose,
 static-call-only map edges, unresolved dynamic calls, one-time schema-10
 reindexing, full parse/graph rebuild on changed snapshots, and one-process
 cache writes. The lazy-loaded Monaco chunk has a non-blocking Vite size
-warning. No demonstrated release blocker remains. P005 is the release gate;
-feature and architecture development are closed after this code lock.
+warning. No demonstrated product release blocker remained at P004; P005 subsequently completed the release gate.
 
 **Release hygiene:** 42 personal home-directory prefixes were anonymized in
 15 historical audit and benchmark files without changing their numeric

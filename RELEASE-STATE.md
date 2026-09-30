@@ -1,4 +1,4 @@
-# ASTFLOW release candidate state
+# ASTFLOW release state
 
 ASTFLOW is a local JavaScript repository investigation application. It indexes source and Git snapshots, returns ranked code candidates with pinned source citations, identifies verified definitions and static calls, draws a code map of supported calls, and updates snapshots incrementally. It does not execute indexed repositories or use an LLM to write explanations.
 
@@ -19,7 +19,7 @@ Use **Repository settings** to choose a JavaScript repository and index its work
 
 ## Code lock
 
-P004 passed the production frontend build, 30 live browser tests, 96 backend tests, the focused P001–P003 and retrieval regressions, and the canonical demo restart. Feature and architecture changes are closed. P005 is the remaining release-style installation and demo gate; only a concrete release-blocking failure may reopen code.
+P004 passed the production frontend build, 30 live browser tests, 96 backend tests, the focused P001-P003 and retrieval regressions, and the canonical demo restart. P005 subsequently passed the clean installation and whole-product release gate. Its evidence-only path and hash corrections were merged into `main` at `b0b016e`. The accepted production ranking remains frozen.
 
 Historical audit and benchmark records were anonymized to remove personal home-directory prefixes while retaining metrics and valid JSON. The available benchmark subset passed after this release hygiene change.
 

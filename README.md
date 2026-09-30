@@ -1,10 +1,8 @@
 # ASTFLOW
 
-**See what changed. Understand what you built.**
+ASTFLOW is a local, CPU-based code retrieval and repository investigation system for Samsung Theme 01 (Agentic Code Intelligence). It ranks source snippets for natural-language questions and keeps citations tied to indexed Git snapshots.
 
-Updated to the supplied editor-video visual reference. See [changes and limits](docs/CHANGES.md).
-
-**Engineering audit (25 September):** [final report and dashboard](audit/FINAL-ASTFLOW-ENGINEERING-REPORT.md), [findings database](audit/findings.json), [remediation plan](audit/18-remediation-plan.md); earlier audit (20 September): [report](docs/audit/REPORT.md), [official requirements matrix](docs/audit/REQUIREMENTS.md), [defect ledger](docs/audit/BUGS.md), [UI inventory](docs/audit/UI-INVENTORY.md) and [remaining checklist](docs/audit/CHECKLIST.md). Full AppsRetrieval scores are substantially lower than the small demo benchmark; use the official figures for screening claims.
+For the five-minute product walkthrough, use [DEMO.md](DEMO.md). The [release state](RELEASE-STATE.md) records the validated product scope and limits; [audit evidence](audit/FINAL-ASTFLOW-ENGINEERING-REPORT.md) and [historical experiments](benchmark/experiments/EXPERIMENTS.md) remain available separately.
 
 > **Current accepted retrieval (E023 campaign closure).** Full MTEB AppsRetrieval TEST, 3,765 queries ×
 > 8,765 documents: **NDCG@10 0.5509, MRR@10 0.5050** with
@@ -14,8 +12,6 @@ Updated to the supplied editor-video visual reference. See [changes and limits](
 > and [clean validation](benchmark/results/final-validation-20260928/README.md).
 
 ASTFLOW is a local repository investigation engine for JavaScript. Ask a question, inspect ranked source candidates and verified symbol or call evidence, follow supported static call relationships, and compare indexed Git snapshots. It does not generate prose explanations; source links and graph relationships are its answer surface.
-
-For a short, repeatable product walkthrough, use [DEMO.md](DEMO.md). The current release candidate scope and limits are in [RELEASE-STATE.md](RELEASE-STATE.md).
 
 It runs on a CPU, needs no paid API, and never executes an indexed repository. The included source fixture has voice routing, Bluetooth settings, authentication, test cases, dynamic dispatch, and two real Git commits showing a session-management refactor.
 
@@ -241,14 +237,15 @@ The service binds to loopback and validates Host/Origin headers. Source requests
 The demo fixture sources are committed in `examples/demo-repo`; its Git history (tags `v1`, `v2`) is created by `scripts/setup_demo.py` (run by `npm run setup` and `npm run demo`). The revision-selector test creates its own temporary Git history and also runs in a fresh worktree.
 
 ```powershell
-.\.venv\Scripts\python.exe -m pytest backend/tests benchmark --ignore=benchmark/test_mteb_adapter.py
-.\.venv\Scripts\python.exe -m benchmark.verify_retrieval --self-test   # evaluator agreement on golden cases
+.\.venv\Scripts\python.exe -m pytest backend/tests
+.\.venv\Scripts\python.exe -m pytest benchmark --ignore=benchmark/test_mteb_adapter.py --ignore=benchmark/test_analyze_baseline.py --ignore=benchmark/test_trust_evaluation.py --ignore=benchmark/test_verify_retrieval.py
 npm run build
 # With npm run demo running in another terminal:
 .\.venv\Scripts\python.exe scripts/verify_demo.py
 npm run test:ui
-.\.venv\Scripts\python.exe -m benchmark.evaluate
 ```
+
+These Python tests use the dependencies installed by `npm run setup`. The full evaluator trust suite and `benchmark.verify_retrieval --self-test` also need the optional benchmark dependencies (`pytrec-eval-terrier` and `ir-measures`). Install them with `.\.venv\Scripts\python.exe -m pip install -c requirements.lock.txt -e '.[benchmark]'` before running those checks. `python -m benchmark.evaluate` regenerates the small local benchmark artifacts; it is not the accepted AppsRetrieval score. On macOS/Linux, use `.venv/bin/python` in place of `.\.venv\Scripts\python.exe`.
 
 `npm run test:ui` runs the demo-critical journeys (`frontend/e2e/journeys.spec.ts`), an accessibility gate (`a11y.spec.ts`: no serious/critical axe violations in the code, answer, map, compare and dialog views at desktop and phone sizes) and the studio/audit specs. Browser tests use installed Microsoft Edge by default; elsewhere run `npx playwright install chromium` and set `PLAYWRIGHT_CHANNEL=chromium`. `PLAYWRIGHT_BASE_URL` points them at another server. Tests use the **real running backend**; they do not mock search or graph responses (one test injects network failures deliberately). They save screenshots under `.astflow/screenshots/`. CI (`.github/workflows/ci.yml`) runs lint, the Python tests, the frontend build, dependency audits and these browser tests on every push.
 
